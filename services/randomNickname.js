@@ -6,7 +6,6 @@ const colors = colorFile.split('\n')
   .filter((name) => name !== '')
   .map((name) => name.trim())
   .filter((name) => name.length > 2 && name.length < 14)
-  .sort((a, b) => a.length - b.length)
   .map((name) => `${name[0].toUpperCase()}${name.slice(1)}`)
   .reduce((acc, name) => {
     if (!acc[name.length]) {
