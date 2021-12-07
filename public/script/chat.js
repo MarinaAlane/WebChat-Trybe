@@ -52,6 +52,9 @@ const userForm = document.querySelector('#user_form');
 userForm.addEventListener('submit', (e) => {
   e.preventDefault();
   nickName = document.forms.user_form_name.user.value;
+  if (!nickName) {
+    return alert('Defina um usuário');
+  }
   userForm.parentNode.removeChild(userForm);
   socket.emit('new_user', { user: nickName });
 });
