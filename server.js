@@ -9,6 +9,8 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   } });
 
+require('./sockets/chat')(io);
+
 io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 });
