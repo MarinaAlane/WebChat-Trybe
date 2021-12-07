@@ -7,7 +7,19 @@
   <title>Webchat</title>
 </head>
 <body>
-  
+  <div>
+    <div>
+      <input class="inputName" type="text" placeholder="insira seu nome!">
+      <button type="button">Enviar</button>
+
+      <div class="user"></div>
+    </div>
+    <div class="message"></div>
+  </div>
+  <input type="text" class="inputMessage" placeholder="Sua mensagem!">
+  <button type="button">Enviar</button>
+
   <script src="/socket.io/socket.io.js"></script>
+  <script src="./script/index.js"></script>
 </body>
 </html>
