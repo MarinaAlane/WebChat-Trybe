@@ -2,6 +2,7 @@ require('dotenv').config();
 const socketio = require('socket.io');
 const http = require('http');
 const { app } = require('./app');
+const { chat } = require('./services/chat');
 
 const server = http.createServer(app);
 
@@ -11,6 +12,8 @@ const io = socketio(server, {
     methods: ['GET', 'POST'],
   },
 });
+
+chat.connect(io);
 
 const PORT = process.env.PORT || 3000;
 
