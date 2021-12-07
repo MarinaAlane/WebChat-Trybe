@@ -1,0 +1,15 @@
+#screen {
+  display: flex;
+}
+
+#users {
+  border: 1px black solid;
+  width: 300px;
+  height: 700px;
+}
+
+#messages {
+  border: 1px black solid;
+  width: 500px;
+  height: 700px;
+}
