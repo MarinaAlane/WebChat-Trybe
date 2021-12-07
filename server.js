@@ -5,6 +5,8 @@ const app = express();
 
 app.set('view engine', 'ejs');
 
+app.use(express.static(`${__dirname}/public`));
+
 const http = require('http').createServer(app);
 
 const { PORT = 3000 } = process.env;

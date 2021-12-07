@@ -5,24 +5,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webchat Project</title>
+  <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
   <main>
-    <section>
-      <section>
-        <section>
+    <section class="upper-container">
+      <section class="user-info-container">
+        <section class="username-container">
           <input type="text" name="username" id="username" placeholder="Type your username here">
           <button type="button" id="save">Save</button>
         </section>
-        <section>
+        <section class="users-container">
           <ul id="logged-users"></ul>
         </section>
       </section>
-      <section>
+      <section class="message-container">
         <ul id="sent-messages"></ul>
       </section>
     </section>
-    <section>
+    <section class="lower-container">
       <input type="text" name="message" id="message" placeholder="Type your message here">
       <button type="button" id="send">Send</button>
     </section>
