@@ -11,6 +11,6 @@ module.exports = (io) =>
     socket.on('updateNickname', async ({ oldNickname, newNickname }) => {
       const indexUser = users.indexOf(oldNickname);
       users[indexUser] = newNickname;
-      socket.emit('newUserConnection', { nickname: newNickname }); // parei aqui
+      io.emit('newUserConnection', users); // parei aqui
     });
   });
