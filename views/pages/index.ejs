@@ -52,6 +52,15 @@
       messageInput.value = '';
       messageInput.focus();
     });
+
+    socket.on('message', (data) => {
+      const sentMessagesUl = document.getElementById('sent-messages');
+
+      const newLi = document.createElement('li');
+      newLi.append(data);
+
+      sentMessagesUl.append(newLi);
+    });
   </script>
 </body>
 </html>
