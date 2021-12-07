@@ -34,29 +34,6 @@
       const form = document.getElementById('form');
       const input = document.getElementById('input');
 
-      // const d = new Date();
-      // const date = d.toISOString().slice(0, 10).split('-').reverse().join('-');
-      // let AM_OR_PM = 'AM';
-
-      // const time = () => {
-      //   const hour = d.getHours();
-      //   if(hour > 12) {
-      //     AM_OR_PM = 'PM'
-      //   }
-      //   const formatHour = hour - 12;
-      //   const minutesAndSeconds = d.toString().slice(18, 24);
-      //   return `${formatHour + minutesAndSeconds} ${AM_OR_PM}`;
-      // }
-
-      // form.addEventListener('submit', (e) => {
-      //   e.preventDefault();
-      //   if (input.value) {
-      //     const chatMessage = input.value;
-      //     socket.emit('message', `${date} ${time()} - ${nickname} ${chatMessage}`);
-      //     input.value = '';
-      //   }
-      // });
-
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (input.value) {
