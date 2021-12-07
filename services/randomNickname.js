@@ -2,11 +2,13 @@ const fs = require('fs');
 
 const colorFile = fs.readFileSync('colors.txt', 'utf-8');
 
+const upcaseFirstCharacter = (string) => `${string[0].toUpperCase()}${string.slice(1)}`;
+
 const colors = colorFile.split('\n')
   .filter((name) => name !== '')
   .map((name) => name.trim())
   .filter((name) => name.length > 2 && name.length < 14)
-  .map((name) => `${name[0].toUpperCase()}${name.slice(1)}`)
+  .map((name) => name.split(' ').map(upcaseFirstCharacter).join(' '))
   .reduce((acc, name) => {
     if (!acc[name.length]) {
       acc[name.length] = [];
@@ -135,7 +137,7 @@ const animals = [
   'Mongoose',
   'Mosquito',
   'Pheasant',
-  'Sea lion',
+  'Sea Lion',
   'Alligator',
   'Armadillo',
   'Barracuda',
@@ -145,7 +147,7 @@ const animals = [
   'Porcupine',
   'Bald Eagle',
   'Chimpanzee',
-  'Polar bear',
+  'Polar Bear',
   'Caterpillar',
   'Grasshopper',
   'Hummingbird',
@@ -172,3 +174,5 @@ const getRandomNickName = () => {
 };
 
 module.exports = { getRandomNickName };
+
+console.log(getRandomNickName());
