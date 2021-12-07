@@ -58,7 +58,6 @@
 
       // Ouve quando novos cliente se conectarem e faz lógicas com isso para renderizar somente o necessário
       socket.on("newUserConnection", (users) => {
-
         document.getElementById('users-online').innerHTML = ''
         users.map((user) => {
           const li = document.createElement("li");

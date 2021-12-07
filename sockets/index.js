@@ -5,7 +5,7 @@ module.exports = (io) =>
   io.on('connection', (socket) => {
     message(socket, io);
     socket.on('newUserConnection', async ({ nickname }) => {
-      users.push(nickname);
+      users.unshift(nickname);
       io.emit('newUserConnection', users);
     });
     socket.on('updateNickname', async ({ oldNickname, newNickname }) => {
