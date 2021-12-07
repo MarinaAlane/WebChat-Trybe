@@ -1,0 +1,55 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  width: 40vh;
+}
+
+.users {
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 250px;
+  height: 100%;
+}
+
+.login {
+  display: flex;
+  margin: 5px;
+}
+
+#messages {
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 750px;
+  height: 80vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 90vw;
+}
+
+.input-message {
+  border: 1px solid black;
+  width: 66vw;
+  height: 30px;
+}
+
+.container-message {
+  margin: 5px;
+}
+
+#send-message {
+  height: 30px;
+  width: 100px;
+}
