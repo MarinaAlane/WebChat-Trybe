@@ -47,9 +47,6 @@ const createMessage = async ({ message, origin }) => {
 const updateUsers = (users) => {
   const usersList = document.querySelector('#users');
   usersList.innerHTML = '';
-  // while (usersList.firstChild) {
-  //   usersList.firstChild.remove();
-  // }
   users.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user;

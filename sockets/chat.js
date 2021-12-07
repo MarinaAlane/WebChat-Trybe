@@ -4,10 +4,13 @@ const messagesModel = require('../models/messagesModel');
 const users = [];
 
 const newUser = (io, socket, name) => {
+  users.unshift(name);
+  socket.emit('users', users);
+  users.shift(name);
   users.push(name);
   socket.emit('serverMessage', { message: `Bem vindo ${name}!`, name });
   socket.broadcast.emit('serverMessage', `${name} acabou de entrar!`);
-  io.emit('users', users);
+  socket.broadcast.emit('users', users);
 };
 
 const renameUser = (io, socket, name, newNickname) => {
