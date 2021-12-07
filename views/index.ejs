@@ -56,31 +56,19 @@
 
       // Ouve quando novos cliente se conectarem e faz lógicas com isso para renderizar somente o necessário
       socket.on("newUserConnection", (users) => {
-        if (users[users.length -1] === newUserName) {
-          users.map((user) => {
-            const li = document.createElement("li");
-            const liText = document.createTextNode(
-              `${user}`
-            );
-            li.appendChild(liText);
-            if (user === newUserName) { // aqui é para que só seja adicionado o testid no usuário local
-              const liDataTestId = document.createAttribute('data-testid')
-              liDataTestId.value = 'online-user'
-              li.setAttributeNode(liDataTestId)
-            }
-            document.getElementById("users-online").appendChild(li);
-          })
-        } else {
+
+        document.getElementById('users-online').innerHTML = ''
+        users.map((user) => {
           const li = document.createElement("li");
           const liText = document.createTextNode(
-            `${users[users.length -1]}`
+            `${user}`
           );
           li.appendChild(liText);
-          // const liDataTestId = document.createAttribute('data-testid')
-          // liDataTestId.value = 'online-user'
-          // li.setAttributeNode(liDataTestId)
+          const liDataTestId = document.createAttribute('data-testid')
+          liDataTestId.value = 'online-user'
+          li.setAttributeNode(liDataTestId)
           document.getElementById("users-online").appendChild(li);
-        }
+        })
       });
     </script>
   </body>
