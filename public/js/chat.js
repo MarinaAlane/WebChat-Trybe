@@ -1,6 +1,6 @@
 const socket = window.io();
 
-const form = document.querySelector('#messageBox');
+const form = document.querySelector('.messageBox');
 const inputMessage = document.querySelector('#messageInput');
 
 form.addEventListener('submit', (e) => {
@@ -13,7 +13,7 @@ form.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages');
+  const messagesUl = document.querySelector('.messages');
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
