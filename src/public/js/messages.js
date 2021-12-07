@@ -13,7 +13,7 @@ function setSessionUser(nickName) {
 }
 
 function randomNickNameUser() {
-  const nickName = Math.floor(Math.random() * 10 ** 16);
+  const nickName = (Math.floor(Math.random() * 10 ** 16)).toString();
   setSessionUser(nickName);
   return nickName;
 }
@@ -58,18 +58,28 @@ function sendNewMessage() {
   document.querySelector(testIds.messageBox).value = '';
 }
 
-function changeNickName() {
-  const nickNameBox = document.querySelector(testIds.nickNameBox);
+function changeNickName(nickName) {
   const onlineUserNickName = document.querySelector(testIds.onlineUser);
 
-  onlineUserNickName.innerText = nickNameBox.value;
+  onlineUserNickName.innerText = nickName;
+  setSessionUser(nickName);
+}
 
-  nickNameBox.value = '';
+function removeUser(nickName) {
+  const allUsers = getAllLoggedUsers();
+
+  allUsers
+    .filter((user) => user !== nickName)
+    .forEach((user) => renderUser(user));
 }
 
 document.querySelector(testIds.nickNameButton).addEventListener('click', (e) => {
   e.preventDefault();
-  changeNickName();
+  const nickNameTag = document.querySelector(testIds.nickNameBox);
+  const nickNameValue = nickNameTag.value;
+  changeNickName(nickNameValue);
+  socket.emit('userSignIn', nickNameValue);
+  nickNameTag.value = '';
 });
 
 document.querySelector(testIds.sendButton).addEventListener('click', (e) => {
@@ -99,6 +109,18 @@ socket.on('loggedUsers', (loggedUser) => {
   if (allUsers.includes(loggedUser)) return;
 
   renderUser(loggedUser);
+});
+
+socket.on('removeUser', (userNickName) => {
+  const allUsers = getAllLoggedUsers();
+
+  document.getElementById('online-user').innerHTML = '';
+
+  allUsers.forEach((user) => {
+    if (user === userNickName) return;
+
+    renderUser(user);
+  });
 });
 
 function loadMessages() {
