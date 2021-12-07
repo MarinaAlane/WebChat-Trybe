@@ -33,6 +33,10 @@
   <script>
     const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
 
+    socket.on('setUsername', (data) => {
+      sessionStorage.setItem('username', data);
+    });
+
     const saveButton = document.getElementById('save');
     saveButton.addEventListener('click', () => {
       const usernameInput = document.getElementById('username');
