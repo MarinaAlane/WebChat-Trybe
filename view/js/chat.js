@@ -15,7 +15,7 @@ const createMessage = (message) => {
   const li = document.createElement('li');
   li.innerText = message;
   messagesUl.appendChild(li);
-}
+};
 
 socket.on('serverMessage', (mensagem) => createMessage(mensagem));
 
