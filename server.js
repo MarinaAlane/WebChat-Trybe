@@ -11,6 +11,7 @@ const port = 3000;
 const server = app.listen(port, () => console.log(`Listening port ${port}`));
 
 const messages = [];
+// const user = [];
 
 const io = socketIo(server);
 
@@ -20,6 +21,6 @@ io.on('connection', (socket) => {
 
   socket.on('new_message', (data) => {
     messages.push(data);
-    socket.enit('update_messages', messages);
+    socket.emit('update_messages', messages);
   });
 });
