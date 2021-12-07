@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>webchat</title>
+    <link rel="stylesheet" href="./css/chat.css">
+  </head>
+  <body>
+    <h2 data-testid="online-user" id="nickname"></h2>
+    <form action="" class="nicknameForm">
+      <input data-testid="nickname-box" type="text" id="nicknameInput"/>
+      <button data-testid="nickname-button">Trocar seu nome</button>
+    </form>
+    <ul id="messages"></ul>
+    <form action="" id="messageForm">
+      <input id="messageInput" data-testid="message-box" autocomplete="off" />
+      <button data-testid="send-button">Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='./js/chat.js'></script>
+  </body>
+</html>
