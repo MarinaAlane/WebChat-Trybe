@@ -51,11 +51,19 @@ socket.on('user', (username) => {
   sessionStorage.setItem('username', username);
   renderNickname(username);
 });
+
 socket.on('welcomeMessage', (nickname) => createMessage(`${nickname} entrou no chat`));
+
 socket.on('message', (message) => createMessage(message));
+
 socket.on(
   'changeUserMessage',
   ({ username, newUsername }) => createMessage(`${username} trocou o nick para ${newUsername}`),
 );
-socket.on('disconnectMessage', (nickname) => createMessage(`${nickname} saiu do chat`));
+
+socket.on('disconnectMessage', (nickname) => {
+  createMessage(`${nickname} saiu do chat`);
+  sessionStorage.removeItem('username');
+});
+
 socket.on('renderUsers', (users) => renderUsers(users));

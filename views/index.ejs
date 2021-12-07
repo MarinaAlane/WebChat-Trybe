@@ -2,6 +2,9 @@
 <html>
   <head>
     <title>Webchat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js" 
+    integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
   </head>
   <body>
     <form id="nicknameForm" action="">
@@ -21,7 +24,13 @@
       <ul id="users"></ul>
     </div>
     <div>
-      <ul id="messages"></ul>
+      <ul id="messages">
+        <% messages.forEach(({ message, nickname, timestamp }) => { %>
+          <li data-testid="message">
+            <%= timestamp %> - <%= nickname %>: <%= message %>
+          </li>
+        <% }) %>
+      </ul>
     </div>
     <form id="messageForm" action="">
       <input
@@ -33,7 +42,6 @@
         Send
       </button>
     </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src='./js/chat.js'></script>
+    <script type="text/javascript" src='../js/chat.js'></script>
   </body>
 </html>

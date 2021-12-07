@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
@@ -11,14 +12,20 @@ const io = require('socket.io')(http, {
   },
 });
 
+const MessagesController = require('./controllers/MessagesController');
+
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 require('./sockets/chat')(io);
 
-app.get('/', (_req, res) => {
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
-});
+app.set('view engine', 'ejs');
 
-http.listen(3000, () => {
-  console.log('Servidor ouvindo na porta 3000');
+app.set('views', './views');
+
+app.get('/', MessagesController.getAll);
+
+const { PORT } = process.env;
+
+http.listen(PORT, () => {
+  console.log(`Servidor ouvindo na porta ${PORT}`);
 });
