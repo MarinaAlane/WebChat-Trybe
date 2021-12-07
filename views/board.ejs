@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Projeto Webchat</h1>
+    <ul id="chat"></ul>
+
+    <script>
+      const socket = io("http://localhost:3000");
+      socket.on("message", (data) => {
+        const li = document.createElement("li");
+        const liText = document.createTextNode(data);
+        li.appendChild(liText);
+        document.getElementById("chat").appendChild(li);
+      });
+    </script>
+  </body>
+</html>
