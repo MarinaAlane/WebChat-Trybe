@@ -6,7 +6,7 @@ module.exports = (io) => {
       const date = moment();
       const formatedDate = date.format('DD-MM-yyyy hh:mm:ss A');
 
-      socket.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
+      io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
     });
   });
 };
