@@ -14,7 +14,7 @@ async function connection() {
     .then((dbSchema) => {
       schema = dbSchema;
       return schema;
-    })
+    });
 }
-// commit inicial
+// commit inicial;
 module.exports = connection;
