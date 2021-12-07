@@ -2,17 +2,36 @@
 <html>
   <head>
     <title>Webchat</title>
-    <!-- <link rel="stylesheet" href="./css/chat.css"> -->
   </head>
   <body>
+    <form id="nicknameForm" action="">
+      <input
+        type="text"
+        id="nicknameInput"
+        data-testid="nickname-box"
+      />
+      <button data-testid="nickname-button">
+        Change nickname
+      </button>
+    </form>
+    <div>
+      <h3 id="user-nickname" data-testid="online-user"></h3>
+    </div>
     <div>
       <ul id="users"></ul>
     </div>
     <div>
       <ul id="messages"></ul>
     </div>
-    <form action="">
-      <input id="messageInput" autocomplete="off" /><button>Send</button>
+    <form id="messageForm" action="">
+      <input
+        id="messageInput"
+        autocomplete="off"
+        data-testid="message-box"
+      />
+      <button data-testid="send-button">
+        Send
+      </button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/chat.js'></script>
