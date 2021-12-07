@@ -1,13 +1,15 @@
 const express = require('express');
+
 const app = express();
 const http = require('http').createServer(app);
 const cors = require('cors');
-const { showChat } = require('./controllers/chatController');
+const socketIo = require('socket.io');
 const path = require('path');
+const { showChat } = require('./controllers/chatController');
 
 const PORT = 3000;
 
-const io = require('socket.io')(http, {
+const io = socketIo(http, {
   cors: {
     origin: `http://localhost:${PORT}`,
     method: ['GET', 'POST'],
@@ -16,7 +18,7 @@ const io = require('socket.io')(http, {
 
 app.use(cors());
 
-app.use(express.static(__dirname + '/views'));
+app.use(express.static(path.join(__dirname, '/views')));
 
 app.set('view engine', 'ejs');
 
