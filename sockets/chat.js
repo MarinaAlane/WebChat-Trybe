@@ -1,21 +1,15 @@
-function NOW() {
-  const date = new Date();
-  const yyyy = date.getUTCFullYear();
-  let dd = date.getUTCDate();
-  let mm = (date.getUTCMonth() + 1);
+function nowTime() {
+  let today = new Date();
 
-  if (dd < 10) {
-    dd = `0${dd}`;
-  }
+  let hours = today.getUTCHours();
+  let minutes = today.getUTCMinutes();
+  let seconds = today.getUTCSeconds();
 
-  if (mm < 10) {
-    mm = `0${mm}`;
-  }
-  const currentDay = `${dd}-${mm}-${yyyy}`;
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
 
-  let hours = date.getUTCHours();
-  let minutes = date.getUTCMinutes();
-  let seconds = date.getUTCSeconds();
+  today = `${mm}-${dd}-${yyyy}`;
 
   if (hours < 10) {
     hours = `0${hours}`;
@@ -29,14 +23,14 @@ function NOW() {
     seconds = `0${seconds}`;
   }
 
-  return `${currentDay} ${hours}:${minutes}:${seconds}`;
+  return `${today} ${hours}:${minutes}:${seconds}`;
 }
 
 module.exports = (io) => io.on('connection', (socket) => {
   socket.on('message', (payload) => {
     console.log(`Mensagem ${payload.chatMessage}`);
     
-    const timestamp = NOW();
+    const timestamp = nowTime();
     console.log(timestamp);
 
     const chatMessage = `${timestamp} - ${payload.nickname}: ${payload.chatMessage}`;
