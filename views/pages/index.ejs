@@ -9,10 +9,11 @@
 </head>
 <body>
   <main>
+    <h1>Wellcome, <span id="nickname" data-testid="online-user"></span></h1>
     <section class="upper-container">
       <section class="user-info-container">
         <section class="username-container">
-          <input type="text" name="username" id="username" placeholder="Type your username here">
+          <input type="text" name="username" id="username" placeholder="Type your username here" data-testid="nickname-box">
           <button type="button" id="save">Save</button>
         </section>
         <section class="users-container">
@@ -24,8 +25,8 @@
       </section>
     </section>
     <section class="lower-container">
-      <input type="text" name="message" id="message" placeholder="Type your message here">
-      <button type="button" id="send">Send</button>
+      <input type="text" name="message" id="message" placeholder="Type your message here" data-testid="message-box" data-testid="nickname-button">
+      <button type="button" id="send" data-testid="send-button">Send</button>
     </section>
   </main>
 
@@ -33,7 +34,14 @@
   <script>
     const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
 
+    const setNickname = (nickname) => {
+      const nicknameSpan = document.getElementById('nickname');
+      nicknameSpan.innerText = nickname;
+    };
+
     socket.on('setUsername', (data) => {
+      setNickname(data);
+
       sessionStorage.setItem('username', data);
     });
 
@@ -41,6 +49,7 @@
     saveButton.addEventListener('click', () => {
       const usernameInput = document.getElementById('username');
 
+      setNickname(usernameInput.value);
       sessionStorage.setItem('username', usernameInput.value);
 
       usernameInput.value = '';
@@ -61,6 +70,7 @@
       const sentMessagesUl = document.getElementById('sent-messages');
 
       const newLi = document.createElement('li');
+      newLi.dataset.testId = 'message';
       newLi.append(data);
 
       sentMessagesUl.append(newLi);
