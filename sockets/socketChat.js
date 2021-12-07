@@ -1,17 +1,7 @@
 const moment = require('moment');
+const formatUser = require('./formatNickName');
 
 const time = moment().format('DD-MM-YYYY hh:mm:ss A');
-
-function formatUser(randNameId, message) {
-  let nickNameUser = '';
-
-  if (!message.nickname) {
-    nickNameUser = randNameId;
-  } else {
-    nickNameUser = message.nickname;
-  }
-  return nickNameUser;
-}
 
 module.exports = (io) =>
   io.on('connection', (socket) => {
