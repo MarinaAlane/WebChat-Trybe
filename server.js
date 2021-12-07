@@ -12,8 +12,8 @@ app.get('/', (_req, res) => {
   res.sendFile(`${__dirname}/index.html`);
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+io.on('connection', () => {
+  console.log('new connection');
 });
 
 const PORT = process.env.PORT || 3000;
