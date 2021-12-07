@@ -48,10 +48,13 @@ const updateUsers = (users) => {
   const usersList = document.querySelector('#users');
   usersList.innerHTML = '';
   users.forEach((user) => {
-    const li = document.createElement('li');
-    li.innerText = user;
-    li.setAttribute('data-testid', 'online-user');
-    usersList.appendChild(li);
+    const nickname = sessionStorage.getItem('nickname');
+    if (user !== nickname) {
+      const li = document.createElement('li');
+      li.innerText = user;
+      li.setAttribute('data-testid', 'online-user');
+      usersList.appendChild(li);
+    }
   });
 };
 
