@@ -1,5 +1,6 @@
+require('dotenv').config({ path: '../../../.env' });
+
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
 
 let schema = null;
 
