@@ -1,19 +1,19 @@
 body {
-  padding: 4em;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  display: flex;
   gap: 4em;
+  justify-content: center;
+  padding: 4em;
 }
 
 .nameuser {
-  width: 300px;
-  height: 50px;
-  border: 1px solid #ccc;
-  margin-bottom: 2em;
-  display: flex;
   align-items: center;
+  border: 1px solid #ccc;
+  display: flex;
+  height: 50px;
   justify-content: center;
+  margin-bottom: 2em;
+  width: 300px;
 }
 
 .nickname-button {
@@ -21,33 +21,33 @@ body {
 }
 
 .nickname-box {
-  width: 200px;
   height: 30px;
+  width: 200px;
 }
 
 .online-user {
-  width: 300px;
-  height: 70vh;
   border: 1px solid #ccc;
+  height: 70vh;
+  width: 300px;
 }
 
 .messages {
-  width: 600px;
-  height: 68vh;
   border: 1px solid #ccc;
+  height: 68vh;
   margin-bottom: 2em;
+  width: 600px;
 }
 
 .box-sendmsg {
-  display: flex;
   align-items: center;
-  justify-content: center;
+  display: flex;
   gap: 1em;
+  justify-content: center;
 }
 
 .message-box {
-  width: 80%;
   height: 8vh;
+  width: 80%;
 }
 
 .send-message {
