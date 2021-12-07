@@ -1,0 +1,35 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.user-form {
+  display: flex;
+}
+
+.form-message {
+  display: flex;
+}
+
+.container {
+  display: flex;
+  text-align: center;
+}
+
+.users-container {
+  margin: 0 auto;
+  width: 40%;
+  list-style: none;
+  border: 1px black solid;
+}
+
+.messages-container {
+  margin: 0 auto;
+  width: 40%;
+  border: 1px black solid;
+}
+
+li {
+  list-style: none;
+}
