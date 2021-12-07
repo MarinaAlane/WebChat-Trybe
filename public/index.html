@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webchat</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <form id="chat">
+    <input type="text" name="username" placeholder="Digite o seu usuário">
+    <div class="container">
+      <div class="onlineUsers"></div>
+      <div class="messages"></div>
+    </div>
+    <input type="text" name="message" placeholder="Digite sua mensagem">
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script type="text/javascript">
+    const socket = io('http://localhost:3000');
+
+    function renderMessage(message) {
+      const divMessages = document.querySelector('.messages');
+      const p = document.createElement('p');
+      divMessages.append(message, p);
+    }
+
+    socket.on('previousMessages', (messages) => {
+      messages.forEach((message) => {
+        renderMessage(message);
+      });
+    });
+
+    socket.on('message', (message) => {
+      renderMessage(message);
+    });
+
+    const formChat = document.querySelector('#chat');
+
+    formChat.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const author = document.querySelector('input[name="username"]').value;
+
+      const message = document.querySelector('input[name="message"]').value;
+      
+      if (author.length && message.length) {
+        const messageObject = {
+          chatMessage: message,
+          nickname: author,
+        };
+        
+        renderMessage(messageObject);
+
+        socket.emit('message', messageObject);
+      }
+    });
+  </script>
+</body>
+</html>
