@@ -41,4 +41,7 @@ const createMessage = (message) => {
 
 socket.on('message', (message) => createMessage(message));
 
-socket.on('userLoggedIn', (message) => createUserList(message));
+socket.on('userLoggedIn', (message) => {
+  
+  createUserList(message);
+});
