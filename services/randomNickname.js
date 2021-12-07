@@ -174,5 +174,3 @@ const getRandomNickName = () => {
 };
 
 module.exports = { getRandomNickName };
-
-console.log(getRandomNickName());
