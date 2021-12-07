@@ -16,10 +16,11 @@ const server = app.listen(port, () => console.log(`Example app listening on port
 const io = socketIo(server);
 
 io.on('connection', (socket) => {
-  console.log('connectou');
-  socket.on('conect', ({ nickname }) => {
-    console.log(nickname);
-    socket.emit('login_user', nickname);
+  socket.on('user_connect', ({ nickname }) => {
+    socket.broadcast.emit('login_user', nickname);
+    socket.emit('logged_user', nickname);
   });
-  // socket.emit('login_message');
+  socket.on('send-message', (obj) => {
+    io.emit('message_user', obj);
+  });
 });
