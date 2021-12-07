@@ -11,7 +11,8 @@ const newUser = (io, socket, name) => {
 };
 
 const renameUser = (io, socket, name, newNickname) => {
-  users.splice(users.indexOf(name), 1, newNickname);
+  users.splice(users.indexOf(name), 1);
+  users.push(newNickname);
   socket.emit('serverMessage', { message: `Bem vindo ${newNickname}!`, name: newNickname });
   socket.broadcast.emit('serverMessage', `${name} alterado para ${newNickname}!`);
   io.emit('users', users);
