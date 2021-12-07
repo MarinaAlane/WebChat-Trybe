@@ -1,29 +1,17 @@
 function nowTime() {
   let today = new Date();
 
-  let hours = today.getUTCHours();
-  let minutes = today.getUTCMinutes();
-  let seconds = today.getUTCSeconds();
+  const hours = String(today.getUTCHours()).padStart(2, '0');
+  const minutes = String(today.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(today.getUTCSeconds()).padStart(2, '0');
 
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const yyyy = today.getFullYear();
 
-  today = `${mm}-${dd}-${yyyy}`;
+  today = `${mm}-${dd}-${yyyy} ${hours}:${minutes}:${seconds}`;
 
-  if (hours < 10) {
-    hours = `0${hours}`;
-  }
-
-  if (minutes < 10) {
-    minutes = `0${minutes}`;
-  }
-
-  if (seconds < 10) {
-    seconds = `0${seconds}`;
-  }
-
-  return `${today} ${hours}:${minutes}:${seconds}`;
+  return today;
 }
 
 module.exports = (io) => io.on('connection', (socket) => {
