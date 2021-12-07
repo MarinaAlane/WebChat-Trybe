@@ -17,9 +17,9 @@ section {
 .users {
   border: 1px solid black;
   border-radius: 5px;
-  width: 250px;
   height: 100%;
   padding-left: 10px;
+  width: 250px;
 }
 
 .login {
@@ -30,9 +30,9 @@ section {
 #messages {
   border: 1px solid black;
   border-radius: 5px;
-  width: 750px;
   height: 80vh;
   padding: 10px;
+  width: 750px;
 }
 
 li {
@@ -47,8 +47,8 @@ li {
 
 .input-message {
   border: 1px solid black;
-  width: 66vw;
   height: 30px;
+  width: 66vw;
 }
 
 .container-message {
