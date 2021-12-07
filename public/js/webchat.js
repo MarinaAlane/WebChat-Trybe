@@ -3,7 +3,7 @@ const socket = window.io();
 const formMessage = document.querySelector('#messageForm');
 const inputMessage = document.querySelector('#messageInput');
 
-const formNickname = document.querySelector('#nicknameForm');
+const formNickname = document.querySelector('.nicknameForm');
 const inputNickname = document.querySelector('#nicknameInput');
 
 const userNickname = document.querySelector('#nickname');
