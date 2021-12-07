@@ -59,7 +59,15 @@
       // Ouve quando novos cliente se conectarem e faz lógicas com isso para renderizar somente o necessário
       socket.on("newUserConnection", (users) => {
         document.getElementById('users-online').innerHTML = ''
-        users.map((user) => {
+        const sortedUsers = [];
+        users.forEach((user) => { // Lógica para arrumar o array de usuários para gerar as li onde o cliente deve se ver como first
+          if (user === newUserName) {
+            sortedUsers.unshift(user)
+          } else {
+            sortedUsers.push(user)
+          }
+        })
+        sortedUsers.map((user) => {
           const li = document.createElement("li");
           const liText = document.createTextNode(
             `${user}`
