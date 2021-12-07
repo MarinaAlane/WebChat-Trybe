@@ -21,19 +21,27 @@
   <script type="text/javascript">
     var socket = io('http://localhost:3000');
 
+    function renderMessage(message) {
+      var html = '<div class="message"><strong>' + message.nickname + '</strong>: ' + message.chatMessage + '</div>';
+      $('.messages').append(html);
+    }
+
+    socket.on('message', function(message) {
+      renderMessage(message);
+    });
+
     $('#chatForm').submit(function(e){
       e.preventDefault();
 
       var nickname = $('input[name=nickname]').val();
-      var message = $('input[name=messages]').val();
+      var chatMessage = $('input[name=messages]').val();
 
-      if (nickname != '' && message != '') {
-       var messageObject = {
-        nickname: nickname,
-        chatMessage: message
-       };
+      if (nickname != '' && chatMessage != '') {
 
-       socket.emit('message', messageObject);
+       socket.emit('message', {
+        chatMessage: chatMessage,
+        nickname: nickname
+       });
       }
     });
     
