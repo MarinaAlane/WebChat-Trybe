@@ -2,6 +2,7 @@
 
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -9,14 +10,20 @@ const server = http.createServer(app);
 const io = new Server(server);
 const { createMessage } = require('./middleware/manageMessage');
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
+  res.render(`${__dirname}/views/index`);
 });
 
 io.on('connection', (socket) => {
   socket.on('message', (msg) => {
     const message = createMessage(msg);
     io.emit('message', message);
+  });
+  socket.on('connectUser', (msg) => {
+    io.emit('connectUser', msg);
   });
 });
 
