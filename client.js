@@ -6,3 +6,9 @@ client.on('ping', () => {
   client.emit('pong');
   console.log('ping recebido');
 });
+
+client.on('message', console.log);
+
+process.stdin.on('data', (data) => {
+  client.emit('message', { chatMessage: data.toString(), nickname: 'jest mctest' });
+});
