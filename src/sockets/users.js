@@ -1,5 +1,9 @@
 module.exports = (io) => io.on('connection', (socket) => {
-  let userNickName = '';
+  let userNickName = (socket.id).substr(4);
+
+  socket.on('nickName', () => {
+    socket.emit('nickName', userNickName);
+  });
 
   socket.on('userSignIn', (nickName) => {
     userNickName = nickName;

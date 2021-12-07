@@ -22,12 +22,6 @@ function setSessionUser(nickName) {
   sessionStorage.setItem('webChatUser', nickName);
 }
 
-function randomNickNameUser() {
-  const nickName = (Math.floor(Math.random() * 10 ** 16)).toString();
-  setSessionUser(nickName);
-  return nickName;
-}
-
 function renderUser(nickName) {
   const onlineUsersUl = document.getElementById(onlineUserId);
   const li = document.createElement('li');
@@ -46,10 +40,16 @@ function getAllLoggedUsers() {
   return allUsers;
 }
 
+function requestNickName() {
+  socket.emit('nickName');
+}
+
 function renderNickName() {
-  const nickName = randomNickNameUser();
-  renderUser(nickName);
-  socket.emit('userSignIn', nickName);
+  socket.on('nickName', (userNickName) => {
+    setSessionUser(userNickName);
+    renderUser(userNickName);
+    socket.emit('userSignIn', userNickName);
+  });
 }
 
 function renderMessageList(message) {
@@ -143,6 +143,7 @@ function loadMessages() {
 
 /* Running function on page load: https://developer.mozilla.org/pt-BR/docs/Web/API/GlobalEventHandlers/onload */
 window.onload = () => {
+  requestNickName();
   renderNickName();
   loadMessages();
 };
