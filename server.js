@@ -11,10 +11,14 @@ const io = require('socket.io')(http, {
 });
 
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id}`);
+  socket.emit('id', { id: socket.id });
 
-  socket.on('message', ({ message }) => {
-    console.log(`${socket.id} emitiu um ping!`);
+  socket.on('message', ({ nickname, chatMessage }) => {
+    const date = new Date()
+      .toLocaleString('en-GB')
+      .replace(/\//g, '-')
+      .replace(/,/, '');
+    io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
 });
 
