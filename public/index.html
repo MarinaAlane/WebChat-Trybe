@@ -2,17 +2,26 @@
 <html>
   <head>
     <title>Socket.IO - trybe</title>
-    <link rel="stylesheet" href="./css/chat.css">
+    <!-- <link rel="stylesheet" href="./css/chat.css"> -->
   </head>
   <body>
+    <ul class="users"></ul>
     <ul class="messages"></ul>
-    <form action="">
+    <form class="message-form" action="">
       <input
         id="messageInput"
         autocomplete="off"
         data-testid="message-box"
       />
       <button data-testid="send-button">Send</button>
+    </form>
+    <form class="user-form" action="">
+      <input
+        id="usernameInput"
+        autocomplete="off"
+        data-testid="nickname-box"
+      />
+      <button data-testid="nickname-button">Change nickname</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/chat.js'></script>
