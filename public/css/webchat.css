@@ -4,15 +4,15 @@
   padding: 0;
 }
 
-/* body {
-  font: 13px Helvetica, Arial;
-} */
+body {
+  display: flex;
+  flex-direction: column;
+}
 
 form {
   background: black;
   bottom: 0;
   padding: 3px;
-  position: fixed;
   width: 100%;
 }
 
@@ -29,6 +29,10 @@ form button {
   cursor: pointer;
   padding: 10px;
   width: 9%;
+}
+
+#nicknameForm {
+  margin-bottom: 89vh;
 }
 
 /*
