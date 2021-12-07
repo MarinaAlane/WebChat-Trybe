@@ -15,7 +15,7 @@ io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 });
 
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/`));
 
 http.listen(3000, () => {
   console.log('Servidor on na porta 3000');

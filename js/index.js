@@ -5,7 +5,7 @@ const inputMessage = document.querySelector('#messageInput');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('message', inputMessage.value);
+  socket.emit('message', { chatMessage: inputMessage.value, nickname: socket.id });
   inputMessage.value = '';
   return false;
 });
@@ -19,4 +19,6 @@ const createMessage = (message) => {
 
 socket.on('messageServer', (message) => createMessage(message));
 
-socket.on('message', (message) => createMessage(message.chatMessage));
+socket.on('message', (message) => {
+  createMessage(message);
+});

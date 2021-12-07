@@ -6,7 +6,7 @@ const dateGenerator = () => {
   const hour = date.getHours();
   const min = date.getMinutes();
   const seg = date.getSeconds();
-  return `${day}/${month}/${year} ${hour}:${min}:${seg} -`;
+  return `${day}-${month}-${year} ${hour}:${min}:${seg}`;
 };
 
 module.exports = {
