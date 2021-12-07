@@ -24,11 +24,13 @@
 
     </div>
     <div class="box-sendmsg">
-      <textarea name="message-box " data-testid="message-box" class="message-box"></textarea>
-      <button data-testid="send-button" class="send-message">Enviar</button>
+      <textarea name="message-box " data-testid="message-box" id="message-box" data-testid="message-box" class="message-box"></textarea>
+      <button data-testid="send-button" class="send-message" id="send-message">Enviar</button>
     </div>
   </section>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/chat.js"></script>
 </body>
-<script src="./scripts"></script>
 
 </html>
