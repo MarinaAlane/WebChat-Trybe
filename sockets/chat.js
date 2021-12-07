@@ -1,11 +1,14 @@
 const utils = require('../utils/functions');
 
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.emit('serverMessage', 'Coconut Straw diz: Converse sem grampos - tecnologia Socket.io.');
+  socket.emit('messageServer', 'Coconut Straw diz: Converse sem grampos - tecnologia Socket.io.');
 
-  socket.on('clientMessage', (message) => {
-    console.log(`Mensagem ${message}`);
+  socket.on('message', (message) => {
+    const userMessage = { chatMessage: `${utils.dateGenerator()} ${socket.id}: ${message}`, 
+      nickname: socket.id };
+
+    console.log(userMessage);
   
-    io.emit('serverMessage', `${utils.dateGenerator()} ${socket.id} diz: ${message}`);
+    io.emit('message', userMessage);
   });
 });
