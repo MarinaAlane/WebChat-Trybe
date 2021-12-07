@@ -33,16 +33,13 @@
     $('#chatForm').submit(function(e){
       e.preventDefault();
 
-      var nickname = $('input[name=nickname]').val();
-      var chatMessage = $('input[name=messages]').val();
+      var inputNickname = $('input[name=nickname]').val();
+      var inputMessage = $('input[name=messages]').val();
 
-      if (nickname != '' && chatMessage != '') {
+      socket.emit('message', { chatMessage: inputMessage, nickname: inputNickname });
 
-       socket.emit('message', {
-        chatMessage: chatMessage,
-        nickname: nickname
-       });
-      }
+      $('input[name=messages]').val('');
+
     });
     
   </script>
