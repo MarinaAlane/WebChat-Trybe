@@ -1,22 +1,29 @@
 const socket = window.io();
 
-const form = document.querySelector('form');
+const btnSendMessage = document.querySelector('#sendMessage');
 const inputMessage = document.querySelector('#messageInput');
+const btnSaveNickname = document.querySelector('#saveNickname');
+const nicknameInp = document.querySelector('#nicknameInput');
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  socket.emit('clientMessage', inputMessage.value);
-  inputMessage.value = '';
-  return false;
+let currentNickname = 'Sem nome';
+
+btnSaveNickname.addEventListener('click', () => {
+  currentNickname = nicknameInp.value;
 });
 
-const createMessage = (message) => {
+btnSendMessage.addEventListener('click', () => {
+  socket.emit('message', {
+    chatMessage: inputMessage.value,
+    nickname: currentNickname,
+  });
+  inputMessage.value = '';
+});
+
+const createMessage = (chatMessage) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
-  li.innerText = message;
+  li.innerText = chatMessage;
   messagesUl.appendChild(li);
 };
 
-socket.on('serverMessage', (mensagem) => createMessage(mensagem));
-
-// socket.on('pong', (mensagem) => createMessage(mensagem));
+socket.on('message', (chatMessage) => createMessage(chatMessage));
