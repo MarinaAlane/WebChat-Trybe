@@ -1,33 +1,25 @@
 const express = require('express');
+const path = require('path');
+const socketIo = require('socket.io');
 
 const app = express();
-const http = require('http').createServer(app);
-const cors = require('cors');
 
-const io = require('socket.io')(http, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['POST', 'GET'],
-  },
-});
-
-const ChatController = require('./controllers/ChatController');
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 const port = 3000;
 
-app.use(cors());
+const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-app.get('/', (req, res) => {
-  res.status(200).json({ ok: true });
-});
+const messages = [];
 
-app.use('/', ChatController);
+const io = socketIo(server);
 
-const messages = io.on('connection', (socket) => {
-  socket.on('userConnect', ({ name }) => {
-    console.log(`${name} se conectou`);
-    io.emit('connectingUser', `${name} se conectou`);
+io.on('connection', (socket) => {
+  console.log('new connection');
+  socket.emit('update_messages', messages);
+
+  socket.on('new_message', (data) => {
+    messages.push(data);
+    socket.emit('update_messages', messages);
   });
 });
-
-http.listen(port, () => console.log(`Example app listening on port ${port}!`));
