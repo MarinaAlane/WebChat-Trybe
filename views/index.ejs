@@ -20,16 +20,17 @@
 
     <script>
       const socket = io("http://localhost:3000");
+      //Lógica para enviar mensagem para o socket.io no backend
       // https://gist.github.com/6174/6062387
-      const newUserName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(8, 15)
-
+      const newUserName = Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 7)
       const btnSendMessage = document.getElementById('send-message-button')
       const inputMessage = document.getElementById('input-message')
       btnSendMessage.addEventListener('click', () => {
         socket.emit('message', { chatMessage: inputMessage.value, nickname: newUserName } )
         inputMessage.value = ''
       })
-
+      
+      // Criando lógica para atualizar o nome do usuário
       const btnAddNickname = document.getElementById('nickname-button')
       const inputNickname = document.getElementById('nickname-box')
       btnAddNickname.addEventListener('click', () => {
@@ -37,6 +38,7 @@
         inputNickname.value = ''
       })
 
+      //Ouvindo as mensagen enviadas pelos clientes para poder criar o chat
       socket.on("message", (data) => {
         const li = document.createElement("li");
         const liText = document.createTextNode(
@@ -49,8 +51,10 @@
         document.getElementById("chat-message").appendChild(li);
       });
 
+      //enviar que um novo cliente entrou
       socket.emit('newUserConnection', { nickname: newUserName })
 
+      // Ouve quando novos cliente se conectarem e faz lógicas com isso para renderizar somente o necessário
       socket.on("newUserConnection", (users) => {
         if (users[users.length -1] === newUserName) {
           users.map((user) => {
@@ -59,9 +63,11 @@
               `${user}`
             );
             li.appendChild(liText);
-            const liDataTestId = document.createAttribute('data-testid')
-            liDataTestId.value = 'online-user'
-            li.setAttributeNode(liDataTestId)
+            if (user === newUserName) { // aqui é para que só seja adicionado o testid no usuário local
+              const liDataTestId = document.createAttribute('data-testid')
+              liDataTestId.value = 'online-user'
+              li.setAttributeNode(liDataTestId)
+            }
             document.getElementById("users-online").appendChild(li);
           })
         } else {
@@ -70,9 +76,9 @@
             `${users[users.length -1]}`
           );
           li.appendChild(liText);
-          const liDataTestId = document.createAttribute('data-testid')
-          liDataTestId.value = 'online-user'
-          li.setAttributeNode(liDataTestId)
+          // const liDataTestId = document.createAttribute('data-testid')
+          // liDataTestId.value = 'online-user'
+          // li.setAttributeNode(liDataTestId)
           document.getElementById("users-online").appendChild(li);
         }
       });
