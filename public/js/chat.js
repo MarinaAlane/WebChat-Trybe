@@ -5,6 +5,7 @@ const nicknameInput = document.querySelector('#nicknameInput');
 const nicknameContainer = document.querySelector('#user-nickname');
 const messageForm = document.querySelector('#messageForm');
 const inputMessage = document.querySelector('#messageInput');
+const usersContainer = document.querySelector('#users');
 
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -36,6 +37,15 @@ const createMessage = (message) => {
 
 const renderNickname = (nickname) => { nicknameContainer.innerText = nickname; };
 
+const renderUsers = (users) => {
+  let usersHtml = '';
+  users.forEach((user) => {
+    if (user === sessionStorage.getItem('username')) return;
+    usersHtml = `${usersHtml}<li data-testid="online-user">${user}</li>`;
+  });
+  usersContainer.innerHTML = usersHtml;
+};
+
 socket.on('user', (username) => {
   sessionStorage.removeItem('username');
   sessionStorage.setItem('username', username);
@@ -48,3 +58,4 @@ socket.on(
   ({ username, newUsername }) => createMessage(`${username} trocou o nick para ${newUsername}`),
 );
 socket.on('disconnectMessage', (nickname) => createMessage(`${nickname} saiu do chat`));
+socket.on('renderUsers', (users) => renderUsers(users));
