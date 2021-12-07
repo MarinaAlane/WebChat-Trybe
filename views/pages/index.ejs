@@ -7,9 +7,30 @@
   <title>Webchat Project</title>
 </head>
 <body>
+  <main>
+    <section>
+      <section>
+        <section>
+          <input type="text" name="username" id="username" placeholder="Type your username here">
+          <button type="button" id="save">Save</button>
+        </section>
+        <section>
+          <ul id="logged-users"></ul>
+        </section>
+      </section>
+      <section>
+        <ul id="sent-messages"></ul>
+      </section>
+    </section>
+    <section>
+      <input type="text" name="message" id="message" placeholder="Type your message here">
+      <button type="button" id="send">Send</button>
+    </section>
+  </main>
+
   <script src="./socket.io/socket.io.js"></script>
   <script>
-    const socket = io('http://localhost:3000');
+    const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
   </script>
 </body>
 </html>
