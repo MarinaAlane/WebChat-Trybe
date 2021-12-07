@@ -20,9 +20,10 @@
 
     <script>
       const socket = io("http://localhost:3000");
+      
       //Lógica para enviar mensagem para o socket.io no backend
       // https://gist.github.com/6174/6062387
-      const newUserName = Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 7)
+      let newUserName = Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 7)
       const btnSendMessage = document.getElementById('send-message-button')
       const inputMessage = document.getElementById('input-message')
       btnSendMessage.addEventListener('click', () => {
@@ -35,6 +36,7 @@
       const inputNickname = document.getElementById('nickname-box')
       btnAddNickname.addEventListener('click', () => {
         socket.emit('updateNickname', { oldNickname: newUserName, newNickname: inputNickname.value } )
+        newUserName = inputNickname.value
         inputNickname.value = ''
       })
 
