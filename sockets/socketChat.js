@@ -4,8 +4,20 @@ const time = moment().format('DD-MM-YYYY hh:mm:ss A');
 
 module.exports = (io) =>
   io.on('connection', (socket) => {
+    const randNameId = socket.id.slice(0, -4);
+
+    io.emit('userOnline', randNameId);
+
     socket.on('message', async (message) => {
-      const formatMessage = `${time} - ${message.nickname}: ${message.chatMessage}`;
-      io.emit('message', formatMessage);
+      let nickNameUser = '';
+
+      if (!message.nickname) {
+        nickNameUser = randNameId;
+      } else {
+        nickNameUser = message.nickname;
+      }
+
+      const formatMessage = `${time} - ${nickNameUser}: ${message.chatMessage}`;
+      io.emit('message', formatMessage, nickNameUser);
     });
   });
