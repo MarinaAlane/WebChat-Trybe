@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <input data-testid="nickname-box" placeholder="Insira seu apelido" id="nickname-box" type="text">
+    <button data-testid="nickname-button" id="nickname-button">Salvar</button>
+    <h3>Usuários Conectados</h3>
+    <ul id="users-online">
+      
+    </ul>
+
+    <h3>Mensagems Trocadas</h3>
+    <ul id="chat-message">
+      
+    </ul>
+    <input data-testid="message-box" id='input-message' type="text">
+    <button data-testid="send-button" id='send-message-button'>Enviar</button>
+
+    <script>
+      const socket = io("http://localhost:3000");
+      // https://gist.github.com/6174/6062387
+      const newUserName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(8, 15)
+
+      const btnSendMessage = document.getElementById('send-message-button')
+      const inputMessage = document.getElementById('input-message')
+      btnSendMessage.addEventListener('click', () => {
+        socket.emit('message', { chatMessage: inputMessage.value, nickname: newUserName } )
+        inputMessage.value = ''
+      })
+
+      const btnAddNickname = document.getElementById('nickname-button')
+      const inputNickname = document.getElementById('nickname-box')
+      btnAddNickname.addEventListener('click', () => {
+        socket.emit('updateNickname', { oldNickname: newUserName, newNickname: inputNickname.value } )
+        inputNickname.value = ''
+      })
+
+      socket.on("message", (data) => {
+        const li = document.createElement("li");
+        const liText = document.createTextNode(
+          `${data}`
+        );
+        li.appendChild(liText);
+        const liDataTestId = document.createAttribute('data-testid')
+        liDataTestId.value = 'message'
+        li.setAttributeNode(liDataTestId)
+        document.getElementById("chat-message").appendChild(li);
+      });
+
+      socket.emit('newUserConnection', { nickname: newUserName })
+
+      socket.on("newUserConnection", (users) => {
+        if (users[users.length -1] === newUserName) {
+          users.map((user) => {
+            const li = document.createElement("li");
+            const liText = document.createTextNode(
+              `${user}`
+            );
+            li.appendChild(liText);
+            const liDataTestId = document.createAttribute('data-testid')
+            liDataTestId.value = 'online-user'
+            li.setAttributeNode(liDataTestId)
+            document.getElementById("users-online").appendChild(li);
+          })
+        } else {
+          const li = document.createElement("li");
+          const liText = document.createTextNode(
+            `${users[users.length -1]}`
+          );
+          li.appendChild(liText);
+          const liDataTestId = document.createAttribute('data-testid')
+          liDataTestId.value = 'online-user'
+          li.setAttributeNode(liDataTestId)
+          document.getElementById("users-online").appendChild(li);
+        }
+      });
+    </script>
+  </body>
+</html>
