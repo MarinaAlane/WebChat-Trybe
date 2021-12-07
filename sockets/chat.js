@@ -3,26 +3,27 @@ const messagesModel = require('../models/messagesModel');
 
 const users = [];
 
-const serverMessage = (io, socket, name, newNickname) => {
-  if (newNickname) {
-    users.splice(users.indexOf(name), 1, newNickname);
-    socket.emit('serverMessage', { message: `Bem vindo ${newNickname}!`, name: newNickname });
-    socket.broadcast.emit('serverMessage', `${name} alterado para ${newNickname}!`);
-  } else {
-    users.push(name);
-    socket.emit('serverMessage', { message: `Bem vindo ${name}!`, name });
-    socket.broadcast.emit('serverMessage', `${name} acabou de entrar!`);
-  }
+const newUser = (io, socket, name) => {
+  users.push(name);
+  socket.emit('serverMessage', { message: `Bem vindo ${name}!`, name });
+  socket.broadcast.emit('serverMessage', `${name} acabou de entrar!`);
+  io.emit('users', users);
+};
+
+const renameUser = (io, socket, name, newNickname) => {
+  users.splice(users.indexOf(name), 1, newNickname);
+  socket.emit('serverMessage', { message: `Bem vindo ${newNickname}!`, name: newNickname });
+  socket.broadcast.emit('serverMessage', `${name} alterado para ${newNickname}!`);
   io.emit('users', users);
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
     let name = (socket.id).substr(4);
 
-    serverMessage(io, socket, name);
+    newUser(io, socket, name);
 
     socket.on('serverMessage', (newNickname) => {
-      serverMessage(io, socket, name, newNickname);
+      renameUser(io, socket, name, newNickname);
       name = newNickname;
     });
 
