@@ -1,10 +1,20 @@
-const testIds = {
-  onlineUser: '[data-testid="online-user"]',
-  messageBox: '[data-testid="message-box"]',
-  nickNameBox: '[data-testid="nickname-box"]',
-  nickNameButton: '[data-testid="nickname-button"]',
-  sendButton: '[data-testid="send-button"]',
+const selectors = {
+  testIds: {
+    onlineUser: '[data-testid="online-user"]',
+    messageBox: '[data-testid="message-box"]',
+    nickNameBox: '[data-testid="nickname-box"]',
+    nickNameButton: '[data-testid="nickname-button"]',
+    sendButton: '[data-testid="send-button"]',
+  },
+  ids: {
+    onlineUserId: 'online-user',
+  },
 };
+
+const {
+  testIds: { onlineUser, messageBox, nickNameBox, nickNameButton, sendButton },
+  ids: { onlineUserId },
+} = selectors;
 
 const socket = window.io();
 
@@ -19,9 +29,9 @@ function randomNickNameUser() {
 }
 
 function renderUser(nickName) {
-  const onlineUsersUl = document.getElementById('online-user');
+  const onlineUsersUl = document.getElementById(onlineUserId);
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute('data-testid', onlineUserId);
   li.innerText = nickName;
 
   onlineUsersUl.appendChild(li);
@@ -30,7 +40,7 @@ function renderUser(nickName) {
 function getAllLoggedUsers() {
   const allUsers = [];
 
-  document.querySelectorAll(testIds.onlineUser)
+  document.querySelectorAll(onlineUser)
     .forEach((child) => allUsers.push(child.innerText));
 
   return allUsers;
@@ -52,37 +62,29 @@ function renderMessageList(message) {
 }
 
 function sendNewMessage() {
-  const nickname = document.querySelector(testIds.onlineUser).innerText;
-  const chatMessage = document.querySelector(testIds.messageBox).value;
+  const nickname = document.querySelector(onlineUser).innerText;
+  const chatMessage = document.querySelector(messageBox).value;
   socket.emit('message', { chatMessage, nickname });
-  document.querySelector(testIds.messageBox).value = '';
+  document.querySelector(messageBox).value = '';
 }
 
 function changeNickName(nickName) {
-  const onlineUserNickName = document.querySelector(testIds.onlineUser);
+  const onlineUserNickName = document.querySelector(onlineUser);
 
   onlineUserNickName.innerText = nickName;
   setSessionUser(nickName);
 }
 
-function removeUser(nickName) {
-  const allUsers = getAllLoggedUsers();
-
-  allUsers
-    .filter((user) => user !== nickName)
-    .forEach((user) => renderUser(user));
-}
-
-document.querySelector(testIds.nickNameButton).addEventListener('click', (e) => {
+document.querySelector(nickNameButton).addEventListener('click', (e) => {
   e.preventDefault();
-  const nickNameTag = document.querySelector(testIds.nickNameBox);
+  const nickNameTag = document.querySelector(nickNameBox);
   const nickNameValue = nickNameTag.value;
   changeNickName(nickNameValue);
-  socket.emit('userSignIn', nickNameValue);
+  socket.emit('updateUserName', nickNameValue);
   nickNameTag.value = '';
 });
 
-document.querySelector(testIds.sendButton).addEventListener('click', (e) => {
+document.querySelector(sendButton).addEventListener('click', (e) => {
   e.preventDefault();
   sendNewMessage();
 });
@@ -114,10 +116,22 @@ socket.on('loggedUsers', (loggedUser) => {
 socket.on('removeUser', (userNickName) => {
   const allUsers = getAllLoggedUsers();
 
-  document.getElementById('online-user').innerHTML = '';
+  document.getElementById(onlineUserId).innerHTML = '';
 
   allUsers.forEach((user) => {
     if (user === userNickName) return;
+
+    renderUser(user);
+  });
+});
+
+socket.on('updateUserName', ({ prevName, currName }) => {
+  const allUsers = getAllLoggedUsers();
+
+  document.getElementById(onlineUserId).innerHTML = '';
+
+  allUsers.forEach((user) => {
+    if (user === prevName) return renderUser(currName);
 
     renderUser(user);
   });
