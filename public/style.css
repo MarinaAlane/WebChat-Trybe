@@ -19,6 +19,7 @@ section {
   border-radius: 5px;
   width: 250px;
   height: 100%;
+  padding-left: 10px;
 }
 
 .login {
@@ -31,6 +32,11 @@ section {
   border-radius: 5px;
   width: 750px;
   height: 80vh;
+  padding: 10px;
+}
+
+li {
+  list-style: none;
 }
 
 .container {

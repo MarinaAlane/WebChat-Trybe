@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 const socket = io('http://localhost:3000');
 
 const sendUser = document.getElementById('send-user');
@@ -16,5 +17,8 @@ socket.on('login_user', (user) => {
   const messages = document.getElementById('messages');
   const liMessage = document.createElement('li');
   liMessage.innerText = `${user} entrou!!`;
+  liMessage.style.color = 'grey';
+  liMessage.style.fontStyle = 'italic';
+  liMessage.style.fontSize = '0.8em';
   messages.appendChild(liMessage);
 });
