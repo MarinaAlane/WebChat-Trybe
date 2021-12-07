@@ -1,5 +1,6 @@
 // @ts-nocheck
 const express = require('express');
+
 const app = express();
 const http = require('http').createServer(app);
 
@@ -9,12 +10,13 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
-app.use(express.static(__dirname + '/public'));
+
+app.use(express.static(`${__dirname}/public`));
 
 require('./sockets/webchat')(io);
 
 app.get('/', (_req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(`${__dirname}/index.html`);
 });
 
 http.listen(3000, () => {

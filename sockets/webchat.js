@@ -1,11 +1,3 @@
-// module.exports = (io) =>
-//   io.on('connection', (socket) => {
-//     socket.on('message ', (data) => {
-//       console.log(data);
-//       io.emit('toClientMessage', data);
-//     });
-//   });
-
 module.exports = (io) =>
   io.on('connection', (socket) => {
     socket.on('message', ({ chatMessage, nickname }) => {

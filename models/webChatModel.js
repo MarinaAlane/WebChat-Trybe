@@ -1,6 +1,4 @@
-const getAll = () => {
-  return 'VRAU';
-};
+const getAll = () => 'VRAU';
 
 module.exports = {
   getAll,
