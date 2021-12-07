@@ -1,19 +1,21 @@
 const message = require('./chat');
+const disconnect = require('./disconnect');
+const users = require('../userDataBase');
 
-const users = [];
 module.exports = (io) =>
   io.on('connection', (socket) => {
     message(socket, io);
-    socket.on('newUserConnection', async ({ nickname }) => {
-      users.push(nickname);
-      io.emit('newUserConnection', users);
+    socket.on('newUserConnection', async () => {
+      const nickname = socket.id.substring(0, 16);
+      // users.push({ id: nickname, nickname });
+      io.emit('newUserConnection', users('add', { id: nickname, nickname }));
     });
-    socket.on('updateNickname', async ({ oldNickname, newNickname }) => {
-      const indexUser = users.indexOf(oldNickname);
-      users[indexUser] = newNickname;
-      io.emit('newUserConnection', users);
+    socket.on('updateNickname', async ({ newNickname }) => {
+      const id = socket.id.substring(0, 16);
+      const validationArray = users().map((user) => user.id === id);
+      const indexUser = validationArray.indexOf(true);
+      users('update', { index: indexUser, newNickname });
+      io.emit('newUserConnection', users());
     });
-    socket.on('disconnect', () => {
-      console.info(socket.id.length);
-    });
+    disconnect(socket, io);
   });

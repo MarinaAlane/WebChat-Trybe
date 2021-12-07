@@ -23,7 +23,8 @@
       
       //Lógica para enviar mensagem para o socket.io no backend
       // https://gist.github.com/6174/6062387
-      let newUserName = Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 7)
+      // let newUserName = Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 7)
+      let newUserName = '';
       const btnSendMessage = document.getElementById('send-message-button')
       const inputMessage = document.getElementById('input-message')
       btnSendMessage.addEventListener('click', () => {
@@ -35,7 +36,7 @@
       const btnAddNickname = document.getElementById('nickname-button')
       const inputNickname = document.getElementById('nickname-box')
       btnAddNickname.addEventListener('click', () => {
-        socket.emit('updateNickname', { oldNickname: newUserName, newNickname: inputNickname.value } )
+        socket.emit('updateNickname', { newNickname: inputNickname.value } )
         newUserName = inputNickname.value
         inputNickname.value = ''
       })
@@ -54,17 +55,19 @@
       });
 
       //enviar que um novo cliente entrou
-      socket.emit('newUserConnection', { nickname: newUserName })
+      // socket.emit('newUserConnection', { nickname: newUserName })
+      socket.emit('newUserConnection')
 
       // Ouve quando novos cliente se conectarem e faz lógicas com isso para renderizar somente o necessário
       socket.on("newUserConnection", (users) => {
         document.getElementById('users-online').innerHTML = ''
         const sortedUsers = [];
         users.forEach((user) => { // Lógica para arrumar o array de usuários para gerar as li onde o cliente deve se ver como first
-          if (user === newUserName) {
-            sortedUsers.unshift(user)
+          if (user.id === socket.id.substring(0, 16)) {
+            newUserName = user.nickname
+            sortedUsers.unshift(user.nickname)
           } else {
-            sortedUsers.push(user)
+            sortedUsers.push(user.nickname)
           }
         })
         sortedUsers.map((user) => {
