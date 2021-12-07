@@ -16,5 +16,5 @@ async function connection() {
       return schema;
     })
 }
-
+// commit inicial
 module.exports = connection;
