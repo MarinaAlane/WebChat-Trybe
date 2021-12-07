@@ -28,6 +28,7 @@ body {
 .online-user {
   border: 1px solid #ccc;
   height: 70vh;
+  overflow: auto;
   width: 300px;
 }
 
@@ -35,6 +36,7 @@ body {
   border: 1px solid #ccc;
   height: 68vh;
   margin-bottom: 2em;
+  overflow: auto;
   width: 600px;
 }
 
