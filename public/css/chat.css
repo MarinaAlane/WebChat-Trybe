@@ -1,40 +1,40 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  form {
-    background: black;
-    bottom: 0;
-    padding: 2px;
-    width: 100%;
-  }
-  
-  form input {
-    border: 0;
-    margin-right: 0.5%;
-    padding: 10px;
-    width: 90%;
-  }
-  
-  form button {
-    background: rgb(64, 167, 78);
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    width: 9%;
-  }
-  
-  .messageForm {
-    position: absolute;
-    bottom:0;
-    width:100%;
-    margin: auto auto;
-    padding: 50px 5px;
-  }
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+form {
+  background: black;
+  bottom: 0;
+  padding: 2px;
+  width: 100%;
+}
+
+form input {
+  border: 0;
+  margin-right: 0.5%;
+  padding: 10px;
+  width: 90%;
+}
+
+form button {
+  background: rgb(64, 167, 78);
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  width: 9%;
+}
+
+.messageForm {
+  bottom: 0;
+  margin: auto;
+  padding: 50px 5px;
+  position: absolute;
+  width: 100%;
+}
