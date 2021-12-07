@@ -13,4 +13,7 @@ module.exports = (io) =>
       users[indexUser] = newNickname;
       io.emit('newUserConnection', users);
     });
+    socket.on('disconnect', () => {
+      console.info(socket.id.length);
+    });
   });
