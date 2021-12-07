@@ -27,7 +27,7 @@ section {
   margin: 5px;
 }
 
-#messages {
+.messages {
   border: 1px solid black;
   border-radius: 5px;
   height: 80vh;
@@ -55,7 +55,7 @@ li {
   margin: 5px;
 }
 
-#send-message {
+.send-message {
   height: 30px;
   width: 100px;
 }
