@@ -47,7 +47,7 @@
       const username = sessionStorage.getItem('username') || 'Unknown user';
       const messageInput = document.getElementById('message');
 
-      socket.emit('sendMessage', { chatMessage: messageInput.value, nickname: username });
+      socket.emit('message', { chatMessage: messageInput.value, nickname: username });
 
       messageInput.value = '';
       messageInput.focus();
