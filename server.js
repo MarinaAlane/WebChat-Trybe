@@ -20,6 +20,10 @@ const io = require('socket.io')(http, {
 
 io.on('connection', (socket) => {
   console.log(`New user connected. ID: ${socket.id}`);
+
+  socket.on('sendMessage', (data) => {
+    console.log(data);
+  });
 });
 
 const rootRouter = require('./routes');

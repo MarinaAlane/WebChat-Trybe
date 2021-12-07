@@ -32,6 +32,26 @@
   <script src="./socket.io/socket.io.js"></script>
   <script>
     const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
+
+    const saveButton = document.getElementById('save');
+    saveButton.addEventListener('click', () => {
+      const usernameInput = document.getElementById('username');
+
+      sessionStorage.setItem('username', usernameInput.value);
+
+      usernameInput.value = '';
+    });
+
+    const sendButton = document.getElementById('send');
+    sendButton.addEventListener('click', () => {
+      const username = sessionStorage.getItem('username') || 'Unknown user';
+      const messageInput = document.getElementById('message');
+
+      socket.emit('sendMessage', { chatMessage: messageInput.value, nickname: username });
+
+      messageInput.value = '';
+      messageInput.focus();
+    });
   </script>
 </body>
 </html>
