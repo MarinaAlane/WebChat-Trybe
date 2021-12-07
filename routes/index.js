@@ -2,6 +2,8 @@ const express = require('express');
 
 const rootRouter = express.Router();
 
-rootRouter.get('/', (_request, response) => response.render('pages/index'));
+const homeController = require('../controllers/homeController');
+
+rootRouter.get('/', homeController.get);
 
 module.exports = rootRouter;
