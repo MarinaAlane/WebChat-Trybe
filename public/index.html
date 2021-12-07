@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title>Chat</title>
+</head>
+<body>
+  <h1>WebChat</h1>
+  <div class="row">
+    <form class="col s12 nicknameForm">
+      <div class="row">
+        <div class="input-field col s10">
+          <input
+          id="nick_name"
+          type="text"
+          class="validate"
+          data-testid="nickname-box">
+          <label for="nick_name">Nickname</label>
+        </div>
+        <div
+        className="input-field col s2"
+        >
+          <button
+           class="btn waves-effect waves-light"
+           name="action"
+           onclick="changeNickname()"
+           data-testid="nickname-button"
+           >save
+            <i class="material-icons right">save</i>
+          </button>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <form class="col s12 messageForm">
+      <div class="row">
+        <div class="input-field col s10">
+          <input id="last_name" type="text" class="validate" data-testid="message-box" >
+          <label for="last_name">Message</label>
+        </div>
+        <div className="input-field col s2">
+          <button
+          class="btn waves-effect waves-light"
+          name="action"
+          onclick="sendMessage()"
+          data-testid="send-button"
+          >send
+            <i class="material-icons right">send</i>
+          </button>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="./js/chat.js"></script>
+</html>
