@@ -8,9 +8,38 @@ const testIds = {
 
 const socket = window.io();
 
+function setSessionUser(nickName) {
+  sessionStorage.setItem('webChatUser', nickName);
+}
+
 function randomNickNameUser() {
-  const userNickName = document.querySelector(testIds.onlineUser);
-  userNickName.innerText = Math.floor(Math.random() * 10 ** 16);
+  const nickName = Math.floor(Math.random() * 10 ** 16);
+  setSessionUser(nickName);
+  return nickName;
+}
+
+function renderUser(nickName) {
+  const onlineUsersUl = document.getElementById('online-user');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = nickName;
+
+  onlineUsersUl.appendChild(li);
+}
+
+function getAllLoggedUsers() {
+  const allUsers = [];
+
+  document.querySelectorAll(testIds.onlineUser)
+    .forEach((child) => allUsers.push(child.innerText));
+
+  return allUsers;
+}
+
+function renderNickName() {
+  const nickName = randomNickNameUser();
+  renderUser(nickName);
+  socket.emit('userSignIn', nickName);
 }
 
 function renderMessageList(message) {
@@ -59,12 +88,25 @@ socket.on('loadMessages', (messages) => {
   });
 });
 
+socket.on('userSignIn', (nickName) => {
+  renderUser(nickName);
+  socket.emit('loggedUsers', sessionStorage.getItem('webChatUser'));
+});
+
+socket.on('loggedUsers', (loggedUser) => {
+  const allUsers = getAllLoggedUsers();
+
+  if (allUsers.includes(loggedUser)) return;
+
+  renderUser(loggedUser);
+});
+
 function loadMessages() {
   socket.emit('loadMessages');
 }
 
 /* Running function on page load: https://developer.mozilla.org/pt-BR/docs/Web/API/GlobalEventHandlers/onload */
 window.onload = () => {
-  randomNickNameUser();
+  renderNickName();
   loadMessages();
 };

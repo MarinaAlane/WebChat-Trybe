@@ -15,4 +15,8 @@ module.exports = (io) => io.on('connection', (socket) => {
 
     io.emit('loadMessages', allMessages);
   });
+
+  socket.on('userSignIn', (nickName) => socket.broadcast.emit('userSignIn', nickName));
+
+  socket.on('loggedUsers', (loggedUser) => socket.broadcast.emit('loggedUsers', loggedUser));
 });
