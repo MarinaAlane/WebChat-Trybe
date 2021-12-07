@@ -6,6 +6,8 @@ const testIds = {
   sendButton: '[data-testid="send-button"]',
 };
 
+const socket = window.io();
+
 function randomNickNameUser() {
   const userNickName = document.querySelector(testIds.onlineUser);
   userNickName.innerText = Math.floor(Math.random() * 10 ** 16);
@@ -21,10 +23,10 @@ function renderMessageList(message) {
 }
 
 function sendNewMessage() {
-  const userNickName = document.querySelector(testIds.onlineUser).innerText;
-  const messageBoxContent = document.querySelector(testIds.messageBox);
-  renderMessageList(`${userNickName}: ${messageBoxContent.value}`);
-  messageBoxContent.value = '';
+  const nickname = document.querySelector(testIds.onlineUser).innerText;
+  const chatMessage = document.querySelector(testIds.messageBox).value;
+  socket.emit('message', { chatMessage, nickname });
+  document.querySelector(testIds.messageBox).value = '';
 }
 
 function changeNickName() {
@@ -46,7 +48,23 @@ document.querySelector(testIds.sendButton).addEventListener('click', (e) => {
   sendNewMessage();
 });
 
+socket.on('message', (message) => {
+  renderMessageList(message);
+});
+
+socket.on('loadMessages', (messages) => {
+  document.getElementById('messages').innerHTML = '';
+  messages.forEach(({ message, nickname, timestamp }) => {
+    renderMessageList(`${timestamp} - ${nickname}: ${message}`);
+  });
+});
+
+function loadMessages() {
+  socket.emit('loadMessages');
+}
+
 /* Running function on page load: https://developer.mozilla.org/pt-BR/docs/Web/API/GlobalEventHandlers/onload */
 window.onload = () => {
   randomNickNameUser();
+  loadMessages();
 };
