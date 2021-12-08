@@ -7,6 +7,7 @@ const formatDate = (date) => {
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
+    io.emit('nickname', socket.id);
     socket.on('message', ({ chatMessage, nickname }) => {
       io.emit('message', `${formatDate(new Date(Date.now()))} - ${nickname}: ${chatMessage}`);
     });

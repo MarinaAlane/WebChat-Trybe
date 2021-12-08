@@ -1,6 +1,18 @@
 const socket = window.io();
 
-let nickname = '';
+const generateRandomNick = () => {
+  const alfabeto = 'abcdefghijklmnopqrstuvxzwy';
+  let nick = '';
+  for (let i = 0; i < 16; i += 1) {
+    nick += alfabeto[Math.floor(Math.random() * 26)];
+  }
+  socket.on('nickname', (lala) => console.log(lala));
+  return nick;
+};
+
+sessionStorage.setItem('nickname', generateRandomNick());
+
+// CHAT
 
 const messagesList = document.querySelector('#messages-list');
 const sendButton = document.querySelector('#send-button');
@@ -15,6 +27,7 @@ const createMessage = (msg) => {
 
 sendButton.addEventListener('click', () => {
   const chatMessage = messageInput.value;
+  const nickname = sessionStorage.getItem('nickname');
   socket.emit('message', { chatMessage, nickname });
 });
 
@@ -29,6 +42,6 @@ const nicknameButton = document.querySelector('#nickname-button');
 
 nicknameButton.addEventListener('click', (e) => {
   e.preventDefault();
-  nickname = nicknameInput.value;
+  sessionStorage.setItem('nickname', nicknameInput.value);
   nicknameInput.value = '';
 });

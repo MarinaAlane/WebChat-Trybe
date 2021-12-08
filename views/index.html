@@ -4,17 +4,21 @@
     <title>Chat</title>
   </head>
   <body>
-    <form id="nickname-form">
-      <input type="text" id="nickname-input" />
-      <button id="nickname-button">Salvar</button>
-    </form>
+    <section>
+      <form id="nickname-form">
+        <input type="text" id="nickname-input" />
+        <button id="nickname-button">Salvar</button>
+      </form>
+      <div>
+        <ul></ul>
+      </div>
+    </section>
     <section id="chat-box">
       <ul id="messages-list"></ul>
-      <input type="text" id="message-box">
+      <input type="text" id="message-box" data-testid="message-box">
       <button id="send-button">Enviar</button>
     </section>
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/Chat.js"></script>
-  <!-- <script src="./js/Nickname.js"></script> -->
 </html>
