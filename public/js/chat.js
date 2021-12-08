@@ -1,7 +1,7 @@
 const socket = window.io();
 
-const form = document.querySelector('#message-form');
-const nicknameForm = document.querySelector('#nickname-form');
+const sendButton = document.querySelector('#send-btn');
+const nickButton = document.querySelector('#nick-btn');
 const newnickname = document.querySelector('#nicknamebox');
 const dataTest = 'data-testid';
 
@@ -21,23 +21,15 @@ const makeNickName = () => {
   return text;
 };
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  console.log('5');
-
+sendButton.addEventListener('click', () => {
   const nickname = sessionStorage.getItem('nickname');  
-  
   const chatMessage = inputMessage.value;   
 
   socket.emit('message', { chatMessage, nickname });
   inputMessage.value = '';
-  return false;
 });
 
-nicknameForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  console.log('4');
-
+nickButton.addEventListener('click', () => {
   const newNickname = newnickname.value;
   const oldNickname = sessionStorage.getItem('nickname');
 
@@ -46,7 +38,6 @@ nicknameForm.addEventListener('submit', (event) => {
   socket.emit('new-user', { user: newNickname, userOld: oldNickname });
 
   newnickname.value = '';
-  return false;
 });
 
 const createMessage = (userMessage) => {
