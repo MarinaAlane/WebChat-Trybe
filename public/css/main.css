@@ -2,41 +2,38 @@ body {
   display: flex;
   flex-direction: column;
   margin: 5px;
-
 }
 
 .top {
   display: flex;
   margin: 5px;
-
 }
 
 .user-land {
   background-color: brown;
-  width: 300;
+  box-shadow: 3px 3px 3px black;
   height: 300px;
-  box-shadow: 3px 3px 3px rgb(0, 0, 0);
   margin: 5px;
+  width: 300;
 }
 
-.online-users {
-/*  */
-}
+/* .online-users {
+
+} */
 
 .messages {
-  display: flex;
   background-color: blueviolet;
+  box-shadow: 3px 3px 3px black;
   box-sizing: border-box;
-  width: 365px;
+  display: flex;
   height: 300px;
-  box-shadow: 3px 3px 3px rgb(0, 0, 0);
   margin: 5px;
+  width: 365px;
 }
 
 .bottom {
   background-color: crimson;
-  width: 100%;
+  box-shadow: 3px 3px 3px black;
   height: 50px;
-  box-shadow: 3px 3px 3px rgb(0, 0, 0);
+  width: 100%;
 }
-
