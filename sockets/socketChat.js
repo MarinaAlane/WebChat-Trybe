@@ -1,15 +1,17 @@
 const formatInfoMessage = require('../middleware/formatInfoMessage');
 const insertMessage = require('../models/insertMessage');
 
-const arrayUsersOnline = [];
+let arrayUsersOnline = [];
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
-    const randNameId = socket.id.slice(0, -4);
+    const randNameId = socket.id.slice(0, 16);
 
     arrayUsersOnline.push({ userNickName: randNameId });
+
     io.emit('usersOnline', arrayUsersOnline);
-    arrayUsersOnline.splice(arrayUsersOnline.indexOf(randNameId), 1);
+
+    // arrayUsersOnline.splice(arrayUsersOnline.indexOf(randNameId), 1);
 
     socket.on('message', async (clientMessage) => {
       const { nickname, message, timestamp } = formatInfoMessage(randNameId, clientMessage);
@@ -20,7 +22,8 @@ module.exports = (io) => {
     });
 
     socket.on('disconnect', () => {
-      arrayUsersOnline.splice(arrayUsersOnline.indexOf(randNameId), 1);
+      const newArray = arrayUsersOnline.filter(({ userNickName }) => userNickName !== randNameId);
+      arrayUsersOnline = newArray;
       io.emit('usersOnline', arrayUsersOnline);
     });
   });

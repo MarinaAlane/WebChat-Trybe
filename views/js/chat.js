@@ -43,7 +43,7 @@ socket.on('message', async (renderMessage) => {
 socket.emit('usersOnline');
 
 socket.on('usersOnline', (arrayUsersOnline) => {
-  console.log(arrayUsersOnline);
+  listUserOnline.innerHTML = '';
   arrayUsersOnline.forEach(({ userNickName }) => {
     setUserOn(userNickName);
   });
