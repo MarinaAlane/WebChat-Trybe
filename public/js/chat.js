@@ -1,5 +1,7 @@
 const socket = window.io();
 
+// const { getByNickName } = require('../../controllers');
+
 const form = document.querySelector('#message-form');
 const nicknameForm = document.querySelector('#nickname-form');
 const newnickname = document.querySelector('#nicknamebox');
@@ -91,15 +93,10 @@ window.onload = () => {
   const nickUser = makeNickName();
   socket.emit('new-user', { user: nickUser, userOld: null });
 
-  socket.on('historic-messages', (historicMessages) => {  
-  const object = {};
-  
-    historicMessages.forEach(({ nickname, message }) => { object[nickname] = message; });
-
-  const newArr = Object.entries(object);
-
-    newArr.forEach((element) => element.forEach((el) => {
-      historicMessage(el);
-    }));
+  socket.on('historic-messages', (historicMessages) => {
+    historicMessages.forEach(({ nickname, message, time }) => {
+      const userMessage = `${time} ${nickname} ${message}`;
+      historicMessage(userMessage);
+    });
 });
 };
