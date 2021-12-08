@@ -36,10 +36,8 @@
 
     // gerar um nome aleatório para o usuário
     function randomName() {
-      socket.emit('nickGenerate');
-
       socket.on('nickGenerate', function(data) {
-        nick = `guest-${data.slice(-10)}`;
+        nick = `guest-${data}`;
         $('[data-testid="online-user"]').text(nick);
       });
     }

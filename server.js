@@ -20,13 +20,12 @@ const ftMsg = moment().format('MM-DD-YYYY h:mm A');
 
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
+  const userOnline = socket.id.slice(-10);
   
+  socket.emit('nickGenerate', userOnline);
+
   socket.on('message', (data) => {
     io.emit('message', `${ftMsg} - ${data.nickname}: ${data.chatMessage}`);
-  });
-
-  socket.on('nickGenerate', () => {
-    socket.emit('nickGenerate', socket.id);
   });
 });
 
