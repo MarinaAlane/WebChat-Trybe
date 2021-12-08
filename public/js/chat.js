@@ -1,7 +1,7 @@
 const socket = window.io();
 
-const form = document.querySelector('#messageBox');
-const inputMessage = document.querySelector('.messageInput');
+const form = document.querySelector('.messageBox');
+const inputMessage = document.querySelector('#messageInput');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
