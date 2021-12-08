@@ -1,10 +1,11 @@
 const socket = window.io();
 
 const chatMessage = document.getElementById('chatMessage');
-const nickname = document.getElementById('nickname');
+const nicknameInput = document.getElementById('nickname');
+const nicknameButton = document.getElementById('nickname-button');
 const sendMessageButton = document.getElementById('sendButton');
-const onlineUserElement = document.getElementById('onlineUser');
-// const messageList = document.getElementById('user-message');
+const userList = document.getElementById('userList');
+const messageList = document.getElementById('messageList');
 
 const generateNickname = () => {
   let finalNickname = '';
@@ -14,23 +15,55 @@ const generateNickname = () => {
     finalNickname += possibilities
       .charAt(Math.floor(Math.random() * possibilities.length));
   }
+  
   return finalNickname;
 };
 
-const insertInitialNickname = () => {
-  onlineUserElement.innerText = generateNickname();
+const createUserElement = (nickname) => {
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = nickname;
+  userList.appendChild(li);
 };
 
-window.onload = () => {
-  insertInitialNickname();
+const createMessageElement = (message) => {
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
+  li.innerText = message;
+  messageList.appendChild(li);
 };
+
+nicknameButton.addEventListener('click', () => {
+  const oldNickname = sessionStorage.getItem('nickname');
+  const newNickname = nicknameInput.value;
+  sessionStorage.setItem('nickname', newNickname);
+  socket.emit('updateUser', { oldNickname, newNickname });
+});
 
 sendMessageButton.addEventListener('click', () => {
-  const data = { nickname: nickname.value, chatMessage: chatMessage.value };
-
+  const data = {
+    nickname: sessionStorage.getItem('nickname'),
+    chatMessage: chatMessage.value,
+  };
   socket.emit('message', data);
-
-  socket.on('message', (newMessage) => {
-    console.log(newMessage);
-  });
 });
+
+socket.on('message', (newMessage) => {
+  createMessageElement(newMessage);
+  console.log(newMessage);
+});
+
+window.onload = () => {
+  const randomNick = generateNickname();
+  sessionStorage.setItem('nickname', randomNick);
+
+  createUserElement(randomNick);
+
+  socket.emit('newUser', randomNick);
+  socket.on('updateUser', (newUser) => {
+    userList.innerHTML = '';
+    newUser.forEach((user) => {
+      createUserElement(user.nickname);
+    });
+  });
+};

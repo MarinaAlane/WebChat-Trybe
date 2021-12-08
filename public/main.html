@@ -23,14 +23,21 @@
             type="text"
             placeholder="Insira seu nickname"
             id="nickname"
+            data-testid="nickname-box"
           />
-          <button type="button" name="set-nickname">Salvar</button>
-          <p data-testid="online-user" id="onlineUser"></p>
+          <button
+            type="button"
+            name="set-nickname"
+            data-testid="nickname-button"
+            id="nickname-button"
+          >
+            Salvar
+          </button>
+          <ul id="userList"></ul>
         </div>
-        <div class="online-users">Pessoas usuárias online</div>
       </div>
       <div class="messages">
-        <p class="user-message"></p>
+        <ul id="messageList"></ul>
       </div>
     </section>
     <section class="bottom">
