@@ -9,9 +9,14 @@
 </head>
 <body>
   <h1>webchat</h1>
-  <input type="text" id="nickname" placeholder="nickname">
-  <input type="text" id="message" placeholder="message">
-  <button id="send" type="button">send</button>
+  <h3 id="random-id" data-testid="online-user"></h3>
+  <input type="text" id="nickname" placeholder="nickname" data-testid="nickname-box">
+  <button id="change-nickname" type="button" data-testid="nickname-button">Change nickname</button>
+  <input type="text" id="message" placeholder="message" data-testid="message-box">
+  <button id="send" type="button" data-testid="send-button">send</button>
+  <ul id="messages-list">
+
+  </ul>
   <script src="js/main.js"></script>
 </body>
 </html>
