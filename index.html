@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="div-nickname">
+    <form id="form-nickname">
+      <label for="nickname-box">
+        Nickname:
+        <input data-testid="nickname-box" type="text" id="nickname-box">
+        <button data-testid="nickname-button">Salvar</button>
+      </label>
+    </form>
+  </div>
+
+  <div class="div-user-messages">
+    <div class="div-online-users">
+      <ul id="online-users"></ul>
+    </div>
+
+    <div class="div-messages">
+      <ul id="messages"></ul>
+    </div>
+  </div>
+
+  <div class="form">
+    <label for="message-box">
+      Mensagem:
+      <input data-testid="message-box" type="text">
+    </label>
+    <button type="submit" data-testid="send-button">Enviar</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    
+    const inputNickname = document.getElementById('nickname-box');
+    const nickName = document.querySelector('#nickname-box');
+
+    socket.on('randomUser', (randomUser) => {
+      const savedNickName = sessionStorage.getItem('nickname');
+      savedNickName ? nickName.value = savedNickName : nickName.value = randomUser.slice(0, 16);
+    });
+
+    const formNickname = document.getElementById('form-nickname');
+
+    formNickname.addEventListener('submit', (e) => {
+      e.preventDefault();
+      console.log(inputNickname.value);
+      if (inputNickname.value) {
+        sessionStorage.setItem("nickname", inputNickname.value)
+      };
+    });
+
+  </script>
+</body>
+</html>
