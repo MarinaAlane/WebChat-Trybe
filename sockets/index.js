@@ -1,13 +1,15 @@
 const message = require('./chat');
 const disconnect = require('./disconnect');
 const users = require('../userDataBase');
+const { getAll } = require('../models/messageModel');
 
 module.exports = (io) =>
   io.on('connection', (socket) => {
     message(socket, io);
     socket.on('newUserConnection', async () => {
       const nickname = socket.id.substring(0, 16);
-      // users.push({ id: nickname, nickname });
+      const allMessages = await getAll();
+      socket.emit('renderAllMessages', allMessages);
       io.emit('newUserConnection', users('add', { id: nickname, nickname }));
     });
     socket.on('updateNickname', async ({ newNickname }) => {

@@ -20,10 +20,8 @@
 
     <script>
       const socket = io("http://localhost:3000");
-      
+
       //Lógica para enviar mensagem para o socket.io no backend
-      // https://gist.github.com/6174/6062387
-      // let newUserName = Math.random().toString(36).substring(2, 16) + Math.random().toString(36).substring(2, 7)
       let newUserName = '';
       const btnSendMessage = document.getElementById('send-message-button')
       const inputMessage = document.getElementById('input-message')
@@ -54,8 +52,22 @@
         document.getElementById("chat-message").appendChild(li);
       });
 
+      // Renderiza todas as mensagens do backend ao entrar um novo user
+      socket.on('renderAllMessages', (messages) => {
+        messages.map(({ message, nickname, timestamp }) => {
+          const li = document.createElement("li");
+          const liText = document.createTextNode(
+            `${timestamp} - ${nickname}: ${message}`
+          );
+          li.appendChild(liText);
+          const liDataTestId = document.createAttribute('data-testid')
+          liDataTestId.value = 'message'
+          li.setAttributeNode(liDataTestId)
+          document.getElementById("chat-message").appendChild(li);
+        })
+      })
+
       //enviar que um novo cliente entrou
-      // socket.emit('newUserConnection', { nickname: newUserName })
       socket.emit('newUserConnection')
 
       // Ouve quando novos cliente se conectarem e faz lógicas com isso para renderizar somente o necessário
