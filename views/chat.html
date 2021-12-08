@@ -4,9 +4,15 @@
     <title>Socket.IO - trybe</title>
   </head>
   <body>
+    <h3 id="nickname" data-testid="online-user"></h3>
     <ul id="messages"></ul>
-    <form action="">
-      <input id="messageInput" autocomplete="off" /><button>Send</button>
+    <form action="" id="message-form">
+      <input id="message-input" data-testid="message-box" />
+      <button data-testid="send-button" >Send</button>
+    </form>
+    <form action="" id="nickname-form">
+      <input id="nickname-input" data-testid="nickname-box" />
+      <button data-testid="nickname-button" >Change nickname</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/chatScript.js'></script>
