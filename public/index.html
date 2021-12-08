@@ -10,6 +10,24 @@
 </head>
 <body>
   <h1>WebChat</h1>
+  <table class="striped">
+    <thead>
+      <tr>
+          <th>Users Online</th>
+      </tr>
+    </thead>
+    <tbody id="userOnlineTable">
+    </tbody>
+  </table>
+  <table class="striped">
+    <thead>
+      <tr>
+          <th>Chat Messages</th>
+      </tr>
+    </thead>
+    <tbody id="chatBodyTable">
+    </tbody>
+  </table>
   <div class="row">
     <form class="col s12 nicknameForm">
       <div class="row">
@@ -18,16 +36,15 @@
           id="nick_name"
           type="text"
           class="validate"
-          data-testid="nickname-box">
-          <label for="nick_name">Nickname</label>
+          data-testid="nickname-box"
+          placeholder="Nickname">
+          <label id="labelNickName" for="nick_name"></label>
         </div>
         <div
         className="input-field col s2"
         >
           <button
            class="btn waves-effect waves-light"
-           name="action"
-           onclick="changeNickname()"
            data-testid="nickname-button"
            >save
             <i class="material-icons right">save</i>
@@ -41,14 +58,12 @@
     <form class="col s12 messageForm">
       <div class="row">
         <div class="input-field col s10">
-          <input id="last_name" type="text" class="validate" data-testid="message-box" >
-          <label for="last_name">Message</label>
+          <input id="text_message" type="text" class="validate" data-testid="message-box" >
+          <label for="text_message">Message</label>
         </div>
         <div className="input-field col s2">
           <button
           class="btn waves-effect waves-light"
-          name="action"
-          onclick="sendMessage()"
           data-testid="send-button"
           >send
             <i class="material-icons right">send</i>
@@ -59,7 +74,8 @@
     </form>
   </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/socket.io/socket.io.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="./js/chat.js"></script>
 </html>
