@@ -1,5 +1,4 @@
 const socket = window.io('http://localhost:3000');
-
 let userNickname = null;
 
 const updateMessagesOnScreen = (messages) => {
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const message = document.forms.message_form_name.msg.value;
   
     document.forms.message_form_name.msg.value = '';
-    socket.emit('new_message', { user: userNickname, msg: message });
+    socket.emit('message', { nickname: userNickname, chatMessage: message });
   });
 
   const userForm = document.querySelector('#user_form');

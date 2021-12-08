@@ -16,7 +16,7 @@ app.use('/', express.static(path.join(__dirname, 'view')));
 
 const io = require('socket.io')(http,  {
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
     method: ['GET', 'POST'],
   }
 });
