@@ -66,9 +66,10 @@
 
 <body>
   <form id="username-form">
-    <input type="text" id="username" placeholder="Insira seu nickname" data-testid="nickname-box">
-    <button type="button" id="nickname-button" data-testid="nickname-button">Enviar</button>
+    <input id="nickname-input" placeholder="Insira seu nickname" data-testid="nickname-box">
+    <button id="nickname-button" data-testid="nickname-button">Enviar</button>
   </form>
+  <h3 id="nickname" data-testid="online-user"></h3>
   <ul id="messages"></ul>
   <form id="form" >
     <input id="input" data-testid="message-box">
@@ -82,25 +83,47 @@
     const form = document.querySelector('#form');
     const userForm = document.querySelector('#username-form')
     const input = document.querySelector('#input');
+    const nicknameInput = document.querySelector('#nickname-input');
+    const nicknameButton = document.querySelector('#nickname-button');
+    const nicknameText = document.querySelector('#nickname')
     const messages = document.querySelector('#messages');
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (input.value) {
-        const chatMessage = input.value;
-        socket.emit('message', chatMessage);
+        const nickname = sessionStorage.getItem('nickname');
+        const message = {
+          chatMessage: input.value,
+          nickname 
+        };
+        socket.emit('message', message);
         input.value = '';
       }
     });
-    
+
     userForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (input.value) {
-        const nickname = input.value;
-        socket.emit('message', nickname);
-        input.value = '';
+      if (nicknameInput.value) {
+        sessionStorage.setItem('nickname', nicknameInput.value);
+        socket.emit('nickname', nicknameInput.value)
+        nicknameText.innerText = nicknameInput.value;
+        nicknameInput.value = '';
       }
-    });
+    })
+
+    socket.on('userLogin', (nickname) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = nickname;
+      newMessage.dataset.testid = 'message';
+      messages.appendChild(newMessage);
+      window.scrollTo(0, document.body.scrollHeight);
+    })
+
+    socket.on('setUser', (nickname) => {
+      sessionStorage.setItem('nickname', nickname);
+      nicknameText.innerText = nickname;
+      window.scrollTo(0, document.body.scrollHeight);
+    })
 
     socket.on('message', (chatMessage) => {
       const newMessage = document.createElement('li');

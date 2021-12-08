@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
-const { dateGenerator } = require('./helpers/helpers');
+const { dateGenerator, randomNickGenerator } = require('./helpers/helpers');
  
 const app = express();
 const PORT = 3000;
@@ -14,10 +14,14 @@ app.get('/', (_req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log(`usuário ${socket.id} conectado`);
+  const randomNick = randomNickGenerator(16);
+  console.log(`usuário ${randomNick} conectado`);
+  socket.broadcast.emit('userLogin', `usuário ${randomNick} conectado`);
+  
+  socket.emit('setUser', randomNick);
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    const nick = nickname || socket.id;
+    const nick = nickname || randomNick;
     const date = dateGenerator();
     io.emit('message', `${date} - ${nick}: ${chatMessage}`);
   });
