@@ -30,6 +30,7 @@ buttonMessage.addEventListener('click', (event) => {
 });
 
 socket.on('message', async (renderMessage) => {
+  console.log(renderMessage);
   creatMessage(renderMessage);
 });
 
