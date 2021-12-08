@@ -27,6 +27,7 @@ nicknameForm.addEventListener('submit', (e) => {
   });
   sessionStorage.setItem('nickname', inputNickname.value);
   nickname.innerHTML = sessionStorage.getItem('nickname');
+  socket.nickname = nickname.innerHTML;
 
   inputNickname.value = '';
   return false;
@@ -69,15 +70,16 @@ const updateUserList = (users) => {
 socket.on('nickname', (id) => {
   sessionStorage.setItem('nickname', id);
   nickname.innerHTML = sessionStorage.getItem('nickname');
+  socket.nickname = nickname.innerHTML;
 });
 
 socket.on('message', (message) => createMessage(message));
 
 socket.on('userList', (users) => {
   console.log(users);
-  updateUserList(users);
+  updateUserList(users.map((user) => user.nickname));
 });
 
 window.onbeforeunload = function () {
-  socket.emit('disconect', sessionStorage.getItem('nickname'));
+  socket.disconnect();
 };

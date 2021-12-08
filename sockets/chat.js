@@ -5,9 +5,19 @@ const formatMessage = ({ nickname, chatMessage }) => {
 
 let users = [];
 
+const changeNickname = (nicknames) => {
+  users = users.map((user) => {
+    if (user.nickname === nicknames.oldUser) return { nickname: nicknames.newUser, id: user.id };
+    return user;
+  });
+};
+
 module.exports = (io) => io.on('connection', (socket) => {
   socket.emit('nickname', `${socket.id.slice(0, 16)}`);
-  users.push(socket.id.slice(0, 16));
+  users.push({
+    id: socket.id,
+    nickname: socket.id.slice(0, 16),
+  });
   io.emit('userList', users);
 
   socket.on('message', (message) => {
@@ -16,15 +26,12 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('changeNickname', (nicknames) => {
-    users = users.map((user) => {
-      if (user === nicknames.oldUser) return nicknames.newUser;
-      return user;
-    });
+    changeNickname(nicknames);
     io.emit('userList', users);
   });
 
-  socket.on('disconect', (nickname) => {
-    users = users.filter((user) => user !== nickname);
+  socket.on('disconnect', () => {
+    users = users.filter((user) => user.id !== socket.id);
     socket.broadcast.emit('userList', users);
   });
 });
