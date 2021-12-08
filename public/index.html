@@ -13,13 +13,14 @@
 <body>
   <main>
     <div class="nick-container">
-      <h3 data-testid="online-user"></h3>
+      <h3>T11zapp</h3>
       <form id="nickForm">
         <input type="text" data-testid="nickname-box" name="nickname" placeholder="Trocar Nickname">
         <button type="submit" data-testid="nickname-button">Salvar</button>
       </form>
     </div>
     <div class="message-container">
+      <div class="todos-online"></div>
       <div class="mess"></div>
     </div>
     <div class="nick-container">
@@ -34,11 +35,15 @@
     var socket = io('http://localhost:3000');
     var nick;
 
+    function onlineUser(nick) {
+      $('.todos-online').append('<p data-testid="online-user">' + nick + '</p>');
+    }
+
     // gerar um nome aleatório para o usuário
     function randomName() {
       socket.on('nickGenerate', function(data) {
         nick = `guest-${data}`;
-        $('[data-testid="online-user"]').text(nick);
+        onlineUser(nick);
       });
     }
 
