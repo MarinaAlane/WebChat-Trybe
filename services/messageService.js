@@ -1,10 +1,11 @@
 const createMessage = (objMessage) => {
   const { chatMessage, nickname } = objMessage;
   const date = new Date();
-  const msgDate = `${date.getDay(date)}/${date.getMonth(date) + 1}/
-  ${date.getFullYear(date)} ${date.getTime(date)}`;
+  const actualDate = date.toLocaleString();
+  // const bar = '/';
+  const msgDate = actualDate.replace(/['/']/g, '-');
   
-  return { chatMessage, nickname, msgDate };
+  return `${msgDate.toString()} - ${nickname}: ${chatMessage}`;
 };
 
 module.exports = {

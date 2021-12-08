@@ -11,13 +11,16 @@ const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
+const messageService = require('./services/messageService');
+
 app.get('/', (req, res) => {
   res.send('Hello word');
 });
 
 io.on('connection', (socket) => {
   socket.on('message', (objMessage) => {
-    socket.emit('message', objMessage);
+    const getFormatedMessage = messageService.createMessage(objMessage);
+    io.emit('message', getFormatedMessage);
   });
 });
 
