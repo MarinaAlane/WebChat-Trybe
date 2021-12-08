@@ -7,7 +7,6 @@ router.get('/chat', async (_req, res) => {
 });
 
 router.post('/chat', async (req, res) => {
-  console.log(req.body);
   const insertOneMessage = await chat.saveMessage(req.body);
   if (!insertOneMessage) {
     return res.status(404).json({ message: 'erro ao inserir mensagem' });

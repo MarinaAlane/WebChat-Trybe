@@ -5,15 +5,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Chat</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- <link rel="stylesheet" href="./style.css"> -->
 </head>
 <body>
   <main>
     <div class="container">
       <section>
         <div class="login">
-          <input type="text" id="user-nick-name">
-          <button type="button" id="send-user">Salvar</button>
+          <input type="text" id="user-nick-name" data-testid="nickname-box">
+          <button type="button" id="send-user" data-testid="nickname-button">Salvar</button>
         </div>
         <div class="users">
           <ul id="online"></ul>
@@ -24,12 +24,73 @@
       </section>
     </div>
     <div class="container-message">
-      <input type="text" class="input-message" id="input-message">
-      <button type="button" id="send-message" class="send-message">Enviar</button>
+      <input type="text" class="input-message" id="input-message" data-testid="message-box">
+      <button type="button" id="send-message" class="send-message" data-testid="send-button">Enviar</button>
     </div>
   </main>
   
   <script src='/socket.io/socket.io.js'></script>
-  <script src='./script.js'></script>
+  <script>
+    const socket = window.io('http://localhost:3000');
+
+    const messages = document.getElementById('messages');
+    const sendUser = document.getElementById('send-user');
+    const sendMessage = document.getElementById('send-message');
+
+    function addNickName(nickname) {
+      sessionStorage.setItem('nickname', nickname);
+    }
+
+    function getNickname() {
+      return sessionStorage.getItem('nickname');
+    }
+
+    function insertMessage(message) {
+      const liMessage = document.createElement('li');
+      liMessage.innerText = message;
+      liMessage.setAttribute('data-testid', 'message');
+      messages.appendChild(liMessage);
+    }
+
+    function insertUser(user) {
+      const online = document.getElementById('online');
+      const liUser = document.createElement('li');
+      liUser.setAttribute('data-testid', 'online-user');
+      liUser.innerText = user;
+      online.appendChild(liUser);
+      const liMessage = document.createElement('li');
+      liMessage.innerText = `${user} Entrou`;
+      liMessage.style.color = 'grey';
+      liMessage.style.fontStyle = 'italic';
+      liMessage.style.fontSize = '0.8em';
+      messages.appendChild(liMessage);
+    }
+
+    socket.on('id', (arrId) => {
+      const logedUser = arrId[arrId.length - 1];
+      insertUser(logedUser);
+      for (let index = 0; index < arrId.length - 1; index += 1) {
+        const user = arrId[index];
+        insertUser(user);
+      }
+      socket.emit('log_user', logedUser);
+      addNickName(logedUser);
+    });
+
+    socket.on('login_user', (user) => {
+      insertUser(user);
+    })
+
+    sendMessage.addEventListener('click', () => {
+      const inputMessage = document.getElementById('input-message');
+      socket.emit('message',
+        ({ nickname: getNickname(), chatMessage: inputMessage.value }));
+    });
+
+    socket.on('message', (message) => {
+      insertMessage(message);
+    });
+
+  </script>
 </body>
 </html>

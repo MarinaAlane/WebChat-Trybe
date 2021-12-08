@@ -1,26 +1,49 @@
-// Faça seu código aqui
+// const axios = require('axios');
 const express = require('express');
-const path = require('path');
-const socketIo = require('socket.io');
-const chatController = require('./controller/chatController');
+const cors = require('cors');
 
 const app = express();
+const http = require('http').createServer(app);
 
-const port = 3000;
+app.use(express.json());
+app.use(cors());
 
-app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/', chatController);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
 
-const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-const io = socketIo(server);
+const arr = [];
 
 io.on('connection', (socket) => {
-  socket.on('user_connect', ({ nickname }) => {
-    socket.broadcast.emit('login_user', nickname);
-    socket.emit('logged_user', nickname);
+  // socket.emit('returnAllMessages', async () => axios.get('http://localhost:3000/chat'));
+
+  arr.push(socket.id.substring(0, 16));
+
+  socket.emit('id', arr);
+
+  socket.on('log_user', (id) => {
+    socket.broadcast.emit('login_user', id);
   });
-  socket.on('send-message', (obj) => {
-    io.emit('message_user', obj);
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const date = new Date().toLocaleString('en-GB');
+    const formatedDate = date.replace(/\//g, '-').replace(/,/, '');
+    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
+    // axios.post('http://localhost:3000/chat', {
+    //   message: chatMessage,
+    //   timestamp: formatedDate,
+    //   nickname,
+    // });
   });
+});
+
+app.get('/', (_req, res) => {
+  res.sendFile(`${__dirname}/public/index.html`);
+});
+
+http.listen(3000, () => {
+  console.log(`Listening at port: ${3000}`);
 });
