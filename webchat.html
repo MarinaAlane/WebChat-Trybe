@@ -6,6 +6,7 @@
   </head>
   <body>
     <div>
+      <ul> Usuários online:</ul>
       <h3 data-testid="online-user">NickName online!</h3>
       <input data-testid="nickname-box">
       <button data-testid="nickname-button">Chance nickname</button>
@@ -15,13 +16,35 @@
       <ul id="messages"></ul>
     </section>
 
-    <form action="">
+    <form id="form">
       <input id="messageInput" autocomplete="off" data-testid="message-box" />
-      <button data-testid="send-button">Send message</button>
+      <button id="btnMsg" type="submit" data-testid="send-button">Send message</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script> src="webchat.js"
+    <script>
+      const socket = io();
+      const messages = document.querySelector('#messages');
+      const form = document.querySelector('#form');
+      const inputMsg = document.querySelector('#messageInput');
+      const inputNickname = document.querySelector('#nickname-box');
+      const btnNickname = document.querySelector('#nickname-button');
+
+      // momento 1: o usuario envia uma mensagem;
+      form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (inputMsg.value) {
+        socket.emit('message', inputMsg.value);
+      }
+    });
+      // momento: usuario recebe e ve as mensagens; 
+      socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = msg;
+      // data-testid = "message"
+      messages.appendChild(newMessage);
+      window.scrollTo(0, document.body.scrollHeight);
+    })
     </script>
   </body>
 </html>

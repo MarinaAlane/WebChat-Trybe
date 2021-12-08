@@ -16,8 +16,17 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
 
-io.on('connection', (socket) => {
+io.on('connection', (socket) => { // quando conectado:
+  // ADD servidor deve enviar aos outros usuarios que este se conectou
   console.log(`Usuário conectado. ID: ${socket.id} `);
+
+  // momento dois, servidor recebe mensagem do usuario
+  socket.on('message', (chatMessage) => { // , { chatMessage, nickname } 
+    console.log('cheguei no socket.on');
+  // momento 3, servidor faz algo com a info recebida (tipo formatar) e enviar
+    const newMessage = `${socket.id} diz: ${chatMessage}`; // falta adicionar a hora e trocar id por nickName
+    io.emit('message', newMessage);
+  });
 });
 
 http.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
