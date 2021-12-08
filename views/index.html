@@ -2,21 +2,28 @@
 <html>
   <head>
     <title>Chat</title>
+    <link rel="stylesheet" href="./css/Chat.css"></link>
   </head>
   <body>
-    <section>
-      <form id="nickname-form">
-        <input type="text" id="nickname-input" />
-        <button id="nickname-button">Salvar</button>
-      </form>
-      <div>
-        <ul></ul>
+    <section class='container'>
+      <div class="nick-container">
+        <section class="users-container">
+          <form id="nickname-form">
+            <input type="text" id="nickname-box" data-testid="nickname-box" placeholder="Digite seu nick" />
+            <button id="nickname-button" data-testid="nickname-button">Salvar</button>
+          </form>
+        </section>
+        <section class="online-container">
+          <ul id="online-list"></ul>
+        </section>
       </div>
+      <section class="chat-container">
+        <ul id="messages-list"></ul>
+      </section>
     </section>
-    <section id="chat-box">
-      <ul id="messages-list"></ul>
+    <section class="message-container">
       <input type="text" id="message-box" data-testid="message-box">
-      <button id="send-button">Enviar</button>
+      <button id="send-button" data-testid="send-button">Enviar</button>
     </section>
   </body>
   <script src="/socket.io/socket.io.js"></script>

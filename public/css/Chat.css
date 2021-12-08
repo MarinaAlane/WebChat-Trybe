@@ -1,0 +1,63 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.nick-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 29%;
+}
+
+.users-container {
+  height: 5%;
+  width: 100%;
+}
+
+#nickname-form {
+  display: flex;
+  width: 100%;
+}
+
+#nickname-box {
+  height: 20px;
+  width: 100%;
+}
+
+.online-container {
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+  height: 94%;
+  width: 100%;
+}
+
+.chat-container {
+  border: 1px solid black;
+  border-radius: 5px;
+  height: 600px;
+  width: 70%;
+}
+
+.message-container {
+  margin-top: 9px;
+  width: 100%;
+}
+
+#message-box {
+  height: 30px;
+  width: 90%;
+}
+
+#send-button {
+  height: 35px;
+  width: 9%;
+}
+
+ul {
+  list-style: none;
+}
