@@ -1,5 +1,5 @@
 const formatZero = (data) => {
-  if (data > 10) return data;
+  if (data >= 10) return data;
   return `0${data}`;
 };
 

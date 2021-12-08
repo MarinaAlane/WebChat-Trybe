@@ -36,11 +36,13 @@ changeNicknameBtn.addEventListener('click', (e) => {
 
 sendMessageBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  socket.emit('message', { 
-    chatMessage: messageInput.value,
-    nickname, 
-  });
-  messageInput.value = '';
+  if (messageInput.value !== '') {
+    socket.emit('message', { 
+      chatMessage: messageInput.value,
+      nickname, 
+    });
+    messageInput.value = '';
+  }
   return false;
 });
 
