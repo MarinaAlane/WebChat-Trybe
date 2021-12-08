@@ -15,17 +15,22 @@ const io = require('socket.io')(http, {
   },
 });
 
-const arr = [];
+let arr = [];
 
 io.on('connection', (socket) => {
   // socket.emit('returnAllMessages', async () => axios.get('http://localhost:3000/chat'));
+  let userName = socket.id.substring(0, 16);
 
-  arr.push(socket.id.substring(0, 16));
+  arr.push(userName);
 
   socket.emit('id', arr);
 
-  socket.on('log_user', (id) => {
-    socket.broadcast.emit('login_user', id);
+  socket.on('log_user', (id) => socket.broadcast.emit('login_user', id));
+
+  socket.on('change_nickname', ({ userNickName, nick }) => {
+    arr = arr.map((el) => (el === nick ? userNickName : el));
+    socket.emit('change_user_id', userNickName); userName = userNickName;
+    socket.broadcast.emit('change_one_user_id', { userNickName, nick });
   });
 
   socket.on('message', ({ chatMessage, nickname }) => {
@@ -37,6 +42,10 @@ io.on('connection', (socket) => {
     //   timestamp: formatedDate,
     //   nickname,
     // });
+  });
+  socket.on('disconnect', () => {
+    arr = arr.filter((el) => (el !== userName));
+    socket.broadcast.emit('disconnect_user', userName);
   });
 });
 

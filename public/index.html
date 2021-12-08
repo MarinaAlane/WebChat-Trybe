@@ -56,6 +56,7 @@
       const online = document.getElementById('online');
       const liUser = document.createElement('li');
       liUser.setAttribute('data-testid', 'online-user');
+      liUser.setAttribute('class', 'online-user');
       liUser.innerText = user;
       online.appendChild(liUser);
       const liMessage = document.createElement('li');
@@ -90,6 +91,36 @@
     socket.on('message', (message) => {
       insertMessage(message);
     });
+
+    sendUser.addEventListener('click', () => {
+      const userNickName = document.getElementById('user-nick-name');
+      socket.emit('change_nickname', { userNickName: userNickName.value, nick: getNickname() })
+    });
+
+    socket.on('change_user_id', (userId) => {
+      const userOnline = document.querySelector('.online-user');
+      userOnline.innerHTML = userId;
+      addNickName(userId);
+    })
+
+    socket.on('change_one_user_id', ({ userNickName, nick }) => {
+      const usersOnline = document.querySelectorAll('.online-user');
+      usersOnline.forEach((el) => {
+        if (el.innerText === nick) {
+          el.innerText = userNickName;
+        }
+      })
+    })
+
+    socket.on('disconnect_user', (nickname) => {
+      console.log(nickname)
+      const usersOnline = document.querySelectorAll('.online-user');
+      usersOnline.forEach((el) => {
+        if (el.innerText === nickname) {
+          el.remove();
+        }
+      })
+    })
 
   </script>
 </body>
