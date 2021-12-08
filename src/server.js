@@ -15,23 +15,30 @@ const io = require('socket.io')(http, {
   },
 });
 
+let users = [];
+
 io.on('connection', (socket) => {
-  socket.emit('id', { newId: socket.id, olderId: '' });
+  let username = socket.id.substring(0, 16); users.push(username);
+
+  socket.on('connected', () => {
+    socket.emit('userId', username);
+    io.emit('id', { newId: username, olderId: '' }); io.emit('users', { users });
+  });
 
   socket.on('id', (id) => {
-    socket.emit('id', id);
+    io.emit('id', id); const filtered = users.filter((user) => user !== id.olderId);
+    socket.emit('userId', id.newId);
+    users = filtered; users.push(id.newId); username = id.newId; io.emit('users', { users });
   });
+
+  socket.on('disconnect',
+    () => { users = users.filter((user) => user !== username); io.emit('users', { users }); });
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date().toLocaleString('en-GB');
     const formatedDate = date.replace(/\//g, '-').replace(/,/, '');
-    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
-
-    axios.post('http://localhost:3000', {
-      message: chatMessage,
-      timestamp: formatedDate,
-      nickname,
-    });
+    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`); axios
+      .post('http://localhost:3000', { message: chatMessage, timestamp: formatedDate, nickname });
   });
 });
 

@@ -12,6 +12,7 @@
 
 <body>
   <main>
+    <p id="user"></p>
     <section>
       <div>
         <input data-testid="nickname-box" id="input-name" placeholder="Insira seu nickname" />
@@ -36,6 +37,7 @@
   </main>
 
   <script>
+    let username = '';
     const socket = io('http://localhost:3000');
 
     const getAllUsers = () => {
@@ -57,7 +59,7 @@
 
       const olderId = sessionStorage.getItem('user');
 
-      socket.emit('id', { newId: newUserName, olderId })
+      socket.emit('id', { newId: newUserName, olderId: username })
     })
 
     const inputMessage = document.getElementById('input-message');
@@ -87,11 +89,19 @@
 
     socket.on('message', (message) => createMessage(message))
 
+    socket.on('users', ({ users }) => {
+      console.log(users);
+      const ulUsers = document.getElementById('users');
+      ulUsers.innerHTML = '';
+      createUser(username)
+      users.filter(user => user !== username).forEach(user => createUser(user))
+    })
+
     socket.on('id', ({ newId, olderId }) => {
       if (!olderId) {
         const userId = newId.substring(0, 16);
+        actualUser = userId;
         sessionStorage.setItem('user', userId);
-        createUser(userId)
       } else {
         const user = document.getElementById(olderId);
         user.id = newId;
@@ -106,8 +116,13 @@
       response.forEach(({ message, nickname, timestamp }) => createMessage(`${timestamp} - ${nickname}: ${message}`))
     }
 
+    socket.on('userId', (user) => {
+      username = user;
+    })
+
     window.onload = () => {
       getAllMessages();
+      socket.emit('connected');
     }
   </script>
 </body>
