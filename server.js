@@ -24,4 +24,4 @@ const rootRouter = require('./routes');
 
 app.use(rootRouter);
 
-http.listen(PORT, () => console.log(`App runnign on port: ${PORT}`));
+http.listen(PORT, () => console.log(`App running on port: ${PORT}`));
