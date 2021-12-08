@@ -14,11 +14,13 @@ const sendButton = document.querySelector('#sendButton');
 
 let nickHash;
 
+const dataTestId = 'data-testid';
+
 socket.on('connection', (hashNick) => {
   nickHash = hashNick;
   const usersLi = document.createElement('li');
   usersLi.innerText = hashNick;
-  usersLi.setAttribute('data-testid', 'online-user');
+  usersLi.setAttribute(dataTestId, 'online-user');
   usersLi.setAttribute('class', 'userId-Name');
   usersUl.appendChild(usersLi);
 });
@@ -27,7 +29,7 @@ socket.on('connectedMessages', (messages) => {
   messages.forEach((i) => {
     const messageLi = document.createElement('li');
     messageLi.innerText = `${i.timestamp} - ${i.nickname}: ${i.message}`;
-    messageLi.setAttribute('data-testid', 'message');
+    messageLi.setAttribute(dataTestId, 'message');
     chatUl.appendChild(messageLi);
   });
 });
@@ -61,7 +63,7 @@ sendButton.addEventListener('click', (e) => {
 const showMessages = (message) => {
   const messageLi = document.createElement('li');
   messageLi.innerText = message;
-  messageLi.setAttribute('data-testid', 'message');
+  messageLi.setAttribute(dataTestId, 'message');
   chatUl.appendChild(messageLi);
 };
 
