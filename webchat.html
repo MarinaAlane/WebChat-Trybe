@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WEB CHAT - Project</title>
+    <!-- <link rel="stylesheet" href="./chat.css"> -->
+  </head>
+  <body>
+    <div>
+      <h3 data-testid="online-user">NickName online!</h3>
+      <input data-testid="nickname-box">
+      <button data-testid="nickname-button">Chance nickname</button>
+    </div>
+
+    <section>
+      <ul id="messages"></ul>
+    </section>
+
+    <form action="">
+      <input id="messageInput" autocomplete="off" data-testid="message-box" />
+      <button data-testid="send-button">Send message</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script> src="webchat.js"
+    </script>
+  </body>
+</html>
