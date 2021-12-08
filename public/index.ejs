@@ -22,7 +22,9 @@
   <section>
     <div id="messages" class="messages">
       <ul id="list-message">
-        <!-- arrayMessages -->
+        <% arrayMessages.forEach(({nickname, timestamp, message}) => { %>
+        <li data-testid='message'><%= timestamp %> - <%= nickname %>: <%= message %></li>
+        <% }) %>
       </ul>
     </div>
     <div class="box-sendmsg">

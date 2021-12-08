@@ -1,6 +1,6 @@
 function routerChat(req, res) {
   const { arrayMessages } = req.body;
-  res.render('index.ejs', arrayMessages);
+  res.render('index.ejs', { arrayMessages });
 }
 
 module.exports = routerChat;

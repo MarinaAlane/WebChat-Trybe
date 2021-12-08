@@ -1,6 +1,5 @@
 const formatInfoMessage = require('./formatInfoMessage');
 const insertMessage = require('../models/insertMessage');
-// const getMessages = require('../models/getMessages');
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
