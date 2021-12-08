@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web CHAT</title>
+</head>
+<body>
+  <h1>Olá world!</h1>
+    <form id="formUserNickname">
+      <input type="text" name="userNickname" id="userNickname" placeholder="Altere seu nickname">
+      <button type="submit">Trocar</button>
+    </form>  
+
+  <ul id="screenMessage">
+    
+  </ul>
+  <form id="userFormMessage">
+    <input type="text" name="userMessage" id="userMessage" placeholder="Digitua sua mensagem...">
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/chat.js"></script>
+</body>
+</html>
