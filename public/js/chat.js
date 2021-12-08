@@ -1,4 +1,5 @@
 const socket = window.io();
+const datatestId = 'data-testid';
 
 const messageForm = document.querySelector('.message-form');
 const userForm = document.querySelector('.user-form');
@@ -36,7 +37,7 @@ const createMessage = (message) => {
   const messagesUl = document.querySelector('.messages');
   const li = document.createElement('li');
   li.innerText = `${message}`;
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(datatestId, 'message');
   messagesUl.appendChild(li);
 };
 
@@ -45,7 +46,7 @@ const createUser = (users) => {
   const actualUser = sessionStorage.getItem('nickname');
   const listItem = document.createElement('li');
   listItem.innerText = `${actualUser}`;
-  listItem.setAttribute('data-testid', 'online-user');
+  listItem.setAttribute(datatestId, 'online-user');
   userList.appendChild(listItem);
   console.log(users);
   users.forEach((user) => {
