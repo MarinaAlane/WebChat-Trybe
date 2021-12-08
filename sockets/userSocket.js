@@ -6,6 +6,10 @@ module.exports = (io) => {
 
     socket.broadcast.emit('addLoggedUser', username);
 
+    socket.on('addLoggedUser', (data) => {
+      socket.broadcast.emit('addMissingLoggedUser', data);
+    });
+
     socket.on('updateUsername', (data) => {
       io.emit('updateUsername', { oldUsername: username, newUsername: data });
       username = data;
