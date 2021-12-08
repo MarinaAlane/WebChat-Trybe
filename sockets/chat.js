@@ -3,13 +3,28 @@ const formatMessage = ({ nickname, chatMessage }) => {
   return `${date} - ${nickname}: ${chatMessage}`;
 };
 
+let users = [];
+
 module.exports = (io) => io.on('connection', (socket) => {
-  // console.log(socket.id.slice(0, 16))
   socket.emit('nickname', `${socket.id.slice(0, 16)}`);
+  users.push(socket.id.slice(0, 16));
+  io.emit('userList', users);
 
   socket.on('message', (message) => {
-    // console.log(message, new Date().toLocaleDateString());
-    const newMSS = formatMessage(message);
-    io.emit('message', newMSS);
+    const newMsg = formatMessage(message);
+    io.emit('message', newMsg);
+  });
+
+  socket.on('changeNickname', (nicknames) => {
+    users = users.map((user) => {
+      if (user === nicknames.oldUser) return nicknames.newUser;
+      return user;
+    });
+    io.emit('userList', users);
+  });
+
+  socket.on('disconect', (nickname) => {
+    users = users.filter((user) => user !== nickname);
+    socket.broadcast.emit('userList', users);
   });
 });

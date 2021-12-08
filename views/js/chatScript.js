@@ -1,5 +1,7 @@
 const socket = window.io();
 
+const TEST_ID = 'data-testid';
+
 const messageForm = document.getElementById('message-form');
 const inputMessage = document.getElementById('message-input');
 
@@ -19,6 +21,10 @@ messageForm.addEventListener('submit', (e) => {
 
 nicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  socket.emit('changeNickname', {
+    newUser: inputNickname.value,
+    oldUser: nickname.innerHTML,
+  });
   sessionStorage.setItem('nickname', inputNickname.value);
   nickname.innerHTML = sessionStorage.getItem('nickname');
 
@@ -27,11 +33,37 @@ nicknameForm.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages');
+  const messagesUl = document.getElementById('messages');
   const li = document.createElement('li');
   li.innerText = message;
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(TEST_ID, 'message');
   messagesUl.appendChild(li);
+};
+
+const createUser = (user) => {
+  const userUl = document.getElementById('users');
+  const li = document.createElement('li');
+  li.innerText = user;
+  li.setAttribute(TEST_ID, 'online-user');
+  userUl.appendChild(li);
+};
+const clearUserList = () => {
+  const userUl = document.getElementById('users');
+  const newUl = userUl.cloneNode(false);
+  userUl.parentNode.replaceChild(newUl, userUl);
+};
+const updateUserList = (users) => {
+  clearUserList();
+  const userUl = document.getElementById('users');
+  users.forEach((user) => {
+    if (user !== nickname.innerText) {
+      createUser(user);
+    }
+  });
+  const li = document.createElement('li');
+  li.innerText = nickname.innerText;
+  li.setAttribute(TEST_ID, 'online-user');
+  userUl.insertBefore(li, userUl.firstChild);
 };
 
 socket.on('nickname', (id) => {
@@ -40,3 +72,12 @@ socket.on('nickname', (id) => {
 });
 
 socket.on('message', (message) => createMessage(message));
+
+socket.on('userList', (users) => {
+  console.log(users);
+  updateUserList(users);
+});
+
+window.onbeforeunload = function () {
+  socket.emit('disconect', sessionStorage.getItem('nickname'));
+};
