@@ -91,18 +91,15 @@ window.onload = () => {
   const nickUser = makeNickName();
   socket.emit('new-user', { user: nickUser, userOld: null });
 
-  socket.on('historic-messages', (historicMessages) => historicMessages
-    .forEach(({ nickname, message }) => {
-    const object = {
-      [nickname]: message,
-    };
+  socket.on('historic-messages', (historicMessages) => {  
+  const object = {};
+  
+    historicMessages.forEach(({ nickname, message }) => { object[nickname] = message; });
 
-    const newArr = Object.entries(object);
-
-    console.log(newArr)
+  const newArr = Object.entries(object);
 
     newArr.forEach((element) => element.forEach((el) => {
       historicMessage(el);
     }));
-  }));
+});
 };
