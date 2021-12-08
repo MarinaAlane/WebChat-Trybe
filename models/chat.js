@@ -1,7 +1,7 @@
 const connection = require('./connection');
 
 const getAll = () => (
-  connection().then((db) => db.collection('chat').find({}).toArray())
+  connection().then((db) => db.collection('messages').find({}).toArray())
 );
 
 const saveMessage = async (itens) => (
