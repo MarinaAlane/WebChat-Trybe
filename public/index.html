@@ -67,6 +67,18 @@
       messages.appendChild(liMessage);
     }
 
+    async function fetchApi() {
+      const response = await fetch('http://localhost:3000/chat');
+      const resolveJson = await response.json();
+      resolveJson.forEach(({ message, nickname, timestamp }) => {
+        const formatedDate = timestamp.replace(/\//g, '-').replace(/,/, '');
+        const newMessage = `${formatedDate} - ${nickname}: ${message}`;
+        insertMessage(newMessage)
+      })
+    }
+
+    fetchApi()
+
     socket.on('id', (arrId) => {
       const logedUser = arrId[arrId.length - 1];
       insertUser(logedUser);

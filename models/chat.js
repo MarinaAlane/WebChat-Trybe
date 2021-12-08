@@ -6,7 +6,7 @@ const getAll = () => (
 
 const saveMessage = async (itens) => (
   connection()
-    .then((db) => db.collection('chat')
+    .then((db) => db.collection('messages')
       .insertOne({ ...itens, timestamp: new Date() }))
 );
 

@@ -1,4 +1,4 @@
-// const axios = require('axios');
+const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
 
@@ -14,11 +14,29 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   },
 });
+const chatController = require('./controller/chatController');
+
+app.use('/', chatController);
 
 let arr = [];
 
+function createMessage({ chatMessage, nickname }) {
+  const date = new Date().toLocaleString('en-GB');
+  const formatedDate = date.replace(/\//g, '-').replace(/,/, '');
+  io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
+  axios.post('http://localhost:3000/chat', {
+    message: chatMessage,
+    nickname,
+    timestamp: formatedDate,
+  });
+}
+
+// function getAllMessages() {
+//   // console.log(resolve.data);
+//   return resolve.data;
+// }
+
 io.on('connection', (socket) => {
-  // socket.emit('returnAllMessages', async () => axios.get('http://localhost:3000/chat'));
   let userName = socket.id.substring(0, 16);
 
   arr.push(userName);
@@ -32,16 +50,8 @@ io.on('connection', (socket) => {
     socket.emit('change_user_id', userNickName); userName = userNickName;
     socket.broadcast.emit('change_one_user_id', { userNickName, nick });
   });
-
   socket.on('message', ({ chatMessage, nickname }) => {
-    const date = new Date().toLocaleString('en-GB');
-    const formatedDate = date.replace(/\//g, '-').replace(/,/, '');
-    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
-    // axios.post('http://localhost:3000/chat', {
-    //   message: chatMessage,
-    //   timestamp: formatedDate,
-    //   nickname,
-    // });
+    createMessage({ chatMessage, nickname });
   });
   socket.on('disconnect', () => {
     arr = arr.filter((el) => (el !== userName));

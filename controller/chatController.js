@@ -7,11 +7,16 @@ router.get('/chat', async (_req, res) => {
 });
 
 router.post('/chat', async (req, res) => {
-  const insertOneMessage = await chat.saveMessage(req.body);
-  if (!insertOneMessage) {
-    return res.status(404).json({ message: 'erro ao inserir mensagem' });
+  try {
+    const insertOneMessage = await chat.saveMessage(req.body);
+    if (!insertOneMessage) {
+      return res.status(404).json({ message: 'erro ao inserir mensagem' });
+    }
+    return res.status(200).json(insertOneMessage);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(404).json({ message: error.message });
   }
-  return res.status(200).json(insertOneMessage);
 });
 
 module.exports = router;
