@@ -1,3 +1,5 @@
+const Users = require('./users');
+
 const formatNewDate = () => {
   const now = new Date();
   const nowPtBr = now.toLocaleString('pt-br');
@@ -7,11 +9,12 @@ const formatNewDate = () => {
 module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log(`Usuário conectado. ID: ${socket.id} `);
-    
+
+    Users(socket, io);
+
     socket.on('message', async (message) => {
       const { nickname, chatMessage } = message;
       const stringMessage = await `${formatNewDate()} ${nickname} ${chatMessage}`;
-      console.log(`${socket.id} enviou uma mensagem!`);
       io.emit('message', stringMessage);
     });
   });

@@ -4,7 +4,11 @@
     <title>Chat</title>
   </head>
   <body>
-    <span id="currNickName" data-testid="online-user"><%= randNick %></span>
+    <span>Users</span>
+    <ul id="usersUl">
+      <li id="currNickName" data-testid="online-user"><%= randNick %></li>
+    </ul>
+    <span>Chat</span>
     <ul id="chatUl"></ul>
     <form id="msgForm" action="">
       <input type="text" id="msgInput" data-testid="message-box" placeholder="Insira sua mensagem aqui">
