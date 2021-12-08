@@ -1,9 +1,20 @@
-/* eslint-disable max-lines-per-function */
 const getBrazilianDate = require('../utils/getBrazilianDate');
 
 const formatedUser = (data) => `${getBrazilianDate()} - ${data.nickname}: ${data.chatMessage}`;
 
 const connectedUsers = [];
+
+const findIndexViaNickname = (oldNickname) => {
+  const indexToUpdateUser = connectedUsers
+  .findIndex(({ nickname }) => nickname === oldNickname);
+  return indexToUpdateUser;
+};
+
+const findIndexViaSockedId = (sockedId) => {
+  const indexToDeleteUser = connectedUsers
+      .findIndex(({ id }) => id === sockedId);
+    connectedUsers.splice(indexToDeleteUser, 1);
+};
 
 module.exports = (io) => io.on('connection', (socket) => {
   console.log(`Alguém com o Socked.id "${socket.id}" conectou`);
@@ -18,17 +29,14 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('updateUser', ({ oldNickname, newNickname }) => {
-    const indexToUpdateUser = connectedUsers
-      .findIndex(({ nickname }) => nickname === oldNickname);
+    const userIndex = findIndexViaNickname(oldNickname);
 
-    connectedUsers[indexToUpdateUser].nickname = newNickname;
+    connectedUsers[userIndex].nickname = newNickname;
     io.emit('updateUser', connectedUsers);
   });
 
   socket.on('disconnect', () => {
-    const indexOfUser = connectedUsers
-      .findIndex(({ id }) => id === socket.id);
-    connectedUsers.splice(indexOfUser, 1);
+    findIndexViaSockedId(socket.id);
     console.log(`"${socket.id}" saiu`);
     io.emit('updateUser', connectedUsers);
   });
