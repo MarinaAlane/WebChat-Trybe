@@ -20,7 +20,7 @@ const ftMsg = moment().format('MM-DD-YYYY h:mm A');
 
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
-  const userOnline = socket.id.slice(-10);
+  const userOnline = socket.id.slice(0, 16);
   
   socket.emit('nickGenerate', userOnline);
 

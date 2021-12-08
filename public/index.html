@@ -39,15 +39,10 @@
       $('.todos-online').append('<p data-testid="online-user">' + nick + '</p>');
     }
 
-    // gerar um nome aleatório para o usuário
-    function randomName() {
-      socket.on('nickGenerate', function(data) {
-        nick = `guest-${data}`;
-        onlineUser(nick);
-      });
-    }
-
-    randomName();
+    socket.on('nickGenerate', function(data) {
+      nick = data;
+      onlineUser(nick);
+    });
 
     $('#nickForm').submit(function(e){
       e.preventDefault();
