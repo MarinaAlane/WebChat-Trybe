@@ -16,6 +16,7 @@ const io = require('socket.io')(http,  {
 });
 
 io.on('connection', (socket) => {
+  console.log('connection');
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date().toLocaleDateString('en-GB');
     const formateDate = date.replace(/\//g, '-').replace(/,/, '');
