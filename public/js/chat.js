@@ -55,6 +55,14 @@ const createMessage = (userMessage) => {
   messagesUl.appendChild(li); 
 };
 
+const historicMessage = (userMessage) => {
+  const messagesUl = document.querySelector('#historic-messages');
+  const li = document.createElement('li');
+  li.innerText = userMessage;
+  li.setAttribute(dataTest, 'message');
+  messagesUl.appendChild(li); 
+};
+
 socket.on('message', (userMessage) => createMessage(userMessage));
 
 socket.on('update-nicknames', (arrayUsers) => {
@@ -83,7 +91,18 @@ window.onload = () => {
   const nickUser = makeNickName();
   socket.emit('new-user', { user: nickUser, userOld: null });
 
-  socket.on('historic-messages', (historicMessages) => historicMessages.forEach((elements) => {
-    createMessage(elements.message);
+  socket.on('historic-messages', (historicMessages) => historicMessages
+    .forEach(({ nickname, message }) => {
+    const object = {
+      [nickname]: message,
+    };
+
+    const newArr = Object.entries(object);
+
+    console.log(newArr)
+
+    newArr.forEach((element) => element.forEach((el) => {
+      historicMessage(el);
+    }));
   }));
 };

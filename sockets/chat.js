@@ -22,7 +22,8 @@ module.exports = (io) => io.on('connection', async (socket) => {
     const timeHour = new Date().toLocaleTimeString('pt-br', { hour12: true });
     const day = (new Date().toLocaleDateString()).replace(/\//g, '-');
     const time = `${day} ${timeHour}`;
-    const userMessage = `${time} ${nickname} ${chatMessage}`;   
+    const userMessage = `${time} ${nickname} ${chatMessage}`;
+      
     createMessagesOnBank(chatMessage, nickname, time);
 
     io.emit('message', userMessage);
