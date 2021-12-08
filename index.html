@@ -11,29 +11,34 @@
             box-sizing: border-box;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
   
 </head>
 <body>
+    <div id="div-nickname">
+        <input id="nicknameInput" data-testid="nickname-box" />
+        <button id="btn-nickname" data-testid="nickname-button" type="button">OK</button>
+    </div>
     <ul id="messages"></ul>
 
     <form action="" id="form">
-        <input id="nicknameInput"/>
-        <input id="mensagemInput" autocomplete="off" />
-        <button>Enviar</button>
+        <input id="mensagemInput" data-testid="message-box" autocomplete="off" />
+        <button data-testid="send-button" >Send</button>
     </form>
 
     <script>
        const socket = io();
        const form = document.querySelector('#form');
        const inputMessage = document.querySelector('#mensagemInput')
-       const nickname = document.querySelector('#nicknameInput');
+       const nicknameBtn = document.querySelector('#btn-nickname');
        form.addEventListener('submit', (e) => {
            e.preventDefault();
+           const span = document.querySelector('span');
+           console.log(span.innerText);
            if(inputMessage.value) {
              const data = {
+                 nickname: span.innerText,
                  chatMessage: inputMessage.value,
-                 nickname: nickname.value
              }
              console.log(data);
                 socket.emit('message', data);
@@ -46,9 +51,32 @@
                 console.log(message);
                 const { dataAtual, horaAtual, nickname, chatMessage } = message;
                 const li = document.createElement('li');
+                li.setAttribute("data-testid", "message");
                 li.textContent = message;
                 ul.appendChild(li);
-            });         
+            });
+            
+            nicknameBtn.addEventListener('click', () => {
+                const inputNickname = document.querySelector('#nicknameInput');
+                const div = document.querySelector('#div-nickname');
+                const dSpan = document.querySelector('span');
+                div.removeChild(dSpan);
+                const span = document.createElement('span');
+                span.setAttribute("data-testid", "online-user");
+                span.textContent = inputNickname.value;
+                div.appendChild(span);
+            });
+
+            window.onload = () => {
+                let nickname = document.getElementById('nickname');
+                let radomString = [...Array(16)].map(i=>(~~(Math.random()*36)).toString(36)).join('')
+                console.log(radomString);
+                const div = document.querySelector('#div-nickname');
+                const span = document.createElement('span');
+                span.setAttribute("data-testid", "online-user");
+                span.textContent = radomString;
+                div.appendChild(span);
+            }
 
     </script>
 
