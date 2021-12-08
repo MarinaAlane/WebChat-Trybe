@@ -1,6 +1,6 @@
 const connection = require('./connection');
 
-async function insertMessage() {
+async function getMessages() {
   const connect = await connection();
   const db = await connect.collection('message');
   const result = await db.find({}, {
@@ -11,4 +11,4 @@ async function insertMessage() {
   return result;
 }
 
-module.exports = insertMessage;
+module.exports = getMessages;

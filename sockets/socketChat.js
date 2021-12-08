@@ -11,6 +11,7 @@ module.exports = (io) => {
     socket.on('message', async (clientMessage) => {
       const { nickname, message, timestamp } = formatInfoMessage(randNameId, clientMessage);
       const formatMessage = `${timestamp} - ${nickname}: ${message}`;
+
       io.emit('message', formatMessage);
       await insertMessage({ nickname, message, timestamp });
     });
