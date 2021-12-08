@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -22,4 +23,8 @@ io.on('connection', (socket) => {
     const formateDate = date.replace(/\//g, '-').replace(/,/, '');
     io.emit('message', `${formateDate} - ${nickname}: ${chatMessage}`);
   });
+});
+
+app.get('/', (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, './src/view/index.html'));
 });
