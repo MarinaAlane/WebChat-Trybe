@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <title>Trybe - WebChat</title>
+</head>
+  <div>
+    <p>Seja bem vindo(a), sua identificação é:
+      <span data-testid="online-user"></span>
+      .
+    </p>
+  </div>
+  <form>
+    <input
+      data-testid="nickname-box"
+      placeholder="Insira seu nickname"
+      type="text"
+    />
+    <button
+      data-testid="nickname-button"
+      type="submit"
+    >
+      Salvar
+    </button>
+  </form>
+  <div>
+    <ul id="messages"></ul>
+  </div>
+  <form>
+    <input
+      data-testid="message-box"
+      placeholder="Digite uma nova mensagem aqui"
+      type="text"
+    />
+    <button
+      data-testid="send-button"
+      type="submit"
+    >
+      Enviar
+    </button>
+  </form>
+  <script type="module" src="./scripts.js"></script>
+</body>
+</html
