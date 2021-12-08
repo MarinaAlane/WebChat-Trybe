@@ -11,34 +11,64 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <form class="chat" id="chatForm">
-    <input type="text" name="nickname" placeholder="Digite o nickname">
-    <div class="messages"></div>
-    <input type="text" name="messages" placeholder="Digite a mensagem">
-    <button type="submit">Enviar</button>
-  </form>
+  <main>
+    <div class="nick-container">
+      <h3 data-testid="online-user"></h3>
+      <form id="nickForm">
+        <input type="text" data-testid="nickname-box" name="nickname" placeholder="Trocar Nickname">
+        <button type="submit" data-testid="nickname-button">Salvar</button>
+      </form>
+    </div>
+    <div class="message-container">
+      <div class="mess"></div>
+    </div>
+    <div class="nick-container">
+      <form id="messageForm">
+        <input type="text" data-testid="message-box" name="messages" placeholder="Digite sua mensagem">
+        <button type="submit" data-testid="send-button">Enviar</button>
+      </form>
+    </div>
+  </main>
 
   <script type="text/javascript">
     var socket = io('http://localhost:3000');
+    var nick;
 
-    function renderMessage(message) {
-      $('.messages').append(message);
+    // gerar um nome aleatório para o usuário
+    function randomName() {
+      socket.emit('nickGenerate');
+
+      socket.on('nickGenerate', function(data) {
+        nick = `guest-${data.slice(-10)}`;
+        $('[data-testid="online-user"]').text(nick);
+      });
     }
 
-    socket.on('message', function(message) {
-      renderMessage(message);
+    randomName();
+
+    $('#nickForm').submit(function(e){
+      e.preventDefault();
+      nick = $('input[name="nickname"]').val();
+      console.log(nick);
     });
 
-    $('#chatForm').submit(function(e){
+    $('#messageForm').submit(function(e){
       e.preventDefault();
+      var message = $('input[name="messages"]').val();
 
-      var inputNickname = $('input[name=nickname]').val();
-      var inputMessage = $('input[name=messages]').val();
+      if (message.length > 0 && nick.length > 0) {
+        socket.emit('message', { nickname: nick, chatMessage: message });
+  
+        $('input[name="messages"]').val('');
+        $('input[name="messages"]').focus();
+      } else {
+        alert('Digite um nickname e uma mensagem');
+      }
+        
+    });
 
-      socket.emit('message', { chatMessage: inputMessage, nickname: inputNickname });
-
-      $('input[name=messages]').val('');
-
+    socket.on('message', function(data){
+      $('.mess').append('<p data-testid="message">' + data + '</p>');
     });
     
   </script>

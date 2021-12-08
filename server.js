@@ -22,8 +22,11 @@ io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
   
   socket.on('message', (data) => {
-    io.emit('message', 
-    `<div class="message"><b>${ftMsg} - <em>${data.nickname}</em></b>: ${data.chatMessage}</div>`);
+    io.emit('message', `${ftMsg} - ${data.nickname}: ${data.chatMessage}`);
+  });
+
+  socket.on('nickGenerate', () => {
+    socket.emit('nickGenerate', socket.id);
   });
 });
 
