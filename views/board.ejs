@@ -8,12 +8,13 @@
     <ul id="chat"></ul>
 
     <script>
+      const ul = document.querySelector('#chat');
+
       const socket = io("http://localhost:3000");
-      socket.on("message", (data) => {
+      socket.on("message", (msg) => {
         const li = document.createElement("li");
-        const liText = document.createTextNode(data);
-        li.appendChild(liText);
-        document.getElementById("chat").appendChild(li);
+        li.textContent = msg;
+        ul.appendChild(li);
       });
     </script>
   </body>
