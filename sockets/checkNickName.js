@@ -1,10 +1,10 @@
-function formatUser(randNameId, message) {
+function formatUser(randNameId, userNickName) {
   let nickNameUser = '';
 
-  if (!message.nickname) {
+  if (!userNickName) {
     nickNameUser = randNameId;
   } else {
-    nickNameUser = message.nickname;
+    nickNameUser = userNickName;
   }
   return nickNameUser;
 }

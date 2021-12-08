@@ -1,7 +1,5 @@
-const moment = require('moment');
-const formatUser = require('./formatNickName');
-
-const time = moment().format('DD-MM-YYYY hh:mm:ss A');
+const checkNickName = require('./checkNickName');
+const insertMessage = require('../models/insertMessage');
 
 module.exports = (io) =>
   io.on('connection', (socket) => {
@@ -9,10 +7,13 @@ module.exports = (io) =>
 
     io.emit('userOnline', randNameId);
 
-    socket.on('message', async (message) => {
-      const formatNickName = formatUser(randNameId, message);
+    socket.on('message', async (clientMessage) => {
+      const { timestamp, nickname, message } = await insertMessage(clientMessage);
 
-      const formatMessage = `${time} - ${formatNickName}: ${message.chatMessage}`;
-      io.emit('message', formatMessage, formatNickName);
+      const checkNick = checkNickName(randNameId, nickname);
+
+      const formatMessage = `${timestamp} - ${checkNick}: ${message}`;
+
+      io.emit('message', formatMessage, checkNick);
     });
   });
