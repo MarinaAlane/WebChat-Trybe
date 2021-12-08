@@ -1,4 +1,4 @@
-/* #screen {
+#screen {
   display: flex;
 }
 
@@ -12,4 +12,4 @@
   border: 1px black solid;
   height: 700px;
   width: 500px;
-} */
+}
