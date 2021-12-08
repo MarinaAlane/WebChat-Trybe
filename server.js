@@ -1,14 +1,23 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+
+const app = express();
+const http = require('http').createServer(app);
+const path = require('path');
 
 const PORT = 3000;
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
-io.on('connection', (socket) => {
-  console.log(`-> ${socket.id} está conectado`);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'webchat.html'));
 });
 
-server.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000', // url aceita pelo cors
+    methods: ['GET', 'POST'], // Métodos aceitos pela url
+  } });
+
+io.on('connection', (socket) => {
+  console.log(`Usuário conectado. ID: ${socket.id} `);
+});
+
+http.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
