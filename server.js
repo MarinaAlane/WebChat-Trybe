@@ -14,3 +14,11 @@ const io = require('socket.io')(http,  {
     method: ['GET', 'POST'],
   }
 });
+
+io.on('connection', (socket) => {
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const date = new Date().toLocaleDateString('en-GB');
+    const formateDate = date.replace(/\//g, '-').replace(/,/, '');
+    io.emit('message', `${formateDate} - ${nickname}: ${chatMessage}`);
+  });
+});
