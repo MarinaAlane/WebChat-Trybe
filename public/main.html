@@ -23,9 +23,9 @@
             type="text"
             placeholder="Insira seu nickname"
             id="nickname"
-            
           />
           <button type="button" name="set-nickname">Salvar</button>
+          <p data-testid="online-user" id="onlineUser"></p>
         </div>
         <div class="online-users">Pessoas usuárias online</div>
       </div>
@@ -35,12 +35,19 @@
     </section>
     <section class="bottom">
       <input
+        data-testid="message-box"
         type="text"
         placeholder="Digite sua mensagem"
         id="chatMessage"
-        
       />
-      <button type="button" name="send-button" id="sendButton">Enviar</button>
+      <button
+        type="button" 
+        name="send-button" 
+        id="sendButton"
+        data-testid="send-button"
+      >
+        Enviar
+      </button>
     </section>
   </body>
   <script src="js/main.js"></script>
