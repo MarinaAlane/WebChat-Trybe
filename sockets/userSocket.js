@@ -10,5 +10,9 @@ module.exports = (io) => {
       io.emit('updateUsername', { oldUsername: username, newUsername: data });
       username = data;
     });
+
+    socket.on('disconnect', () => {
+      io.emit('removeUser', username);
+    });
   });
 };

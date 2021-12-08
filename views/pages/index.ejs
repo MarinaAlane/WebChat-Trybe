@@ -109,6 +109,17 @@
         }
       }
     });
+
+    socket.on('removeUser', (username) => {
+      const users = getUsers();
+
+      for (let index = 0; index <= users.length; index += 1) {
+        if (users[index].innerText === username) {
+          users[index].remove();
+          break;
+        }
+      }
+    });
   </script>
 </body>
 </html>
