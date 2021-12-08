@@ -4,7 +4,7 @@
     <title>Socket.IO - trybe</title>
     <link rel="stylesheet" href="./css/chat.css" />
   </head>
-  <body onload="defineNicknameOnLoad()" >
+  <body>
     <div>
     <form>
     <input id="nicknameInput" data-testid="nickname-box" type="text" placeholder="Inform Your Nickname" />
@@ -14,11 +14,24 @@
     <span id="nickname" data-testid="online-user"></span>
   </div>
   </form>
-    <ul class="messages"></ul>
+    <ul class="messages" ></ul>
     <form action="" class="messageBox">
       <input id="messageInput" autocomplete="off" data-testid="message-box" /><button data-testid="send-button" type="submit" >Send</button>
     </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/chat.js"></script>
   </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/chat.js"></script>
+  <script>
+    window.onload = async function(){ 
+      defineNicknameOnLoad();
+      const loggedMessages = await fetch('http://localhost:3000/messagesHistory'); // porque chamando essa funcao do chat.js nao funciona ?
+      const messages = await loggedMessages.json();
+      messages.forEach(element => {
+        const timestamp = element.timestamp;
+        const nickname = element.nickname;
+        const chatMessage = element.message;
+        createMessage(`${timestamp} - ${nickname}: ${chatMessage}`);
+      });
+     }
+  </script>
 </html>

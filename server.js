@@ -13,9 +13,16 @@ const io = require('socket.io')(http, {
   },
 });
 
+const { getMessages } = require('./models/queries');
+
 app.use(express.static(`${__dirname}/public`));
 
 require('./sockets/chat')(io);
+
+app.get('/messagesHistory', async (req, res) => {
+  const messages = await getMessages();
+  return res.json(messages);
+});
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
