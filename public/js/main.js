@@ -57,13 +57,18 @@ window.onload = () => {
   const randomNick = generateNickname();
   sessionStorage.setItem('nickname', randomNick);
 
-  createUserElement(randomNick);
+  // createUserElement(randomNick);
 
   socket.emit('newUser', randomNick);
   socket.on('updateUser', (newUser) => {
+    const currentUser = sessionStorage.getItem('nickname');
     userList.innerHTML = '';
+    createUserElement(currentUser);
     newUser.forEach((user) => {
-      createUserElement(user.nickname);
+      console.log(user.nickname);
+      if (user.nickname !== currentUser) {
+        createUserElement(user.nickname);
+      }
     });
   });
 };
