@@ -15,25 +15,43 @@
   
 </head>
 <body>
-    <ul id="mensagens"></ul>
+    <ul id="messages"></ul>
 
-    <form action="">
-        <input id="mensagemInput" autocomplete="off" /><button>Enviar</button>
+    <form action="" id="form">
+        <input id="nicknameInput"/>
+        <input id="mensagemInput" autocomplete="off" />
+        <button>Enviar</button>
     </form>
 
     <script>
        const socket = io();
-       const form = document.querySelector('form');
+       const form = document.querySelector('#form');
        const inputMessage = document.querySelector('#mensagemInput')
+       const nickname = document.querySelector('#nicknameInput');
        form.addEventListener('submit', (e) => {
            e.preventDefault();
-           socket.emit('mensagem', inputMessage.value);
-           inputMessage.value = '';
-           return false;
-       });
+           if(inputMessage.value) {
+             const data = {
+                 chatMessage: inputMessage.value,
+                 nickname: nickname.value
+             }
+             console.log(data);
+                socket.emit('message', data);
+                inputMessage.value = '';
+              }  
+         });
+
+            socket.on('message', (message) => {
+                const ul = document.querySelector('#messages');
+                console.log(message);
+                const { dataAtual, horaAtual, nickname, chatMessage } = message;
+                const li = document.createElement('li');
+                li.textContent = message;
+                ul.appendChild(li);
+            });         
+
     </script>
 
 </body>
 
 </html>
-        
