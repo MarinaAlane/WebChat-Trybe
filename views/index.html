@@ -4,6 +4,10 @@
     <title>Chat</title>
   </head>
   <body>
+    <form id="nickname-form">
+      <input type="text" id="nickname-input" />
+      <button id="nickname-button">Salvar</button>
+    </form>
     <section id="chat-box">
       <ul id="messages-list"></ul>
       <input type="text" id="message-box">
@@ -12,4 +16,5 @@
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/Chat.js"></script>
+  <!-- <script src="./js/Nickname.js"></script> -->
 </html>
