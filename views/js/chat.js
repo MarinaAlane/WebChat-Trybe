@@ -21,16 +21,23 @@ const changeNicknameBtn = document.getElementById('nickname-btn');
 const nicknameInput = document.getElementById('nickname-input');
 
 window.onload = () => {
-  const onlineUsers = document.createElement('li');
-  onlineUsers.innerText = nickname;
-  onlineUsers.dataset.testid = 'online-user';
-  onlineUsersList.appendChild(onlineUsers);
+  // const onlineUsers = document.createElement('li');
+  // onlineUsers.innerText = nickname;
+  // onlineUsers.dataset.testid = 'online-user';
+  // onlineUsersList.appendChild(onlineUsers);
+  socket.emit('newOnlineUser', nickname);
 };
 
 changeNicknameBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  nickname = nicknameInput.value;
-  nicknameInput.value = '';
+  if (nicknameInput.value !== '') {
+    socket.emit('updateNickname', { 
+      currentNickname: nickname,
+      newNickname: nicknameInput.value, 
+    });
+    nickname = nicknameInput.value;
+    nicknameInput.value = '';
+  }
   return false;
 });
 
@@ -53,4 +60,22 @@ const newMessage = (data) => {
   messagesList.appendChild(li);
 };
 
+const newOnlineUser = (onlineUsers) => {
+  onlineUsersList.innerHTML = '';
+  onlineUsers.forEach((user) => {
+    const li = document.createElement('li');
+    li.innerText = user;
+    li.dataset.testid = 'online-user';
+    onlineUsersList.appendChild(li);
+    if (user === nickname) onlineUsersList.insertBefore(li, onlineUsersList.firstChild);
+  });
+};
+
 socket.on('message', (data) => newMessage(data));
+socket.on('newOnlineUser', (onlineUsers) => newOnlineUser(onlineUsers));
+socket.on('userDisconnect', (onlineUsers) => newOnlineUser(onlineUsers));
+socket.on('updateNickname', (onlineUsers) => newOnlineUser(onlineUsers));
+
+window.onbeforeunload = () => {
+  socket.emit('userDisconnect', nickname);
+};

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <link href="./css/index.css" rel="stylesheet">
+    <title>Web Chat</title>
+  </head>
+  <body>
+    <div class="top-container">
+      <div class="online-users-container">
+        <form id="nickname-form" action="">
+          <input type="text" id="nickname-input" class="input" data-testid="nickname-box" placeholder="Insira seu nickname" />
+          <button id="nickname-btn" type="button" data-testid="nickname-button">Salvar</button>
+        </form>
+        <ul class="online-users" id="online-users-list">
+          <!-- <% users.forEach((user) => { %>
+            <li data-testid="online-user"><%= user %></li>
+          <%}) %> -->
+        </ul>
+      </div>
+      <div class="messages-container">
+        <ul id="messages-list">
+          <% messages.forEach(({ message, nickname, timestamp }) => { %>
+            <li data-testid="message"><%= `${timestamp} - ${nickname}: ${message}` %></li>
+          <%}) %>
+        </ul>
+      </div>
+    </div>
+    <form id="message-form" action="">
+      <input autocomplete="off" type="text" data-testid="message-box" placeholder="Digite uma nova mensagem aqui" class="input" id="message-input" />
+      <button type="button" id="send-btn" data-testid="send-button">Enviar</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/chat.js"></script>
+  </body>
+</html>

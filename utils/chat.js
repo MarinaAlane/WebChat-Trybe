@@ -1,3 +1,29 @@
+let onlineUsers = [];
+
+const newOnlineUser = (nickname) => {
+  onlineUsers.push(nickname);
+  return onlineUsers;
+};
+
+const removeUser = (nickname) => {
+  const userIndex = onlineUsers.indexOf(nickname);
+  onlineUsers.splice(userIndex, 1);
+  return onlineUsers;
+};
+
+const updateUser = (currentNickname, newNickname) => {
+  const updatedUsers = onlineUsers.map((user) => {
+    if (user === currentNickname) return newNickname;
+    return user;
+  });
+
+  onlineUsers = updatedUsers;
+
+  return onlineUsers;
+};
+
+const getAllOnlineUsers = () => onlineUsers;
+
 const formatZero = (data) => {
   if (data >= 10) return data;
   return `0${data}`;
@@ -25,4 +51,8 @@ const getTime = () => {
 
 module.exports = {
   getTime,
+  newOnlineUser,
+  getAllOnlineUsers,
+  removeUser,
+  updateUser,
 };
