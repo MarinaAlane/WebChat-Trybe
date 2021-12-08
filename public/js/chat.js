@@ -21,11 +21,6 @@ const makeNickName = () => {
   return text;
 };
 
-window.onload = () => {
-  const nickUser = makeNickName();
-  socket.emit('new-user', { user: nickUser, userOld: null });
-};
-
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
@@ -65,7 +60,7 @@ socket.on('message', (userMessage) => createMessage(userMessage));
 socket.on('update-nicknames', (arrayUsers) => {
   usersList.innerHTML = '';
   const arr = [];
-  
+
   const usernickname = sessionStorage.getItem('nickname');
 
   const fisrtLi = document.createElement('li');
@@ -83,3 +78,13 @@ socket.on('update-nicknames', (arrayUsers) => {
   });
   arr.forEach((elements) => usersList.appendChild(elements));
 });
+
+window.onload = () => {
+  const nickUser = makeNickName();
+  socket.emit('new-user', { user: nickUser, userOld: null });
+
+  socket.on('historic-messages', (historicMessages) => historicMessages.forEach((elements) => {
+    const userMessages = elements.message;
+    createMessage(userMessages);
+  }));
+};
