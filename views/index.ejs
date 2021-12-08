@@ -1,14 +1,78 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+
+<html lang="en">
+
   <head>
-    <title></title>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Document</title>
+
   </head>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+
   <body>
+    <h1>Webchat</h1>
     <form>
-      <label for=""></label>
-      <input id="" name="" type="" />
-      <button type="submit"></button>
+      <p id="onlineUser" data-testid="online-user"></p>
+      <input
+        type="text"
+        id="nicknameInput"
+        data-testid="nickname-box"
+        placeholder="nickname"
+      />
+      <button type="button" id="nicknameButton" data-testid="nickname-button">
+        Salvar
+      </button>
+      <input
+        type="text"
+        id="messageInput"
+        data-testid="message-box"
+        placeholder="Digite sua mensagem"
+      />
+      <button type="button" id="sendButton" data-testid="send-button">
+        Enviar
+      </button>
     </form>
+    <ul id="ulMessages"></ul>
+    <script>
+      const socket = io();
+      const nicknameButton = document.querySelector("#nicknameButton");
+      const sendButton = document.querySelector("#sendButton");
+      const messageInput = document.querySelector("#messageInput");
+      const nicknameInput = document.querySelector("#nicknameInput");
+      const userNameTag = document.querySelector("#onlineUser");
+      userNameTag.innerText = sessionStorage.getItem("nickname");
+
+      nicknameButton.addEventListener("click", () => {
+        sessionStorage.setItem("nickname", nicknameInput.value);
+        userNameTag.innerText = sessionStorage.getItem("nickname");
+        nicknameInput.value = "";
+      });
+      sendButton.addEventListener("click", () => {
+        socket.emit("message", {
+          chatMessage: messageInput.value,
+          nickname: sessionStorage.getItem("nickname"),
+        });
+        messageInput.value = "";
+        return false;
+      });
+      
+      const createMessage = (message) => {
+        const ul = document.querySelector("#ulMessages");
+        const li = document.createElement("li");
+        li.innerText = message;
+        li.setAttribute("data-testid", "message");
+        ul.appendChild(li);
+      };
+      socket.on("randomNickname", (msg) => {
+        userNameTag.innerText = msg;
+        sessionStorage.setItem("nickname", msg);
+      });
+      socket.on("message", (msg) => createMessage(msg));
+    </script>
   </body>
- 
 </html>
