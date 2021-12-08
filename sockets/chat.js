@@ -29,16 +29,17 @@ module.exports = (io) => io.on('connection', async (socket) => {
     io.emit('message', userMessage);
   });
 
-  const historicMessages = await getMessages();
-
-  socket.emit('historic-messages', historicMessages);
+  const data = await getMessages();
+  
+  socket.emit('historic-messages', data);
 
   socket.on('new-user', ({ user, userOld }) => {
     newUserFunc(io, { user, userOld }, socket);
   });
 
-socket.on('disconnect', () => {
- arrayUsers.splice(arrayUsers.indexOf(arrayUsers.find((element) => element.socket === socket)), 1);
-  io.emit('update-nicknames', arrayUsers.map(({ user }) => ({ user })));
-});
+  socket.on('disconnect', () => {
+    arrayUsers
+      .splice(arrayUsers.indexOf(arrayUsers.find((element) => element.socket === socket)), 1);
+    io.emit('update-nicknames', arrayUsers.map(({ user }) => ({ user })));
+  });
 });

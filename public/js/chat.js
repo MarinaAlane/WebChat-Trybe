@@ -1,7 +1,5 @@
 const socket = window.io();
 
-// const { getByNickName } = require('../../controllers');
-
 const form = document.querySelector('#message-form');
 const nicknameForm = document.querySelector('#nickname-form');
 const newnickname = document.querySelector('#nicknamebox');
@@ -25,6 +23,7 @@ const makeNickName = () => {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+  console.log('5');
 
   const nickname = sessionStorage.getItem('nickname');  
   
@@ -37,6 +36,7 @@ form.addEventListener('submit', (event) => {
 
 nicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
+  console.log('4');
 
   const newNickname = newnickname.value;
   const oldNickname = sessionStorage.getItem('nickname');
@@ -98,5 +98,5 @@ window.onload = () => {
       const userMessage = `${time} ${nickname} ${message}`;
       historicMessage(userMessage);
     });
-});
+  });
 };

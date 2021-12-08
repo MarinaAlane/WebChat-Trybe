@@ -14,10 +14,4 @@ const getMessages = async () => {
   return response;
 };
 
-// const getByNickName = async (nickname) => {
-//   const user = await connection()
-//     .then((db) => db.collection('messages').findAll({ nickname }));
-//   return user;
-// };
-
 module.exports = { createMessage, getMessages };
