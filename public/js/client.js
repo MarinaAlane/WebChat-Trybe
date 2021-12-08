@@ -23,6 +23,15 @@ socket.on('connection', (hashNick) => {
   usersUl.appendChild(usersLi);
 });
 
+socket.on('connectedMessages', (messages) => {
+  messages.forEach((i) => {
+    const messageLi = document.createElement('li');
+    messageLi.innerText = `${i.timestamp} - ${i.nickname}: ${i.message}`;
+    messageLi.setAttribute('data-testid', 'message');
+    chatUl.appendChild(messageLi);
+  });
+});
+
 // Insere os usuários
 enterButton.addEventListener('click', (e) => {
   e.preventDefault();
