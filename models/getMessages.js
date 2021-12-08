@@ -1,16 +1,18 @@
 const connection = require('./connection');
 
-async function insertMessage(message) {
+async function getMessages() {
   try {
     const connDb = await connection();
     const db = await connDb.collection('message');
 
-    const { ops } = await db.insertOne(message);
+    const result = await db.find({}, {
+      projection: { _id: 0 },
+    }).toArray();
 
-    return ops[0];
+    return result;
   } catch (error) {
     console.log(error.message);
   }
 }
 
-module.exports = insertMessage;
+module.exports = getMessages;
