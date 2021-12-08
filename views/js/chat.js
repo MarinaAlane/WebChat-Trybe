@@ -5,6 +5,8 @@ const messageBox = document.getElementById('message-box');
 const buttonMessage = document.getElementById('send-message');
 const listMessage = document.getElementById('list-message');
 const listUserOnline = document.getElementById('list-online-user');
+const inputSetNick = document.getElementById('nickname-box');
+const buttonSetNickName = document.getElementById('nickname-button');
 
 function creatMessage(message) {
   const itemListElement = document.createElement('li');
@@ -29,11 +31,22 @@ buttonMessage.addEventListener('click', (event) => {
   });
 });
 
+buttonSetNickName.addEventListener('click', (event) => {
+  event.preventDefault();
+  window.sessionStorage.setItem('nickname', inputSetNick.value);
+});
+
 socket.on('message', async (renderMessage) => {
-  console.log(renderMessage);
   creatMessage(renderMessage);
 });
 
-socket.on('userOnline', (randName) => {
-  setUserOn(randName);
+socket.emit('usersOnline');
+
+socket.on('usersOnline', (arrayUsersOnline) => {
+  console.log(arrayUsersOnline);
+  arrayUsersOnline.forEach(({ userNickName }) => {
+    setUserOn(userNickName);
+  });
 });
+
+socket.on('disconnect', () => {});

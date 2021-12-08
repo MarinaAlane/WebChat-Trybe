@@ -1,4 +1,4 @@
-const time = require('../middleware/getTime');
+const time = require('./getTime');
 
 function formatUser(randNameId, message) {
   let nickNameUser = '';
