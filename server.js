@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
+
+const port = process.env.PORT || 3000;
 
 const app = express();
 const http = require('http').createServer(app);
@@ -28,5 +31,9 @@ io.on('connection', (socket) => {
 });
 
 app.get('/', (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, './src/view/index.html'));
+  res.status(200).sendFile(path.join(__dirname, '/src/view/index.html'));
+});
+
+http.listen(port, () => {
+  console.log('Escutando na port %s', port);
 });
