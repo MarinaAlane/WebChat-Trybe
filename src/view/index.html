@@ -45,24 +45,10 @@ const updateMessagesOnScreen = (messages) => {
   divMessages.innerHTML = listMessages;
 };
 
-const updateUserOnScreen = (users) => {
-  const divUser = document.querySelector('.user');
 
-  let listUser = '<ul>';
-  if (!users) return;
 
-  users.forEach(({ user }) => {
-    listUser += `<li>${user}</li>`;
-  });
-  listUser += '</ul>';
-
- divUser.innerHTML = listUser;
-};
-
-socket.on('update_messages', (messages) => {
-  console.log(messages)
+socket.on('messages', (messages) => {
   updateMessagesOnScreen(messages);
-  updateUserOnScreen(messages);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -74,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const message = document.forms.message_form_name.msg.value;
 
     document.forms.message_form_name.msg.value = '';
-    socket.emit('new_message', { user: userNickname, msg: message });
+    socket.emit('message', { user: userNickname, msg: message });
   });
 
   const userForm = document.querySelector('#user_form');
