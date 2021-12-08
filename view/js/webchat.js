@@ -22,7 +22,6 @@ formNickname.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  console.log(socket.id);
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');

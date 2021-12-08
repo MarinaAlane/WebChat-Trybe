@@ -15,7 +15,13 @@ const io = require('socket.io')(http, {
 
 require('./sockets/webchat')(io);
 
-app.use(express.static(`${__dirname}/public`));
+const messagesController = require('./controller/messagesController');
 
-app.get('/', (req, res) => res.sendFile(`${__dirname}/public/webchat.html`));
+app.use(express.static(`${__dirname}/view`));
+
+app.set('view engine', 'ejs');
+app.set('views', './view');
+
+/* app.get('/', (req, res) => res.sendFile(`${__dirname}/view/webchat.html`)); */
+app.get('/', messagesController.getMessage);
 http.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));

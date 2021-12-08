@@ -10,7 +10,13 @@
       <input data-testid="nickname-box" type="text" id="nicknameInput"/>
       <button data-testid="nickname-button">Trocar apelido</button>
     </form>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      <% messages.forEach((message) => { %>
+        <li data-testid="message">
+          <%= message.timestamp %> - <%= message.nickname %>: <%= message.message %>
+        </li>
+      <% }) %>
+    </ul>
     <form action="" id="messageForm">
       <input id="messageInput" data-testid="message-box" autocomplete="off" />
       <button data-testid="send-button">Send</button>
