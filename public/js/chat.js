@@ -4,6 +4,7 @@ const messageForm = document.querySelector('.message-form');
 const userForm = document.querySelector('.user-form');
 const inputMessage = document.querySelector('#messageInput');
 const usernameInput = document.querySelector('#usernameInput');
+const userList = document.querySelector('.users');
 
 function generateRandomNickname() {
   const characters = 'abcdefghijklmnopqrstuvwxyz';
@@ -12,11 +13,8 @@ function generateRandomNickname() {
     nickname += characters[Math.floor(Math.random() * characters.length)];
   }
   sessionStorage.setItem('nickname', nickname);
-  const userList = document.querySelector('.users');
-  const li = document.createElement('li');
-  li.innerText = `${nickname}`;
-  li.setAttribute('data-testid', 'online-user');
-  userList.appendChild(li);
+  socket.emit('user', nickname);
+  return nickname;
 }
 
 messageForm.addEventListener('submit', (e) => {
@@ -29,6 +27,7 @@ messageForm.addEventListener('submit', (e) => {
 
 userForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  socket.emit('changeUsername', usernameInput.value);
   sessionStorage.setItem('nickname', usernameInput.value);
   return false;
 });
@@ -41,7 +40,27 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
+const createUser = (users) => {
+  userList.innerHTML = '';
+  const actualUser = sessionStorage.getItem('nickname');
+  const listItem = document.createElement('li');
+  listItem.innerText = `${actualUser}`;
+  listItem.setAttribute('data-testid', 'online-user');
+  userList.appendChild(listItem);
+  console.log(users);
+  users.forEach((user) => {
+    if (user.nickname !== actualUser) {
+      const li = document.createElement('li');
+      li.innerText = `${user.nickname}`;
+      li.setAttribute('data-testid', 'online-user');
+      userList.appendChild(li);
+    }
+  });
+};
+
 socket.on('message', (message) => createMessage(message));
+
+socket.on('user', (users) => createUser(users));
 
 window.onload = () => {
   generateRandomNickname();

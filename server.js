@@ -13,6 +13,8 @@ const io = require('socket.io')(http, {
 app.use(express.static(path.join(__dirname, '/public')));
 
 require('./sockets/chat')(io);
+require('./sockets/user')(io);
+// require('./sockets/disconnect')(io);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));
