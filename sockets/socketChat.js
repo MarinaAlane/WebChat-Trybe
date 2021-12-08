@@ -15,9 +15,5 @@ module.exports = (io) => {
       io.emit('message', formatMessage);
       await insertMessage({ nickname, message, timestamp });
     });
-
-    // const arrayMessage = await getMessages();
-    // arraTeste.forEach((mesage) =>
-    //   socket.emit('message', mesage));
   });
 };
