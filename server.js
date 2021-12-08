@@ -28,6 +28,8 @@ io.on('connection', (socket) => {
     nick = id; io.emit('firstId', nick);
   });
 
+  socket.emit('greeting', nick);
+
   socket.on('nickname', (user) => {
     socket.emit('greeting', `Bem-vindo ${user}`);
     socket.broadcast.emit('greeting', `Usuário conectado. Name: ${user}`);
@@ -35,12 +37,12 @@ io.on('connection', (socket) => {
 
   socket.on('message', ({ nickname, chatMessage }) => {
     const timestamp = moment(new Date()).format('DD-MM-yyyy h:mm:ss A'); // Problem solved using src: https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format
-    io.emit('chat', `${timestamp} - ${nickname}: ${chatMessage}`);
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
   });
 
-  socket.on('disconnect', () => {
-    io.emit(`Usuário ${nick} se desconectou!`);
-  });
+  // socket.on('disconnect', () => {
+  //   socket.emit('disconnect', `Usuário ${nick} se desconectou!`);
+  // });
 });
 
 app.get('/', (_req, res) => {
