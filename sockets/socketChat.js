@@ -1,25 +1,16 @@
-const checkMessageInfos = require('../middleware/checkMessageInfos');
-const insertMessage = require('../models/insertMessage');
-const getMessages = require('../models/getMessages');
+const formatInfoMessage = require('./formatInfoMessage');
+const time = require('../middleware/getTime');
 
 module.exports = (io) =>
-  io.on('connection', async (socket) => {
+  io.on('connection', (socket) => {
     const randNameId = socket.id.slice(0, -4);
 
     io.emit('userOnline', randNameId);
 
-    const arrayMessages = await getMessages();
-    arrayMessages.forEach(({ timestamp, nickname, message }) => {
-      const formatMessage = `${timestamp} - ${nickname}: ${message}`;
-      io.emit('message', formatMessage);
-    });
+    socket.on('message', async (message) => {
+      const formatNickName = formatInfoMessage(randNameId, message);
 
-    socket.on('message', async (clientMessage) => {
-      const resultInfosMessages = checkMessageInfos(clientMessage, randNameId);
-
-      const { timestamp, nickname, message } = await insertMessage(resultInfosMessages);
-      const formatMessage = `${timestamp} - ${nickname}: ${message}`;
-
-      io.emit('message', formatMessage);
+      const formatMessage = `${time} - ${formatNickName}: ${message.chatMessage}`;
+      io.emit('message', formatMessage, formatNickName);
     });
   });
