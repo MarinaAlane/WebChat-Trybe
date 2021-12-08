@@ -11,15 +11,12 @@ const getFormatTime = () => {
 
   const formatHour = hour - 12;
   const minutesAndSeconds = d.toString().slice(18, 24);
-  return `${convertDate} ${formatHour + minutesAndSeconds} ${AM_OR_PM}`;
-};
-
-const createMessage = ({ nickname, chatMessage }) => {
-  const formatTime = getFormatTime();
-
-  return `${formatTime} ${nickname} ${chatMessage}`;
+  return {
+    timestamp: `${convertDate} ${formatHour + minutesAndSeconds}`,
+    meridiem: AM_OR_PM,
+  };
 };
 
 module.exports = {
-  createMessage,
+  getFormatTime,
 };

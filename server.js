@@ -8,7 +8,7 @@ const { Server } = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const { createMessage } = require('./middleware/manageMessage');
+const { createMessage } = require('./controller/message');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
