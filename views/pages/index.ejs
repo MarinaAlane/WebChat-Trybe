@@ -57,6 +57,10 @@
       addLoggedUser(data);
     });
 
+    socket.on('addLoggedUser', (data) => {
+      addLoggedUser(data);
+    });
+
     const saveButton = document.getElementById('save');
     saveButton.addEventListener('click', () => {
       const usernameInput = document.getElementById('username');
