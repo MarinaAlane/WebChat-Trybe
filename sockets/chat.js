@@ -1,4 +1,4 @@
-let arrayUsers = [];
+const arrayUsers = [];
 
 module.exports = (io) => io.on('connection', (socket) => { 
   socket.on('message', ({ chatMessage, nickname }) => {   
@@ -10,20 +10,20 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('new-user', ({ user, userOld }) => {
-    const userExists = arrayUsers.find((element) => element === userOld);
+    const userExists = arrayUsers.find((element) => element.user === userOld);
     if (userExists) {
       const index = arrayUsers.indexOf(userExists);
-      arrayUsers[index] = user;
+      arrayUsers[index].user = user;
     } else {
-      arrayUsers.push(user);
+      arrayUsers.push({user, socket});
     }
-    io.emit('update-nicknames', arrayUsers);
+    io.emit('update-nicknames', arrayUsers.map(({user}) => ({ user })));
   });
 
-socket.on('event', (arr) => {
-  arrayUsers = [];
-  arrayUsers = [...arr];
-  io.emit('update-nicknames', arrayUsers);
-})
+socket.on('disconnect', () => {
+ arrayUsers.splice(arrayUsers.indexOf(arrayUsers.find((element)=> element.socket === socket)),1);
+  console.log(arrayUsers)
+  io.emit('update-nicknames', arrayUsers.map(({user}) => ({ user })))
+});
 
 });

@@ -64,13 +64,26 @@ socket.on('message', (userMessage) => createMessage(userMessage));
 
 socket.on('update-nicknames', (arrayUsers) => {
   usersList.innerHTML = '';
+  const arr = [];
+
+  console.log(arrayUsers)
+
+  const usernickname = sessionStorage.getItem('nickname');
+
+  const fisrtLi = document.createElement('li');
+  fisrtLi.innerText = usernickname;
+  fisrtLi.setAttribute('data-testid', 'online-user');
+
+  arr.push(fisrtLi);
   
   arrayUsers.forEach((element) => {
+    if (element.user === usernickname) return;
     const li = document.createElement('li');
-    li.innerText = element;
+    li.innerText = element.user;
     li.setAttribute('data-testid', 'online-user');
-    usersList.appendChild(li);
+    arr.push(li);
   });
+  arr.forEach((elements) => usersList.appendChild(elements));
 });
 
 // socket.on('disconnect', () => {
@@ -82,15 +95,15 @@ socket.on('update-nicknames', (arrayUsers) => {
 //   socket.emit('disconnect', sessionStorage.getItem('nickname')); 
 // };
 
-
-window.addEventListener('beforeunload',
-() => {
-  // socket.emit('event', { user: sessionStorage.getItem('nickname'), id: socket.id });
-  const userToRemove = sessionStorage.getItem('nickname');
-  const newArr = Array.from(usersListArr).map((element) => element.innerText);
-  if (userToRemove.length > 1) {
-      console.log(newArr);
-      const arr = newArr.filter((user) => user !== userToRemove);
-      socket.emit('event', arr);
-    }
-  });
+// window.addEventListener('beforeunload',
+// () => {
+//   // socket.emit('event', { user: sessionStorage.getItem('nickname'), id: socket.id });
+//   const userToRemove = sessionStorage.getItem('nickname');
+//   const newArr = Array.from(usersListArr).map((element) => element.innerText);
+//   if (userToRemove.length > 1) {
+//       console.log(newArr);
+//       const arr = newArr.filter((user) => user !== userToRemove);
+//       socket.emit('event', arr);
+//     }
+//   sessionStorage.clear();
+//   });
