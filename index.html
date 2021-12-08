@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <title>WebChat Socket.io</title>
+</head>
+
+<body>
+  <main>
+    <section>
+      <div>
+        <input data-testid="nickname-box" id="input-name" placeholder="Insira seu nickname" />
+        <button data-testid="nickname-button" id="button-name">Salvar</button>
+      </div>
+
+      <ul id="users">
+
+      </ul>
+    </section>
+
+    <section>
+      <ul id="messages">
+
+      </ul>
+    </section>
+
+    <section>
+      <input id="input-message" placeholder="Digite uma mensagem aqui" data-testid="message-box" />
+      <button id="button-message" data-testid="send-button">Enviar</button>
+    </section>
+  </main>
+
+  <script>
+    const socket = io('http://localhost:3000');
+
+    const getAllUsers = () => {
+      const allUsers = [];
+      document.querySelectorAll('[data-testid="online-user"]')
+        .forEach(({ innerText }) => allUsers.push(innerText));
+      return allUsers;
+    }
+
+    const inputName = document.getElementById('input-name');
+    const buttonName = document.getElementById('button-name');
+
+    buttonName.addEventListener('click', () => {
+      const newUserName = inputName.value;
+      const allUsers = getAllUsers();
+      const usersAlreadyExists = allUsers.some(user => user === newUserName);
+
+      if (usersAlreadyExists) return "";
+
+      const olderId = sessionStorage.getItem('user');
+
+      socket.emit('id', { newId: newUserName, olderId })
+    })
+
+    const inputMessage = document.getElementById('input-message');
+    const buttonMessage = document.getElementById('button-message');
+
+    buttonMessage.addEventListener('click', () => {
+      const nickname = sessionStorage.getItem('user');
+      socket.emit('message', { chatMessage: inputMessage.value, nickname });
+    })
+
+    const createMessage = (message) => {
+      const ulMessages = document.getElementById('messages');
+      const li = document.createElement('li');
+      li.innerText = message;
+      li.setAttribute('data-testid', 'message')
+      ulMessages.appendChild(li);
+    }
+
+    const createUser = (nickname) => {
+      const ulUsers = document.getElementById('users');
+      const li = document.createElement('li');
+      li.innerText = nickname;
+      li.id = nickname;
+      li.setAttribute('data-testid', 'online-user')
+      ulUsers.appendChild(li);
+    }
+
+    socket.on('message', (message) => createMessage(message))
+
+    socket.on('id', ({ newId, olderId }) => {
+      if (!olderId) {
+        const userId = newId.substring(0, 16);
+        sessionStorage.setItem('user', userId);
+        createUser(userId)
+      } else {
+        const user = document.getElementById(olderId);
+        user.id = newId;
+        user.innerText = newId;
+        sessionStorage.setItem('user', newId);
+      }
+    })
+  </script>
+</body>
+
+</html>
