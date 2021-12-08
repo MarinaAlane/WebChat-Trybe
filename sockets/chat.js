@@ -4,9 +4,9 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
     const hashNick = Math.random().toString(11).slice(2);
     io.emit('connection', hashNick);
-    let newUserNickName;
+    // let newUserNickName;
     socket.on('userEnter', (userName) => {
-      newUserNickName = userName;
+      // newUserNickName = userName;
       io.emit('userLogin', userName);
     });
 
