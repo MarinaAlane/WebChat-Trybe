@@ -34,6 +34,11 @@
   <script>
     const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
 
+    const getUsers = () => {
+      const loggedUsersUl = document.getElementById('logged-users');
+      return loggedUsersUl.children;
+    };
+
     const setNickname = (nickname) => {
       const nicknameSpan = document.getElementById('nickname');
       nicknameSpan.innerText = nickname;
@@ -64,9 +69,11 @@
     const saveButton = document.getElementById('save');
     saveButton.addEventListener('click', () => {
       const usernameInput = document.getElementById('username');
+      const newUsername = usernameInput.value;
 
-      setNickname(usernameInput.value);
-      sessionStorage.setItem('username', usernameInput.value);
+      setNickname(newUsername);
+      sessionStorage.setItem('username', newUsername);
+      socket.emit('updateUsername', newUsername);
 
       usernameInput.value = '';
     });
@@ -90,6 +97,17 @@
       newLi.append(data);
 
       sentMessagesUl.append(newLi);
+    });
+
+    socket.on('updateUsername', ({ oldUsername, newUsername }) => {
+      const users = getUsers();
+
+      for (let index = 0; index <= users.length; index += 1) {
+        if (users[index].innerText === oldUsername) {
+          users[index].innerText = newUsername;
+          break;
+        }
+      }
     });
   </script>
 </body>
