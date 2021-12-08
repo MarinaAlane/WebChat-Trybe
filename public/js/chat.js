@@ -21,7 +21,7 @@ function makeNickName() {
   return text;
 }
 
-  // Consulta na documentação https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage
+  // Consulta na documentação: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage
 function createNickName() {
   const nick = sessionStorage.getItem('nickname');
   if (nick === null) {
