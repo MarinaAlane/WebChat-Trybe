@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chat</title>
+  </head>
+  <body>
+    <span id="currNickName" data-testid="online-user"><%= randNick %></span>
+    <ul id="chatUl"></ul>
+    <form id="msgForm" action="">
+      <input type="text" id="msgInput" data-testid="message-box" placeholder="Insira sua mensagem aqui">
+      <button data-testid="send-button">Enviar</button>
+    </form>
+    <form id="userForm" action="">
+      <input type="text" id="userInput" data-testid="nickname-box" placeholder="Insira seu nickname">
+      <button data-testid="nickname-button">Salvar</button>
+    </form>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src='./js/chat.js'></script>
+</html>
