@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Web Chat</title>
+  </head>
+
+  <body>
+    <div>
+
+      <aside>
+        <input id="nameInput"/>
+        <button id="enterButton">Entrar</button>
+
+        <ul id="usersUl">
+
+        </ul>
+      </aside>
+
+      <div id="chatDiv">
+        <ul id="chatUl">
+
+        </ul>
+      </div>
+
+      <div>
+        <input id="messageInput"/>
+        <button id="sendButton">Enviar</button>
+      </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/client.js"></script>
+  </body>
+
+</html>
