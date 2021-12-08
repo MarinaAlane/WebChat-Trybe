@@ -29,9 +29,8 @@ buttonMessage.addEventListener('click', (event) => {
   });
 });
 
-socket.on('message', async (renderMessage, nickNameUser) => {
+socket.on('message', async (renderMessage) => {
   creatMessage(renderMessage);
-  setUserOn(nickNameUser);
 });
 
 socket.on('userOnline', (randName) => {

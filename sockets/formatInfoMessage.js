@@ -1,3 +1,5 @@
+const time = require('../middleware/getTime');
+
 function formatUser(randNameId, message) {
   let nickNameUser = '';
 
@@ -6,7 +8,11 @@ function formatUser(randNameId, message) {
   } else {
     nickNameUser = message.nickname;
   }
-  return nickNameUser;
+  return {
+    message: message.chatMessage,
+    nickname: nickNameUser,
+    timestamp: time(),
+  };
 }
 
 module.exports = formatUser;

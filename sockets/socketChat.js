@@ -1,5 +1,5 @@
 const formatInfoMessage = require('./formatInfoMessage');
-const time = require('../middleware/getTime');
+const insertMessage = require('../models/insertMessage');
 
 module.exports = (io) =>
   io.on('connection', (socket) => {
@@ -7,10 +7,11 @@ module.exports = (io) =>
 
     io.emit('userOnline', randNameId);
 
-    socket.on('message', async (message) => {
-      const formatNickName = formatInfoMessage(randNameId, message);
+    socket.on('message', async (clientMessage) => {
+      const { nickname, message, timestamp } = formatInfoMessage(randNameId, clientMessage);
+      const formatMessage = `${timestamp} - ${nickname}: ${message}`;
+      io.emit('message', formatMessage);
 
-      const formatMessage = `${time} - ${formatNickName}: ${message.chatMessage}`;
-      io.emit('message', formatMessage, formatNickName);
+      await insertMessage({ nickname, message, timestamp });
     });
   });
