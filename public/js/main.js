@@ -17,7 +17,7 @@ randomIdH3.innerText = randomNickname();
 
 btnSendMessage.addEventListener('click', () => {
   const messageInput = document.getElementById('message');
-  const nickname = document.getElementById('nickname').value;
+  const nickname = document.getElementById('users-list').firstChild.innerText;
   const message = messageInput.value;
   messageInput.value = '';
 
@@ -64,6 +64,16 @@ socket.on('conectedUsers', (users) => {
 
   conectedUsers.forEach((user) => {
     usersList.appendChild(user);
+  });
+});
+
+socket.on('messages-history', (history) => {
+  const messages = document.getElementById('history');
+  history.forEach((message) => {
+    const li = document.createElement('li');
+    li.setAttribute(dataTestId, 'message');
+    li.innerText = message;
+    messages.appendChild(li);
   });
 });
 
