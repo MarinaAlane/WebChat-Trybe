@@ -16,13 +16,14 @@ const io = require('socket.io')(server, {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const formatMessage = moment().format('MM-DD-YYYY, h:mm:ss a');
+const ftMsg = moment().format('MM-DD-YYYY h:mm A');
 
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
   
   socket.on('message', (data) => {
-    io.emit('message', `${formatMessage} - ${data.nickname}: ${data.chatMessage}`);
+    io.emit('message', 
+    `<div class="message"><b>${ftMsg} - <em>${data.nickname}</em></b>: ${data.chatMessage}</div>`);
   });
 });
 

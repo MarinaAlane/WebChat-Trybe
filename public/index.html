@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <form id="chatForm">
+  <form class="chat" id="chatForm">
     <input type="text" name="nickname" placeholder="Digite o nickname">
     <div class="messages"></div>
     <input type="text" name="messages" placeholder="Digite a mensagem">
@@ -22,8 +22,7 @@
     var socket = io('http://localhost:3000');
 
     function renderMessage(message) {
-      var html = '<div class="message"><strong>' + message.nickname + '</strong>: ' + message.chatMessage + '</div>';
-      $('.messages').append(html);
+      $('.messages').append(message);
     }
 
     socket.on('message', function(message) {
