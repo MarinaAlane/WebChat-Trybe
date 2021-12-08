@@ -9,7 +9,11 @@
   </head>
   <body>
     <ul id="users"></ul>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      <% allMessages.forEach((item) => { %>
+        <li data-testid="message" ><%= item %></li>
+        <% }) %>
+    </ul>
     <form id="form-username" action="">
       <input
         id="input-username"

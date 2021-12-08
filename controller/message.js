@@ -1,11 +1,26 @@
+const messagesModel = require('../model/messages');
+
 const { getFormatTime } = require('../middleware/manageMessage');
 
-const createMessage = ({ nickname, chatMessage }) => {
-  const { timestamp, meridiem } = getFormatTime();
+const createMessage = async ({ nickname, chatMessage }) => {
+  const { timestamp } = getFormatTime();
+  await messagesModel.create(chatMessage, nickname, timestamp);
+  const msg = `${timestamp} - ${nickname}: ${chatMessage}`;
+  return msg;
+};
 
-  return `${timestamp} ${meridiem} - ${nickname} ${chatMessage}`;
+const getAll = async () => {
+  const response = await messagesModel.getAll();
+  const arr = [];
+  response.forEach(({ message, nickname, timestamp }) => {
+    const msg = `${timestamp} - ${nickname}: ${message}`;
+    arr.push(msg);
+  });
+  // console.log(arr);
+  return arr;
 };
 
 module.exports = {
   createMessage,
+  getAll,
 };
