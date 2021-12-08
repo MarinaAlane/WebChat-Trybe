@@ -1,9 +1,9 @@
 const connection = require('../models/connection');
 
-const createMessage = async (nickname, message, time) => {
+const createMessage = async (message, nickname, time) => {
   const collection = await connection()
     .then((db) => db.collection('messages'));
-  return collection.insertOne({ nickname, message, time });
+  return collection.insertOne({ message, nickname, time });
 };
 
 const getMessages = async () => {

@@ -84,7 +84,6 @@ window.onload = () => {
   socket.emit('new-user', { user: nickUser, userOld: null });
 
   socket.on('historic-messages', (historicMessages) => historicMessages.forEach((elements) => {
-    const userMessages = elements.message;
-    createMessage(userMessages);
+    createMessage(elements.message);
   }));
 };
