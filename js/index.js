@@ -29,7 +29,9 @@ const createMessage = (message) => {
 socket.on('messageServer', (message) => createMessage(message));
 
 socket.on('messageServer', () => {
-  onlineUser.innerText = 'CoCoNuTsTrSaWsOn';
+  const userIdPone = Math.ceil((Math.random() * 2).toFixed(2));
+  const userIdPtwo = Math.ceil((Math.random() * 3).toFixed(2));
+  onlineUser.innerText = `CoCoNuTTrSaWOn${userIdPone}${userIdPtwo}`;
 });
 
 socket.on('message', (message) => {
