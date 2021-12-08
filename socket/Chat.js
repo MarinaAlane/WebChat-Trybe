@@ -1,6 +1,4 @@
 const moment = require('moment');
-// const messages = [];
-// const users = [];
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
@@ -13,20 +11,5 @@ module.exports = (io) => {
       const inform = `${date} - ${nickname}: ${chatMessage}`;
       io.emit('message', inform);
     });
-    // socket.emit('update_messages', messages);
-  
-    // socket.on('new_user', (data) => {
-    //   console.log(data);
-    //   users.push(data);
-    //   io.emit('update_users', users);
-    //   io.emit('update_messages', messages);
-    // });
-  
-    // socket.on('new_message', (data) => {
-    //   console.log(data);
-    //   messages.push(data);
-    //   io.emit('update_users', users);
-    //   io.emit('update_messages', messages);
-    // });
   });
 };
