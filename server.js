@@ -19,6 +19,7 @@ const io = require('socket.io')(http, {
 });
 
 require('./sockets/messageSocket')(io);
+require('./sockets/userSocket')(io);
 
 const rootRouter = require('./routes');
 
