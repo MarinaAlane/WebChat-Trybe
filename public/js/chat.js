@@ -6,6 +6,7 @@ const newnickname = document.querySelector('#nicknamebox');
 
 const inputMessage = document.querySelector('#messageInput');
 const usersList = document.querySelector('#users');
+const usersListArr = document.getElementById('users').getElementsByTagName('li');
 
 const makeNickName = () => {
   let text = '';
@@ -17,16 +18,12 @@ const makeNickName = () => {
 
   sessionStorage.setItem('nickname', text);
 
-  const li = document.createElement('li');
-  li.innerText = text;
-  li.setAttribute('data-testid', 'online-user');
-  usersList.appendChild(li);
-
   return text;
 };
 
 window.onload = () => {
-  makeNickName();
+  const nickUser = makeNickName();
+  socket.emit('new-user', { user: nickUser, userOld: null });
 };
 
 form.addEventListener('submit', (event) => {
@@ -45,10 +42,12 @@ nicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const newNickname = newnickname.value;
-
-  console.log(newNickname);
+  const oldNickname = sessionStorage.getItem('nickname');
 
   sessionStorage.setItem('nickname', newNickname);
+
+  socket.emit('new-user', { user: newNickname, userOld: oldNickname });
+
   newnickname.value = '';
   return false;
 });
@@ -62,3 +61,36 @@ const createMessage = (userMessage) => {
 };
 
 socket.on('message', (userMessage) => createMessage(userMessage));
+
+socket.on('update-nicknames', (arrayUsers) => {
+  usersList.innerHTML = '';
+  
+  arrayUsers.forEach((element) => {
+    const li = document.createElement('li');
+    li.innerText = element;
+    li.setAttribute('data-testid', 'online-user');
+    usersList.appendChild(li);
+  });
+});
+
+// socket.on('disconnect', () => {
+//   const user = sessionStorage.getItem('nickname');
+//   socket.emit('disconect-user', user);
+// });
+
+// window.onbeforeunload = () => {
+//   socket.emit('disconnect', sessionStorage.getItem('nickname')); 
+// };
+
+
+window.addEventListener('beforeunload',
+() => {
+  // socket.emit('event', { user: sessionStorage.getItem('nickname'), id: socket.id });
+  const userToRemove = sessionStorage.getItem('nickname');
+  const newArr = Array.from(usersListArr).map((element) => element.innerText);
+  if (userToRemove.length > 1) {
+      console.log(newArr);
+      const arr = newArr.filter((user) => user !== userToRemove);
+      socket.emit('event', arr);
+    }
+  });
