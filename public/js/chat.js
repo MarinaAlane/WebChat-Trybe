@@ -63,7 +63,6 @@ socket.on(
 
 socket.on('disconnectMessage', (nickname) => {
   createMessage(`${nickname} saiu do chat`);
-  sessionStorage.removeItem('username');
 });
 
 socket.on('renderUsers', (users) => renderUsers(users));

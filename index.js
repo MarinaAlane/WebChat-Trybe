@@ -24,7 +24,7 @@ app.set('views', './views');
 
 app.get('/', MessagesController.getAll);
 
-const { PORT } = process.env;
+const { PORT } = process.env || 3000;
 
 http.listen(PORT, () => {
   console.log(`Servidor ouvindo na porta ${PORT}`);
