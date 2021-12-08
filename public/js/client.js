@@ -18,6 +18,8 @@ socket.on('connection', (hashNick) => {
   nickHash = hashNick;
   const usersLi = document.createElement('li');
   usersLi.innerText = hashNick;
+  usersLi.setAttribute('data-testid', 'online-user');
+  usersLi.setAttribute('class', 'userId-Name');
   usersUl.appendChild(usersLi);
 });
 
@@ -27,13 +29,17 @@ enterButton.addEventListener('click', (e) => {
   socket.emit('userEnter', nameInput.value);
 });
 
-const showUsers = (user) => {
-  const usersLi = document.createElement('li');
-  usersLi.innerText = user;
-  usersUl.appendChild(usersLi);
+const showUsers = (userName, hashNick) => {
+  const usersLi = document.querySelectorAll('.userId-Name');
+  usersLi.forEach((i, index) => {
+    if (i.innerText === hashNick) {
+      usersLi[index].innerText = userName;
+      nickHash = userName;
+    }
+  });
 };
 
-socket.on('userLogin', (user) => showUsers(user));
+socket.on('userLogin', ({ userName, hashNick }) => showUsers(userName, hashNick));
 
 // Insere as mensagens
 sendButton.addEventListener('click', (e) => {
@@ -46,6 +52,7 @@ sendButton.addEventListener('click', (e) => {
 const showMessages = (message) => {
   const messageLi = document.createElement('li');
   messageLi.innerText = message;
+  messageLi.setAttribute('data-testid', 'message');
   chatUl.appendChild(messageLi);
 };
 
