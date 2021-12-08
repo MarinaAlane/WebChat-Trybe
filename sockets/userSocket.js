@@ -1,5 +1,9 @@
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    socket.emit('setUsername', socket.id.slice(-16));
+    const username = socket.id.slice(-16);
+
+    socket.emit('setUsername', username);
+
+    socket.broadcast.emit('addLoggedUser', username);
   });
 };
