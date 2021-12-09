@@ -10,7 +10,7 @@ const findIndexViaNickname = (oldNickname) => {
   return indexToUpdateUser;
 };
 
-const findIndexViaSockedId = (sockedId) => {
+const removeUserOnDisconnect = (sockedId) => {
   const indexToDeleteUser = connectedUsers
       .findIndex(({ id }) => id === sockedId);
     connectedUsers.splice(indexToDeleteUser, 1);
@@ -36,7 +36,7 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    findIndexViaSockedId(socket.id);
+    removeUserOnDisconnect(socket.id);
     console.log(`"${socket.id}" saiu`);
     io.emit('updateUser', connectedUsers);
   });
