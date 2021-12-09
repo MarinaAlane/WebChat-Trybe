@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 const http = require('http').createServer(app);
 
-app.use(express.static(path.join(`${__dirname}/front`)));
+app.use(express.static(path.join(`${__dirname}/public`)));
 
 const PORT = process.env.PORT || 3000;
 const options = {
@@ -23,7 +23,7 @@ require('./src/sockets/users')(io);
 
 app.get(
   '/',
-  (_req, res) => res.sendFile(path.join(`${__dirname}/front`)),
+  (_req, res) => res.sendFile(path.join(`${__dirname}/public`)),
 );
 
 http.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`));
