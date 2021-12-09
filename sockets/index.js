@@ -1,9 +1,8 @@
 const message = require('./message');
 const changeArrayUserOnline = require('../middleware/changeArrayUserOnline');
 const deleteUserOnlieneArray = require('../middleware/deleteUserOnlieneArray');
-// const getOldNameIndex = require('../middleware/getNameIndex');
 
-let arrayUsersOnline = [];
+let arrayUsersOnline = []; // Responsável para controlar os usuários conectados
 
 module.exports = (io) => {
   io.on('connection', (socket) => {

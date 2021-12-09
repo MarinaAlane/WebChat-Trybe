@@ -35,7 +35,6 @@ function removeUser(id) {
 
 buttonMessage.addEventListener('click', (event) => {
   event.preventDefault();
-
   socket.emit('message', {
     nickname: nickName.value,
     chatMessage: messageBox.value,
