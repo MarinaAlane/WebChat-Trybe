@@ -61,3 +61,7 @@ app.use(cors());
 app.get('/', getAllMessages);
 
 http.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
+
+/* Projeto utilizado como referência para dúvidas pontuais,
+de Carol Vasconcelos - T10:
+https://github.com/tryber/sd-010-a-project-webchat/pull/26/files */
