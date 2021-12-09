@@ -18,8 +18,7 @@ const dataTestId = 'data-testid';
 // Variavel que irá armazenar o nickname do usuário
 let nickname;
 
-// Escuta o evento de connection do servidor
-socket.on('connection', (users) => {
+const updateUsers = (users) => {
   // Limpa o UL para conseguir tirar os usuários que desconectaram
   usersUl.innerHTML = '';
 
@@ -31,6 +30,11 @@ socket.on('connection', (users) => {
     usersLi.setAttribute('class', 'userId-Name');
     usersUl.appendChild(usersLi);
   });
+};
+
+// Escuta o evento de connection do servidor
+socket.on('connection', (users) => {
+  updateUsers(users);
 });
 
 // Escuta o evento throwId para armazenar o ID de cada usuário no nickname
@@ -61,18 +65,9 @@ enterButton.addEventListener('click', (e) => {
   socket.emit('changeNickname', nameInput.value);
 });
 
+// Evento que altera o username dos usuários
 socket.on('changeUsersName', (users) => {
-    // Limpa o UL para conseguir tirar os usuários que desconectaram
-    usersUl.innerHTML = '';
-
-    // For each para adicionar os usuários na UL
-    users.forEach((user) => {
-      const usersLi = document.createElement('li');
-      usersLi.innerText = user;
-      usersLi.setAttribute(dataTestId, 'online-user');
-      usersLi.setAttribute('class', 'userId-Name');
-      usersUl.appendChild(usersLi); 
-    });
+  updateUsers(users);
 });
 
 // socket.on('connectedMessages', (messages) => {

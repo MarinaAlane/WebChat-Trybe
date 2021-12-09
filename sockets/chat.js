@@ -7,8 +7,7 @@ let users = [];
 module.exports = (io) => {
   io.on('connection', async (socket) => {
     // Cria um id de 16 caracteres
-    let userId = socket.id.substring(0, 16);
-    users.push(userId);
+    let userId = socket.id.substring(0, 16); users.push(userId);
 
     // Emite um evento de conexão para todos os usuários passando o array USERS
     io.emit('connection', users);
@@ -34,7 +33,8 @@ module.exports = (io) => {
     });
 
     socket.on('changeNickname', (name) => {
-      users = users.map((user) => (user === userId ? name : user)); userId = name; io.emit('changeUsersName', users);
+      users = users.map((user) => (user === userId ? name : user)); 
+      userId = name; io.emit('changeUsersName', users);
       socket.emit('throwId', userId);
     });
 
