@@ -1,4 +1,4 @@
-require('dotenv').config('./.env');
+require('dotenv').config('../.env');
 
 const express = require('express');
 const path = require('path');
@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 const http = require('http').createServer(app);
 
-app.use(express.static(path.join(`${__dirname}/public`)));
+app.use(express.static(path.join(`${__dirname}/front`)));
 
 const PORT = process.env.PORT || 3000;
 const options = {
@@ -15,6 +15,7 @@ const options = {
     methods: ['GET', 'POST'],
   },
 };
+
 const io = require('socket.io')(http, options);
 
 require('./src/sockets/messages')(io);
@@ -22,7 +23,7 @@ require('./src/sockets/users')(io);
 
 app.get(
   '/',
-  (_req, res) => res.sendFile(path.join(`${__dirname}/public`)),
+  (_req, res) => res.sendFile(path.join(`${__dirname}/front`)),
 );
 
 http.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`));

@@ -5,6 +5,7 @@ const { MongoClient } = require('mongodb');
 let schema = null;
 
 const { DB_URL, DB_NAME } = process.env;
+
 async function connection() {
   if (schema) return Promise.resolve(schema);
   return MongoClient
@@ -21,4 +22,5 @@ async function connection() {
       return schema;
     });
 }
+
 module.exports = connection;
