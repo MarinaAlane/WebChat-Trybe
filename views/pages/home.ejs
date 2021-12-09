@@ -51,7 +51,7 @@
 
   function sendMessage() {
     socket.emit('message', {
-      nickname: currentNicknameElement.value,
+      nickname: currentNicknameElement.innerText,
       chatMessage: messageInput.value
     });
   }
