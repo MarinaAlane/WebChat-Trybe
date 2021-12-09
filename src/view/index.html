@@ -59,7 +59,7 @@ socket.on('id', (id) => {
 
   const userID = id.substring(0, 16);
   sessionStorage.setItem('user-id', userID);
-  
+  console.log(id);
   updateUserOnScreen(userID);
 
 });

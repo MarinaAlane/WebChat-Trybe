@@ -21,13 +21,11 @@ const io = require('socket.io')(http, {
   },
 });
 
-const user = [];
-
 io.on('connection', (socket) => {
   console.log('connection');
   const idSocket = socket.id;
-  user.push(idSocket);
-  socket.emit('id', user);
+ 
+  socket.emit('id', idSocket);
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date().toLocaleDateString('en-GB');
     const hours = new Date().getHours();
