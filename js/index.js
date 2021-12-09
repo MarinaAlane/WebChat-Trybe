@@ -19,13 +19,11 @@ nicknameSubmitButton.addEventListener('click', () => {
   socket.emit('onLineUsers', sessionStorage.getItem(socket.id));
 });
 
-socket.emit('onLineUsers', connectUserName);
-
 form.addEventListener('submit', (e) => {
   e.preventDefault();
 
   socket.emit('message', { chatMessage: inputMessage.value, 
-    nickname: sessionStorage.getItem(socket.id) || socket.id });
+    nickname: sessionStorage.getItem(socket.id) || connectUserName });
 
   inputMessage.value = '';
   return false;
@@ -41,13 +39,19 @@ const createMessage = (message) => {
 
 const createUsersBox = (users) => {
   const usersUl = document.getElementById('usersBox');
-  const li = document.createElement('li');
-  li.setAttribute(datatest, 'online-user');
-  li.innerText = users;
-  usersUl.appendChild(li);
+  usersUl.innerHTML = '';
+  users.forEach((user) => {
+    const li = document.createElement('li');
+    li.setAttribute(datatest, 'online-user');
+    usersUl.appendChild(li);
+    li.innerText = user;
+  });
 };
 
-socket.on('messageServer', (message) => createMessage(message));
+socket.on('messageServer', (message) => {
+  socket.emit('onLineUsers', socket.id);
+  createMessage(message);
+});
 
 socket.on('messageServer', () => {
   onlineUser.innerText = connectUserName;
@@ -58,3 +62,7 @@ socket.on('message', (message) => createMessage(message));
 socket.on('onLineUsers', (onLineUsers) => {
   createUsersBox(onLineUsers);
 });
+
+window.onbeforeunload = () => {
+  socket.disconnect();
+};
