@@ -59,10 +59,9 @@ const historicMessage = (userMessage) => {
 socket.on('message', (userMessage) => createMessage(userMessage));
 
 socket.on('update-nicknames', (arrayUsers) => {
+  const usernickname = sessionStorage.getItem('nickname');
   usersList.innerHTML = '';
   const arr = [];
-
-  const usernickname = sessionStorage.getItem('nickname');
 
   const fisrtLi = document.createElement('li');
   fisrtLi.innerText = usernickname;
