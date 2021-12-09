@@ -17,28 +17,44 @@ app.use(cors());
 
 const userController = require('./users');
 const dateController = require('./date');
+const userModel = require('./models/userModel');
 
-io.on('connection', (socket) => {
-    console.log('a user connected', socket.id);
-
-      socket.on('disconnect', () => {
-        userController.deleteUser(socket);
-       io.emit('users', userController.getUsers());
+const disconnect = (socket) => {
+    socket.on('disconnect', () => {
+        io.emit('users', userController.deleteUser(socket));
     });
+};
+
+const addUser = (socket) => {
     socket.on('adduser', (radomString) => {
-        userController.addUser(radomString, socket);
-        io.emit('users', userController.getUsers());
+        io.emit('users', userController.addUser(radomString, socket));
     });
+};
+
+const addNickname = (socket) => {
     socket.on('nickname', (nickname) => {
-        userController.editUser(nickname, socket);
-        io.emit('users', userController.getUsers());
+        io.emit('users', userController.editUser(nickname, socket));
     }); 
-    socket.on('message', (msg) => {
-      const { nickname, chatMessage } = msg;
-        const printDados = dateController.getDate(nickname, chatMessage);
-        io.emit('message', printDados);
+};
+
+const sendMessage = (socket) => {
+    socket.on('message', async (message) => {
+          const printDados = dateController.getDate(message.nickname, message.chatMessage);
+          await userModel.create(message);
+          io.emit('message', printDados);
     });
-});
+};
+
+    io.on('connection', async (socket) => {
+        console.log('connected', socket.id);
+        const history = await userModel.getAll();
+        console.log(history);
+        io.emit('history', history);
+        disconnect(socket);
+        addUser(socket);
+        addNickname(socket);
+        sendMessage(socket);
+    });
 
 app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/index.html`);
