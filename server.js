@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const moment = require('moment');
 require('dotenv').config();
 
 const port = process.env.PORT || 3000;
@@ -21,21 +22,22 @@ const io = require('socket.io')(http, {
   },
 });
 
+const user = [];
+
 io.on('connection', (socket) => {
   console.log('connection');
-  const idSocket = socket.id;
-  let userId = null;
+  const idSocket = socket.id.substring(0, 16);
+  user.push(idSocket);
+
   socket.on('id', (dataId) => {
-    userId = dataId;
+    user.push(dataId);
   });
-  socket.emit('id', { idSocket, userId });
+
+  socket.broadcast.emit('id', user);
   socket.on('message', ({ chatMessage, nickname }) => {
-    const date = new Date().toLocaleDateString('en-GB');
-    const hours = new Date().getHours();
-    const min = new Date().getMinutes();
-    const seg = new Date().getSeconds();
-    const formateDate = date.replace(/\//g, '-').replace(/,/, '');
-    io.emit('message', `${formateDate} ${hours}:${min}:${seg} - ${nickname}: ${chatMessage}`);
+    const date = moment(new Date()).format('DD MM YYYY, h:mm:ss');
+    
+    io.emit('message', `${date}  - ${nickname}: ${chatMessage}`);
   });
 });
 

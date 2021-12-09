@@ -56,14 +56,16 @@ const updateUserOnScreen = (user) => {
 };
 
 const setUserId = () => {
-  socket.on('id', ({ idSocket, userId }) => {
-    if (!userId) {
-      const userID = idSocket.substring(0, 16);
-      sessionStorage.setItem('user-id', userID);
-      updateUserOnScreen(userID);
-    } else {
-      updateUserOnScreen(userId);
-    }
+  socket.on('id', (data) => {
+    console.log(data)
+    // data.forEach(({ idSocket, dataId }) => {
+    //   if (!idSocket) {
+    //   sessionStorage.setItem('user', idSocket);
+    //   updateUserOnScreen(idSocket);
+    // } else {
+    //   updateUserOnScreen(dataId);
+    // }
+    // }
   });
 };
 
@@ -78,9 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     const message = document.forms.message_form_name.msg.value;
-
     
-    socket.emit('message', { chatMessage: message, nickname: userNickname, });
+    socket.emit('message', { chatMessage: message, nickname: sessionStorage.user });
     document.forms.message_form_name.msg.value = '';
   });
 
