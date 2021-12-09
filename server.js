@@ -13,7 +13,7 @@ const io = require('socket.io')(http, {
 
 app.use(express.static(`${__dirname}/public`));
 
-require('./sockets/messagest')(io);
+require('./sockets/messages')(io);
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/public/index.html`);
