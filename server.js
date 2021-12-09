@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+// const crypto = require('crypto');
 
 // a data foi feita através de estudo de como poderia simplificar esse sistema, e encontrei nesse site: https://www.horadecodar.com.br/2021/04/03/como-pegar-a-data-atual-com-javascript/
 const date = new Date();
@@ -23,15 +24,24 @@ const io = require('socket.io')(server, {
 
 app.use(cors());
 
-// app.use(express.static(path.join('views')));
-// app.set('views', path.join('views'));
+app.set(express.static(path.join('views')));
+app.set('views', path.join('views'));
 
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, './views/index.html'));
 });
 
+// usei a instrução do site https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/ para gerar o valor randomico
+
+// const randonUser = crypto.randomBytes(8).toString('hex');
+ 
 io.on('connection', (socket) => {
   console.log(`Usuário ${socket.id} conectado`);
+  
+  // Marcelo Leite me ajudou na lógica do nickname.
+  const randonUser = socket.id.slice(0, 16);
+  console.log(randonUser);
+  socket.emit('logIn', randonUser);
 
   socket.on('message', (msg) => {
     const { nickname, chatMessage } = msg;
