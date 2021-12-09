@@ -7,11 +7,11 @@
     <h1> Web Chat da Jé</h1>
     <div>
       <form id = 'nome'>
-        <input type="text" id='input-nome' data-testid="online-user">
-        <button type="submit" id="enviar-nome">Salvar</button>
+        <input type="text" id='input-nome' data-testid="nickname-box" >
+        <button type="submit" id="enviar-nome" data-testid="nickname-button">Salvar</button>
       </form>
       <div>
-        <ul id='lista-usuarios'></ul>
+        <ul id='lista-usuarios' ></ul>
       </div>
       <div>
          <ul id="lista-messagens"></ul>
@@ -25,19 +25,34 @@
     <script src="/socket.io/socket.io.js"></script>
     
     <script>
+    
       const socket = io();
       const formMenssagens = document.getElementById('menssagens');
       const inputMessagens = document.getElementById('input-menssagem');
       const ulMenssagens = document.getElementById("lista-messagens");
       const formNome = document.getElementById('nome');
       const inputNome = document.getElementById('input-nome');
-      
+      const ulUsuarios =  document.getElementById('lista-usuarios');
 
       formNome.addEventListener('submit', (event)=>{
         event.preventDefault();
         if(inputNome.value){
            sessionStorage.setItem('nickname', inputNome.value)
+           const tagsLi = document.getElementsByTagName('li');
+           for(var i = 0; i < tagsLi.length; i+=1){
+             if(tagsLi[i].innerText === socket.id){
+                return tagsLi[i].innerText = inputNome.value;
+             }
+           }
         }
+      })
+
+      socket.on('logado', (usuario)=>{
+        sessionStorage.setItem('nickname', usuario)
+        const newUser = document.createElement('li');
+        newUser.textContent = usuario;
+        newUser.setAttribute("data-testid", "online-user")
+        ulUsuarios.appendChild(newUser);
       })
 
       formMenssagens.addEventListener('submit',(event)=>{
@@ -45,15 +60,15 @@
         if(inputMessagens.value){
           socket.emit('message', { 
             chatMessage:inputMessagens.value,
-            nickname:sessionStorage.getItem('nickname')|| socket.id
+            nickname:sessionStorage.getItem('nickname')
            }
           )
-          inputMessagens.value = "";
         }
       })
 
       socket.on('message',(msg)=>{
         const newMessage = document.createElement('li');
+        newMessage.setAttribute("data-testid", "message")
         newMessage.textContent = msg;
         ulMenssagens.appendChild(newMessage);
         window.scrollTo(0, document.body.scrollHeight);
