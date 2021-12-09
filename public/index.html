@@ -78,6 +78,12 @@
     socket.on('message', function(data){
       $('.mess').append('<p data-testid="message">' + data + '</p>');
     });
+
+    socket.on('historyMessage', function(message) {
+      message.forEach(({nickname, message, timestamp}) => {
+        $('.mess').append(`<p data-testid="message">${timestamp} - ${nickname}: ${message}</p>`);
+      });
+    });
     
   </script>
 </body>

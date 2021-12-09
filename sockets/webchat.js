@@ -4,6 +4,12 @@ const SaveMessage = require('../models/SaveMessage');
 const ftMsg = moment().format('MM-DD-YYYY h:mm:ss');
 let users = [];
 
+async function historyMessage(socket) {
+  const getMessage = new SaveMessage();
+  const messages = await getMessage.getMessages();
+  socket.emit('historyMessage', messages);
+}
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     const userOnline = socket.id.slice(0, 16);
@@ -25,5 +31,6 @@ module.exports = (io) => {
       const newMessage = new SaveMessage(messageObj);
       newMessage.saveMessages();
     });
+    historyMessage(socket);
   });
 };
