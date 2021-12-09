@@ -4,6 +4,15 @@ const SaveMessage = require('../models/SaveMessage');
 const ftMsg = moment().format('MM-DD-YYYY h:mm:ss');
 let users = [];
 
+function sendMessage(io, socket) {
+  socket.on('message', (data) => {
+    io.emit('message', `${ftMsg} - ${data.nickname}: ${data.chatMessage}`);
+    const messageObj = { message: data.chatMessage, nickname: data.nickname, timestamp: ftMsg };
+    const newMessage = new SaveMessage(messageObj);
+    newMessage.saveMessages();
+  });
+}
+
 async function historyMessage(socket) {
   const getMessage = new SaveMessage();
   const messages = await getMessage.getMessages();
@@ -24,13 +33,8 @@ module.exports = (io) => {
     socket.on('disconnect', () => {
       users = users.filter((user) => user.id !== socket.id); io.emit('userOnline', users);
     });
-
-    socket.on('message', (data) => {
-      io.emit('message', `${ftMsg} - ${data.nickname}: ${data.chatMessage}`);
-      const messageObj = { message: data.chatMessage, nickname: data.nickname, timestamp: ftMsg };
-      const newMessage = new SaveMessage(messageObj);
-      newMessage.saveMessages();
-    });
+    sendMessage(io, socket);
+    
     historyMessage(socket);
   });
 };
