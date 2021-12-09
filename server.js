@@ -16,24 +16,32 @@ app.get('/', (_req, res) => {
 });
 
 const onUsers = {};
+const { getMsg, setMsg } = require('./models/webchat');
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   onUsers[socket.id] = socket.id.substring(0, 16);
   console.log(`usuário ${socket.id} conectado`);
 
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
     const date = moment().format('DD-MM-YYYY HH:mm:ss a');
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
+    await setMsg({ date, nickname, chatMessage });
   });
 
   socket.on('altName', (nickname) => {
     onUsers[socket.id] = nickname;
-    io.emit('userList', onUsers);
+    io.emit('userList', Object.values(onUsers)); // Object.values para percorrer este objeto
   });
-
+  
   socket.on('disconnect', () => {
+    delete onUsers[socket.id];
+    io.emit('userList', Object.values(onUsers)); // Object.values para percorrer este objeto
     console.log(`usuário ${socket.id} desconectou`);
   });
+
+    const msgs = await getMsg();
+
+  io.emit('history', await msgs);
 });
 
 server.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));

@@ -69,6 +69,7 @@ const addUser = (onUsers) => {
   const nickname = socket.id;
   const onlineUsers = document.getElementById('online-users');
   onlineUsers.innerHTML = '';
+  console.log('CONSOLE LOG DO ONUSERS', onUsers);
   onUsers.forEach((user) => {
     const newLi = document.createElement('li');
     newLi.setAttribute(dataTestId, 'online-user');
@@ -97,6 +98,20 @@ const addMessage = (msg) => {
   allMsgs.appendChild(newLiMessage);
 }
 
+const msgDB = (all) => {
+  console.log('ESSE É O MEU CONSOLE', all);
+  all.forEach(({ date, nickname, chatMessage }) => {
+    const ul = document.getElementById('users-messages');
+    const newLi = document.createElement('li');
+    newLi.innerText = `${date} ${nickname} ${chatMessage}`;
+    newLi.setAttribute(dataTestId, 'message');
+    ul.appendChild(newLi);
+  });
+};
+
+// Kissyla Motta me ajudou no plantão dia 9/12
+
+socket.on('history', (all) => msgDB(all));
 socket.on('message', (chatMessage) => addMessage(chatMessage));
 socket.on('userList', (user) => addUser(user));
     </script>
