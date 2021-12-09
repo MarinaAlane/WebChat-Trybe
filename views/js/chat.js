@@ -33,8 +33,9 @@ buttonMessage.addEventListener('click', (event) => {
 
 buttonSetNickName.addEventListener('click', (event) => {
   event.preventDefault();
+  const oldName = window.sessionStorage.getItem('nickname');
   window.sessionStorage.setItem('nickname', inputSetNick.value);
-  socket.emit('changeNickName', nickName.value);
+  socket.emit('changeNickName', nickName.value, oldName);
 });
 
 socket.on('message', async (renderMessage) => {
@@ -45,7 +46,7 @@ socket.emit('usersOnline');
 
 socket.on('usersOnline', (arrayUsersOnline) => {
   listUserOnline.innerHTML = '';
-  arrayUsersOnline.forEach(({ userNickName }) => {
+  arrayUsersOnline.forEach((userNickName) => {
     setUserOn(userNickName);
   });
 });
