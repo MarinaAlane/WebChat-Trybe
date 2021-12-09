@@ -24,8 +24,11 @@ const io = require('socket.io')(http, {
 io.on('connection', (socket) => {
   console.log('connection');
   const idSocket = socket.id;
- 
-  socket.emit('id', idSocket);
+  let userId = null;
+  socket.on('id', (dataId) => {
+    userId = dataId;
+  });
+  socket.emit('id', { idSocket, userId });
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date().toLocaleDateString('en-GB');
     const hours = new Date().getHours();
