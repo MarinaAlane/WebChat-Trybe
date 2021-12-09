@@ -55,13 +55,14 @@ const updateUserOnScreen = (user) => {
   divUser.appendChild(p);
 };
 
-socket.on('id', (id) => {
-
-  const userID = id.substring(0, 16);
-  sessionStorage.setItem('user-id', userID);
-  console.log(id);
-  updateUserOnScreen(userID);
-
+socket.on('id', ({ idSocket, userId }) => {
+  if (!userId) {
+    const userID = idSocket.substring(0, 16);
+    sessionStorage.setItem('user-id', userID);
+    updateUserOnScreen(userID);
+  } else {
+    updateUserOnScreen(userId);
+  }
 });
 
 socket.on('message', (messages) => {
