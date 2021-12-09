@@ -56,22 +56,20 @@
     })
 /* --------------------- RELACIONADO AO NICKNAME ------------------------ */
     
-    socket.on('conected', (param) => {
-      console.log(param);
-      const userNickname = makeid();
-      nickname.innerText = userNickname;
-
-      const newOnUser = document.createElement('li');
-      newOnUser.setAttribute('data-testid', 'online-user');
-      newOnUser.setAttribute('socketId', param);
-      newOnUser.innerText = userNickname;
-      onlineUsers.appendChild(newOnUser);
-
-      const user = { id: param, nickname };
-      socket.emit('conected', user);
+    socket.on('conectedUsers', (array) => {
+      console.log('cheguei no front com o array')
+      console.log(array);
+      // recebo o array de usuarios
+      array.map((user) => {
+        // criar li, dar atributos, dar texto
+        const newOnUser = document.createElement('li');
+        newOnUser.setAttribute('data-testid', 'online-user');
+        newOnUser.setAttribute('socketId', user.id);
+        newOnUser.innerText = user.nickname;
+        // adicionar a ul
+        onlineUsers.appendChild(newOnUser);
+      });
     });
-
-    
 
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();

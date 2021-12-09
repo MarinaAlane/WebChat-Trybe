@@ -17,10 +17,16 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
 
+  const allOnlineUsers = [];
+
 io.on('connection', (socket) => { // quando conectado:
-  // ADD servidor deve enviar aos outros usuarios que este se conectou
-  console.log(`Usuário conectado. ID: ${socket.id} `);
-    socket.emit('conected', socket.id);
+  console.log('usuario contectou - server');
+  // vou montar um usuario
+  const newUser = { id: socket.id, nickname: socket.id.substring(0, 16) };
+  // adicionar o usuario ao meu array
+  allOnlineUsers.push(newUser);
+  // envia array completo de usuarios conectados
+  socket.emit('conectedUsers', allOnlineUsers);
 
   // momento dois, servidor recebe mensagem do usuario
   socket.on('message', (params) => {
