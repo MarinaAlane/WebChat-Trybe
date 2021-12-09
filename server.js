@@ -22,10 +22,10 @@ io.on('connection', (socket) => { // quando conectado:
     socket.emit('conected', socket.id);
 
   // momento dois, servidor recebe mensagem do usuario
-  socket.on('message', (chatMessage) => { // , { chatMessage, nickname } 
-    console.log('cheguei no socket.on');
+  socket.on('message', (params) => {
+    const { chatMessage, nickname } = params;
   // momento 3, servidor faz algo com a info recebida (tipo formatar) e enviar
-    const newMessage = `${socket.id} diz: ${chatMessage}`; // falta adicionar a hora e trocar id por nickName
+    const newMessage = `${nickname} diz: ${chatMessage}`; // falta adicionar a hora e trocar id por nickName
     io.emit('message', newMessage);
   });
 });

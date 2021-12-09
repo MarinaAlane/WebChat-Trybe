@@ -32,13 +32,16 @@
       const inputMsg = document.querySelector('#messageInput');
       const inputNickname = document.querySelector('#nickname-box');
       const formNickname = document.querySelector('#form-nickname');
-      const userNickname = document.querySelector('#user-nickname');
+      const nickname = document.querySelector('#user-nickname');
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (inputMsg.value) {
         // momento 1: o usuario envia uma mensagem;
-        socket.emit('message', inputMsg.value);
+        const chatMessage = inputMsg.value;
+        const userNickname = nickname.innerText;
+        const params = { chatMessage, nickname: userNickname };
+        socket.emit('message', params);
         inputMsg.value = '';
       }
       });
@@ -54,8 +57,8 @@
     
     socket.on('conected', (param) => {
       console.log('cheguei aqui no conected')
-      const nickname = makeid();
-      userNickname.innerText = nickname;
+      const userNickname = makeid();
+      nickname.innerText = userNickname;
       const user = { id: param, nickname };
       socket.emit('conected', user);
     });
@@ -65,7 +68,7 @@
       const newNickname = inputNickname.value;
       if (inputNickname.value) {
         console.log(newNickname);
-        userNickname.innerText = newNickname;
+        nickname.innerText = newNickname;
         /* Enviar uma mensagem para alterar o nome do usuario */
       }
       inputNickname.value = '';
@@ -77,6 +80,7 @@
       for (var i = 0; i < 16; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
+      /* fonte: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/ */
     };
 
 
