@@ -13,6 +13,14 @@ const newUserFunc = (io, { user, userOld }, socket) => {
     io.emit('update-nicknames', arrayUsers.map((element) => ({ user: element.user })));
 };
 
+const formatDate = () => {
+  const timeHour = new Date().toLocaleTimeString('pt-br', { hour12: true });
+  const day = (new Date().toLocaleDateString()).replace(/\//g, '-');
+  const time = `${day} ${timeHour}`;
+
+  return time;
+};
+
 module.exports = (io) => io.on('connection', async (socket) => { 
   socket.on('disconnect', () => {
     arrayUsers
@@ -21,9 +29,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('message', ({ chatMessage, nickname }) => {   
-    const timeHour = new Date().toLocaleTimeString('pt-br', { hour12: true });
-    const day = (new Date().toLocaleDateString()).replace(/\//g, '-');
-    const time = `${day} ${timeHour}`;
+    const time = formatDate();
     const userMessage = `${time} ${nickname} ${chatMessage}`;
       
     createMessage(chatMessage, nickname, time);  
