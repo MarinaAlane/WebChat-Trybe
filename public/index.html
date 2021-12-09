@@ -35,13 +35,15 @@
     var socket = io('http://localhost:3000');
     var nick;
 
-    function onlineUser(nick) {
-      $('.todos-online').append('<p data-testid="online-user">' + nick + '</p>');
-    }
-
-    socket.on('nickGenerate', function(data) {
+    socket.on('user-connected', function(data) {
       nick = data;
-      onlineUser(nick);
+    });
+
+    socket.on('userOnline', function(data) {
+      $('.todos-online').html('');
+      data.forEach(function(element) {
+        $('.todos-online').append('<p data-testid="online-user">' + element + '</p>');
+      });
     });
 
     $('#nickForm').submit(function(e){

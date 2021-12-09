@@ -18,11 +18,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const ftMsg = moment().format('MM-DD-YYYY h:mm A');
 
+const users = [];
+
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected`);
   const userOnline = socket.id.slice(0, 16);
+  users.push(userOnline);
+  console.log(users);
+  socket.emit('user-connected', userOnline);
   
-  socket.emit('nickGenerate', userOnline);
+  io.emit('userOnline', users);
 
   socket.on('message', (data) => {
     io.emit('message', `${ftMsg} - ${data.nickname}: ${data.chatMessage}`);
