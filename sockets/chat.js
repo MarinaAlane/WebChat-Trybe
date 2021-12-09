@@ -1,9 +1,14 @@
 const userMessageFormatter = require('../utils/userMessageFormatter');
 
+let usersOnline = [];
+
 module.exports = (io) => io.on('connection', (socket) => {
   console.log(`${socket.id} connected`);
+  const userNickname = socket.id.slice(0, 16);
 
-  io.emit('userConnected', socket.id);
+  usersOnline.push(userNickname);
+  console.log(usersOnline);
+  io.emit('userConnected', { usersOnline, userNickname });
   
   socket.on('message', ({ nickname, chatMessage }) => {
     console.log(nickname, chatMessage);
@@ -11,10 +16,8 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log(`${socket.id} desconectou`);
+    const userIndex = usersOnline.indexOf(userNickname);
+    usersOnline = usersOnline.filter((_, index) => index !== userIndex);
+    console.log(usersOnline);
   });
-  
-  // socket.on('changeNickname', (newNickname) => {
-  //   nickname = newNickname;
-  // });
 });

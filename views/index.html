@@ -7,18 +7,37 @@
   <title>Web CHAT</title>
 </head>
 <body>
-  <h1>Olá world!</h1>
+  <h1>Nome de usuário: <span id="username" data-testid="online-user"></span></h1>
+  <ul id="onlineUsers">
+    <p>Usuários online: </p>
+  </ul>
     <form id="formUserNickname">
-      <input type="text" name="userNickname" id="userNickname" placeholder="Altere seu nickname">
-      <button type="submit">Trocar</button>
+      <input
+        type="text"
+        name="userNickname"
+        id="userNickname"
+        placeholder="Altere seu nickname"
+        data-testid="nickname-box"
+      >
+      <button
+        type="submit"
+        data-testid="nickname-button"
+      >
+        Trocar
+      </button>
     </form>  
 
   <ul id="screenMessage">
     
   </ul>
   <form id="userFormMessage">
-    <input type="text" name="userMessage" id="userMessage" placeholder="Digitua sua mensagem...">
-    <button type="submit">Enviar</button>
+    <input
+      type="text"
+      name="userMessage"
+      id="userMessage"placeholder="Digitua sua mensagem..."
+      data-testid="message-box"
+    >
+    <button type="submit" data-testid="send-button">Enviar</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>
