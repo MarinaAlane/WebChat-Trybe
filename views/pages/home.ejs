@@ -18,11 +18,15 @@
   </section>
 </main>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
   const formElement = document.getElementById('message-form');
   const messageInput = document.getElementById('message-box');
+  const socket = io();
+  const nickname = "<%= nickname %>";
 
   formElement.addEventListener('submit', handleSubmit);
+  socket.on('message', console.log);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -31,8 +35,7 @@
   }
 
   function sendMessage() {
-    const { value } = messageInput;
-    console.log(value);
+    socket.emit('message', { nickname, chatMessage: messageInput.value });
   }
 
   function clearMessageInput() {
