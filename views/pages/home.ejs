@@ -101,13 +101,24 @@
 
   function refreshClientList(allNicknames) {
     clearClientsList();
-    allNicknames.forEach(appendNewClient);
+    const sortedList = bubbleOwnNicknameToTop(allNicknames);
+    sortedList.forEach(appendNewClient);
   }
 
   function clearClientsList() {
     while (onlineClientsList.lastChild) {
       onlineClientsList.removeChild(onlineClientsList.lastChild);
     }
+  }
+
+  function bubbleOwnNicknameToTop(allNicknames) {
+    let sortedList = [...allNicknames];
+    const ownNickname = currentNicknameElement.innerText;
+    const ownNicknameIndex = sortedList.indexOf(ownNickname);
+    console.log({ ownNickname, ownNicknameIndex });
+    sortedList.splice(ownNicknameIndex, 1);
+    sortedList = [ownNickname, ...sortedList];
+    return sortedList;
   }
 
   function appendNewClient(nickname) {
