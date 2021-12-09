@@ -1,11 +1,9 @@
 const connection = require('./connection');
 
-const getAll = () => connection().then((db) => db.collection('chat').find({}).toArray());
+const getAll = () => connection().then((db) => db.collection('messages').find({}).toArray());
 
-const saveMessage = (timestamp, name, message) => 
-  connection().then((db) => db.collection('chat').insertOne({
-     message, name, timestamp,
-  }));
+const saveMessage = (item) => 
+  connection().then((db) => db.collection('messages').insertOne(item));
 
 module.exports = {
   getAll,

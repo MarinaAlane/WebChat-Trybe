@@ -14,6 +14,13 @@ const createLi = (id) => {
   divUser.appendChild(liUsers);
 };
 
+const messageLi = (inform) => {
+  const liMessage = document.createElement('li');
+  liMessage.innerText = inform;
+  liMessage.setAttribute('data-testid', 'message');
+  divMessages.appendChild(liMessage);
+};
+
 socket.on('connection', (id) => {
   createLi(id);
 });
@@ -34,10 +41,7 @@ formMessage.addEventListener('submit', (e) => {
 });
 
 socket.on('message', (inform) => {
-  const liMessage = document.createElement('li');
-  liMessage.innerText = inform;
-  liMessage.setAttribute('data-testid', 'message');
-  divMessages.appendChild(liMessage);
+  messageLi(inform);  
 });
 
 formUser.addEventListener('submit', (e) => {
@@ -59,3 +63,14 @@ socket.on('updateUsers', (oldNickname, userNickname) => {
     }
   });
 });
+
+const fetchChat = async () => {
+  const result = await fetch('http://localhost:3000/chat');
+  const response = await result.json();
+  response.forEach((res) => {
+    const messages = `${res.timestamp} - ${res.nickname}: ${res.message}`;
+    messageLi(messages);
+  });
+};
+
+fetchChat();

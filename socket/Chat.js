@@ -1,4 +1,5 @@
 const moment = require('moment');
+const axios = require('axios');
 
 const arrId = [];
 
@@ -17,6 +18,7 @@ module.exports = (io) => {
       const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss A');
       const inform = `${date} - ${nickname}: ${chatMessage}`;
       io.emit('message', inform);
+      axios.post('http://localhost:3000', { message: chatMessage, nickname, timestamp: date });
     });
   });
 };

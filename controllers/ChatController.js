@@ -1,12 +1,17 @@
 const { Router } = require('express');
 
-const ChatModel = require('../models/Chat');
+const { getAll, saveMessage } = require('../models/Chat');
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-  const chat = await ChatModel.getAll();
-  res.status(200).json(chat);
+router.get('/chat', async (_req, res) => {
+  const chat = await getAll();
+  return res.status(200).json(chat);
+});
+
+router.post('/', async (req, res) => {
+  const chat = await saveMessage(req.body);
+  return res.status(200).json(chat);
 });
 
 module.exports = router;
