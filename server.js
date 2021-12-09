@@ -17,6 +17,7 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
+const { create } = require('./models/messages');
 
 const allOnlineUsers = [];
 const date = moment().format('DD-MM-yyyy HH:mm:ss A');
@@ -36,9 +37,10 @@ io.on('connection', (socket) => {
     const updatedList = updateList(updatedUser);
     io.emit('conectedUsers', updatedList);
   });
-  socket.on('message', (params) => {
+  socket.on('message', async (params) => {
     const { chatMessage, nickname } = params;
-    const newMessage = `${date} ${nickname}: ${chatMessage}`; // falta adicionar a hora e trocar id por nickName
+    const newMessage = `${date} ${nickname}: ${chatMessage}`;
+    await create(chatMessage, nickname, date);
     io.emit('message', newMessage);
   });
   socket.on('disconnect', () => {
