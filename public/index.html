@@ -35,21 +35,28 @@
     var socket = io('http://localhost:3000');
     var nick;
 
-    socket.on('user-connected', function(data) {
-      nick = data;
+    socket.on('user-connected', function(nickname) {
+      nick = nickname;
+      socket.emit('setNickname', nickname);
     });
 
     socket.on('userOnline', function(data) {
       $('.todos-online').html('');
-      data.forEach(function(element) {
-        $('.todos-online').append('<p data-testid="online-user">' + element + '</p>');
+
+      const sorted = [...data].sort((a, b) => {
+        if (a.id === socket.id) return -1;
+        if (b.id === socket.id) return 1;
+        return 0;
+      });
+      sorted.forEach(({nickname}) => {
+        $('.todos-online').append('<p data-testid="online-user">' + nickname + '</p>');
       });
     });
 
     $('#nickForm').submit(function(e){
       e.preventDefault();
       nick = $('input[name="nickname"]').val();
-      console.log(nick);
+      socket.emit('setNickname', nick);
     });
 
     $('#messageForm').submit(function(e){
