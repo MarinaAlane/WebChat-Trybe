@@ -6,7 +6,7 @@
 
 <main>
   <header>
-    <h1>Boas vindas, <span id="online-user" data-testid="online-user"><%= nickname %></span></h1>
+    <h1>Boas vindas, <span id="current-user" data-testid="current-user"><%= nickname %></span></h1>
   </header>
   <section style="height: 60vh; overflow-y: scroll;">
     <ol id="message-container">
@@ -31,6 +31,10 @@
       <button type="submit" data-testid="nickname-button">Mudar meu apelido</button>
     </form>
   </section>
+  <section>
+    <h1>Quem está online agora: </h1>
+    <ol id="connected-clients-list"></ol>
+  </section>
 </main>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -38,7 +42,7 @@
   const messageForm = document.getElementById('message-form');
   messageForm.addEventListener('submit', handleSubmitMessage);
   
-  const currentNicknameElement = document.getElementById('online-user');
+  const currentNicknameElement = document.getElementById('current-user');
   const socket = io();
   socket.emit('new-client', { nickname: currentNicknameElement.innerText });
 
@@ -89,6 +93,32 @@
 
   function clearInput(targetInput) {
     targetInput.value = '';
+  }
+
+  const onlineClientsList = document.getElementById('connected-clients-list');
+  socket.on('client-list', refreshClientList);
+
+  function refreshClientList(allNicknames) {
+    clearClientsList();
+    allNicknames.forEach(appendNewClient);
+  }
+
+  function clearClientsList() {
+    while (onlineClientsList.lastChild) {
+      onlineClientsList.removeChild(onlineClientsList.lastChild);
+    }
+  }
+
+  function appendNewClient(nickname) {
+    const newClientElement = createClientElement(nickname);
+    onlineClientsList.appendChild(newClientElement);
+  }
+
+  function createClientElement(nickname) {
+    const element = document.createElement('li');
+    element.dataset.testid = 'online-user';
+    element.innerText = nickname;
+    return element;
   }
 </script>
 
