@@ -1,6 +1,6 @@
 const connection = require('./connection');
 
-const getAllMessages = () => connection().then((db) => db.collocation('messages').find().toArray());
+const getAllMessages = () => connection().then((db) => db.collection('messages').find().toArray());
 const setMessage = (itens) => (
   connection()
     .then((db) => db.collection('messages')

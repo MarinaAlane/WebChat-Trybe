@@ -27,7 +27,7 @@ app.use('/', fetchApi);
 
 let user = [];
 
-const createNewUser = (nickname, chatMessage) => {
+const createNewUser = (chatMessage, nickname) => {
   const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
     
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
   socket.on('alter_user', ({ newUser, oldUser }) => {
     idSocket = newUser;
     user = user.map((users) => (users === oldUser ? newUser : users));
-    
+    // Tales me ajudou nesse erro!
     socket.broadcast.emit('update_user', { newUser, oldUser });
   });
 

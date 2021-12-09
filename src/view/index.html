@@ -108,7 +108,7 @@
 
           const message = document.forms.message_form_name.msg.value;
 
-          socket.emit('message', { chatMessage: message, nickname: sessionStorage.userName  });
+          socket.emit('message', { chatMessage: message, nickname: sessionStorage.nickname  });
           document.forms.message_form_name.msg.value = '';
         });
 
@@ -117,13 +117,12 @@
         userForm.addEventListener('submit', (e) => {
           e.preventDefault();
           const fistItem = document.querySelector('.online-user');
-
+          //Rodolfo, Tales e Gabriel da turma 11, me ajudaram na complexidade dessa função;
           const oldUser = sessionStorage.nickname;
           const newUser = document.forms.user_form_name.user.value;
           fistItem.innerText= newUser;
-          console.log(oldUser, newUser);
           socket.emit('alter_user', { newUser, oldUser });
-          sessionStorage.setItem('userName', newUser);
+          sessionStorage.setItem('nickname', newUser);
         });
       });
       const fetchApi = async () => {
