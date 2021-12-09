@@ -5,17 +5,46 @@
   </head>
   <body>
     <h1>Projeto Webchat</h1>
+    <aside>
+      <h2>Usuários Conectados</h2>
+      <ul id='nicknames'></ul>
+    </aside>
+
+    <h2>Chat</h2>
     <ul id="chat"></ul>
 
-    <script>
-      const ul = document.querySelector('#chat');
+    <form id="form">
+      <input id="input">
+      <button>Enviar</button>
+    </form>
 
+    <script>
       const socket = io("http://localhost:3000");
-      socket.on("message", (msg) => {
+
+      socket.on('message', (msg) => {
         const li = document.createElement("li");
         li.textContent = msg;
-        ul.appendChild(li);
+        document.querySelector('#chat').appendChild(li);   
       });
+      
+      // Req 2
+      socket.on('nicknames', (users) => {
+        users.map((user) => {
+          const li2 = document.createElement("li");
+          li2.setAttribute('data-testid', 'online-user');
+          li2.textContent = user;
+          document.querySelector('#nicknames').appendChild(li2);
+        })
+      });
+
+      // socket.on('nicknames', () => {
+      //   const nickname = socket.id.slice(0, 16);
+      //   sessionStorage.setItem('nickname', nickname);
+      //   const li2 = document.createElement("li");
+      //   li2.setAttribute('data-testid', 'online-user');
+      //   li2.textContent = sessionStorage.getItem('nickname');
+      //   document.querySelector('#nicknames').appendChild(li2);
+      // });
     </script>
   </body>
 </html>
