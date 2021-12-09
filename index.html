@@ -27,28 +27,29 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/chat.js"></script>
   <script>
-    const insertConnectedUser = (allUsers, socket) => {
+    const insertConnectedUser = (connectedUsers) => {
       const thisSocketId = sessionStorage.getItem('socketId');
       const connectedUsersUl = document.querySelector('.connectedUsers');
       connectedUsersUl.innerHTML = '';
-      allUsers.forEach(user => {
-        if (user.socketId === thisSocketId) {
-          allUsers.splice(allUsers.indexOf(user), 1);
-          allUsers.unshift({
-            nickname: user.nickname,
-            socketId: user.socketId
-        });
+      Object.entries(connectedUsers).forEach(user => {
+        if (user[0] === thisSocketId) {
+          const li = document.createElement('li');
+          li.innerText = user[1];
+          li.setAttribute('data-testid', 'online-user');
+          li.setAttribute('class', 'online-user');
+          li.setAttribute('id', user[0]);
+          connectedUsersUl.appendChild(li);
         }
       });
-      allUsers.forEach(user => {
+      Object.entries(connectedUsers).forEach(user => {
+        if (user[0] !== thisSocketId){
         const li = document.createElement('li');
-        li.innerText = user.nickname;
+        li.innerText = user[1];
         li.setAttribute('data-testid', 'online-user');
         li.setAttribute('class', 'online-user');
-        li.setAttribute('id', user.socketId);
+        li.setAttribute('id', user[0]);
         connectedUsersUl.appendChild(li);
-      });
-      
+      }});
     };
 
     // https://stackoverflow.com/questions/57054568/how-to-listen-content-change-in-span
@@ -80,7 +81,7 @@
       });
     });
 
-    socket.on('join', (allUsers) => insertConnectedUser(allUsers));
+    socket.on('join', (connectedUsers) => insertConnectedUser(connectedUsers));
     socket.on('disconnectedUser', (socketId) => {
       const connectedUsersList = document.querySelectorAll('.online-user');
       [...connectedUsersList].forEach(connectedUser => {
