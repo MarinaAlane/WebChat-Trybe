@@ -113,6 +113,7 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
     await nicknameButton.click();
     await page.waitForTimeout(500);
 
+
     //Client sends a message
     const messageBox = await page.$(`input${dataTestid('message-box')}`);
     await messageBox.type(chatMessage);

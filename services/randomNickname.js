@@ -5,7 +5,7 @@ const colorFile = fs.readFileSync('colors.txt', 'utf-8');
 const upcaseFirstCharacter = (string) => `${string[0].toUpperCase()}${string.slice(1)}`;
 
 const mapTrim = (string) => string.trim();
-const mapUpcaseCompositeNames = (string) => string.split(' ').map(upcaseFirstCharacter).join(' ');
+const mapUpcaseCompositeNames = (string) => string.split(' ').map(upcaseFirstCharacter).join('-');
 const reduceToObjectWithLengths = (acc, name) => {
   if (!acc[name.length]) {
     acc[name.length] = [];
@@ -46,7 +46,7 @@ const getRandomNickName = () => {
   const animal = getRandomAnimal();
   const targetLength = 16;
   const color = getRandomColorWithLength(targetLength - 1 - animal.length);
-  return `${color} ${animal}`;
+  return `${color}-${animal}`;
 };
 
 module.exports = { getRandomNickName };
