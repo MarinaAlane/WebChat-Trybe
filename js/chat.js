@@ -37,8 +37,8 @@ const nicknameGenerator = () => {
   return `${finalRandomNickname}`;
 };
 
+const randomNickname = nicknameGenerator();
 const defineNicknameOnLoad = () => {
-  const randomNickname = nicknameGenerator();
   const nicknameSpan = document.querySelector('#nickname');
   nicknameSpan.textContent = randomNickname;
 };
@@ -48,5 +48,6 @@ socket.on('message', (message) => createMessage(message));
 module.exports = {
   defineNicknameOnLoad,
   saveNickname,
- createMessage,
+  createMessage,
+  nicknameGenerator,
 };

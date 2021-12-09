@@ -11,7 +11,12 @@
     <button id="join" data-testid="nickname-button" type="button" onclick={saveNickname()} >Join</button>
     <br/>
     <span>Actual Nickname: </span>
-    <span id="nickname" data-testid="online-user"></span>
+    <span id="nickname"></span>
+  </div>
+  <div>
+    <span>Online Users: </span>
+    <ul class=connectedUsers>
+    </ul>
   </div>
   </form>
     <ul class="messages" ></ul>
@@ -22,16 +27,84 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/chat.js"></script>
   <script>
-    window.onload = async function(){ 
+    const insertConnectedUser = (allUsers, socket) => {
+      const thisSocketId = sessionStorage.getItem('socketId');
+      const connectedUsersUl = document.querySelector('.connectedUsers');
+      connectedUsersUl.innerHTML = '';
+      allUsers.forEach(user => {
+        if (user.socketId === thisSocketId) {
+          allUsers.splice(allUsers.indexOf(user), 1);
+          allUsers.unshift({
+            nickname: user.nickname,
+            socketId: user.socketId
+        });
+        }
+      });
+      allUsers.forEach(user => {
+        const li = document.createElement('li');
+        li.innerText = user.nickname;
+        li.setAttribute('data-testid', 'online-user');
+        li.setAttribute('class', 'online-user');
+        li.setAttribute('id', user.socketId);
+        connectedUsersUl.appendChild(li);
+      });
+      
+    };
+
+    // https://stackoverflow.com/questions/57054568/how-to-listen-content-change-in-span
+    const content = document.querySelector('#nickname');
+    const append = () => content.innerText += ' change';
+    content.addEventListener('DOMSubtreeModified', () => {
+      sessionStorage.setItem('firstOrLastNickname', sessionStorage.getItem('newNickname'));
+      sessionStorage.setItem('newNickname', content.innerText);
+      const oldNickname = sessionStorage.getItem('firstOrLastNickname');
+      const newNickname = sessionStorage.getItem('newNickname');
+      socket.emit('changeNickname',oldNickname, newNickname);
+    });
+
+    socket.on('changeNickname', (oldNickname, newNickname) => {
+        const connectedUsersList = document.querySelectorAll('.online-user');
+        [...connectedUsersList].forEach(connectedUser => {
+          if (connectedUser.innerText === oldNickname) {
+            connectedUser.innerText = newNickname;
+          }
+        });
+      });
+    
+    socket.on('disconnectedUser', (socketId) => {
+      const connectedUsersList = document.querySelectorAll('.online-user');
+      [...connectedUsersList].forEach(connectedUser => {
+        if (connectedUser.id === socketId) {
+          connectedUser.remove();
+        }
+      });
+    });
+
+    socket.on('join', (allUsers) => insertConnectedUser(allUsers));
+    socket.on('disconnectedUser', (socketId) => {
+      const connectedUsersList = document.querySelectorAll('.online-user');
+      [...connectedUsersList].forEach(connectedUser => {
+          if (connectedUser.id === socketId) {
+            connectedUser.remove();
+          }
+      });
+    });
+
+  
+    window.onload = async function(){
+      socket.on('yourId', (socketId) => {
+        sessionStorage.setItem('socketId', socketId);
+      });
       defineNicknameOnLoad();
+      const nickname = document.getElementById('nickname').innerText;
+      sessionStorage.setItem('firstOrLastNickname', nickname);
+      sessionStorage.setItem('newNickname', nickname);
       const loggedMessages = await fetch('http://localhost:3000/messagesHistory'); // porque chamando essa funcao do chat.js nao funciona ?
       const messages = await loggedMessages.json();
       messages.forEach(element => {
-        const timestamp = element.timestamp;
-        const nickname = element.nickname;
-        const chatMessage = element.message;
-        createMessage(`${timestamp} - ${nickname}: ${chatMessage}`);
+        createMessage(`${element.timestamp} - ${element.nickname}: ${element.message}`);
       });
+      socket.emit('join', nickname);
      }
   </script>
 </html>
