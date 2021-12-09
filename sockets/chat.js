@@ -14,6 +14,12 @@ const newUserFunc = (io, { user, userOld }, socket) => {
 };
 
 module.exports = (io) => io.on('connection', async (socket) => { 
+  socket.on('disconnect', () => {
+    arrayUsers
+      .splice(arrayUsers.indexOf(arrayUsers.find((element) => element.socket === socket)), 1);
+    io.emit('update-nicknames', arrayUsers.map(({ user }) => ({ user })));
+  });
+
   socket.on('message', ({ chatMessage, nickname }) => {   
     const timeHour = new Date().toLocaleTimeString('pt-br', { hour12: true });
     const day = (new Date().toLocaleDateString()).replace(/\//g, '-');
@@ -31,11 +37,5 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.on('new-user', ({ user, userOld }) => {
     newUserFunc(io, { user, userOld }, socket);
-  });
-
-  socket.on('disconnect', () => {
-    arrayUsers
-      .splice(arrayUsers.indexOf(arrayUsers.find((element) => element.socket === socket)), 1);
-    io.emit('update-nicknames', arrayUsers.map(({ user }) => ({ user })));
   });
 });
