@@ -66,15 +66,14 @@ socket.on('connect', () => {
 });
 
 const addUser = (onUsers) => {
-  const nickname = socket.id;
+  const nickname = socket.id.substring(0, 16);
   const onlineUsers = document.getElementById('online-users');
   onlineUsers.innerHTML = '';
-  console.log('CONSOLE LOG DO ONUSERS', onUsers);
   onUsers.forEach((user) => {
     const newLi = document.createElement('li');
     newLi.setAttribute(dataTestId, 'online-user');
     newLi.innerText = user;
-    if (user === nicknameLocal || user === socket.id) {
+    if (user === nicknameLocal || user === nickname) {
       return onlineUsers.prepend(newLi);
     }
     onlineUsers.appendChild(newLi);
@@ -96,7 +95,7 @@ const addMessage = (msg) => {
   newLiMessage.innerText = msg;
   newLiMessage.setAttribute(dataTestId, 'message');
   allMsgs.appendChild(newLiMessage);
-}
+};
 
 const msgDB = (all) => {
   console.log('ESSE É O MEU CONSOLE', all);

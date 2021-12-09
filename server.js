@@ -1,19 +1,26 @@
 // Faça seu código aqui 
 const express = require('express');
-const http = require('http');
-const path = require('path');
 const moment = require('moment');
-const { Server } = require('socket.io');
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-const PORT = process.env.PORT || 3000;
+const path = require('path');
 require('dotenv').config();
 
+const app = express();
+const http = require('http').createServer(app);
+
+const PORT = process.env.PORT || 3000;
+
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.render('index');
 });
+
+const io = require('socket.io')(http, {
+  cors: {
+    origin: `http://localhost:${PORT}`, // url aceita pelo cors
+    methods: ['GET', 'POST'], // Métodos aceitos pela url
+  } });
+  
+  app.set('view engine', 'ejs');
+  app.set('views', path.join(__dirname, 'views'));
 
 const onUsers = {};
 const { getMsg, setMsg } = require('./models/webchat');
@@ -40,8 +47,10 @@ io.on('connection', async (socket) => {
   });
 
     const msgs = await getMsg();
-
+    io.emit('userList', Object.values(onUsers));
   io.emit('history', await msgs);
 });
 
-server.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));
+http.listen(PORT, () => {
+  console.log(`Servidor escutando na porta ${PORT}`);
+});
