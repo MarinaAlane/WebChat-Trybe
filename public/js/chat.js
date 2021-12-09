@@ -1,4 +1,4 @@
-const socket = window.io();
+const socket = window.io('http://localhost:3000');
 
 const DATA_TEST_ID = 'data-testid';
 
@@ -27,6 +27,13 @@ const createMessage = (message) => {
   chatUl.appendChild(commentLi);
 };
 
+const getAllMessages = async () => {
+  const savedMessages = await fetch('http://localhost:3000/message')
+    .then((r) => r.json());
+  console.log(savedMessages);
+  savedMessages.forEach((msg) => createMessage(`${msg.timestamp} ${msg.nickname} ${msg.message}`));
+};
+
 const attUserList = (userList) => {
   const usersUl = document.querySelector('#usersUl');
   usersUl.innerHTML = '';
@@ -47,6 +54,10 @@ const attUserList = (userList) => {
 
 socket.on('message', (message) => createMessage(message));
 socket.on('attList', (userList) => attUserList(userList));
+socket.on('loadMessages', (messages) => messages.forEach((msg) => {
+  console.log('Opa');
+  createMessage(`${msg.timestamp} ${msg.nickname} ${msg.message}`);
+}));
 
 const formUserName = document.querySelector('#userForm');
 const inputUserName = document.querySelector('#userInput');
@@ -58,4 +69,8 @@ formUserName.addEventListener('submit', (e) => {
   });
   innitialNickLi.innerText = inputUserName.value;
   userName = inputUserName.value;
+});
+
+window.onload = (async () => {
+  await getAllMessages();
 });
