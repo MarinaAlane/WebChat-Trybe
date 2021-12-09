@@ -43,7 +43,6 @@ io.on('connection', (socket) => {
     user = user.filter((users) => users !== idSocket);
     socket.broadcast.emit('user_disconnect', idSocket);
   });
-  
 });
 
 app.get('/', (req, res) => {

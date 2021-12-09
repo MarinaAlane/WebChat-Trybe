@@ -56,14 +56,20 @@ const updateUserOnScreen = (user) => {
   divUser.appendChild(p);
 };
 
+socket.on('id', (id) => {
+  updateUserOnScreen(id);
+
+})
+
 const setUserId = () => {
   socket.on('connection_NewUSer', (array) => {
-
+    console.log(array)
     const lastPosition = array[array.length - 1];
-    sessionStorage.setItem('nickname', lastPosition);
     updateUserOnScreen(lastPosition);
+    sessionStorage.setItem('nickname', lastPosition);
     for (let index = 0;  index < array.length - 1; index += 1) {
-      updateUserOnScreen(array[index]);
+      const user = array[index];
+      updateUserOnScreen(user);
     }
     })
 
