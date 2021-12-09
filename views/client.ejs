@@ -18,7 +18,7 @@
 
     <section>
       <ul id="messages">
-        <% messages.forEach((message) => { %>
+        <% history.forEach((message) => { %>
           <li data-testid="message"> <%= `${message.timestamp} - ${message.nickname}: ${message.message} `%> </li>
         <% }) %>
       </ul>
