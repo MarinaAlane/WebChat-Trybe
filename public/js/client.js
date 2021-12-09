@@ -1,70 +1,87 @@
 const socket = window.io();
 
-// inputs
+// Inputs
 const nameInput = document.querySelector('#nameInput');
 const messageInput = document.querySelector('#messageInput');
 
-// uls
+// UL's
 const usersUl = document.querySelector('#usersUl');
 const chatUl = document.querySelector('#chatUl');
 
-// buttons
+// Buttons
 const enterButton = document.querySelector('#enterButton');
 const sendButton = document.querySelector('#sendButton');
 
-let nickHash;
-
+// Necessário para LINT
 const dataTestId = 'data-testid';
 
-socket.on('connection', (hashNick) => {
-  nickHash = hashNick;
-  const usersLi = document.createElement('li');
-  usersLi.innerText = hashNick;
-  usersLi.setAttribute(dataTestId, 'online-user');
-  usersLi.setAttribute('class', 'userId-Name');
-  usersUl.appendChild(usersLi);
-});
+// Variavel que irá armazenar o nickname do usuário
+let nickname;
 
-socket.on('connectedMessages', (messages) => {
-  messages.forEach((i) => {
-    const messageLi = document.createElement('li');
-    messageLi.innerText = `${i.timestamp} - ${i.nickname}: ${i.message}`;
-    messageLi.setAttribute(dataTestId, 'message');
-    chatUl.appendChild(messageLi);
+// Escuta o evento de connection do servidor
+socket.on('connection', (users) => {
+  // Limpa o UL para conseguir tirar os usuários que desconectaram
+  usersUl.innerHTML = '';
+
+  // For each para adicionar os usuários na UL
+  users.forEach((user) => {
+    const usersLi = document.createElement('li');
+    usersLi.innerText = user;
+    usersLi.setAttribute(dataTestId, 'online-user');
+    usersLi.setAttribute('class', 'userId-Name');
+    usersUl.appendChild(usersLi);
   });
 });
 
-// Insere os usuários
-enterButton.addEventListener('click', (e) => {
-  e.preventDefault();
-  socket.emit('userEnter', nameInput.value);
-});
+// Escuta o evento throwId para armazenar o ID de cada usuário no nickname
+socket.on('throwId', (userId) => { nickname = userId; });
 
-const showUsers = (userName, hashNick) => {
-  const usersLi = document.querySelectorAll('.userId-Name');
-  usersLi.forEach((i, index) => {
-    if (i.innerText === hashNick) {
-      usersLi[index].innerText = userName;
-      nickHash = userName;
-    }
-  });
-};
-
-socket.on('userLogin', ({ userName, hashNick }) => showUsers(userName, hashNick));
-
-// Insere as mensagens
+// Evento para enviar uma mensagem e nickname ao servidor
 sendButton.addEventListener('click', (e) => {
   e.preventDefault();
+
   const chatMessage = messageInput.value;
-  const nickname = nickHash;
+
   socket.emit('message', { chatMessage, nickname });
 });
 
+// Função para adicionar a mensagem à UL de mensagens
 const showMessages = (message) => {
   const messageLi = document.createElement('li');
   messageLi.innerText = message;
   messageLi.setAttribute(dataTestId, 'message');
   chatUl.appendChild(messageLi);
 };
-
+// Escuta o evento message e chama a função de exibir as mensagens
 socket.on('message', (message) => showMessages(message));
+
+// socket.on('connectedMessages', (messages) => {
+//   messages.forEach((i) => {
+//     const messageLi = document.createElement('li');
+//     messageLi.innerText = `${i.timestamp} - ${i.nickname}: ${i.message}`;
+//     messageLi.setAttribute(dataTestId, 'message');
+//     chatUl.appendChild(messageLi);
+//   });
+// });
+
+// // Insere os usuários
+// enterButton.addEventListener('click', (e) => {
+//   e.preventDefault();
+//   socket.emit('userEnter', nameInput.value);
+// });
+
+// const showUsers = (userName, hashNick) => {
+//   const usersLi = document.querySelectorAll('.userId-Name');
+//   usersLi.forEach((i, index) => {
+//     if (i.innerText === hashNick) {
+//       usersLi[index].innerText = userName;
+//       nickHash = userName;
+//     }
+//   });
+// };
+
+// socket.on('userLogin', ({ userName, hashNick }) => showUsers(userName, hashNick));
+
+window.onbeforeunload = (_e) => {
+  socket.disconnect();
+};
