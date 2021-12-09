@@ -30,7 +30,8 @@ const animalFile = fs.readFileSync('animals.txt', 'utf-8');
 const animals = animalFile.split('\n')
   .filter(filterBy.empty)
   .map(mapTrim)
-  .filter(filterBy.length(3, 12));
+  .filter(filterBy.length(3, 12))
+  .map(mapUpcaseCompositeNames);
 
 const getRandomElementFromArray = (targetArray, options = {}) => {
   const { min = 0, max = targetArray.length - 1 } = options;
