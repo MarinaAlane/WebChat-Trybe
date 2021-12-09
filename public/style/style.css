@@ -1,14 +1,14 @@
-#screen {
+.screen {
   display: flex;
 }
 
-#users {
+.users {
   border: 1px black solid;
   height: 700px;
   width: 300px;
 }
 
-#messages {
+.messages {
   border: 1px black solid;
   height: 700px;
   width: 500px;
