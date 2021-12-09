@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const moment = require('moment');
+const axios = require('axios');
 require('dotenv').config();
 
 const port = process.env.PORT || 3000;
@@ -24,6 +25,18 @@ const io = require('socket.io')(http, {
 
 let user = [];
 
+const createNewUser = (nickname, chatMessage) => {
+  const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
+    
+    io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
+
+    axios.post('http://localhost:3000/chat', {
+      message: chatMessage,
+      nickname,
+      timestamp: date,
+    });
+};
+
 io.on('connection', (socket) => {
   console.log('connection');
   let idSocket = socket.id.substring(0, 16);
@@ -34,9 +47,7 @@ io.on('connection', (socket) => {
   socket.emit('connection_NewUSer', user);
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
-    
-    io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
+    createNewUser(chatMessage, nickname);
   });
 
   socket.on('alter_user', ({ newUser, oldUser }) => {
