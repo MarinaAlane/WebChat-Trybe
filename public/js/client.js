@@ -1,7 +1,7 @@
 const socket = window.io();
 
 // Inputs
-// const nameInput = document.querySelector('#nameInput');
+const nameInput = document.querySelector('#nameInput');
 const messageInput = document.querySelector('#messageInput');
 
 // UL's
@@ -9,7 +9,7 @@ const usersUl = document.querySelector('#usersUl');
 const chatUl = document.querySelector('#chatUl');
 
 // Buttons
-// const enterButton = document.querySelector('#enterButton');
+const enterButton = document.querySelector('#enterButton');
 const sendButton = document.querySelector('#sendButton');
 
 // Necessário para LINT
@@ -55,6 +55,26 @@ const showMessages = (message) => {
 // Escuta o evento message e chama a função de exibir as mensagens
 socket.on('message', (message) => showMessages(message));
 
+// Envia o evento de mudança de nome ao servidor
+enterButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  socket.emit('changeNickname', nameInput.value);
+});
+
+socket.on('changeUsersName', (users) => {
+    // Limpa o UL para conseguir tirar os usuários que desconectaram
+    usersUl.innerHTML = '';
+
+    // For each para adicionar os usuários na UL
+    users.forEach((user) => {
+      const usersLi = document.createElement('li');
+      usersLi.innerText = user;
+      usersLi.setAttribute(dataTestId, 'online-user');
+      usersLi.setAttribute('class', 'userId-Name');
+      usersUl.appendChild(usersLi); 
+    });
+});
+
 // socket.on('connectedMessages', (messages) => {
 //   messages.forEach((i) => {
 //     const messageLi = document.createElement('li');
@@ -62,12 +82,6 @@ socket.on('message', (message) => showMessages(message));
 //     messageLi.setAttribute(dataTestId, 'message');
 //     chatUl.appendChild(messageLi);
 //   });
-// });
-
-// // Insere os usuários
-// enterButton.addEventListener('click', (e) => {
-//   e.preventDefault();
-//   socket.emit('userEnter', nameInput.value);
 // });
 
 // const showUsers = (userName, hashNick) => {

@@ -7,12 +7,12 @@ let users = [];
 module.exports = (io) => {
   io.on('connection', async (socket) => {
     // Cria um id de 16 caracteres
-    const userId = socket.id.substring(0, 16);
+    let userId = socket.id.substring(0, 16);
     users.push(userId);
 
     // Emite um evento de conexão para todos os usuários passando o array USERS
     io.emit('connection', users);
-    
+
     // Emite um evento para enviar o ID ao cliente
     socket.emit('throwId', userId);
 
@@ -27,14 +27,18 @@ module.exports = (io) => {
       // https://momentjs.com/
       // Cria um date no formato especificado
       const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss A');
-      console.log(nickname);
+
       // Cria uma mensagem personalizada e retorna aos clientes
       const message = `${date} - ${nickname}: ${chatMessage}`;
       io.emit('message', message);
     });
 
-    // socket.emit('connectedMessages', await getAllMessages());
+    socket.on('changeNickname', (name) => {
+      users = users.map((user) => (user === userId ? name : user)); userId = name; io.emit('changeUsersName', users);
+      socket.emit('throwId', userId);
+    });
 
+    // socket.emit('connectedMessages', await getAllMessages());
     // socket.on('userEnter', (userName) => {
     //   io.emit('userLogin', { userName, hashNick });
     // });
@@ -44,7 +48,6 @@ module.exports = (io) => {
     //   // https://momentjs.com/
     //   const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss A');
     //   const message = `${date} - ${nickname}: ${chatMessage}`;
-
     //   io.emit('message', message);
     //   await createMessage(chatMessage, nickname, date);
     // 
