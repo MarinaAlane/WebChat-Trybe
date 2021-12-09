@@ -1,10 +1,31 @@
 <!doctype html>
 <html>
   <head>
+    <link href="./css/index.css" rel="stylesheet">
     <title>Web Chat</title>
   </head>
   <body>
     <h1>Web Chat</h1>
+    <div class="container">
+      <div class="usersContainer">
+        <form id="nicknameForm" action="">
+          <input type="text" id="nicknameInput" class="input" data-testid="nickname-box" placeholder="Insira seu nickname" />
+          <button id="nicknameButton" type="button" data-testid="nickname-button">Salvar Usuário</button>
+        </form>
+        <ul class="onlineUsers" id="onlineUsersId">
+
+        </ul>
+      </div>
+      <div class="messageContainer">
+        <ul id="listMessage">
+
+        </ul>
+      </div>
+    </div>
+    <form id="messageForm" action="">
+      <input autocomplete="off" type="text" data-testid="message-box" placeholder="Digite uma nova mensagem aqui" class="input" id="messageInput" />
+      <button type="button" id="sendButton" data-testid="send-button">Enviar</button>
+    </form>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/chat.js"></script>

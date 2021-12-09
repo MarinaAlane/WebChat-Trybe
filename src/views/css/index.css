@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.usersContainer {
+  margin: 8px;
+  width: 30%;
+}
+
+.messageContainer {
+  border: 1px solid black;
+  margin: 5px;
+  padding: 5px;
+  width: 70%;
+}
+
+.onlineUsers {
+  border: 1px solid black;
+}
+
+form {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.input {
+  padding: 10px;
+  width: 30%;
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+}
