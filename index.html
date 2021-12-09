@@ -7,49 +7,53 @@
   <body>
     <div class="message">
       <div>
-        <input type="text" placeholder="Digite seu Nickname" autocomplete="off" />
-        <button>Entrar</button>
+        <form id="formUser">
+          <input id="inputUser" type="text" placeholder="Digite seu Nickname" autocomplete="off" />
+          <button>Entrar</button>
+        </form>
         <ul id="messages"></ul>
       </div>
+      <form id="form">
+      <input
+      id="input"
+      type="text"
+      class="input"
+      autocomplete="off"
+      />
+      <button>Send</button>
+      </form>
     </div>
-    <form id="form" action="">
-    <input
-    id="input"
-    type="text"
-    class="input"
-    autocomplete="off"
-    />
-    <button>Send</button>
-    </form>
   </div>
   <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
-      const form = document.querySelector('form');
+
+      const form = document.querySelector('#form');
       const input = document.querySelector('#input');
+      const ul = document.querySelector('#messages');
+      const inputUser = document.querySelector('#inputUser');
+      const formUser = document.querySelector('#formUser');
+
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         // console.log('cliquei')
         if(input.value) {
-          socket.emit('chatMessage', input.value);
+          socket.emit('message', {
+            chatMessage: input.value,
+            nickname: socket.id,
+          });
           input.value = '';
           // console.log('chatMessage' + input.value);
-          return false;
         }
+        return false;
       });
-
-      const createMessage = (message) => {
-        const ul = document.querySelector('#messages');
+  
+      socket.on('message', (msg) => {
         const li = document.createElement('li');
-        li.innerText = message;
+        li.textContent = msg;
         ul.appendChild(li);
-      }
-
-      socket.on('chatMessage', (msg) => {
-        createMessage('chatMessage');
-        // window.scrollTo(0, document.body.scrollHeight);
+        window.scrollTo(0, document.body.scrollHeight);
       });
-
     </script>
   </body>
 </html>
