@@ -5,7 +5,7 @@ const moment = require('moment');
 require('dotenv').config();
 
 const app = express();
-const { PORT } = process.env;
+const { PORT = 3000 } = process.env;
 
 const socketIoServer = require('http').createServer(app);
 const io = require('socket.io')(socketIoServer, {
