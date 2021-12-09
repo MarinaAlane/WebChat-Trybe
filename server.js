@@ -22,23 +22,28 @@ const io = require('socket.io')(http, {
   },
 });
 
-const user = [];
+let user = [];
 
 io.on('connection', (socket) => {
   console.log('connection');
   const idSocket = socket.id.substring(0, 16);
   user.push(idSocket);
 
-  socket.on('id', (dataId) => {
-    user.push(dataId);
+  socket.broadcast.emit('id', idSocket);
+
+  socket.emit('connection_NewUSer', user);
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
+    
+    io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
 
-  socket.broadcast.emit('id', user);
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const date = moment(new Date()).format('DD MM YYYY, h:mm:ss');
-    
-    io.emit('message', `${date}  - ${nickname}: ${chatMessage}`);
+  socket.on('disconnect', () => {
+    user = user.filter((users) => users !== idSocket);
+    socket.broadcast.emit('user_disconnect', idSocket);
   });
+  
 });
 
 app.get('/', (req, res) => {

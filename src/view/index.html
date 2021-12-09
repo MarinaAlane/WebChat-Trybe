@@ -51,23 +51,35 @@ const updateUserOnScreen = (user) => {
   p.innerText = user;
 
   p.id = user;
+  p.setAttribute('class', 'online-user');
   p.setAttribute('data-testid', 'online-user');
   divUser.appendChild(p);
 };
 
 const setUserId = () => {
-  socket.on('id', (data) => {
-    console.log(data)
-    // data.forEach(({ idSocket, dataId }) => {
-    //   if (!idSocket) {
-    //   sessionStorage.setItem('user', idSocket);
-    //   updateUserOnScreen(idSocket);
-    // } else {
-    //   updateUserOnScreen(dataId);
-    // }
-    // }
-  });
+  socket.on('connection_NewUSer', (array) => {
+
+    const lastPosition = array[array.length - 1];
+    sessionStorage.setItem('nickname', lastPosition);
+    updateUserOnScreen(lastPosition);
+    for (let index = 0;  index < array.length - 1; index += 1) {
+      updateUserOnScreen(array[index]);
+    }
+    })
+
 };
+
+socket.on('user_disconnect', (id) => {
+    const allUser = document.querySelectorAll('.online-user');
+
+    allUser.forEach((user) => {
+      if(user.innerText === id) {
+        user.remove();
+      }
+    });
+
+});
+
 
 socket.on('message', (messages) => {
   updateMessagesOnScreen(messages);
@@ -81,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const message = document.forms.message_form_name.msg.value;
     
-    socket.emit('message', { chatMessage: message, nickname: sessionStorage.user });
+    socket.emit('message', { chatMessage: message, nickname: sessionStorage.userName  });
     document.forms.message_form_name.msg.value = '';
   });
 
@@ -89,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   userForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    userNickname = document.forms.user_form_name.user.value;
+    const userNickname = document.forms.user_form_name.user.value;
+    sessionStorage.setItem('userName', userNickname)
   });
 });
 
