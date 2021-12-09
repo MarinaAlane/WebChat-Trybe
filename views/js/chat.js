@@ -34,6 +34,7 @@ buttonMessage.addEventListener('click', (event) => {
 buttonSetNickName.addEventListener('click', (event) => {
   event.preventDefault();
   window.sessionStorage.setItem('nickname', inputSetNick.value);
+  socket.emit('changeNickName', nickName.value);
 });
 
 socket.on('message', async (renderMessage) => {
@@ -48,5 +49,3 @@ socket.on('usersOnline', (arrayUsersOnline) => {
     setUserOn(userNickName);
   });
 });
-
-socket.on('disconnect', () => {});

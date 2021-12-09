@@ -13,6 +13,7 @@ const controllerGetMessageChat = require('./controller/controllerGetMessageChat'
 app.use(express.json());
 
 require('./sockets/socketChat')(io);
+require('./sockets/message')(io);
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'views')));
