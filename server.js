@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
 
+  socket.on('alter_user', ({ newUser, oldUser }) => {
+    user = user.map((users) => (users === oldUser ? newUser : users));
+    socket.broadcast.emit('update_user', { newUser, oldUser });
+  });
+
   socket.on('disconnect', () => {
     user = user.filter((users) => users !== idSocket);
     socket.broadcast.emit('user_disconnect', idSocket);

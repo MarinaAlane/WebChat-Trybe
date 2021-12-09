@@ -63,7 +63,7 @@ socket.on('id', (id) => {
 
 const setUserId = () => {
   socket.on('connection_NewUSer', (array) => {
-    console.log(array)
+
     const lastPosition = array[array.length - 1];
     updateUserOnScreen(lastPosition);
     sessionStorage.setItem('nickname', lastPosition);
@@ -84,6 +84,16 @@ socket.on('user_disconnect', (id) => {
       }
     });
 
+});
+
+socket.on('update_user', ({ newUser, oldUser }) => {
+  const allUser = document.querySelectorAll('.online-user');
+
+  allUser.forEach((user) => {
+    if(user.innerText === oldUser) {
+      user.innerText = newUser;
+    }
+  });
 });
 
 
@@ -107,8 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   userForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const userNickname = document.forms.user_form_name.user.value;
-    sessionStorage.setItem('userName', userNickname)
+    const fistItem = document.querySelector('.online-user');
+
+    const oldUser = sessionStorage.nickname;
+    const newUser = document.forms.user_form_name.user.value;
+    fistItem.innerText= newUser;
+    console.log(oldUser, newUser);
+    socket.emit('alter_user', { newUser, oldUser });
+    sessionStorage.setItem('userName', newUser);
   });
 });
 
