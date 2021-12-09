@@ -7,11 +7,11 @@ const path = require('path');
 
 require('dotenv').config();
 
-const { PORT } = process.env;
+const PORT = process.env.PORT || '3000';
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
