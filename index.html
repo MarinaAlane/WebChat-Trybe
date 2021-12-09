@@ -57,7 +57,7 @@ btnSaveNickname.addEventListener('click', (event) => {
 });
 
 socket.on('connect', () => {
-  /* console.log(`${socket.id}`); */
+  console.log(`${socket.id}`);
   const onlineUsers = document.getElementById('online-users');
   const newLi = document.createElement('li');
   newLi.setAttribute(dataTestId, 'online-user');
