@@ -12,11 +12,11 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use('/', express.static(path.join(__dirname, 'view')));
+// app.use('/', express.static(path.join(__dirname, 'view')));
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
     method: ['GET', 'POST'],
   },
 });
