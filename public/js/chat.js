@@ -18,36 +18,29 @@ function makeNickName() {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
+  sessionStorage.setItem('nickname', text);
+  // nicknameInput.value = sessionStorage.getItem('nickname');
   return text;
-}
-
-  // Consulta na documentação: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/sessionStorage
-function createNickName() {
-  const nick = sessionStorage.getItem('nickname');
-  if (nick === null) {
-    const newNick = makeNickName();
-    sessionStorage.setItem('nickname', newNick);
-  }
-  return nick;
 }
 
 messageForm.addEventListener('submit', (e) => {
   const chatMessage = messageInput.value;
+  const nickUser = sessionStorage.getItem('nickname');
   // const nickname = nicknameInput.value;
   console.log(chatMessage);
   e.preventDefault();
-  socket.emit('message', { chatMessage, nickname: createNickName() });
+  socket.emit('message', { chatMessage, nickname: nickUser });
   messageInput.value = '';
   return false;
 });
 
 nickinameForm.addEventListener('submit', (e) => {
   const nickname = nicknameInput.value;
+  const oldNickname = sessionStorage.getItem('nickname');
   e.preventDefault();
   sessionStorage.setItem('nickname', nickname);
   labelNickName.innerText = 'Nickname';
-  // socket.emit('message', nickname);
-  // messageInput.value = '';
+  socket.emit('updateNick', { nickname, oldNickname });
   return false;
 });
 
@@ -63,8 +56,7 @@ socket.on('message', (msg) => {
   labelNickName.innerText = 'Nickname';
 });
 
-socket.on('userOn', (user) => {
-  sessionStorage.setItem('nickname', user);
+function createTableUser(user) {
   const trUser = document.createElement('tr');
   const newUser = document.createElement('td');
   newUser.textContent = user;
@@ -72,6 +64,16 @@ socket.on('userOn', (user) => {
   trUser.appendChild(newUser);
   usersTable.appendChild(trUser);
   window.scrollTo(0, document.body.scrollHeight);
+}
+
+socket.on('usersOn', (users) => {
+  console.log(users);
+  const userNick = sessionStorage.getItem('nickname');
+  usersTable.innerHTML = '';
+  createTableUser(userNick);
+  users.forEach((user) => {
+    if (user.nick !== userNick) { createTableUser(user.nick); }
+  });
 });
 
 window.onload = () => {
