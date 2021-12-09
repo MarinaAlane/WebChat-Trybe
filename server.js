@@ -1,11 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const moment = require('moment');
 
 const app = express();
 const http = require('http').createServer(app);
 const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
 
-const PORT = 3000;
+app.set('view engine', 'ejs');
+app.set('views', './views');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'webchat.html'));
@@ -13,10 +20,12 @@ app.get('/', (req, res) => {
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:3000', // url aceita pelo cors
-    methods: ['GET', 'POST'], // Métodos aceitos pela url
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
   },
 });
+
+const { getAllMessages } = require('./controller/messages');
 const { create } = require('./models/messages');
 
 const allOnlineUsers = [];
@@ -28,26 +37,32 @@ const updateList = (updatedUser) => {
   allOnlineUsers.push(updatedUser);
   return allOnlineUsers;
 };
+const updatedByRemoveList = (id) => {
+  const disconnectedUser = allOnlineUsers.findIndex((user) => user.id === id);
+    allOnlineUsers.splice(disconnectedUser, 1);
+  return true;
+};
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   const newUser = { id: socket.id, nickname: socket.id.substring(0, 16) };
   allOnlineUsers.push(newUser);
   io.emit('conectedUsers', allOnlineUsers);
+
   socket.on('nickname', (updatedUser) => {
     const updatedList = updateList(updatedUser);
     io.emit('conectedUsers', updatedList);
   });
-  socket.on('message', async (params) => {
-    const { chatMessage, nickname } = params;
-    const newMessage = `${date} ${nickname}: ${chatMessage}`;
+  socket.on('message', async ({ chatMessage, nickname }) => {
     await create(chatMessage, nickname, date);
-    io.emit('message', newMessage);
+    io.emit('message', `${date} ${nickname}: ${chatMessage}`);
   });
   socket.on('disconnect', () => {
-    const disconnectedUser = allOnlineUsers.findIndex((user) => user.id === socket.id);
-    allOnlineUsers.splice(disconnectedUser, 1);
+    updatedByRemoveList(socket.id);
     io.emit('conectedUsers', allOnlineUsers);  
   });
 });
+
+app.use(cors());
+app.get('/', getAllMessages);
 
 http.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
