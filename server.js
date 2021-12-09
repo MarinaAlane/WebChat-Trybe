@@ -21,12 +21,20 @@ const io = require('socket.io')(http, {
   },
 });
 
+const user = [];
+
 io.on('connection', (socket) => {
   console.log('connection');
+  const idSocket = socket.id;
+  user.push(idSocket);
+  socket.emit('id', user);
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date().toLocaleDateString('en-GB');
+    const hours = new Date().getHours();
+    const min = new Date().getMinutes();
+    const seg = new Date().getSeconds();
     const formateDate = date.replace(/\//g, '-').replace(/,/, '');
-    io.emit('message', `${formateDate} - ${nickname}: ${chatMessage}`);
+    io.emit('message', `${formateDate} ${hours}:${min}:${seg} - ${nickname}: ${chatMessage}`);
   });
 });
 
