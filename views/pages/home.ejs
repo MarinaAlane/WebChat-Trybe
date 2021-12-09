@@ -89,6 +89,7 @@
 
   function changeNickname(newNickname) {
     currentNicknameElement.innerText = newNickname;
+    socket.emit('change-nickname', { newNickname });
   }
 
   function clearInput(targetInput) {
