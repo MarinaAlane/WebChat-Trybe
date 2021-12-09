@@ -19,6 +19,7 @@ const io = require('socket.io')(http, {
 io.on('connection', (socket) => { // quando conectado:
   // ADD servidor deve enviar aos outros usuarios que este se conectou
   console.log(`Usuário conectado. ID: ${socket.id} `);
+    socket.emit('conected', socket.id);
 
   // momento dois, servidor recebe mensagem do usuario
   socket.on('message', (chatMessage) => { // , { chatMessage, nickname } 

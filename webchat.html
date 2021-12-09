@@ -5,12 +5,15 @@
     <!-- <link rel="stylesheet" href="./chat.css"> -->
   </head>
   <body>
+    <h1 id="user-nickname">Aqui seu nickname</h1>
     <div>
       <ul> Usuários online:</ul>
-      <h3 data-testid="online-user">NickName online!</h3>
-      <input data-testid="nickname-box">
-      <button data-testid="nickname-button">Chance nickname</button>
     </div>
+
+    <form id="form-nickname">
+      <input id="nickname-box" data-testid="nickname-box">
+      <button data-testid="nickname-button">Chance nickname</button>
+    </form>
 
     <section>
       <ul id="messages"></ul>
@@ -28,15 +31,17 @@
       const form = document.querySelector('#form');
       const inputMsg = document.querySelector('#messageInput');
       const inputNickname = document.querySelector('#nickname-box');
-      const btnNickname = document.querySelector('#nickname-button');
+      const formNickname = document.querySelector('#form-nickname');
+      const userNickname = document.querySelector('#user-nickname');
 
-      // momento 1: o usuario envia uma mensagem;
       form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (inputMsg.value) {
+        e.preventDefault();
+        if (inputMsg.value) {
+        // momento 1: o usuario envia uma mensagem;
         socket.emit('message', inputMsg.value);
+        inputMsg.value = '';
       }
-    });
+      });
       // momento: usuario recebe e ve as mensagens; 
       socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
@@ -45,6 +50,36 @@
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
+/* --------------------- RELACIONADO AO NICKNAME ------------------------ */
+    
+    socket.on('conected', (param) => {
+      console.log('cheguei aqui no conected')
+      const nickname = makeid();
+      userNickname.innerText = nickname;
+      const user = { id: param, nickname };
+      socket.emit('conected', user);
+    });
+
+    formNickname.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newNickname = inputNickname.value;
+      if (inputNickname.value) {
+        console.log(newNickname);
+        userNickname.innerText = newNickname;
+        /* Enviar uma mensagem para alterar o nome do usuario */
+      }
+      inputNickname.value = '';
+      });
+
+    function makeid() {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (var i = 0; i < 16; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      return text;
+    };
+
+
     </script>
   </body>
 </html>
