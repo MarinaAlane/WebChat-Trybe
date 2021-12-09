@@ -6,6 +6,8 @@ const inputMessage = document.querySelector('#message');
 const formMessage = document.querySelector('#message_form');
 const formUser = document.querySelector('#user_form');
 
+const onlineUser = '.online-user';
+
 const createLi = (id) => {
   const liUsers = document.createElement('li');
   liUsers.innerText = id;
@@ -48,7 +50,7 @@ formUser.addEventListener('submit', (e) => {
   e.preventDefault();
   const inputUser = document.querySelector('#user');
   const userNickname = inputUser.value;
-  const username = document.querySelector('.online-user');
+  const username = document.querySelector(onlineUser);
   username.innerText = userNickname;
   socket.emit('alterUsername', { oldNickname: sessionStorage.nickname, userNickname });
   sessionStorage.setItem('nickname', userNickname);
@@ -56,10 +58,19 @@ formUser.addEventListener('submit', (e) => {
 
 socket.on('updateUsers', (oldNickname, userNickname) => {
   console.log(oldNickname, userNickname);
-  const usersnames = document.querySelectorAll('.online-user');
+  const usersnames = document.querySelectorAll(onlineUser);
   usersnames.forEach((res) => {
     if (res.innerText === oldNickname) {
       res.innerText = userNickname;
+    }
+  });
+});
+
+socket.on('disconnect_user', (id) => {
+  const usersnames = document.querySelectorAll(onlineUser);
+  usersnames.forEach((res) => {
+    if (res.innerText === id) {
+      res.remove();
     }
   });
 });
