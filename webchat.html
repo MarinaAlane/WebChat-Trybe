@@ -7,7 +7,7 @@
   <body>
     <h1 id="user-nickname">Aqui seu nickname</h1>
     <div>
-      <ul> Usuários online:</ul>
+      <ul id="onlineUsers"> Usuários online:</ul>
     </div>
 
     <form id="form-nickname">
@@ -33,6 +33,7 @@
       const inputNickname = document.querySelector('#nickname-box');
       const formNickname = document.querySelector('#form-nickname');
       const nickname = document.querySelector('#user-nickname');
+      const onlineUsers = document.querySelector('#onlineUsers');
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -49,19 +50,28 @@
       socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
       newMessage.textContent = msg;
-      // data-testid = "message"
+      newMessage.setAttribute('data-testid', 'message');
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
 /* --------------------- RELACIONADO AO NICKNAME ------------------------ */
     
     socket.on('conected', (param) => {
-      console.log('cheguei aqui no conected')
+      console.log(param);
       const userNickname = makeid();
       nickname.innerText = userNickname;
+
+      const newOnUser = document.createElement('li');
+      newOnUser.setAttribute('data-testid', 'online-user');
+      newOnUser.setAttribute('socketId', param);
+      newOnUser.innerText = userNickname;
+      onlineUsers.appendChild(newOnUser);
+
       const user = { id: param, nickname };
       socket.emit('conected', user);
     });
+
+    
 
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -69,7 +79,7 @@
       if (inputNickname.value) {
         console.log(newNickname);
         nickname.innerText = newNickname;
-        /* Enviar uma mensagem para alterar o nome do usuario */
+        /* Enviar uma socket pro servidor para alterar o nome do usuario no db */
       }
       inputNickname.value = '';
       });
