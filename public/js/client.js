@@ -1,7 +1,7 @@
 const socket = window.io();
 
 // Inputs
-const nameInput = document.querySelector('#nameInput');
+// const nameInput = document.querySelector('#nameInput');
 const messageInput = document.querySelector('#messageInput');
 
 // UL's
@@ -9,7 +9,7 @@ const usersUl = document.querySelector('#usersUl');
 const chatUl = document.querySelector('#chatUl');
 
 // Buttons
-const enterButton = document.querySelector('#enterButton');
+// const enterButton = document.querySelector('#enterButton');
 const sendButton = document.querySelector('#sendButton');
 
 // Necessário para LINT
