@@ -5,13 +5,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
   </head>
   <body>
+    <ul id="users"></ul>
+    <input id="nicknamebox" data-testid="nickname-box" autocomplete="off" />
+    <button data-testid="nickname-button" id="nick-btn">Send</button>
+    <input id="messageInput" data-testid="message-box" autocomplete="off" />
+    <button data-testid="send-button" id="send-btn">Send</button>
     <ul id="historic-messages"></ul>
     <ul id="messages"></ul>
-    <ul id="users"></ul>
-      <input id="messageInput" data-testid="message-box" autocomplete="off" />
-      <button data-testid="send-button" id="send-btn">Send</button>
-      <input id="nicknamebox" data-testid="nickname-box" autocomplete="off" />
-      <button data-testid="nickname-button" id="nick-btn">Send</button>
     <script src='./js/chat.js'></script>
   </body>
 </html>
