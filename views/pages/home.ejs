@@ -40,6 +40,7 @@
   
   const currentNicknameElement = document.getElementById('online-user');
   const socket = io();
+  socket.emit('new-client', { nickname: currentNicknameElement.innerText });
 
   socket.on('message', appendNewMessage);
 
