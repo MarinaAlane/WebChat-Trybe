@@ -18,7 +18,7 @@ const options = {
 const io = require('socket.io')(http, options);
 
 require('./src/sockets/messages')(io);
-require('./src/sockets/messages')(io);
+require('./src/sockets/users')(io);
 
 app.get(
   '/',
