@@ -1,19 +1,23 @@
 let onlineUsers = [];
 
-const newOnlineUser = (nickname) => {
-  onlineUsers.push(nickname);
+const newOnlineUser = (nickname, name) => {
+  onlineUsers.push({ nickname, name });
   return onlineUsers;
 };
 
-const removeUser = (nickname) => {
-  const userIndex = onlineUsers.indexOf(nickname);
-  onlineUsers.splice(userIndex, 1);
+const removeUser = (name) => {
+  onlineUsers = onlineUsers.filter((user) => user.name !== name);
   return onlineUsers;
 };
 
 const updateUser = (currentNickname, newNickname) => {
   const updatedUsers = onlineUsers.map((user) => {
-    if (user === currentNickname) return newNickname;
+    if (user.nickname === currentNickname) {
+      return {
+        ...user,
+        nickname: newNickname,
+      };
+    }
     return user;
   });
 

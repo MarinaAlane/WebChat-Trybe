@@ -21,10 +21,6 @@ const changeNicknameBtn = document.getElementById('nickname-btn');
 const nicknameInput = document.getElementById('nickname-input');
 
 window.onload = () => {
-  // const onlineUsers = document.createElement('li');
-  // onlineUsers.innerText = nickname;
-  // onlineUsers.dataset.testid = 'online-user';
-  // onlineUsersList.appendChild(onlineUsers);
   socket.emit('newOnlineUser', nickname);
 };
 
@@ -64,16 +60,15 @@ const newOnlineUser = (onlineUsers) => {
   onlineUsersList.innerHTML = '';
   onlineUsers.forEach((user) => {
     const li = document.createElement('li');
-    li.innerText = user;
+    li.innerText = user.nickname;
     li.dataset.testid = 'online-user';
     onlineUsersList.appendChild(li);
-    if (user === nickname) onlineUsersList.insertBefore(li, onlineUsersList.firstChild);
+    if (user.nickname === nickname) onlineUsersList.insertBefore(li, onlineUsersList.firstChild);
   });
 };
 
 socket.on('message', (data) => newMessage(data));
 socket.on('newOnlineUser', (onlineUsers) => newOnlineUser(onlineUsers));
-socket.on('userDisconnect', (onlineUsers) => newOnlineUser(onlineUsers));
 socket.on('updateNickname', (onlineUsers) => newOnlineUser(onlineUsers));
 
 window.onbeforeunload = () => {
