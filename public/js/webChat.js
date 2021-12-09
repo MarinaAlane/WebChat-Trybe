@@ -23,10 +23,10 @@ const createUserList = (message) => {
   const pageOwner = sessionStorage.getItem('userNickname');
   message.forEach((user) => {
     const li = document.createElement('li');
-    li.innerText = user;
+    li.innerText = user.randomNickname;
     li.setAttribute('data-testid', 'online-user');
-    li.setAttribute('id', user);
-    if (user === pageOwner) {
+    li.setAttribute('id', user.randomNickname);
+    if (user.randomNickname === pageOwner) {
       userUl.insertBefore(li, userUl.firstChild);
     } else {
       userUl.appendChild(li);
@@ -55,12 +55,12 @@ const createMessage = (message) => {
 
 socket.on('connect', () => {
   const randomNickname = socket.id.slice(0, 16);
-  sessionStorage.setItem('userNickname', randomNickname); // setaria no banco de dados
+  sessionStorage.setItem('userNickname', randomNickname);
   socket.emit('userLoggedIn', randomNickname);
 });
 
 socket.on('userLoggedIn', (message) => {
-  createUserList(message); // refatorar essa funçao e analisar se não é necessário modificar
+  createUserList(message);
 });
 
 socket.on('newNickName', (message) => {
@@ -71,8 +71,8 @@ socket.on('message', (message) => {
   createMessage(message);
 });
 
-window.onbeforeunload = () => {
-  const pageOwner = sessionStorage.getItem('userNickname');
-  socket.emit('end', pageOwner);
-  socket.disconnect();
-};
+// window.onbeforeunload = () => {
+//   const pageOwner = sessionStorage.getItem('userNickname');
+//   socket.emit('end', pageOwner);
+//   socket.disconnect();
+// };

@@ -1,41 +1,41 @@
 * {
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  padding: 0;
 }
 
-body {
+/* body {
   font: 13px Helvetica, Arial;
-}
+} */
 
 #nickname-form {
-  background: #000;
+  background: black;
   padding: 3px;
   top: 0;
   width: 100%;
 }
 
 #message-form {
-  background: #000;
+  background: black;
+  bottom: 0;
   padding: 3px;
   position: fixed;
-  bottom: 0;
   width: 100%;
 }
 
-#messageInput, #nickname {
+#messageInput , #nickname {
   border: 0;
   padding: 10px;
-  width: 90%;
   margin-right: 0.5%;
+  width: 90%;
 }
 
 form button {
-  width: 9%;
   background: rgb(130, 224, 255);
   border: none;
-  padding: 10px;
   cursor: pointer;
+  padding: 10px;
+  width: 9%;
 }
 
 #users-container {
@@ -56,6 +56,6 @@ form button {
   padding: 5px 10px;
 }
 
-#messages li:nth-child(odd) {
+#messages li:nth-child( odd ) {
   background: #eee;
 }

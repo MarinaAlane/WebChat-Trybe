@@ -1,23 +1,23 @@
 const { format } = require('date-fns');
+const updateNickname = require('../utils/updateNickname');
 
 let usersOnline = [];
 
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.on('userLoggedIn', (message) => {
-    usersOnline.push(message);
-    io.emit('userLoggedIn', usersOnline); // emitindo para os outros usuários
+  socket.on('userLoggedIn', (randomNickname) => {
+    usersOnline.push({ randomNickname, id: socket.id });
+    io.emit('userLoggedIn', usersOnline);
   });
-  socket.on('newNickName', (message) => {
-    const { newNickname, oldNickname } = message;
-    usersOnline.splice(usersOnline.indexOf(oldNickname), 1, newNickname);
+  socket.on('newNickName', (user) => {
+    usersOnline = updateNickname(usersOnline, user.newNickname, user.oldNickname);
     io.emit('newNickName', usersOnline);
   });
   socket.on('message', (clientMessage) => {
     const { chatMessage, nickname } = clientMessage;
     io.emit('message', `${format(new Date(), 'dd-MM-yyyy HH:mm:ss')} ${nickname} ${chatMessage}`);
   });
-  socket.on('end', (message) => {
-    usersOnline = usersOnline.filter((user) => user !== message);
+  socket.on('disconnect', () => {
+    usersOnline = usersOnline.filter((user) => user.id !== socket.id);
     socket.broadcast.emit('userLoggedIn', usersOnline);
   });
 });
