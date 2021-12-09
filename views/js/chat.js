@@ -24,7 +24,6 @@ function setUserOn(nickNameUser) {
 
 buttonMessage.addEventListener('click', (event) => {
   event.preventDefault();
-
   socket.emit('message', {
     nickname: nickName.value,
     chatMessage: messageBox.value,
@@ -33,9 +32,9 @@ buttonMessage.addEventListener('click', (event) => {
 
 buttonSetNickName.addEventListener('click', (event) => {
   event.preventDefault();
-  const oldName = window.sessionStorage.getItem('nickname');
   window.sessionStorage.setItem('nickname', inputSetNick.value);
-  socket.emit('changeNickName', nickName.value, oldName);
+  socket.emit('changeNickName', nickName.value);
+  console.log(listUserOnline);
 });
 
 socket.on('message', async (renderMessage) => {
@@ -46,7 +45,7 @@ socket.emit('usersOnline');
 
 socket.on('usersOnline', (arrayUsersOnline) => {
   listUserOnline.innerHTML = '';
-  arrayUsersOnline.forEach((userNickName) => {
+  arrayUsersOnline.forEach(({ userNickName }) => {
     setUserOn(userNickName);
   });
 });

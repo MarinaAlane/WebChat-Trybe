@@ -1,26 +1,25 @@
 const message = require('./message');
-const getNameIndex = require('../middleware/getNameIndex');
+const changeArrayUserOnline = require('../middleware/changeArrayUserOnline');
+const deleteUserOnlieneArray = require('../middleware/deleteUserOnlieneArray');
+// const getOldNameIndex = require('../middleware/getNameIndex');
 
-const arrayUsersOnline = [];
+let arrayUsersOnline = [];
 
 module.exports = (io) => {
-  io.on('connection', async (socket) => {
+  io.on('connection', (socket) => {
     const randNameId = socket.id.slice(0, 16);
-    arrayUsersOnline.push(randNameId);
+    arrayUsersOnline.push({ section: randNameId, userNickName: randNameId });
     io.emit('usersOnline', arrayUsersOnline);
 
     message(io, socket);
 
-    socket.on('changeNickName', (nickname, oldName) => {
-      const getName = getNameIndex(arrayUsersOnline, randNameId, oldName);
-      const index = arrayUsersOnline.indexOf(getName);
-      arrayUsersOnline[index] = nickname;
+    socket.on('changeNickName', (nickname) => {
+      arrayUsersOnline = changeArrayUserOnline(arrayUsersOnline, randNameId, nickname);
       io.emit('usersOnline', arrayUsersOnline);
     });
 
     socket.on('disconnect', () => {
-      const index = arrayUsersOnline.indexOf(randNameId);
-      arrayUsersOnline.splice(index, 1);
+      arrayUsersOnline = deleteUserOnlieneArray(arrayUsersOnline, randNameId);
       io.emit('usersOnline', arrayUsersOnline);
     });
   });
