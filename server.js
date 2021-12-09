@@ -18,8 +18,9 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log(`${socket.id} conectou`);
+  // console.log(`${socket.id} conectou`);
   socket.emit('randomUser', socket.id);
+  
   socket.on('message', async (objMessage) => {
     const getFormatedMessage = await messageService.createMessage(objMessage);
     io.emit('message', getFormatedMessage);
@@ -30,6 +31,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('onlineUser', (userNickname) => {
+    console.log({ userNickname });
     socket.emit('onlineUser', userNickname);
   });
 

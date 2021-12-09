@@ -20,7 +20,7 @@
 
   <div class="div-user-messages">
     <div class="div-online-users">
-      <ul id="online-users"></ul>
+      <ul id="users"></ul>
     </div>
 
     <div class="div-messages">
@@ -40,29 +40,32 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
+    const socket = io('http://localhost:3000');
     
     const inputNickname = document.getElementById('nickname-box');
     const nickName = document.querySelector('#nickname-box');
 
     socket.on('randomUser', (randomUser) => {
       const savedNickName = sessionStorage.getItem('nickname');
+      const randomNickname = randomUser.slice(0, 16);
+      console.log(randomNickname);
       if (!savedNickName) {
-        sessionStorage.setItem('nickname', randomUser.slice(0, 16))
-        socket.emit('onlineUser', randomUser.slice(0, 16));
+        sessionStorage.setItem('nickname', randomNickname)
+        return socket.emit('onlineUser', randomNickname);
       } else {
-        socket.emit('onlineUser', savedNickName);
+        return socket.emit('onlineUser', savedNickName);
       };
     });
 
     
-    const onlineUsers = document.getElementById('online-users');
+    const usersOnline = document.getElementById('users');
     socket.on('onlineUser', (userNickname) => {
+      console.log('rodei', userNickname);
       const newUser = document.createElement('li');
       newUser.setAttribute('data-testid', 'online-user');
       newUser.setAttribute('id', `user-${userNickname}`);
       newUser.innerText = userNickname;
-      onlineUsers.appendChild(newUser);
+      usersOnline.appendChild(newUser);
     });
 
     const formNickname = document.getElementById('form-nickname');
@@ -72,7 +75,7 @@
       if (inputNickname.value) {
         const oldNickname = sessionStorage.getItem('nickname')
         sessionStorage.setItem("nickname", inputNickname.value)
-        socket.emit('changeUserNickname', { oldNickname, newNickname: inputNickname.value });
+        return socket.emit('changeUserNickname', { oldNickname, newNickname: inputNickname.value });
       };
     });
 
@@ -90,7 +93,7 @@
       if (message.value) {
         const nickname = await sessionStorage.getItem('nickname');
         const chatMessage = message.value
-        socket.emit('message', { chatMessage, nickname });
+        return socket.emit('message', { chatMessage, nickname });
       };
     });
 
