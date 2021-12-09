@@ -28,7 +28,6 @@ saveNickNameButton.addEventListener('click', (event) => {
 
 socket.on('update_user', (newUser, oldUser) => {
   const usersnames = document.querySelectorAll(onlineuser);
-  console.log(usersnames, newUser, oldUser);
   usersnames.forEach((res) => {
     if (res.innerText === oldUser) {
       res.innerText = newUser;
@@ -74,6 +73,17 @@ socket.on('disconnect_user', (id) => {
     }
   });
 });
+
+const fetchMessages = async () => {
+  const result = await fetch('http://localhost:3000/chat');
+  const response = await result.json();
+  response.forEach((value) => {
+    const message = `${value.timestamp} - ${value.nickname}: ${value.message}`;
+    newMessage(message);
+  });
+};
+
+fetchMessages();
 
 socket.on('newId', (id) => {
   saveRandomId(id);

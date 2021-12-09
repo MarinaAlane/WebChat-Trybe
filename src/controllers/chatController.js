@@ -1,8 +1,10 @@
-const showChat = async (_req, res) => {
-  const messages = [];
-  return res.status(200).render('index', { messages });
-};
+const { Router } = require('express');
+const { getAll, saveMessages } = require('../../models');
 
-module.exports = { 
-  showChat, 
-};
+const router = Router();
+
+router.get('/chat', async (req, res) => res.status(200).json(await getAll()));
+
+router.post('/', async (req, res) => res.status(200).json(await saveMessages(req.body)));
+
+module.exports = router;

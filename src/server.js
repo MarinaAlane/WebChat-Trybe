@@ -17,18 +17,19 @@ const io = socketIo(http, {
   },
 });
 
-const { showChat } = require('./controllers/chatController');
+const controller = require('./controllers/chatController');
 
 app.use(cors());
+app.use(express.json());
 
 app.use(express.static(path.join(`${__dirname}/views`)));
 
-app.set('view engine', 'ejs');
-
-app.set('views', path.join(__dirname, 'views'));
-
 require('./sockets/chat')(io);
 
-app.get('/', showChat);
+app.get('/', (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, '/index.html'));
+});
+
+app.use('/', controller);
 
 http.listen(PORT, () => console.log(`Server listening on port -> ${PORT}`));
