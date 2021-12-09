@@ -26,7 +26,7 @@ let user = [];
 
 io.on('connection', (socket) => {
   console.log('connection');
-  const idSocket = socket.id.substring(0, 16);
+  let idSocket = socket.id.substring(0, 16);
   user.push(idSocket);
 
   socket.broadcast.emit('id', idSocket);
@@ -40,6 +40,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('alter_user', ({ newUser, oldUser }) => {
+    idSocket = newUser;
     user = user.map((users) => (users === oldUser ? newUser : users));
     socket.broadcast.emit('update_user', { newUser, oldUser });
   });
