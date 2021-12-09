@@ -15,21 +15,27 @@ const io = require('socket.io')(http, {
 
 app.use(cors());
 
+const userController = require('./users');
+const dateController = require('./date');
+
 io.on('connection', (socket) => {
     console.log('a user connected', socket.id);
-    
-    socket.on('disconnect', () => {
-        console.log('user disconnected :(', socket.id);
-    });
-    
-    socket.on('message', (msg) => {
-        console.log(`alguem mandou uma mensagem: ${msg}`);
-        const { chatMessage, nickname } = msg;
-        const date = new Date();
-        const dateActual = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-        const timeActual = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-        const printDados = `${dateActual} ${timeActual} - ${nickname}: ${chatMessage}`;
+      socket.on('disconnect', () => {
+        userController.deleteUser(socket);
+       io.emit('users', userController.getUsers());
+    });
+    socket.on('adduser', (radomString) => {
+        userController.addUser(radomString, socket);
+        io.emit('users', userController.getUsers());
+    });
+    socket.on('nickname', (nickname) => {
+        userController.editUser(nickname, socket);
+        io.emit('users', userController.getUsers());
+    }); 
+    socket.on('message', (msg) => {
+      const { nickname, chatMessage } = msg;
+        const printDados = dateController.getDate(nickname, chatMessage);
         io.emit('message', printDados);
     });
 });
