@@ -31,11 +31,6 @@ function createMessage({ chatMessage, nickname }) {
   });
 }
 
-// function getAllMessages() {
-//   // console.log(resolve.data);
-//   return resolve.data;
-// }
-
 io.on('connection', (socket) => {
   let userName = socket.id.substring(0, 16);
 
@@ -47,12 +42,15 @@ io.on('connection', (socket) => {
 
   socket.on('change_nickname', ({ userNickName, nick }) => {
     arr = arr.map((el) => (el === nick ? userNickName : el));
-    socket.emit('change_user_id', userNickName); userName = userNickName;
+    socket.emit('change_user_id', userNickName);
+    userName = userNickName;
     socket.broadcast.emit('change_one_user_id', { userNickName, nick });
   });
+
   socket.on('message', ({ chatMessage, nickname }) => {
     createMessage({ chatMessage, nickname });
   });
+
   socket.on('disconnect', () => {
     arr = arr.filter((el) => (el !== userName));
     socket.broadcast.emit('disconnect_user', userName);
