@@ -4,7 +4,6 @@ const moment = require('moment');
 
 const app = express();
 const http = require('http').createServer(app);
-const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -13,10 +12,6 @@ app.set('views', './views');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'webchat.html'));
-});
 
 const io = require('socket.io')(http, {
   cors: {
