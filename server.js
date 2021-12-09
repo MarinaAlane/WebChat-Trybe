@@ -7,8 +7,6 @@ require('dotenv').config();
 
 const port = process.env.PORT || 3000;
 
-const fetchApi = require('./src/controller/chatController');
-
 const app = express();
 const http = require('http').createServer(app);
 
@@ -16,14 +14,16 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use('/', fetchApi);
-
 const io = require('socket.io')(http, {
   cors: {
     origin: '*',
     method: ['GET', 'POST'],
   },
 });
+
+const fetchApi = require('./src/controller/chatController');
+
+app.use('/', fetchApi);
 
 let user = [];
 
