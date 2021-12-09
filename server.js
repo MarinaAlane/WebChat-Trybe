@@ -55,6 +55,7 @@ io.on('connection', (socket) => {
   socket.on('alter_user', ({ newUser, oldUser }) => {
     idSocket = newUser;
     user = user.map((users) => (users === oldUser ? newUser : users));
+    
     socket.broadcast.emit('update_user', { newUser, oldUser });
   });
 
