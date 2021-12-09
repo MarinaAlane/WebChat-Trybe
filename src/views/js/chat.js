@@ -15,12 +15,25 @@ const saveRandomId = (id) => {
   getUsersList.appendChild(onlineUsers);
 };
 
+const onlineuser = '.online-user';
+
 saveNickNameButton.addEventListener('click', (event) => {
   event.preventDefault();
-  socket.emit('id', {
-    nickname: nickNameInput.value,
+  const newUser = nickNameInput.value;
+  const username = document.querySelector(onlineuser);
+  username.innerText = newUser;
+  socket.emit('change_user', { oldUser: sessionStorage.getItem('nickname'), newUser });
+  sessionStorage.setItem('nickname', newUser);
+});
+
+socket.on('update_user', (newUser, oldUser) => {
+  const usersnames = document.querySelectorAll(onlineuser);
+  console.log(usersnames, newUser, oldUser);
+  usersnames.forEach((res) => {
+    if (res.innerText === oldUser) {
+      res.innerText = newUser;
+    }
   });
-  return false;
 });
 
 buttonMessage.addEventListener('click', (event) => {

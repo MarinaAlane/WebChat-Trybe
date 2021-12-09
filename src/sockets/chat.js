@@ -4,18 +4,19 @@ let users = [];
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    const id = socket.id.substring(0, 16);
+    let id = socket.id.substring(0, 16); users.push(id);
 
-    users.push(id);
-
-    socket.emit('id', users);
-
-    socket.broadcast.emit('newId', id);
+    socket.emit('id', users); socket.broadcast.emit('newId', id);
 
     socket.on('message', ({ chatMessage, nickname }) => {
       const messageTime = getTime();
-
       io.emit('message', `${messageTime} - ${nickname}: ${chatMessage}`);
+    });
+
+    socket.on('change_user', ({ newUser, oldUser }) => {
+      id = newUser;
+      users = users.map((user) => (user === oldUser ? newUser : user));
+      socket.broadcast.emit('update_user', newUser, oldUser);
     });
 
     socket.on('disconnect', () => {
