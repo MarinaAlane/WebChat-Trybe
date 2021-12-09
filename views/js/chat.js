@@ -15,9 +15,10 @@ function creatMessage(message) {
   listMessage.appendChild(itemListElement);
 }
 
-function setUserOn(nickNameUser) {
+function setUserOn(id, nickNameUser) {
   const itemListElement = document.createElement('li');
   itemListElement.innerText = nickNameUser;
+  itemListElement.setAttribute('id', id);
   itemListElement.setAttribute('data-testid', 'online-user');
   listUserOnline.appendChild(itemListElement);
 }
@@ -43,9 +44,33 @@ socket.on('message', async (renderMessage) => {
 
 socket.emit('usersOnline');
 
-socket.on('usersOnline', (arrayUsersOnline) => {
-  listUserOnline.innerHTML = '';
-  arrayUsersOnline.forEach(({ userNickName }) => {
-    setUserOn(userNickName);
+socket.on('usersOnline', ({ section, userNickName }) => {
+  setUserOn(section, userNickName);
+});
+
+socket.on('setUsersOnlineMe', ({ arrayUsersOnline, randNameId }) => {
+  console.log(arrayUsersOnline, randNameId);
+  arrayUsersOnline.forEach(({ section, userNickName }) => {
+    if (section !== randNameId) {
+      setUserOn(section, userNickName);
+    }
   });
+});
+
+function updateUser(id, nickNameUser) {
+  const getUserId = document.getElementById(id);
+  getUserId.innerText = nickNameUser;
+}
+
+socket.on('changerUser', ({ randNameId, nickname }) => {
+  updateUser(randNameId, nickname);
+});
+
+function removeUser(id) {
+  const getUserId = document.getElementById(id);
+  getUserId.remove();
+}
+
+socket.on('removeuserOnline', ({ randNameId }) => {
+  removeUser(randNameId);
 });
