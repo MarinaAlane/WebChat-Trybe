@@ -10,7 +10,9 @@
   </header>
   <section style="height: 60vh; overflow-y: scroll;">
     <ol id="message-container">
-      
+      <% for(let message of messages) { %>
+        <li data-testid="message"><%= message %></li>
+      <%} %>
     </ol>
   </section>
   <section>

@@ -1,4 +1,11 @@
 const moment = require('moment');
+const MessageController = require('../controllers/Message');
+
+const getParsedMessage = ({ chatMessage, nickname, timestamp }) => {
+  const displayTimestamp = moment(timestamp).format('DD-MM-YYYY h:mm:ss A');
+  const message = `${displayTimestamp} - ${nickname}: ${chatMessage}`;
+  return message;
+};
 
 const connect = (io) => {
   io.on('connection', (socket) => {
@@ -10,11 +17,12 @@ const connect = (io) => {
     });
 
     socket.on('message', ({ chatMessage, nickname }) => {
-      const timestamp = moment().format('DD-MM-YYYY h:mm:ss A');
-      const message = `${timestamp} - ${nickname}: ${chatMessage}`;
+      const now = new Date();
+      MessageController.createNewMessage({ chatMessage, nickname, timestamp: now.toISOString() });
+      const message = getParsedMessage({ chatMessage, nickname, timestamp: now });
       io.emit('message', message);
     });
   });
 };
 
-module.exports = { chat: { connect } };
+module.exports = { chat: { connect, getParsedMessage } };
