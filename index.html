@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="HTML, CSS, JavaScript">
+    <meta http-equiv="refresh" content="30">
+    <title>Webchat with Socket.io</title>
+  </head>
+  <body>
+    <header>
+      <h1 class="title">Webchat</h1>
+    </header>
+    <form>
+
+        <label for="input-nickname">Nickname:
+        <input type="text" id="input-nickname" data-testid="nickname-box">
+        </label>
+        <button type="submit" id="btnSaveNick" data-testid="nickname-button">Salvar</button>
+
+      <div>
+        <label for="online-user">Usuários online:<br>
+        <ul id="online-users"></ul>
+        </label>
+      </div>
+
+        <label for="users-messages">
+          Mensagens:
+        <ul id="users-messages"></ul>
+        </label>
+
+      <div>
+        <label for="user-message">Mensagem:</label>
+        <input type="text" id="user-message" data-testid="message-box">
+        <button type="button" id="btnSendMsg" data-testid="send-button">Enviar</button>
+      </div>
+    </form>
+    <script src='http://localhost:3000/socket.io/socket.io.js'></script>
+    <!-- <script>const socket = io();</script> -->
+    <!-- <script src="./script.js"></script> -->
+    <script>
+      const socket = window.io('http://localhost:3000');
+
+const dataTestId = 'data-testid';
+const inputNickname = document.getElementById('input-nickname');
+const btnSaveNickname = document.getElementById('btnSaveNick');
+const inputMessage = document.getElementById('user-message');
+const btnSendMsg = document.getElementById('btnSendMsg');
+
+let nicknameLocal = '';
+
+btnSaveNickname.addEventListener('click', (event) => {
+  event.preventDefault();
+  nicknameLocal = inputNickname.value;
+  if (nicknameLocal !== '') {
+    socket.emit('altName', nicknameLocal);
+    inputNickname.value = '';
+  }
+});
+
+socket.on('connect', () => {
+  /* console.log(`${socket.id}`); */
+  const onlineUsers = document.getElementById('online-users');
+  const newLi = document.createElement('li');
+  newLi.setAttribute(dataTestId, 'online-user');
+  newLi.innerText = socket.id.substring(0, 16);
+  onlineUsers.appendChild(newLi);
+});
+
+const addUser = (onUsers) => {
+  const nickname = socket.id;
+  const onlineUsers = document.getElementById('online-users');
+  onlineUsers.innerHTML = '';
+  onUsers.forEach((user) => {
+    const newLi = document.createElement('li');
+    newLi.setAttribute(dataTestId, 'online-user');
+    newLi.innerText = user;
+    if (user === nicknameLocal || user === socket.id) {
+      return onlineUsers.prepend(newLi);
+    }
+    onlineUsers.appendChild(newLi);
+  });
+};
+
+// emite a mensagem. Envia o nickname junto da mensagem
+btnSendMsg.addEventListener('click', (event) => {
+  event.preventDefault();
+  const nickname = nicknameLocal || socket.id.substring(0, 16);
+  socket.emit('message', { chatMessage: inputMessage.value, nickname });
+  inputMessage.value = '';
+});
+
+// adiciona a mensagem ao LI
+const addMessage = (msg) => {
+  const allMsgs = document.getElementById('users-messages');
+  const newLiMessage = document.createElement('li');
+  newLiMessage.innerText = msg;
+  newLiMessage.setAttribute(dataTestId, 'message');
+  allMsgs.appendChild(newLiMessage);
+}
+
+socket.on('message', (chatMessage) => addMessage(chatMessage));
+socket.on('userList', (user) => addUser(user));
+    </script>
+  </body>
+</html>

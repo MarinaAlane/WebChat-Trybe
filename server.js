@@ -1,36 +1,39 @@
 // Faça seu código aqui 
 const express = require('express');
-const moment = require('moment');
+const http = require('http');
 const path = require('path');
-require('dotenv').config();
+const moment = require('moment');
+const { Server } = require('socket.io');
 
 const app = express();
-const http = require('http').createServer(app);
-
+const server = http.createServer(app);
+const io = new Server(server);
 const PORT = process.env.PORT || 3000;
+require('dotenv').config();
 
-// configurar a entrada e saíde de dados
-const io = require('socket.io')(http, {
-  cors: {
-    origin: `http://localhost:${PORT}`, // url aceita pelo cors
-    methods: ['GET', 'POST'], // Métodos aceitos pela url
-  } });
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-  app.use(express.static('views'));
-  app.set('view engine', 'ejs');
-  app.set('views', path.join(__dirname, 'views'));
+const onUsers = {};
 
 io.on('connection', (socket) => {
+  onUsers[socket.id] = socket.id.substring(0, 16);
+  console.log(`usuário ${socket.id} conectado`);
+
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = moment().format('DD-MM-YYYY HH:mm:ss a');
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
+
+  socket.on('altName', (nickname) => {
+    onUsers[socket.id] = nickname;
+    io.emit('userList', onUsers);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`usuário ${socket.id} desconectou`);
+  });
 });
 
-app.get('/', (_req, res) => {
-  res.render('index');
-});
-
-http.listen(PORT, () => {
-  console.log(`Servidor escutando na porta ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));
