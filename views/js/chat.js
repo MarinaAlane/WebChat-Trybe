@@ -23,8 +23,19 @@ function setUserOn(id, nickNameUser) {
   listUserOnline.appendChild(itemListElement);
 }
 
+function updateUser(id, nickNameUser) {
+  const getUserId = document.getElementById(id);
+  getUserId.innerText = nickNameUser;
+}
+
+function removeUser(id) {
+  const getUserId = document.getElementById(id);
+  getUserId.remove();
+}
+
 buttonMessage.addEventListener('click', (event) => {
   event.preventDefault();
+
   socket.emit('message', {
     nickname: nickName.value,
     chatMessage: messageBox.value,
@@ -33,44 +44,29 @@ buttonMessage.addEventListener('click', (event) => {
 
 buttonSetNickName.addEventListener('click', (event) => {
   event.preventDefault();
-  window.sessionStorage.setItem('nickname', inputSetNick.value);
-  socket.emit('changeNickName', nickName.value);
-  console.log(listUserOnline);
+  socket.emit('changeNickName', inputSetNick.value);
 });
 
 socket.on('message', async (renderMessage) => {
   creatMessage(renderMessage);
 });
 
-socket.emit('usersOnline');
-
 socket.on('usersOnline', ({ section, userNickName }) => {
   setUserOn(section, userNickName);
 });
 
-socket.on('setUsersOnlineMe', ({ arrayUsersOnline, randNameId }) => {
-  console.log(arrayUsersOnline, randNameId);
+socket.on('setmeOnline', ({ arrayUsersOnline, idsectionUser }) => {
   arrayUsersOnline.forEach(({ section, userNickName }) => {
-    if (section !== randNameId) {
+    if (section !== idsectionUser) {
       setUserOn(section, userNickName);
     }
   });
 });
 
-function updateUser(id, nickNameUser) {
-  const getUserId = document.getElementById(id);
-  getUserId.innerText = nickNameUser;
-}
-
-socket.on('changerUser', ({ randNameId, nickname }) => {
-  updateUser(randNameId, nickname);
+socket.on('changerUser', ({ idsectionUser, nickname }) => {
+  updateUser(idsectionUser, nickname);
 });
 
-function removeUser(id) {
-  const getUserId = document.getElementById(id);
-  getUserId.remove();
-}
-
-socket.on('removeuserOnline', ({ randNameId }) => {
-  removeUser(randNameId);
+socket.on('disconnectUser', ({ idsectionUser }) => {
+  removeUser(idsectionUser);
 });

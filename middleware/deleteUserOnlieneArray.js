@@ -1,5 +1,5 @@
-function deleteUserOnlieneArray(array, randNameId) {
-  const filterArray = array.filter(({ section }) => section !== randNameId);
+function deleteUserOnlieneArray(array, idsectionUser) {
+  const filterArray = array.filter(({ section }) => section !== idsectionUser);
   return filterArray;
 }
 

@@ -1,10 +1,10 @@
 const time = require('./getTime');
 
-function formatUser(randNameId, message) {
+function formatUser(idsectionUser, message) {
   let nickNameUser = '';
 
   if (!message.nickname) {
-    nickNameUser = randNameId;
+    nickNameUser = idsectionUser;
   } else {
     nickNameUser = message.nickname;
   }

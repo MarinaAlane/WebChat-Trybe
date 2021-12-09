@@ -7,21 +7,21 @@ let arrayUsersOnline = [];
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    const randNameId = socket.id.slice(0, 16);
-    arrayUsersOnline.push({ section: randNameId, userNickName: randNameId });
-    io.emit('usersOnline', { section: randNameId, userNickName: randNameId }); // para todos
-    socket.emit('setUsersOnlineMe', { arrayUsersOnline, randNameId }); // so para mim
+    const idsectionUser = socket.id.slice(0, 16);
+    arrayUsersOnline.push({ section: idsectionUser, userNickName: idsectionUser });
+    io.emit('usersOnline', { section: idsectionUser, userNickName: idsectionUser }); // para todos
+    socket.emit('setmeOnline', { arrayUsersOnline, idsectionUser }); // Somente para o usuario que acabou de conectar
 
     message(io, socket);
 
     socket.on('changeNickName', (nickname) => {
-      arrayUsersOnline = changeArrayUserOnline(arrayUsersOnline, randNameId, nickname);
-      io.emit('changerUser', { randNameId, nickname });
+      arrayUsersOnline = changeArrayUserOnline(arrayUsersOnline, idsectionUser, nickname);
+      io.emit('changerUser', { idsectionUser, nickname });
     });
 
     socket.on('disconnect', () => {
-      arrayUsersOnline = deleteUserOnlieneArray(arrayUsersOnline, randNameId);
-      io.emit('removeuserOnline', { randNameId });
+      arrayUsersOnline = deleteUserOnlieneArray(arrayUsersOnline, idsectionUser);
+      io.emit('disconnectUser', { idsectionUser });
     });
   });
 };
