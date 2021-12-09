@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Chat Tribe</title>
+  </head>
+  <body>
+    <h1> Web Chat da Jé</h1>
+    <div>
+      <form id = 'nome'>
+        <input type="text" id='input-nome' data-testid="online-user">
+        <button type="submit" id="enviar-nome">Salvar</button>
+      </form>
+      <div>
+        <ul id='lista-usuarios'></ul>
+      </div>
+      <div>
+         <ul id="lista-messagens"></ul>
+      </div>
+     
+      <form id = 'menssagens'>
+        <input type="text" id='input-menssagem' data-testid="message-box">
+        <button type="submit" id="enviar-messagem" data-testid="send-button">Enviar</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <script>
+      const socket = io();
+      const formMenssagens = document.getElementById('menssagens');
+      const inputMessagens = document.getElementById('input-menssagem');
+      const ulMenssagens = document.getElementById("lista-messagens");
+      const formNome = document.getElementById('nome');
+      const inputNome = document.getElementById('input-nome');
+      
+
+      formNome.addEventListener('submit', (event)=>{
+        event.preventDefault();
+        if(inputNome.value){
+           sessionStorage.setItem('nickname', inputNome.value)
+        }
+      })
+
+      formMenssagens.addEventListener('submit',(event)=>{
+        event.preventDefault();
+        if(inputMessagens.value){
+          socket.emit('message', { 
+            chatMessage:inputMessagens.value,
+            nickname:sessionStorage.getItem('nickname')|| socket.id
+           }
+          )
+          inputMessagens.value = "";
+        }
+      })
+
+      socket.on('message',(msg)=>{
+        const newMessage = document.createElement('li');
+        newMessage.textContent = msg;
+        ulMenssagens.appendChild(newMessage);
+        window.scrollTo(0, document.body.scrollHeight);
+      })
+    </script>
+  </body>
+
+</html>
