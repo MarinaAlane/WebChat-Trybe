@@ -1,29 +1,24 @@
-require('dotenv').config('../.env');
-
 const express = require('express');
-const path = require('path');
 
 const app = express();
+
 const http = require('http').createServer(app);
 
-app.use(express.static(path.join(`${__dirname}/public`)));
-
-const PORT = process.env.PORT || 3000;
-const options = {
+const io = require('socket.io')(http, {
   cors: {
-    origin: `http://localhost:${PORT}`,
-    methods: ['GET', 'POST'],
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST'], 
   },
-};
+});
 
-const io = require('socket.io')(http, options);
+app.use(express.static(`${__dirname}/public`));
 
-require('./src/sockets/messages')(io);
-require('./src/sockets/users')(io);
+require('./sockets/messagest')(io);
 
-app.get(
-  '/',
-  (_req, res) => res.sendFile(path.join(`${__dirname}/public`)),
-);
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/public/index.html`);
+});
 
-http.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`));
+http.listen(3000, () => {
+  console.log('Servidor ouvindo na porta 3000');
+});
