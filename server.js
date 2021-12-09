@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -23,9 +24,11 @@ io.on('connection', (socket) => { // quando conectado:
 
   // momento dois, servidor recebe mensagem do usuario
   socket.on('message', (params) => {
+    const date = moment().format('DD-MM-yyyy HH:mm:ss A');
+    console.log(date);
     const { chatMessage, nickname } = params;
   // momento 3, servidor faz algo com a info recebida (tipo formatar) e enviar
-    const newMessage = `${nickname} diz: ${chatMessage}`; // falta adicionar a hora e trocar id por nickName
+    const newMessage = `${date} ${nickname}: ${chatMessage}`; // falta adicionar a hora e trocar id por nickName
     io.emit('message', newMessage);
   });
 });
