@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const { getRandomNickName } = require('./services/randomNickname');
 
 const app = express();
 
@@ -9,7 +10,14 @@ app.set('view engine', 'ejs');
 app.set('views', path.resolve(__dirname, 'views', 'pages'));
 
 app.get('/', (_req, res) => {
-  res.status(200).render('home');
+  const nickname = getRandomNickName();
+  res.status(200).render('home', {
+    nickname,
+    onSubmit: (e) => {
+      e.preventDefault();
+      console.log('opa');
+    },
+  });
 });
 
 app.get('/ping', (_req, res) => {

@@ -1,9 +1,43 @@
 <%- include('../partials/head') %>
 
+<header>
+  <h1>Web Chat</h1>
+</header>
+
 <main>
   <header>
-    <h1>Web Chat</h1>
+    <h1>Boas vindas, <span data-testid="online-user"><%= nickname %></span></h1>
   </header>
+  <section>
+    <form id="message-form">
+      <label for="message-box">
+        Diga algo: 
+        <input type="text" id="message-box" data-testid="message-box">
+      </label>
+    </form>
+  </section>
 </main>
+
+<script>
+  const formElement = document.getElementById('message-form');
+  const messageInput = document.getElementById('message-box');
+
+  formElement.addEventListener('submit', handleSubmit);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    sendMessage();
+    clearMessageInput();
+  }
+
+  function sendMessage() {
+    const { value } = messageInput;
+    console.log(value);
+  }
+
+  function clearMessageInput() {
+    messageInput.value = '';
+  }
+</script>
 
 <%- include('../partials/tail') %>
