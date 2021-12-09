@@ -55,15 +55,17 @@ const updateUserOnScreen = (user) => {
   divUser.appendChild(p);
 };
 
-socket.on('id', ({ idSocket, userId }) => {
-  if (!userId) {
-    const userID = idSocket.substring(0, 16);
-    sessionStorage.setItem('user-id', userID);
-    updateUserOnScreen(userID);
-  } else {
-    updateUserOnScreen(userId);
-  }
-});
+const setUserId = () => {
+  socket.on('id', ({ idSocket, userId }) => {
+    if (!userId) {
+      const userID = idSocket.substring(0, 16);
+      sessionStorage.setItem('user-id', userID);
+      updateUserOnScreen(userID);
+    } else {
+      updateUserOnScreen(userId);
+    }
+  });
+};
 
 socket.on('message', (messages) => {
   updateMessagesOnScreen(messages);
@@ -88,7 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     userNickname = document.forms.user_form_name.user.value;
   });
-}); 
+});
+
+window.onload = () => {
+  setUserId();
+};
   </script>
 </body>
 </html> 
