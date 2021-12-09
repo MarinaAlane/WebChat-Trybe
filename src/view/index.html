@@ -56,7 +56,12 @@ const updateUserOnScreen = (user) => {
 };
 
 socket.on('id', (id) => {
-  updateUserOnScreen(id);
+
+  const userID = id.substring(0, 16);
+  sessionStorage.setItem('user-id', userID);
+  
+  updateUserOnScreen(userID);
+
 });
 
 socket.on('message', (messages) => {
