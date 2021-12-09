@@ -11,13 +11,17 @@ const io = require('socket.io')(http, {
   },
 });
 
+const { getChatHistory } = require('./controllers/chatController');
+
+app.set('view engine', 'ejs');
+
+app.set('views', './views');
+
 app.use(express.static(`${__dirname}/views`));
 
 require('./sockets/chat')(io);
 
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/views/chat.html`);
-});
+app.get('/', getChatHistory);
 
 http.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');

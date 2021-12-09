@@ -1,7 +1,6 @@
-const formatMessage = ({ nickname, chatMessage }) => {
-  const date = new Date().toLocaleString().replace(/\//gi, '-');
-  return `${date} - ${nickname}: ${chatMessage}`;
-};
+const { storeMsg } = require('../controllers/chatController');
+
+const formatMessage = ({ nickname, chatMessage }, date) => `${date} - ${nickname}: ${chatMessage}`;
 
 let users = [];
 
@@ -10,6 +9,13 @@ const changeNickname = (nicknames) => {
     if (user.nickname === nicknames.oldUser) return { nickname: nicknames.newUser, id: user.id };
     return user;
   });
+};
+
+const handleMessage = (message) => {
+  const date = new Date().toLocaleString().replace(/\//gi, '-');
+  storeMsg(message, date);
+  const newMsg = formatMessage(message, date);
+  return newMsg;
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
@@ -21,7 +27,7 @@ module.exports = (io) => io.on('connection', (socket) => {
   io.emit('userList', users);
 
   socket.on('message', (message) => {
-    const newMsg = formatMessage(message);
+    const newMsg = handleMessage(message);
     io.emit('message', newMsg);
   });
 
