@@ -20,13 +20,17 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log(`${socket.id} conectou`);
   socket.emit('randomUser', socket.id);
-  socket.on('message', (objMessage) => {
-    const getFormatedMessage = messageService.createMessage(objMessage);
+  socket.on('message', async (objMessage) => {
+    const getFormatedMessage = await messageService.createMessage(objMessage);
     io.emit('message', getFormatedMessage);
   });
 
   socket.on('disconnect', () => {
     console.log(`${socket.id} desconectou`);
+  });
+
+  socket.on('onlineUser', (userNickname) => {
+    socket.emit('onlineUser', userNickname);
   });
 });
 

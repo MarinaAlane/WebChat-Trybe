@@ -28,12 +28,14 @@
     </div>
   </div>
 
-  <div class="form">
-    <label for="message-box">
-      Mensagem:
-      <input data-testid="message-box" type="text">
-    </label>
-    <button type="submit" data-testid="send-button">Enviar</button>
+  <div class="div-form-messages">
+    <form id="form-messages">
+      <label for="message-box">
+        Mensagem:
+        <input data-testid="message-box" id="message-box" type="text">
+      </label>
+      <button type="submit" data-testid="send-button">Enviar</button>
+    </form>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -45,19 +47,50 @@
 
     socket.on('randomUser', (randomUser) => {
       const savedNickName = sessionStorage.getItem('nickname');
-      savedNickName ? nickName.value = savedNickName : nickName.value = randomUser.slice(0, 16);
+      if (!savedNickName) {
+        sessionStorage.setItem('nickname', randomUser.slice(0, 16))
+        socket.emit('onlineUser', randomUser.slice(0, 16));
+      } else {
+        socket.emit('onlineUser', savedNickName);
+      };
+    });
+
+    const onlineUsers = document.getElementById('online-users');
+    socket.on('onlineUser', (userNickname) => {
+      const newUser = document.createElement('li');
+      newUser.setAttribute('data-testid', 'online-user');
+      newUser.innerText = userNickname;
+      onlineUsers.appendChild(newUser);
     });
 
     const formNickname = document.getElementById('form-nickname');
 
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
-      console.log(inputNickname.value);
       if (inputNickname.value) {
         sessionStorage.setItem("nickname", inputNickname.value)
+        socket.emit('onlineUser', inputNickname.value);
       };
     });
 
+    const formMessages = document.getElementById('form-messages');
+    const message = document.getElementById('message-box');
+    formMessages.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (message.value) {
+        const nickname = await sessionStorage.getItem('nickname');
+        const chatMessage = message.value
+        socket.emit('message', { chatMessage, nickname });
+      };
+    });
+
+    const messages = document.getElementById('messages');
+    socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.setAttribute('data-testid', 'message');
+      newMessage.innerText = msg;
+      messages.appendChild(newMessage);
+    });
   </script>
 </body>
 </html>
