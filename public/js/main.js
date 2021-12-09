@@ -50,14 +50,12 @@ sendMessageButton.addEventListener('click', () => {
 
 socket.on('message', (newMessage) => {
   createMessageElement(newMessage);
-  console.log(newMessage);
+  // console.log(newMessage);
 });
 
 window.onload = () => {
   const randomNick = generateNickname();
   sessionStorage.setItem('nickname', randomNick);
-
-  // createUserElement(randomNick);
 
   socket.emit('newUser', randomNick);
   socket.on('updateUser', (newUser) => {
@@ -66,9 +64,14 @@ window.onload = () => {
     createUserElement(currentUser);
     newUser.forEach((user) => {
       console.log(user.nickname);
-      if (user.nickname !== currentUser) {
-        createUserElement(user.nickname);
-      }
+      if (user.nickname !== currentUser) { createUserElement(user.nickname); }
+    });
+  });
+
+  socket.emit('getMessages');
+  socket.on('showMessageHistory', (history) => {
+    history.forEach(({ message, nickname, timestamp }) => {
+      createMessageElement(`${timestamp} ${nickname}: ${message}`);
     });
   });
 };
