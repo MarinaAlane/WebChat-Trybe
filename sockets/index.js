@@ -1,5 +1,5 @@
 const message = require('./message');
-const changeNickName = require('./changeNickName');
+const getNameIndex = require('../middleware/getNameIndex');
 
 const arrayUsersOnline = [];
 
@@ -10,7 +10,13 @@ module.exports = (io) => {
     io.emit('usersOnline', arrayUsersOnline);
 
     message(io, socket);
-    changeNickName(arrayUsersOnline, io, socket);
+
+    socket.on('changeNickName', (nickname, oldName) => {
+      const getName = getNameIndex(arrayUsersOnline, randNameId, oldName);
+      const index = arrayUsersOnline.indexOf(getName);
+      arrayUsersOnline[index] = nickname;
+      io.emit('usersOnline', arrayUsersOnline);
+    });
 
     socket.on('disconnect', () => {
       const index = arrayUsersOnline.indexOf(randNameId);
