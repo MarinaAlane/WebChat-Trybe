@@ -126,7 +126,7 @@
           sessionStorage.setItem('userName', newUser);
         });
       });
-      const fetchApi = () => {
+      const fetchApi = async () => {
           const fetchAction = await fetch('http://localhost:3000/chat');
           const response = await fetchAction.json();
           response.forEach(({ message, nickname, timestamp }) => {
