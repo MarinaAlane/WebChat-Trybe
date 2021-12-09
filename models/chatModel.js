@@ -1,11 +1,19 @@
-const connection = require('./connection');
+const connect = require('./connection');
 
-const getHistoryMessages = async () => {
-  const db = await connection();
-  const historyMessages = await db.collection('messages').find().toArray();
-  return historyMessages;
+// ROTA GET
+const getMessagesHistory = async () => {
+  const db = await connect();
+  const history = await db.collection('messages').find({}).toArray();
+  return history;
+};
+
+// ROTA POST
+const postMessage = async (message, nickname, timestamp) => {
+  const db = await connect();
+ await db.collection('messages').insertOne({ message, nickname, timestamp }); 
 };
 
 module.exports = {
-  getHistoryMessages,
+  postMessage,
+  getMessagesHistory,
 };
