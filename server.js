@@ -32,6 +32,10 @@ io.on('connection', (socket) => {
   socket.on('onlineUser', (userNickname) => {
     socket.emit('onlineUser', userNickname);
   });
+
+  socket.on('changeUserNickname', (objNickname) => {
+    socket.emit('changeUserNickname', objNickname);
+  });
 });
 
 server.listen(PORT, console.log(`Escutando a porta ${PORT}`));

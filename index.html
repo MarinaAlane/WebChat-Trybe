@@ -55,10 +55,12 @@
       };
     });
 
+    
     const onlineUsers = document.getElementById('online-users');
     socket.on('onlineUser', (userNickname) => {
       const newUser = document.createElement('li');
       newUser.setAttribute('data-testid', 'online-user');
+      newUser.setAttribute('id', `user-${userNickname}`);
       newUser.innerText = userNickname;
       onlineUsers.appendChild(newUser);
     });
@@ -68,9 +70,17 @@
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputNickname.value) {
+        const oldNickname = sessionStorage.getItem('nickname')
         sessionStorage.setItem("nickname", inputNickname.value)
-        socket.emit('onlineUser', inputNickname.value);
+        socket.emit('changeUserNickname', { oldNickname, newNickname: inputNickname.value });
       };
+    });
+
+    socket.on('changeUserNickname', (objNickname) => {
+      const { oldNickname, newNickname } = objNickname;
+      const user = document.getElementById(`user-${ oldNickname }`)
+      user.setAttribute('id', `user-${ newNickname }`)
+      user.innerText = newNickname;
     });
 
     const formMessages = document.getElementById('form-messages');
