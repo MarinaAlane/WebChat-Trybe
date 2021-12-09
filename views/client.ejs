@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <title>WEB CHAT - Project</title>
-    <!-- <link rel="stylesheet" href="./chat.css"> -->
   </head>
   <body>
     <div id="onlineUsers"> Usuários online:</div>
@@ -14,7 +17,11 @@
     </form>
 
     <section>
-      <ul id="messages"></ul>
+      <ul id="messages">
+        <% messages.forEach((message) => { %>
+          <li data-testid="message"> <%= `${message.timestamp} - ${message.nickname}: ${message.message} `%> </li>
+        <% }) %>
+      </ul>
     </section>
 
     <form id="form">
@@ -56,7 +63,7 @@
       inputNickname.value = '';
       });
 
-    /* FAZ A LISTA DOS ONLINES */  // AJUDA AQUI NO REMOVECHILD
+    /* FAZ A LISTA DOS ONLINES */
     function makeOnlineUserList(array = []) {
       onlineUsers.textContent = '';
       array.forEach((user) => {
@@ -82,6 +89,11 @@
       createMessage(msg);
     })
 
+    socket.on('history', (history) => {
+      console.log('cheguei no history cluente');
+      history.forEach((msg) => createMessage(msg));
+    });
+
     // FUNÇÕES AUXILIARES
     const findUserById = (id) => {
       const user = allUsers.find((u) => u.id === id);
@@ -95,6 +107,10 @@
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     }
+    
+    window.onbeforeunload = () => {
+      socket.disconnect();
+    };
     </script>
   </body>
 </html>
