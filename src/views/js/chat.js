@@ -1,4 +1,4 @@
-const socket = window.io();
+const socket = window.io('http://localhost:3000');
 
 const getUsersList = document.getElementById('onlineUsersId');
 const buttonMessage = document.getElementById('sendButton');
@@ -11,6 +11,7 @@ const saveRandomId = (id) => {
   const onlineUsers = document.createElement('li');
   onlineUsers.innerText = id;
   onlineUsers.setAttribute('data-testid', 'online-user');
+  onlineUsers.setAttribute('class', 'online-user');
   getUsersList.appendChild(onlineUsers);
 };
 
@@ -41,13 +42,26 @@ const newMessage = (data) => {
 
 socket.on('message', (data) => newMessage(data));
 
-window.onload = () => {
-  socket.on('id', (id) => {
-    const removeLastPosition = id[id.length - 1];
-    sessionStorage.setItem('nickname', removeLastPosition);
-    saveRandomId(removeLastPosition);
-      for (let index = 0; index < id.length - 1; index += 1) {
-        const user = id[id[index]];
-      }
+socket.on('id', (id) => {
+  const removeLastPosition = id[id.length - 1];
+  sessionStorage.setItem('nickname', removeLastPosition);
+  saveRandomId(removeLastPosition);
+  for (let index = 0; index < id.length - 1; index += 1) {
+    const user = id[index];
+    saveRandomId(user);
+  }
+});
+
+socket.on('disconnect_user', (id) => {
+  const allusers = document.querySelectorAll('.online-user');
+
+  allusers.forEach((eachUser) => {
+    if (eachUser.innerText === id) {
+      eachUser.remove();
+    }
   });
-};
+});
+
+socket.on('newId', (id) => {
+  saveRandomId(id);
+});
