@@ -89,11 +89,6 @@
       createMessage(msg);
     })
 
-    socket.on('history', (history) => {
-      console.log('cheguei no history cluente');
-      history.forEach((msg) => createMessage(msg));
-    });
-
     // FUNÇÕES AUXILIARES
     const findUserById = (id) => {
       const user = allUsers.find((u) => u.id === id);
