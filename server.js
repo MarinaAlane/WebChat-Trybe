@@ -11,12 +11,17 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
 
+const { findAllMessages } = require('./models/messages');
+const { makeId } = require('./utils/stringGenerator');
+
 app.use(express.static(path.join(__dirname, '/public')));
 
-require('./sockets/chat')(io);
+require('./sockets/messages')(io);
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/chat.html'));
+app.get('/', async (req, res) => {
+const allMessages = await findAllMessages();
+ const randomNick = makeId(16);
+ res.status(200).render('chat.ejs', { randomNick, allMessages });
 });
 
 http.listen(3000, () => {
