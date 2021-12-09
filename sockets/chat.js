@@ -7,4 +7,6 @@ module.exports = (io) => io.on('connection', (socket) => {
     const date = utils.dateGenerator();
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
+
+  socket.on('onLineUsers', (user) => io.emit('onLineUsers', user));
 });
