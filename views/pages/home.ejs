@@ -6,40 +6,86 @@
 
 <main>
   <header>
-    <h1>Boas vindas, <span data-testid="online-user"><%= nickname %></span></h1>
+    <h1>Boas vindas, <span id="online-user" data-testid="online-user"><%= nickname %></span></h1>
   </header>
+  <section style="height: 60vh; overflow-y: scroll;">
+    <ol id="message-container">
+      
+    </ol>
+  </section>
   <section>
     <form id="message-form">
       <label for="message-box">
         Diga algo: 
         <input type="text" id="message-box" data-testid="message-box">
       </label>
+      <button type="submit" data-testid="send-button">Enviar mensagem</button>
+    </form>
+    <form id="change-nickname-form">
+      <label for="nickname-box">
+        Escolha outro apelido:
+        <input type="text" id="nickname-box" data-testid="nickname-box">
+      </label>
+      <button type="submit" data-testid="nickname-button">Mudar meu apelido</button>
     </form>
   </section>
 </main>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  const formElement = document.getElementById('message-form');
-  const messageInput = document.getElementById('message-box');
+  const messageForm = document.getElementById('message-form');
+  messageForm.addEventListener('submit', handleSubmitMessage);
+  
+  const currentNicknameElement = document.getElementById('online-user');
   const socket = io();
-  const nickname = "<%= nickname %>";
 
-  formElement.addEventListener('submit', handleSubmit);
-  socket.on('message', console.log);
+  socket.on('message', appendNewMessage);
 
-  function handleSubmit(e) {
+  const messageInput = document.getElementById('message-box');
+
+  function handleSubmitMessage(e) {
     e.preventDefault();
     sendMessage();
-    clearMessageInput();
+    clearInput(messageInput);
   }
 
   function sendMessage() {
-    socket.emit('message', { nickname, chatMessage: messageInput.value });
+    socket.emit('message', {
+      nickname: currentNicknameElement.value,
+      chatMessage: messageInput.value
+    });
   }
 
-  function clearMessageInput() {
-    messageInput.value = '';
+  const messageContainer = document.getElementById('message-container')
+  function appendNewMessage(content) {
+    const newMessageElement = createNewMessageElement(content);
+    messageContainer.appendChild(newMessageElement);
+  }
+
+  function createNewMessageElement(content) {
+    const element = document.createElement('li');
+    element.innerText = content;
+    element.dataset.testid = 'message';
+    return element;
+  }
+
+  const nicknameInput = document.getElementById('nickname-box');
+  const nicknameForm = document.getElementById('change-nickname-form');
+
+  nicknameForm.addEventListener('submit', handleSubmitChangeNickname);
+
+  function handleSubmitChangeNickname(e) {
+    e.preventDefault();
+    changeNickname(nicknameInput.value);
+    clearInput(nicknameInput);
+  }
+
+  function changeNickname(newNickname) {
+    currentNicknameElement.innerText = newNickname;
+  }
+
+  function clearInput(targetInput) {
+    targetInput.value = '';
   }
 </script>
 
