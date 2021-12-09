@@ -5,10 +5,8 @@
     <!-- <link rel="stylesheet" href="./chat.css"> -->
   </head>
   <body>
-    <h1 id="user-nickname">Aqui seu nickname</h1>
-    <div>
-      <ul id="onlineUsers"> Usuários online:</ul>
-    </div>
+    <div id="onlineUsers"> Usuários online:</div>
+    
 
     <form id="form-nickname">
       <input id="nickname-box" data-testid="nickname-box">
@@ -21,7 +19,7 @@
 
     <form id="form">
       <input id="messageInput" autocomplete="off" data-testid="message-box" />
-      <button id="btnMsg" type="submit" data-testid="send-button">Send message</button>
+      <button type="submit" data-testid="send-button">Send message</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -32,65 +30,71 @@
       const inputMsg = document.querySelector('#messageInput');
       const inputNickname = document.querySelector('#nickname-box');
       const formNickname = document.querySelector('#form-nickname');
-      const nickname = document.querySelector('#user-nickname');
       const onlineUsers = document.querySelector('#onlineUsers');
+      const kids = document.querySelectorAll('#online-user');
+      let allUsers = [];
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (inputMsg.value) {
-        // momento 1: o usuario envia uma mensagem;
         const chatMessage = inputMsg.value;
-        const userNickname = nickname.innerText;
-        const params = { chatMessage, nickname: userNickname };
+        const { nickname } = findUserById(socket.id);
+        const params = { chatMessage, nickname };
         socket.emit('message', params);
         inputMsg.value = '';
       }
       });
-      // momento: usuario recebe e ve as mensagens; 
-      socket.on('message', (msg) => {
-      const newMessage = document.createElement('li');
-      newMessage.textContent = msg;
-      newMessage.setAttribute('data-testid', 'message');
-      messages.appendChild(newMessage);
-      window.scrollTo(0, document.body.scrollHeight);
-    })
-/* --------------------- RELACIONADO AO NICKNAME ------------------------ */
-    
-    socket.on('conectedUsers', (array) => {
-      console.log('cheguei no front com o array')
-      console.log(array);
-      // recebo o array de usuarios
-      array.map((user) => {
-        // criar li, dar atributos, dar texto
-        const newOnUser = document.createElement('li');
-        newOnUser.setAttribute('data-testid', 'online-user');
-        newOnUser.setAttribute('socketId', user.id);
-        newOnUser.innerText = user.nickname;
-        // adicionar a ul
-        onlineUsers.appendChild(newOnUser);
-      });
-    });
-
+      
+    /* ALTERAÇÃO DE NICKNAME */
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       const newNickname = inputNickname.value;
       if (inputNickname.value) {
-        console.log(newNickname);
-        nickname.innerText = newNickname;
-        /* Enviar uma socket pro servidor para alterar o nome do usuario no db */
+        const updatedUser = { id: socket.id, nickname: newNickname };
+        socket.emit('nickname', updatedUser);
       }
       inputNickname.value = '';
       });
 
-    function makeid() {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (var i = 0; i < 16; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      return text;
-      /* fonte: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/ */
-    };
+    /* FAZ A LISTA DOS ONLINES */  // AJUDA AQUI NO REMOVECHILD
+    function makeOnlineUserList(array = []) {
+      onlineUsers.textContent = '';
+      array.forEach((user) => {
+        const newOnUser = document.createElement('p');
+        newOnUser.setAttribute('data-testid', 'online-user');
+        newOnUser.setAttribute('socketId', user.id);
+        newOnUser.innerText = user.nickname;
+        if (user.id === socket.id) {
+          onlineUsers.prepend(newOnUser);
+          return
+        } 
+        onlineUsers.appendChild(newOnUser);
+    });
+    }
 
+    /* SOCKETS ON */
+    socket.on('conectedUsers', (array) => {
+      allUsers = array;
+      makeOnlineUserList(array);
+    });
+
+    socket.on('message', (msg) => {
+      createMessage(msg);
+    })
+
+    // FUNÇÕES AUXILIARES
+    const findUserById = (id) => {
+      const user = allUsers.find((u) => u.id === id);
+      return user;
+    };
+    const createMessage = (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = msg;
+      newMessage.setAttribute('data-testid', 'message');
+      newMessage.setAttribute('userSocketId', socket.id);
+      messages.appendChild(newMessage);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
     </script>
   </body>
 </html>
