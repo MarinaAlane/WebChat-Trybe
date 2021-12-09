@@ -9,6 +9,9 @@ module.exports = (io) => {
     arrId.push(id);
     socket.broadcast.emit('connection', id);
     socket.emit('connection_users', arrId);
+    socket.on('alterUsername', ({ oldNickname, userNickname }) => {
+      socket.broadcast.emit('updateUsers', oldNickname, userNickname);
+    });
 
     socket.on('message', ({ chatMessage, nickname }) => {
       const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss A');
