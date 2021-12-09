@@ -26,7 +26,7 @@ function makeNickName() {
 messageForm.addEventListener('submit', (e) => {
   const chatMessage = messageInput.value;
   const nickUser = sessionStorage.getItem('nickname');
-  // const nickname = nicknameInput.value;
+  // const nickname = nicknameInput.value não passou no req 04;
   console.log(chatMessage);
   e.preventDefault();
   socket.emit('message', { chatMessage, nickname: nickUser });
