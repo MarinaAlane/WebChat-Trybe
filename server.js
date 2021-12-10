@@ -13,7 +13,7 @@ const io = require('socket.io')(http, {
 
 const { getChatHistory } = require('./controllers/chatController');
 
-app.set('view engine', 'ejs');
+app.set('public engine', 'ejs');
 
 app.set('public', './public');
 

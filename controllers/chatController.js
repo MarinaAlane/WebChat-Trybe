@@ -12,7 +12,7 @@ const getChatHistory = async (_req, res) => {
   try {
     const history = await chatModel.getChatHistory();
 
-    res.status(200).render('chat', { history });
+    res.status(200).render('message', { history });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'internal server error' });
