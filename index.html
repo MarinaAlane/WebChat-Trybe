@@ -50,7 +50,7 @@
             socket.on('message', (message) => {
                 const ul = document.querySelector('#messages');
                 console.log(message);
-                const { dataAtual, horaAtual, data, nickname } = message;
+                const { dataAtual, horaAtual, nickname, chatMessage } = message;
                 const li = document.createElement('li');
                 li.setAttribute("data-testid", "message");
                 li.textContent = message;
@@ -107,9 +107,9 @@
                         for (let i = 0; i < history.length; i++) {
                             const { message, nickname } = history[i];
                             const date = new Date();
-                            const dateActual = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-                            const timeActual = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-                            const printDados = `${dateActual} ${timeActual} - ${nickname}: ${message}`;
+                            const dataAtual = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+                            const horaAtual = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                            const printDados = `${dataAtual} ${horaAtual} - ${nickname}: ${message}`;
                             const li = document.createElement('li');
                             li.setAttribute("data-testid", "message");
                             li.textContent = printDados;
