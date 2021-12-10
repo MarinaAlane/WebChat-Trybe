@@ -21,30 +21,33 @@ const createMessage = (message) => {
 };
 
 const saveNickname = () => {
-    const nickname = document.querySelector('#nicknameInput').value;
-    const nicknameSpan = document.querySelector('#nickname');
-    nicknameSpan.textContent = nickname;
-  };
+  const nickname = document.querySelector('#nicknameInput').value;
+  const nicknameSpan = document.querySelector('#nickname');
+  nicknameSpan.textContent = nickname;
+};
 
-  const nicknameGenerator = () => {
-    let finalRandomNickname = '';
-    for (let i = 0; i < 16; i += 1) {
-      finalRandomNickname += Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 1);
-    }
-    return `${finalRandomNickname}`;
-  };
+const nicknameGenerator = () => {
+  let finalRandomNickname = '';
+  for (let i = 0; i < 16; i += 1) {
+    finalRandomNickname += Math.random()
+      .toString(36)
+      .replace(/[^a-z]+/g, '')
+      .substr(0, 1);
+  }
+  return `${finalRandomNickname}`;
+};
 
-  const defineNicknameOnLoad = () => {
-    const nickname = nicknameGenerator();
-    const nicknameSpan = document.querySelector('#nickname');
-    nicknameSpan.textContent = nickname;
-  };
+const randomNickname = nicknameGenerator();
+const defineNicknameOnLoad = () => {
+  const nicknameSpan = document.querySelector('#nickname');
+  nicknameSpan.textContent = randomNickname;
+};
 
-  socket.on('message', (message) => createMessage(message));
+socket.on('message', (message) => createMessage(message));
 
-  module.exports = {
-    socket,
-    createMessage,
-    saveNickname,
-    defineNicknameOnLoad,
-  };
+module.exports = {
+  defineNicknameOnLoad,
+  saveNickname,
+  createMessage,
+  nicknameGenerator,
+};

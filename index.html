@@ -1,24 +1,110 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO - trybe</title>
+    <title>Chat dos trybers</title>
     <link rel="stylesheet" href="./css/chat.css" />
   </head>
-  <body onload="defineNicknameOnLoad()" >
+  <body>
     <div>
     <form>
     <input id="nicknameInput" data-testid="nickname-box" type="text" placeholder="Inform Your Nickname" />
     <button id="join" data-testid="nickname-button" type="button" onclick={saveNickname()} >Join</button>
     <br/>
     <span>Actual Nickname: </span>
-    <span id="nickname" data-testid="online-user"></span>
+    <span id="nickname"></span>
+  </div>
+  <div>
+    <span>Online Users: </span>
+    <ul class=connectedUsers>
+    </ul>
   </div>
   </form>
-    <ul class="messages"></ul>
+    <ul class="messages" ></ul>
     <form action="" class="messageBox">
       <input id="messageInput" autocomplete="off" data-testid="message-box" /><button data-testid="send-button" type="submit" >Send</button>
     </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/chat.js"></script>
   </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/chat.js"></script>
+  <script>
+    const insertConnectedUser = (connectedUsers) => {
+      const thisSocketId = sessionStorage.getItem('socketId');
+      const connectedUsersUl = document.querySelector('.connectedUsers');
+      connectedUsersUl.innerHTML = '';
+      Object.entries(connectedUsers).forEach(user => {
+        if (user[0] === thisSocketId) {
+          const li = document.createElement('li');
+          li.innerText = user[1];
+          li.setAttribute('data-testid', 'online-user');
+          li.setAttribute('class', 'online-user');
+          li.setAttribute('id', user[0]);
+          connectedUsersUl.appendChild(li);
+        }
+      });
+      Object.entries(connectedUsers).forEach(user => {
+        if (user[0] !== thisSocketId){
+        const li = document.createElement('li');
+        li.innerText = user[1];
+        li.setAttribute('data-testid', 'online-user');
+        li.setAttribute('class', 'online-user');
+        li.setAttribute('id', user[0]);
+        connectedUsersUl.appendChild(li);
+      }});
+    };
+
+    const content = document.querySelector('#nickname');
+    const append = () => content.innerText += ' change';
+    content.addEventListener('DOMSubtreeModified', () => {
+      sessionStorage.setItem('firstOrLastNickname', sessionStorage.getItem('newNickname'));
+      sessionStorage.setItem('newNickname', content.innerText);
+      const oldNickname = sessionStorage.getItem('firstOrLastNickname');
+      const newNickname = sessionStorage.getItem('newNickname');
+      socket.emit('changeNickname',oldNickname, newNickname);
+    });
+
+    socket.on('changeNickname', (oldNickname, newNickname) => {
+        const connectedUsersList = document.querySelectorAll('.online-user');
+        [...connectedUsersList].forEach(connectedUser => {
+          if (connectedUser.innerText === oldNickname) {
+            connectedUser.innerText = newNickname;
+          }
+        });
+      });
+
+    socket.on('disconnectedUser', (socketId) => {
+      const connectedUsersList = document.querySelectorAll('.online-user');
+      [...connectedUsersList].forEach(connectedUser => {
+        if (connectedUser.id === socketId) {
+          connectedUser.remove();
+        }
+      });
+    });
+
+    socket.on('join', (connectedUsers) => insertConnectedUser(connectedUsers));
+    socket.on('disconnectedUser', (socketId) => {
+      const connectedUsersList = document.querySelectorAll('.online-user');
+      [...connectedUsersList].forEach(connectedUser => {
+          if (connectedUser.id === socketId) {
+            connectedUser.remove();
+          }
+      });
+    });
+
+
+    window.onload = async function(){
+      socket.on('yourId', (socketId) => {
+        sessionStorage.setItem('socketId', socketId);
+      });
+      defineNicknameOnLoad();
+      const nickname = document.getElementById('nickname').innerText;
+      sessionStorage.setItem('firstOrLastNickname', nickname);
+      sessionStorage.setItem('newNickname', nickname);
+      const loggedMessages = await fetch('http://localhost:3000/messagesHistory'); // porque chamando essa funcao do chat.js nao funciona ?
+      const messages = await loggedMessages.json();
+      messages.forEach(element => {
+        createMessage(`${element.timestamp} - ${element.nickname}: ${element.message}`);
+      });
+      socket.emit('join', nickname);
+     }
+  </script>
 </html>
