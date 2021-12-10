@@ -19,7 +19,7 @@
         <input id="nicknameInput" data-testid="nickname-box" />
         <button id="btn-nickname" data-testid="nickname-button" type="button">OK</button>
     </div>
-    <ul id="others"></ul>
+    <div id="others"></div>
     <ul id="messages"></ul>
 
     <form action="" id="form">
@@ -86,15 +86,14 @@
                 const index = users.findIndex(item => item.id === socket.id);
                 users.splice(index, 1);
                 console.log(users);
-                const list = document.getElementById('others');
-                list.innerText = ""
+                const div = document.getElementById('others');
+                div.innerText = ""
                 for (let i = 0; i < users.length; i++) {
-                    console.log(users[i].nome);
-                    const listChild = document.createElement('li');
-                    listChild.setAttribute("data-testid", "online-user");
-                    listChild.setAttribute("id", `online-user-${users[i].id}`);
-                    listChild.textContent = users[i].nome;
-                    list.appendChild(listChild);
+                    const span = document.createElement('span');
+                    span.setAttribute("data-testid", "online-user");
+                    span.setAttribute("id", `online-user-${users[i].id}`);
+                    span.textContent = users[i].nome;
+                    div.appendChild(span);
                 }
                 });
 
