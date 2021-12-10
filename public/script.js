@@ -33,17 +33,14 @@ sendButton.addEventListener('click', (event) => {
   event.preventDefault();
 
   const author = document.querySelector('input[name="username"]').value;
-
   const message = document.querySelector('input[name="message"]').value;
   
-  if (author.length && message.length) {
-    const messageObject = {
-      chatMessage: message,
-      nickname: author,
-    };
+  const messageObject = {
+    chatMessage: message,
+    nickname: author,
+  };
   
     socket.emit('message', messageObject);
-  }
 });
 
 // Users
