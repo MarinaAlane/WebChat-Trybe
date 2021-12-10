@@ -38,7 +38,6 @@ app.get('/', (_req, res) => {
 io.on('connection', (socket) => {
   console.log(`Usuário ${socket.id} conectado`);
   
-  // Marcelo Leite me ajudou na lógica do nickname.
   const randonUser = socket.id.slice(0, 16);
   console.log(randonUser);
   socket.emit('logIn', randonUser);

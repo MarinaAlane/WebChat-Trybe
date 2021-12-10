@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Project Webchat</title>
+    
+</head>
+  <body>
+    <div class="message">
+      <form id="formUser">
+        <input id="inputUser" type="text" placeholder="Digite seu Nickname" data-testid="nickname-box" autocomplete="off" />
+        <button id="salvar" data-testid="nickname-button"type="button" >Salvar</button>
+      </form>
+      <ul id="messages"></ul>
+      <div id="containerUsers">
+        <ul id="ulUsers"></ul>
+      </div>
+      <form id="form">
+      <input
+      id="input"
+      type="text"
+      autocomplete="off"
+      data-testid="message-box"
+      />
+      <button id="enviar" data-testid="send-button">Send</button>
+      </form>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      const form = document.querySelector('#form');
+      const input = document.querySelector('#input');
+      const ul = document.querySelector('#messages');
+      const users = document.querySelector('#users');
+      
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // console.log('cliquei')
+        if(input.value) {
+          socket.emit('message', {
+            chatMessage: input.value,
+            nickname: inputUser.value,
+          });
+          input.value = '';
+          inputUser.value = '';
+          // console.log('chatMessage' + input.value);
+        }
+        return false;
+      });
+      
+      const inputUser = document.querySelector('#inputUser');
+      const formUser = document.querySelector('#formUser');
+      const salvar = document.querySelector('#salvar');
+      
+      socket.on('message', (msg) => {
+        const { date, nickname, chatMessage } = msg
+        const li = document.createElement('li');
+        li.setAttribute("data-testid", "message");
+        li.textContent = msg;
+        // console.log(li, 'esse é o li da mensagem')
+        ul.appendChild(li);
+        window.scrollTo(0, document.body.scrollHeight);
+      })
+
+      socket.on('logIn', (newUser)=>{
+        const ulUsers = document.querySelector('#ulUsers')   
+        const user = document.createElement('li');
+        user.innerText = newUser;
+        user.setAttribute("data-testid", "online-user");
+        ulUsers.appendChild(user);
+      });
+
+      salvar.addEventListener('click', (e) => {
+          for (let index = 0; index < newUser.length; index += 1) {
+            if (newUser[index].innerText === socket.id) {
+              return newUser[index].innerText = inputUser.value;
+            } 
+          }
+      });
+
+      </script>
+  </body>
+</html>
