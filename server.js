@@ -1,12 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-// const cors = require('cors');
 
 const app = express();
 app.use(express.json());
 const http = require('http').createServer(app);
 
-const userList = [];
+const list = [];
 
 const io = require('socket.io')(http, {
     cors: {
@@ -14,8 +13,6 @@ const io = require('socket.io')(http, {
         method: ['GET', 'POST'],
     },
 });
-
-// app.use(cors());
 
 const userController = require('./controllers/userController');
 
@@ -30,29 +27,29 @@ app.get('/messages', async (req, res) => {
 
 // app.use(express.static(`${__dirname}/index.html`));
 
-const dateNow = new Date().toLocaleString().replace(/\//g, '-');
+const data = new Date().toLocaleString().replace(/\//g, '-');
 
 io.on('connection', (socket) => {
     socket.on('message', async ({ chatMessage, nickname }) => {
-      await userController.createMessage(chatMessage, nickname, dateNow);
-      io.emit('message', `${dateNow} - ${nickname} ${chatMessage}`);
+      await userController.createMessage(chatMessage, nickname, data);
+      io.emit('message', `${data} - ${nickname} ${chatMessage}`);
     });
   
-  socket.on('userConnected', (nickname) => {
-    userList.push({ nickname, id: socket.id });
-    io.emit('updateList', userList);
+  socket.on('user', (nickname) => {
+    list.push({ nickname, id: socket.id });
+    io.emit('onlineList', list);
   });
   
-  socket.on('nickUpdate', ({ nickname, oldNick }) => {
-    const index = userList.findIndex((i) => i.nickname === oldNick);
-    userList.splice(index, 1, { nickname, id: socket.id });
-    io.emit('updateList', userList);
+  socket.on('changeNick', ({ nickname, oldNick }) => {
+    const index = list.findIndex((item) => item.nickname === oldNick);
+    list.splice(index, 1, { nickname, id: socket.id });
+    io.emit('onlineList', list);
   });
   
     socket.on('disconnect', ({ id }) => {
-    const index = userList.findIndex((user) => user.id === id);
-    userList.splice(index, 1);
-      io.emit('updateList', userList);
+    const index = list.findIndex((user) => user.id === id);
+    list.splice(index, 1);
+      io.emit('onlineList', list);
     });
   });
 

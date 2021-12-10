@@ -42,11 +42,11 @@
 
 let nickname = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
 
-socket.emit('userConnected', nickname);
+socket.emit('user', nickname);
 
-const btnSendMessage = document.getElementById('send-message');
+const enviarMensagem = document.getElementById('send-message');
 const inputValue = document.getElementById('input-message');
-btnSendMessage.addEventListener('click', (event) => {
+enviarMensagem.addEventListener('click', (event) => {
   event.preventDefault();
   const chatMessage = inputValue.value;
   console.log(chatMessage);
@@ -54,32 +54,32 @@ btnSendMessage.addEventListener('click', (event) => {
   inputValue.value = '';
 });
 
-const btnChangeNick = document.getElementById('add-new-nick');
+const mudarUsuario = document.getElementById('add-new-nick');
 const inputNick = document.getElementById('input-nick');
-btnChangeNick.addEventListener('click', (event) => {
+mudarUsuario.addEventListener('click', (event) => {
   event.preventDefault();
   const oldnick = nickname;
   nickname = inputNick.value;
   inputNick.value = '';
-  socket.emit('nickUpdate', { nickname, oldnick });
+  socket.emit('changeNick', { nickname, oldnick });
 });
 
-const onlineUser = document.querySelector('#ul-online-user');
-socket.on('updateList', (array) => {
-  onlineUser.innerHTML = '';
+const usuarioConectado = document.querySelector('#ul-online-user');
+socket.on('onlineList', (array) => {
+  usuarioConectado.innerHTML = '';
   array.forEach((user) => {
     const liUser = document.createElement('li');
     liUser.setAttribute('data-testid', 'online-user');
     liUser.innerText = user.nickname;
       if (socket.id === user.id) {
-        onlineUser.prepend(liUser);
+        usuarioConectado.prepend(liUser);
       } else {
-        onlineUser.appendChild(liUser);
+        usuarioConectado.appendChild(liUser);
       }
   });
 });
 
-const insertMessage = (string) => {
+const mensagemInserida = (string) => {
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = string;
@@ -87,15 +87,15 @@ const insertMessage = (string) => {
 };
 
 socket.on('message', (string) => {
-  insertMessage(string);
+  mensagemInserida(string);
 });
 
 window.onload = async () => {
-  const requisition = await fetch('http://localhost:3000/messages');
-  const reqJson = await requisition.json();
-  reqJson.forEach(({ message, nickname: nick, timestamp }) => {
+  const req = await fetch('http://localhost:3000/messages');
+  const result = await req.json();
+  result.forEach(({ message, nickname: nick, timestamp }) => {
     const string = `${timestamp} - ${nick} ${message}`;
-      insertMessage(string);
+    mensagemInserida(string);
     });
 };
     </script>               
