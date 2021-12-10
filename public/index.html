@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,28 +8,53 @@
   <title>Web Chat</title>  
 </head>
 <body>
-  <h1>Web Chat</h1>
-  <ul id="messages"></ul>
-  <form id="form">
-    <input
-      id="nickname"
-      type="text"
-      placeholder="Enter your nickname"
-    />
-    <button>Save</button>
-    <input
-      id="input"
-      type="text"
-      placeholder="Enter a new message"
-      autocomplete="off"
-    />
-    <button>Send</button>
-  </form>
+  <div class="chat-container">
+    <header class="chat-header">
+      <h1>Web Chat</h1>
+    </header>
+    
+    <div class="nickname-form">
+      <form id="nick-form">
+        <input
+        id="nickname"
+        type="text"
+        data-testid="nickname-box"
+        placeholder="Enter your nickname"
+      />
+      <button
+        data-testid="nickname-button">Save</button>
+      </form>
+    </div>
+
+    <div class="div-message-user-container">
+      <div class="div-sidebar-">
+        <h3>Users:</h3>
+        <ul id="user-online" data-testid="online-user"></ul>
+      </div>
+    </div>
+
+    <div class="chat-messages">
+      <ul id="messages"></ul>
+    </div>  
+
+    <div class="form-input-message-container">
+      <form id="msg-form">
+        <input
+          id="msg-input"
+          type="text"
+          data-testid="message-box"
+          placeholder="Enter a new message"
+          autocomplete="off"
+        />
+        <button data-testid="send-button">Send</button>
+      </form>
+    </div>
+  </div>
   <!-- <script>
     const socket = io();
   </script> -->
   
   <script src="/socket.io/socket.io.js"></script>
-  <script src='./js/chatClient.js'></script>
+  <script src='./js/chat.js'></script>
 </body>
 </html>

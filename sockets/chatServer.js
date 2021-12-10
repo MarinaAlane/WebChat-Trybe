@@ -1,18 +1,20 @@
+const moment = require('moment');
+/* refatorado usando moment() - https://momentjs.com/ */
+const curretTime = moment().format('MM-DD-YYYY h:mm:ss');
+
 module.exports = (io) => io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected!`);
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const date = new Date();
-    // mes + 1 -> para o mês de Janeiro não iniciar com zero.
-    const currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-    const currentHour = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-    // padrao do formato da mensagem: DD-MM-yyyy HH:mm:ss ${nickname} ${chatMessage}
-    const data = `${currentDate} ${currentHour} - ${nickname}: ${chatMessage}`;
-    
+  // logica do 'randomNickname' feito com auxilio da Islene e Marcelo Leite
+  const randomNickname = socket.id.slice(0, 16);
+  socket.emit('userLogged', randomNickname); 
+  // escutando o chat
+  socket.on('message', ({ nickname, chatMessage }) => {    
+    const data = `${curretTime} - ${nickname}: ${chatMessage}`;
     // enviar mensagem para todos
     io.emit('message', `${data}`);
   });
   socket.on('disconnect', () => {
-    console.log(`User  ${socket.id} disconnected`);
+    console.log(`Usuário ${socket.id} desconectado`);
   });
 });
 
