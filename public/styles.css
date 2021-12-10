@@ -38,6 +38,27 @@ button {
   width: 650px;
 }
 
+li {
+  list-style: none;
+}
+
+.nickContainer {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  width: 650px;
+}
+
+.nickInput {
+  justify-content: center;
+  width: 530px;
+}
+
+.nickButton {
+  margin-top: 0;
+  width: 5rem;
+}
+
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -52,6 +73,7 @@ button {
   padding: 20px;
   width: 220px;
 }
+
 
 .messages {
   border: 1px solid #ddd;
