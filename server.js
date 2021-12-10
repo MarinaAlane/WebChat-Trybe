@@ -15,7 +15,7 @@ const { getChatHistory } = require('./controllers/chatController');
 
 app.set('view engine', 'ejs');
 
-app.set('views', './views');
+app.set('public', './public');
 
 app.use(express.static(`${__dirname}/public`));
 

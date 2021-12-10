@@ -22,4 +22,4 @@ const getChatHistory = async (_req, res) => {
 module.exports = {
   storeMsg,
   getChatHistory,
-}; 
+};
