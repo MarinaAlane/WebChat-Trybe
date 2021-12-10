@@ -17,7 +17,7 @@ module.exports = (io) => {
 
     socket.emit('currentConnectedUsers', { usersConnected, onlineUser });
     
-    messages(io, socket);
+    messages(io, socket, onlineUser);
     
     socket.on('updatedNickName', (nickName) => {
       usersConnected = updateUsersConnected(usersConnected, onlineUser, nickName);
