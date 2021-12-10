@@ -76,10 +76,9 @@ socket.on('nickname', (id) => {
 socket.on('message', (message) => createMessage(message));
 
 socket.on('userList', (users) => {
-  console.log(users);
   updateUserList(users.map((user) => user.nickname));
 });
 
-window.onbeforeunload = function () {
+window.onload = function disconnect() {
   socket.disconnect();
 };

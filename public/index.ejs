@@ -5,11 +5,12 @@
   </head>
   <body>
     <h3 id="nickname"></h3>
-    <ul id="users">
-      <li>
-      </li>
-    </ul>
-    <ul id="messages"></ul>
+    <ul id="users"></ul>
+    <ul id="messages">
+      <% history.forEach((message) => { %>
+      <li data-testid="message"><%= `${message.timestamp} - ${message.nickname}: ${message.message}`%></li>
+    <% }) %>
+  </ul>
     <form action="" id="message-form">
       <input id="message-input" data-testid="message-box" />
       <button data-testid="send-button" >Send</button>
