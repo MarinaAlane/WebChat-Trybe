@@ -35,19 +35,30 @@ function removeUser(id) {
 
 buttonMessage.addEventListener('click', (event) => {
   event.preventDefault();
+  const getLocalNickName = window.sessionStorage.getItem('nickname') || nickName.value;
   socket.emit('message', {
-    nickname: nickName.value,
+    nickname: getLocalNickName,
     chatMessage: messageBox.value,
   });
 });
 
-buttonSetNickName.addEventListener('click', (event) => {
-  event.preventDefault();
-  socket.emit('changeNickName', inputSetNick.value);
-});
-
 socket.on('message', async (renderMessage) => {
   creatMessage(renderMessage);
+});
+
+function alterNickname() {
+  const getNickName = window.sessionStorage.getItem('nickname');
+  if (getNickName) {
+    socket.emit('changeNickName', getNickName);
+  } else if (inputSetNick.value) {
+    window.sessionStorage.setItem('nickname', inputSetNick.value);
+    socket.emit('changeNickName', inputSetNick.value);
+  }
+}
+
+buttonSetNickName.addEventListener('click', (event) => {
+  event.preventDefault();
+  alterNickname();
 });
 
 socket.on('usersOnline', ({ section, userNickName }) => {
@@ -69,3 +80,5 @@ socket.on('changerUser', ({ idsectionUser, nickname }) => {
 socket.on('disconnectUser', ({ idsectionUser }) => {
   removeUser(idsectionUser);
 });
+
+alterNickname();
