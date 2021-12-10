@@ -1,3 +1,7 @@
+body {
+  background-color: deepskyblue;
+}
+
 .container {
   display: flex;
   flex: row wrap;
@@ -17,17 +21,8 @@
   width: 100%;
 }
 
-/* #nickname-form {
-  display: flex;
-  width: 100%;
-}
-
-#nickname-box {
-  height: 20px;
-  width: 100%;
-} */
-
 .online-container {
+  background-color: white;
   border: 1px solid black;
   border-radius: 5px;
   display: flex;
@@ -36,6 +31,7 @@
 }
 
 .chat-container {
+  background-color: white;
   border: 1px solid black;
   border-radius: 5px;
   height: 600px;
@@ -47,14 +43,8 @@
   width: 100%;
 }
 
-/* #message-box {
-  height: 30px;
-  width: 8%;
-}
-
-#send-button {
-  height: 35px;
-  width: 15%;
+/* .message {
+  display: inline;
 } */
 
 ul {

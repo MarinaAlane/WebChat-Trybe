@@ -10,11 +10,11 @@ const io = require('socket.io')(http, {
 
 app.use(express.static(`${__dirname}/public`));
 
+require('./sockets/Chat')(io);
+
 app.get('/', (_req, res) => {
   res.sendFile(`${__dirname}/views/index.html`);
 });
-
-require('./sockets/Chat')(io);
 
 http.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');

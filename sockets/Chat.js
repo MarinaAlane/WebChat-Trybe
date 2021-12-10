@@ -7,10 +7,22 @@ const formatDate = (date) => {
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    io.emit('createNick');
+    socket.emit('enterChat');
+
+    socket.on('addOnlineUser', (user) => {
+      io.emit('addOnlineUser', user);
+    });
+
+    socket.on('updateNickname', ({ user, newNickname }) => {
+      io.emit('updateNickname', { user, newNickname });
+    });
     
     socket.on('message', ({ chatMessage, nickname }) => {
-      io.emit('message', `${formatDate(new Date(Date.now()))} - ${nickname}: ${chatMessage}`);
+      io.emit('message', { date: formatDate(new Date(Date.now())), chatMessage, nickname });
     });
+
+    // socket.on('disconnect', () => {
+    //   socket.broadcast.emit('removeUser', user);
+    // });
   });  
 };

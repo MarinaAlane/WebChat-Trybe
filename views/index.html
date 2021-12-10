@@ -8,17 +8,25 @@
     <section class='container'>
       <div class="nick-container">
         <section class="users-container">
-          <form id="nickname-form">
-            <input type="text" id="nickname-box" style="width: 80%; height: 20px" data-testid="nickname-box" placeholder="Digite seu nick" />
-            <button id="nickname-button" style="width: 16%; height: 25px"  data-testid="nickname-button">Salvar</button>
-          </form>
+          <div id="nickname-form">
+            <input
+              type="text"
+              id="nickname-box"
+              placeholder="Digite seu nick"
+              data-testid="nickname-box"
+            />
+            <button
+              id="nickname-button"
+              data-testid="nickname-button"
+            >Salvar</button>
+          </div>
         </section>
         <section class="online-container">
           <ul id="online-list"></ul>
         </section>
       </div>
       <section class="chat-container">
-        <ul id="messages-list"></ul>
+        <ul id="message-list"></ul>
       </section>
     </section>
     <section class="message-container">
