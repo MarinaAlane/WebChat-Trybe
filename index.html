@@ -1,23 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
+
+ <title>Socket IO - Trybe</title>
+ <style>
+   
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+      #ul-msg { list-style-type: none; margin: 0; padding: 0; }
+      #ul-msg > li { padding: 0.5rem 1rem; }
+      #ul-msg > li:nth-child(odd) { background: #efefef; }
+    
+</style>
 </head>
 <body>
   <h4>Usuários Online</h4>
   <ul id="ul-online-user"></ul>
-  <form>
+  <form >
     <input type="text" name="username" data-testid="nickname-box" placeholder="Digite seu nickname" id="input-nick"/>
     <button type="submit" data-testid="nickname-button" id="add-new-nick">Salvar</button>
   </form>
 
   <div>
-    <ul id="ul-msg">CHAT</ul>
+    <ul id="ul-msg"></ul>
 
-    <form>
+    <form id="form" action="">
       <input data-testid="message-box" id="input-message" type="text" placeholder="Digite uma nova mensagem aqui"/>
       <button data-testid="send-button" id="send-message">Enviar</button>
     </form>
