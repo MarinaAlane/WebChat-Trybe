@@ -46,7 +46,9 @@
     const nickName = document.querySelector('#nickname-box');
 
     
-    socket.on('connection', (users) => {
+    socket.on('connection', (data) => {
+      console.log(data);
+      const { users, arrayMessages } = data;
       const userId = socket.id;
       const user = userId.slice(0, 16);
       sessionStorage.setItem('nickname', user);
@@ -55,6 +57,7 @@
       users.push({ userId, user });
       socket.emit('addUsers', users);
       socket.emit('newUser', [{userId, user}]);
+      addMessages(arrayMessages);
     });
 
     socket.on('newUser', (newUser) => {
@@ -126,6 +129,16 @@
         return socket.emit('message', { chatMessage, nickname });
       };
     });
+
+    const addMessages = (arrayMessages) => {
+      arrayMessages.forEach((message) => {
+        const messages = document.getElementById('messages');
+        const newMessage = document.createElement('li');
+        newMessage.setAttribute('data-testid', 'message');
+        newMessage.innerText = message;
+        messages.appendChild(newMessage);
+      });
+    }
 
     const messages = document.getElementById('messages');
     socket.on('message', (msg) => {

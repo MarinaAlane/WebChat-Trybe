@@ -16,9 +16,8 @@ const createMessage = async (objMessage) => {
 
 const getAll = async () => {
   const messages = await MessageModel.getAll();
-  const arrayMessages = messages.map((message) => {
-    return `${message.timestamp} - ${message.nickname}: ${message.message}`;
-  });
+  const arrayMessages = messages
+    .map((message) => `${message.timestamp} - ${message.nickname}: ${message.message}`);
   return arrayMessages;
 };
 

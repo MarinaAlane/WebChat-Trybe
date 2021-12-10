@@ -26,8 +26,9 @@ const newNames = (newNickname) => {
   usersOnline = removedUser;
 };
 
-io.on('connection', (socket) => {
-  socket.emit('connection', usersOnline);
+io.on('connection', async (socket) => {
+  const arrayMessages = await messageService.getAll();
+  socket.emit('connection', { users: usersOnline, arrayMessages });
   socket.on('addUsers', (newUserArray) => { usersOnline = newUserArray; });
 
   socket.on('message', async (objMessage) => {

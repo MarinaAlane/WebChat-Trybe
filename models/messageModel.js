@@ -1,4 +1,4 @@
-const connection = require('./connection');
+const { connection } = require('./connection');
 
 const saveMessage = async (message) => {
   try {
@@ -15,8 +15,9 @@ const getAll = async () => {
   try {
     const getConnection = await connection()
       .then((db) => db.collection('messages'));
-    const messages = await getConnection.findAll().toArray();
-    return { code: 200, result: messages };
+    const messages = await getConnection.find().toArray();
+    if (!messages) return [];
+    return messages;
   } catch (error) {
     return error.code;
   }
