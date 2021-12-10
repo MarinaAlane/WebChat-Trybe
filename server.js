@@ -1,4 +1,3 @@
-// Faça seu código aqui
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -26,11 +25,24 @@ const io = require('socket.io')(socketIoServer, {
 });
 
 io.on('connection', (socket) => {
-  console.log(`usuário ${socket.id} conectado`);
+  // console.log(`usuário ${socket.id} conectado`);
 
-    const nickname = socket.id.slice(0, 16);
-    users.push(nickname);
-    io.emit('nicknames', users);
+  const nickname = socket.id.slice(0, 16);
+  users.push(nickname);
+  io.emit('nicknames', users);
+
+  // const updateNick = ({ oldNickname, newNickname }) => {
+  //   const findIndex = users.indexOf(oldNoldNicknameick);
+  //   users[index] = newNickname;
+  // };
+
+  // socket.on('updateNickname', ({ oldNickname, newNickname }) => {
+  //   // Passo 3 io.emit com o (antigo, novo)
+  //   const index = users.findIndex(({ nickname }) => nickname === oldNickname);
+
+  //   connectedUsers[indexToUpdateUser].nickname = newNickname;
+  //   io.emit('updateNickname', users); 
+  // });
   
   socket.on('message', (msg) => {
     const timestamp = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
@@ -46,30 +58,6 @@ app.get('/', (_req, res) => {
   res.render('board');
 });
 
-app.post('/post', async (req, res) => {
-  const { chatMessage, nickname } = req.body;
-
-  const getHour = `${new Date().getHours()}`;
-  let hourSign = '';
-  if (getHour >= 12) {
-    hourSign = 'AM';
-  } hourSign = 'PM';
-
-  const timestamp = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
-
-  if (!chatMessage || !nickname) {
-    return res.status(422).json({ message: 'Falta enviar sua mensagem ou nickname' });
-  }
-
-  io.emit('message', `${timestamp} ${hourSign} ${nickname} ${chatMessage}`);
-  // io.emit('nicknames', users);
-  return res.status(200).json({ nickname, chatMessage });
-});
-
 socketIoServer.listen(PORT, () => {
   console.log(`Servidor Socket.io ouvindo na porta ${PORT}`);
 });
-
-// TODO dentro do socket connection criar um emit('nickname');
-// TODO jogar o nickname pra dentro de um array ou objeto;
-// TODO Renderizar esse objeto no html.

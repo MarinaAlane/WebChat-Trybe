@@ -5,24 +5,46 @@
   </head>
   <body>
     <h1>Projeto Webchat</h1>
-    <aside>
-      <h2>Usuários Conectados</h2>
-      <ul id='nicknames'></ul>
-    </aside>
+
+
+    <h2>Usuários Conectados</h2>
+    <ul id='nicknames'></ul>
+    <form id="nickname-form">
+      <input id='nickname-input' placeholder="Insira seu nickname" data-testid="nickname-box">
+      <button type='button' data-testid="nickname-button">Salvar</button>
+    </form>
+
 
     <h2>Chat</h2>
     <ul id="chat"></ul>
-
-    <form id="form">
-      <input id="input">
-      <button>Enviar</button>
+    <form id="chat-form">
+      <input id='chat-input' type="text" placeholder="Digite uma nova mensagem aqui" data-testid="message-box">
+      <button type="submit" data-testid="send-button">Enviar</button>
     </form>
 
     <script>
       const socket = io("http://localhost:3000");
 
+      const chatForm = document.querySelector('#chat-form');
+      const chatInput = document.querySelector('#chat-input');
+
+      // Req 1
+      chatForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if(chatInput.value) {
+          socket.emit('message', {
+            nickname: socket.id.slice(0, 16),
+            chatMessage: chatInput.value,
+          });
+        }
+
+        chatInput.value = '';
+      });
+
       socket.on('message', (msg) => {
         const li = document.createElement("li");
+        li.setAttribute('data-testid', 'message');
         li.textContent = msg;
         document.querySelector('#chat').appendChild(li);   
       });
@@ -32,19 +54,44 @@
         users.map((user) => {
           const li2 = document.createElement("li");
           li2.setAttribute('data-testid', 'online-user');
+          li2.setAttribute('id', 'current-nickname');
           li2.textContent = user;
           document.querySelector('#nicknames').appendChild(li2);
         })
       });
 
-      // socket.on('nicknames', () => {
-      //   const nickname = socket.id.slice(0, 16);
-      //   sessionStorage.setItem('nickname', nickname);
-      //   const li2 = document.createElement("li");
-      //   li2.setAttribute('data-testid', 'online-user');
-      //   li2.textContent = sessionStorage.getItem('nickname');
-      //   document.querySelector('#nicknames').appendChild(li2);
-      // });
+      // Req 2 atualizar nickname
+      let getNickname = document.querySelector('#current-nickname').innerText;
+
+      // passo 1
+      // Recebe um objeto com nickname antigo e novo.
+      // Capturar o antigo nickname e atualizar.
+      socket.on('updateNickname', ({ oldNickname, newNickname }) => {
+        const indexByNickname = ({ oldNickname, newNickname }) => {
+          const index = users.indexOf(oldNickname);
+          newNickname = users[index];
+        };
+
+        io.emit('updateNickname', users);
+        
+      }); 
+
+      const nicknameForm = document.querySelector('#nickname-form');
+      const nicknameInput = document.querySelector('#nickname-input');
+
+      nicknameForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if(nicknameInput.value) {
+          // passo 2 enviar o oldNick e newNick ao server
+          io.emit('updateNickname', {
+            oldNickname, newNickname
+          });
+        }
+
+        chatInput.value = '';
+      });
+
     </script>
   </body>
 </html>
