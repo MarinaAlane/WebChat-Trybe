@@ -72,7 +72,7 @@
 
             window.onload = () => {
                 let nickname = document.getElementById('nickname');
-                let radomString = [...Array(16)].map(i=>(~~(Math.random()*36)).toString(36)).join('')
+                let radomString = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
                 const div = document.querySelector('#div-nickname');
                 const span = document.createElement('span');
                 span.setAttribute("data-testid", "online-user");
