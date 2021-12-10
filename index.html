@@ -40,25 +40,53 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('http://localhost:3000');
+    const socket = io();
     
-    const inputNickname = document.getElementById('nickname-box');
+    
     const nickName = document.querySelector('#nickname-box');
 
-    socket.on('randomUser', (randomUser) => {
-      const savedNickName = sessionStorage.getItem('nickname');
-      const randomNickname = randomUser.slice(0, 16);
-      console.log(randomNickname);
-      if (!savedNickName) {
-        sessionStorage.setItem('nickname', randomNickname)
-        return socket.emit('onlineUser', randomNickname);
-      } else {
-        return socket.emit('onlineUser', savedNickName);
-      };
+    
+    socket.on('connection', (users) => {
+      const userId = socket.id;
+      const user = userId.slice(0, 16);
+      sessionStorage.setItem('nickname', user);
+      addUsersOnline([{ userId, user }]);
+      addUsersOnline(users);
+      users.push({ userId, user });
+      socket.emit('addUsers', users);
+      socket.emit('newUser', [{userId, user}]);
     });
 
+    socket.on('newUser', (newUser) => {
+      addUsersOnline(newUser);
+    })
+
+    socket.on('offUser', (user) => {
+      console.log('useroff', user)
+      removeUserOnline(user);
+    })
+
+    const addUsersOnline = (users) => {
+      users.forEach((user) => {
+        const usersOnline = document.getElementById('users');
+        const addUser = document.createElement('li');
+        addUser.setAttribute('data-testid', 'online-user');
+        addUser.setAttribute('id', `${user.userId}`)
+        addUser.innerText = user.user;
+        usersOnline.appendChild(addUser);
+      });
+    }
+
+    const removeUserOnline = (user) => {
+      const usersOnline = document.getElementById('users');
+      const offlineUser = document.getElementById(user);
+      usersOnline.removeChild(offlineUser);
+    }
+
+    socket.on('addUsers', (users) => {
+      addUsersOnline(users);
+    });
     
-    const usersOnline = document.getElementById('users');
     socket.on('onlineUser', (userNickname) => {
       console.log('rodei', userNickname);
       const newUser = document.createElement('li');
@@ -68,22 +96,24 @@
       usersOnline.appendChild(newUser);
     });
 
-    const formNickname = document.getElementById('form-nickname');
+    const changeUserNickname = (newNickname) => {
+      const nickName = document.getElementById(newNickname.userId);
+      nickName.innerText = newNickname.user;
+    }
 
+    socket.on('changeUser', (newNickname) => changeUserNickname(newNickname));
+  
+    const formNickname = document.getElementById('form-nickname');
+    const inputNickname = document.getElementById('nickname-box');
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputNickname.value) {
-        const oldNickname = sessionStorage.getItem('nickname')
         sessionStorage.setItem("nickname", inputNickname.value)
-        return socket.emit('changeUserNickname', { oldNickname, newNickname: inputNickname.value });
+        const userId = socket.id;
+        const newNickname = { userId, user: inputNickname.value };
+        changeUserNickname(newNickname);
+        return socket.emit('changeUser', newNickname);
       };
-    });
-
-    socket.on('changeUserNickname', (objNickname) => {
-      const { oldNickname, newNickname } = objNickname;
-      const user = document.getElementById(`user-${ oldNickname }`)
-      user.setAttribute('id', `user-${ newNickname }`)
-      user.innerText = newNickname;
     });
 
     const formMessages = document.getElementById('form-messages');
