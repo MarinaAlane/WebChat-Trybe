@@ -2,7 +2,7 @@ const arrayListUser = [];
 
 const addUser = (nickname, socket) => {
   arrayListUser.push({
-    nome: nickname,
+    nickname,
     id: socket.id,
   });
   return arrayListUser;
@@ -10,7 +10,7 @@ const addUser = (nickname, socket) => {
 
 const editUser = (nickname, socket) => {
     const index = arrayListUser.findIndex((item) => item.id === socket.id);
-    arrayListUser[index].nome = nickname;
+    arrayListUser[index] = nickname;
     return arrayListUser;
 };
 const getUsers = () => arrayListUser;
