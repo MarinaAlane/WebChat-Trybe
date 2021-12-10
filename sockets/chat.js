@@ -1,19 +1,21 @@
 const dateTypo = require('../utils/dateTypo');
 const { saveMessage } = require('../models/saveMessages');
 
+const date = dateTypo();
+
 const connectedUsers = {};
 
 function handleMessage(message) {
   if (message.date) {
     return `${message.date} - ${message.nickname}: ${message.chatMessage}`;
   }
-  return `${dateTypo} - ${message.nickname}: ${message.chatMessage}`;
+  return `${date} - ${message.nickname}: ${message.chatMessage}`;
 }
 
 module.exports = (io) =>
   io.on('connection', (socket) => {
     socket.on('message', async (message) => {
-      await saveMessage(message.chatMessage, message.nickname, dateTypo);
+      await saveMessage(message.chatMessage, message.nickname, date);
       return io.emit('message', handleMessage(message));
     });
     socket.on('join', (nickname) => {
