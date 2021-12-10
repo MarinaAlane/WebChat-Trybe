@@ -50,7 +50,8 @@ function alterNickname() {
   const getNickName = window.sessionStorage.getItem('nickname');
   if (getNickName) {
     socket.emit('changeNickName', getNickName);
-  } else if (inputSetNick.value) {
+  }
+  if (inputSetNick.value) {
     window.sessionStorage.setItem('nickname', inputSetNick.value);
     socket.emit('changeNickName', inputSetNick.value);
   }

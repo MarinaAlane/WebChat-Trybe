@@ -24,5 +24,5 @@ app.set('view engine', 'html');
 app.use('/', controllerGetMessageChat, routerChat);
 
 server.listen(PORT, () => {
-  console.log(`Server started on http//:localhost:${PORT}`);
+  console.log(`Server started on http://localhost:${PORT}`);
 });
