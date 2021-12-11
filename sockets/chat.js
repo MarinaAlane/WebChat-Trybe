@@ -1,34 +1,61 @@
-const chatModels = require('../models/chatModels');
-const { generateMessage } = require('../utils/message');
+const moment = require('moment');
+const chatModel = require('../models/chatModel');
 
-const joinedChat = (socket) => {
-  socket.broadcast.emit('joined', `Cliente ${socket.id} ingressou no chat.`);
+const usersOnline = [];
+
+const createUser = (socket) => {
+  const { id } = socket;
+  const [newNickname] = id.match(/[\w'-]{16}/g);
+  usersOnline.push({ id, nickname: newNickname });
+  socket.emit('newUser', newNickname);
 };
 
-const newMessage = (io, socket) => {
-  socket.on('message', async (message) => {
-    const msg = generateMessage(message);
-    io.emit(
-      'message',
-      `${msg.createdAt} - ${msg.nickname}: ${msg.chatMessage}`,
-    );
-    await chatModels.newMessageModel({ message });
+const getMessages = async (socket) => {
+  const messages = await chatModel.getAllMessages();
+  socket.emit('getMessages', messages);
+};
+
+const sendNewMessage = (socket, io) => {
+  const timestamp = moment().format('DD-MM-YYYY h:mm:ss A');
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+    await chatModel.createMessage({
+      message: chatMessage,
+      nickname,
+      timestamp,
+    });
   });
 };
 
-const outChat = (socket) => {
+const updateUsersOnline = (socket, io) => {
+  socket.on('updateUserList', () => {
+    io.emit('updateUserList', usersOnline);
+  });
+};
+
+const setNewNickname = (socket, io) => {
+  socket.on('saveNickname', (newNick) => {
+    const userIndex = usersOnline.findIndex((user) => user.id === socket.id);
+    usersOnline[userIndex].nickname = newNick;
+    io.emit('updateUserList', usersOnline);
+  });
+};
+
+const disconnectUser = (socket, io) => {
   socket.on('disconnect', () => {
-    socket.broadcast.emit(
-      'endConnection',
-      `Cliente ${socket.id} saiu do chat.`,
-    );
+    const userIndex = usersOnline.findIndex((user) => user.id === socket.id);
+    usersOnline.splice(userIndex, 1);
+    io.emit('updateUserList', usersOnline);
   });
 };
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    joinedChat(socket);
-    newMessage(io, socket);
-    outChat(socket);
+    createUser(socket);
+    getMessages(socket);
+    sendNewMessage(socket, io);
+    updateUsersOnline(socket, io);
+    setNewNickname(socket, io);
+    disconnectUser(socket, io);
   });
 };
