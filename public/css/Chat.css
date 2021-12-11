@@ -1,11 +1,15 @@
 body {
   background-color: deepskyblue;
+  height: 92%;
+  position: absolute;
+  width: 99%;
 }
 
 .container {
   display: flex;
   flex: row wrap;
   justify-content: space-between;
+  height: 100%;
   width: 100%;
 }
 
@@ -13,6 +17,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
   width: 29%;
 }
 
@@ -26,7 +31,7 @@ body {
   border: 1px solid black;
   border-radius: 5px;
   display: flex;
-  height: 94%;
+  height: 100%;
   width: 100%;
 }
 
@@ -34,12 +39,12 @@ body {
   background-color: white;
   border: 1px solid black;
   border-radius: 5px;
-  height: 600px;
+  height: 100%;
   width: 70%;
 }
 
 .message-container {
-  margin-top: 9px;
+  margin-top: 8px;
   width: 100%;
 }
 
