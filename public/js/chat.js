@@ -41,16 +41,20 @@ nicknameForm.addEventListener('submit', (e) => {
   return false;
 });
 
-socket.on('message', (msg) => {
+function createMessage(message) {
   const trMessage = document.createElement('tr');
   const newMessage = document.createElement('td');
-  newMessage.textContent = msg;
+  newMessage.textContent = message;
   newMessage.setAttribute('data-testid', 'message');
   trMessage.appendChild(newMessage);
   bodyTable.appendChild(trMessage);
   window.scrollTo(0, document.body.scrollHeight);
   nicknameInput.value = sessionStorage.getItem('nickname');
   labelNickName.innerText = 'Nickname';
+}
+
+socket.on('message', (msg) => {
+  createMessage(msg);
 });
 
 function createTableUser(user) {
@@ -73,6 +77,13 @@ socket.on('usersOn', (users) => {
   });
 });
 
+socket.on('history', (history) => {
+  history.forEach(({ message, nickname, timestamp }) => {
+    createMessage(`${timestamp} ${nickname}: ${message}`);
+  });
+});
+
 window.onload = () => {
   socket.emit('newUser', makeNickName());
+  socket.emit('getHistory');
 };
