@@ -29,13 +29,6 @@ btnMessage.addEventListener('click', (e) => {
   messageInput.value = '';
 });
 
-// const createMessage = (greeting) => {
-//   const createLi = document.createElement('li');
-//   createLi.innerText = greeting;
-//   messagesUl.appendChild(createLi);
-//   return false;
-// };
-
 const createUser = (id) => {
   const createLi = document.createElement('li');
   createLi.innerText = id;
@@ -54,6 +47,15 @@ const createChatMessage = (message) => {
   messagesUl.appendChild(createLi);
   return false;
 };
+
+async function getAll() {
+  const allMessages = await fetch('http://localhost:3000/chat')
+    .then((data) => data.json())
+    .then((json) => json);
+  allMessages.forEach(({ timestamp, nickname, message }) => {
+      createChatMessage(`${timestamp} - ${nickname}: ${message}`);
+    });
+}
 
 socket.on('firstId', (usersArr) => {
   // Função feita com a ajuda de Tales Coelho.
@@ -76,8 +78,9 @@ socket.on('changeId', (id, oldId) => {
   });
 });
 
-// socket.on('greeting', (message) => createMessage(message));
 socket.on('message', (message) => createChatMessage(message));
 socket.on('offline', (nick) => { 
   createChatMessage(nick); 
 });
+
+window.onload = () => getAll();
