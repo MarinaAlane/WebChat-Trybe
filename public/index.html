@@ -9,8 +9,8 @@
 </head>
 <body>
   <form name='user_form_name' id='user_form'>
-    <input name='user' id="user" type='text' />
-    <button type='submit'>Definir</button>
+    <input name='user' id="user" type='text' data-testid="nickname-box" />
+    <button type='submit' data-testid="nickname-button">Definir</button>
   </form>
 
   <div id='screen'>
@@ -27,10 +27,10 @@
   </div>
 
   <form name='message_form_name' id='message_form'>
-    <input name='msg' id="message" type='text' />
-    <button type='submit'>Enviar</button>
+    <input name='msg' id="message" type='text' data-testid="message-box" />
+    <button type='submit' data-testid='send-button'>Enviar</button>
   </form>
   <script src='/socket.io/socket.io.js'></script>
-  <script src='./script/chat.js' ></script>
+  <script src='./scripts/chat.js' ></script>
 </body>
 </html>
