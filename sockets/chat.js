@@ -36,7 +36,8 @@ module.exports = (io) => {
 
     socket.on('message', ({ chatMessage, nickname }) => {
       const dateTime = getDateHour();
-      io.emit('message', { dateTime, nickname, chatMessage });
+      const messageFormatted = `${dateTime} - ${nickname} - ${chatMessage}`;
+      io.emit('message', messageFormatted);
     });
   });
 };

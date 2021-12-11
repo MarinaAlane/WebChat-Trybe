@@ -1,8 +1,14 @@
 const socket = window.io('http://localhost:3000');
 
-const input = document.querySelector('#input-field');
-const form = document.querySelector('#form');
+const formChat = document.querySelector('#form-chat');
 const chat = document.querySelector('#chat-container');
+
+const inputMessage = document.querySelector('#input-message');
+
+const inputNickname = document.querySelector('#input-nickname');
+const onlineUser = document.querySelector('#online-user');
+
+let nick;
 
 const newElement = (element) => document.createElement(element);
 
@@ -12,47 +18,52 @@ const createSection = (className) => {
   return section;
 };
 
-const createDateTime = (className, text) => {
-  const span = newElement('span');
-  span.className = className;
-  span.innerText = text;
-  return span;
-};
+// const createAvatar = (className, src) => {
+//   const avatar = newElement('img');
+//   avatar.alt = 'Avatar';
+//   avatar.src = src;
+//   avatar.className = className;
+//   return avatar;
+// };
 
-const createAvatar = (className, src) => {
-  const avatar = newElement('img');
-  avatar.alt = 'Avatar';
-  avatar.src = src;
-  avatar.className = className;
-  return avatar;
-};
-
-const createParagraph = (className, nickname, chatMessage) => {
+const createParagraph = (msg) => {
   const newMessage = newElement('p');
-  newMessage.className = className;
-  newMessage.innerText = `${nickname} - ${chatMessage}`;
+  newMessage.setAttribute('data-testid', 'message');
+  newMessage.innerText = msg;
   return newMessage;
 };
 
-const createMsgContainer = (dateTime, nickname, chatMessage) => {
-  const newMessage = createParagraph('message', nickname, chatMessage);
-  const avatar = createAvatar('avatar', '../images/avatar1.png');
-  const span = createDateTime('time-rigth', dateTime);
+const createMsgContainer = (msg) => {
+  const newMessage = createParagraph(msg);
+  // const avatar = createAvatar('avatar', '../images/avatar1.png');
   const section = createSection('message-div');
-  section.append(avatar, newMessage, span);
+  section.append(newMessage);
   chat.append(section);
 };
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  // if (input.value) {
-    socket.emit('message', { chatMessage: input.value, nickname: 'renan' });
-    input.value = '';
-    input.focus();
-  // }
+formChat.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (inputMessage.value) {
+    socket.emit('message', { chatMessage: inputMessage.value, nickname: nick });
+    inputMessage.value = '';
+    inputMessage.focus();
+  }
 });
 
-socket.on('message', ({ dateTime, nickname, chatMessage }) => {
-  createMsgContainer(dateTime, nickname, chatMessage);
+const setNewNickname = () => {
+  if (inputNickname.value) nick = inputNickname.value;
+  onlineUser.innerText = nick;
+  inputNickname.value = '';
+};
+
+socket.on('connect', () => {
+  console.log(socket.id);
+  nick = (socket.id).substr(0, 16).toLowerCase();
+  onlineUser.innerText = nick;
+});
+
+socket.on('message', (msg) => {
+  createMsgContainer(msg);
+  console.log(msg);
   window.scrollTo(0, document.body.scrollHeight);
 });

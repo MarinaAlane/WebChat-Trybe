@@ -5,11 +5,20 @@
     <link rel="stylesheet" href="./index.css"></link>
   </head>
   <body>
-    <form id="form">
-      <section id="chat-container"></section>
-      <section id="input-container">
-        <input id="input-field"></input>
-        <button id="submit-button">ENVIAR</button>
+    <form id="form-chat">
+      <section id="chat-container" data-testid="message"></section>
+
+      <br id="nickname-container">
+        <span>nick: </span>
+        <span id="online-user" data-testid="online-user"></span>
+        </br>
+        <input id="input-nickname" data-testid="nickname-box"></input>
+        <button onclick="setNewNickname()" type="button" id="submit-nickname" data-testid="nickname-button">Escolha um apelido</button>
+      </section>
+
+      <section id="input-message-container">
+        <input id="input-message" data-testid="message-box"></input>
+        <button id="submit-message" data-testid="send-button">ENVIAR</button>
       </section>
     </form>
 
