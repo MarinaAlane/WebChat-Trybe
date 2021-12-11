@@ -1,0 +1,19 @@
+#main-sidebar {
+  width: fit-content;
+  padding: 40px;
+}
+
+#client-infos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: silver;
+  padding: 25px;
+  width: 250px;
+  gap: 8px;
+}
+
+##client-infos p[data-testid="online-user"] {
+  font-weight: 700;
+}
