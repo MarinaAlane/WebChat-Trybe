@@ -1,16 +1,25 @@
 const moment = require('moment');
+const model = require('../models/messages');
 
 module.exports = (io, socket, onlineUser) => {
-  socket.on('message', (message) => {
+  socket.on('message', async (message) => {
     const time = moment().format('DD-MM-YYYY hh:mm:ss A');
-    let nickname = '';
+    let nickName = '';
     if (!message.nickname) {
-      nickname = onlineUser;
+      nickName = onlineUser;
     } else {
-      nickname = message.nickname;
+      nickName = message.nickname;
     }
 
-    const formatedMessage = `${time} - ${nickname}: ${message.chatMessage}`;
+    const formatedMessage = `${time} - ${nickName}: ${message.chatMessage}`;
     io.emit('message', formatedMessage);
+
+    const dbMessage = {
+      message: message.chatMessage,
+      nickname: nickName,
+      timestamp: time,
+    };
+
+    await model.createMessage(dbMessage);
   });
 };
