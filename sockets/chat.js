@@ -7,7 +7,11 @@ const joinedChat = (socket) => {
 
 const newMessage = (io, socket) => {
   socket.on('message', async (message) => {
-    io.emit('message', generateMessage(message));
+    const msg = generateMessage(message);
+    io.emit(
+      'message',
+      `${msg.createdAt} - ${msg.nickname}: ${msg.chatMessage}`,
+    );
     await chatModels.newMessageModel({ message });
   });
 };
