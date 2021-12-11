@@ -18,7 +18,7 @@ module.exports = (io) => {
     });
     
     socket.on('message', ({ chatMessage, nickname }) => {
-      io.emit('message', { date: formatDate(new Date(Date.now())), chatMessage, nickname });
+      io.emit('message', `${formatDate(new Date(Date.now()))} - ${nickname}: ${chatMessage}`);
     });
 
     // socket.on('disconnect', () => {

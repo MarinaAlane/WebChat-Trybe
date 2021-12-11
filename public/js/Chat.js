@@ -60,12 +60,12 @@ socket.on('updateNickname', ({ user, newNickname }) => {
 
 // MESSAGE CREATING
 
-const createMessage = (date, chatMessage, nickname) => {
+const createMessage = (chatMessage) => {
   const li = document.createElement('li');
 
   li.className = 'message';
   li.setAttribute('data-testid', 'message');
-  li.innerHTML = `${nickname}: ${chatMessage}`;
+  li.innerHTML = chatMessage;
 
   messageList.appendChild(li);
   return false;
@@ -80,6 +80,6 @@ sendButton.addEventListener('click', (e) => {
   socket.emit('message', { chatMessage, nickname });
 });
 
-socket.on('message', ({ date, chatMessage, nickname }) => {
-  createMessage(date, chatMessage, nickname);
+socket.on('message', (chatMessage) => {
+  createMessage(chatMessage);
 });
