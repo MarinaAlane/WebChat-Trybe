@@ -1,34 +1,27 @@
-// Faça seu código aqui
 const express = require('express');
-const socketIO = require('socket.io');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
-const http = require('http');
-
-const server = http.createServer(app);
-const path = require('path');
-const cors = require('cors');
-
-const io = socketIO(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-  },
-});
-
-const HTML_PUBLIC = path.resolve(__dirname, 'public', 'index.html');
-const PATH_PUBLIC = path.resolve(__dirname, 'public');
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(PATH_PUBLIC));
-app.use(cors());
-
-require('./sockets/chat')(io);
-
-app.get('/', (_req, res) => {
-  res.sendFile(HTML_PUBLIC);
-});
+const http = require('http').createServer(app);
 
 const PORT = process.env.PORT || 3000;
+const PATH_HTML = path.resolve(__dirname, 'public', 'index.html');
+const PATH_PUBLIC = path.resolve(__dirname, 'public');
 
-server.listen(PORT, () => console.log(`listening on port ${PORT}`));
+const io = require('socket.io')(http, {
+  cors: {
+    origin: `http://localhost:${PORT}`,
+    method: ['GET', 'POST'],
+  },
+});
+require('./sockets/chat')(io);
+
+app.use(cors());
+app.use(express.static(PATH_PUBLIC));
+
+app.get('/', (_req, res) => {
+  res.sendFile(PATH_HTML);
+});
+
+http.listen(PORT, () => console.log(`ouvindo porta: ${PORT}`));
