@@ -1,17 +1,22 @@
 const socket = window.io('http://localhost:3000');
-
 const divUser = document.querySelector('#users');
 const divMessages = document.querySelector('#messages');
 const inputMessage = document.querySelector('#message');
 const formMessage = document.querySelector('#message_form');
 const formUser = document.querySelector('#user_form');
-
 const createLi = (id) => {
   const liUsers = document.createElement('li');
   liUsers.innerText = id;
   liUsers.setAttribute('data-testid', 'online-user');
   liUsers.setAttribute('class', 'online-user');
   divUser.appendChild(liUsers);
+};
+
+const messageLi = (inform) => {
+  const liMessage = document.createElement('li');
+  liMessage.innerText = inform;
+  liMessage.setAttribute('data-testid', 'message');
+  divMessages.appendChild(liMessage);
 };
 
 socket.on('connection', (id) => {
@@ -25,18 +30,13 @@ socket.on('connection_users', (arrId) => {
     createLi(arrId[i]);
   }
 });
-
 formMessage.addEventListener('submit', (e) => {
   e.preventDefault();
   const chatMessage = inputMessage.value;
   socket.emit('message', { chatMessage, nickname: sessionStorage.nickname });
 });
-socket.on('message', (inform) => {
-  const liMessage = document.createElement('li');
-  liMessage.innerText = inform;
-  liMessage.setAttribute('data-testid', 'message');
-  divMessages.appendChild(liMessage);
-});
+
+socket.on('message', (inform) => messageLi(inform));
 
 formUser.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -47,7 +47,6 @@ formUser.addEventListener('submit', (e) => {
   socket.emit('alterUsername', { oldNickname: sessionStorage.nickname, userNickname });
   sessionStorage.setItem('nickname', userNickname);
 });
-
 socket.on('updateUsers', (oldNickname, userNickname) => {
   console.log(oldNickname, userNickname);
   const usersnames = document.querySelectorAll('.online-user');
@@ -57,3 +56,14 @@ socket.on('updateUsers', (oldNickname, userNickname) => {
     }
   });
 });
+
+const fetchChat = async () => {
+  const result = await fetch('http://localhost:3000/chat');
+  const response = await result.json();
+  response.forEach((res) => {
+    const messages = `${res.timestamp} - ${res.nickname}: ${res.message}`;
+    messageLi(messages);
+  });
+};
+
+fetchChat();
