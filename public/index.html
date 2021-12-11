@@ -2,32 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Chat</title>
+    <title>WebChat</title>
   </head>
+
   <body>
-    <p>Projeto Web Chat - Erick Marinho</p>
-    <form id="form">
-      <input
-        id="nickname-box"
-        name="nickname-box"
-        type="text"
-        data-testid="nickname-box"
-        placeholder="nickname"
-        autocomplete="off"
-      />
-      <input
-        id="message-box"
-        name="message-box"
-        type="text"
-        data-testid="message-box"
-        placeholder="Message"
-        autocomplete="off"
-      />
-      <button id="button-send" type="submit">Send</button>
-    </form>
+    <h1>Project Web Chat - Erick Marinho</h1>
+    <main>
+      <h2>Users:</h2>
+      <ul id="users"></ul>
+      <h2>Messages:</h2>
+      <ul id="messages"></ul>
+    </main>
+    <div>
+      <form action="" id="form">
+        <input
+          type="text"
+          name="nickname-box"
+          id="nickname-box"
+          data-testid="nickname-box"
+        />
+        <button
+          type="button"
+          id="nickname-button"
+          data-testid="nickname-button"
+        >
+          Save NickName
+        </button>
+        <input
+          type="text"
+          name="message-box"
+          id="message-box"
+          placeholder="message"
+          data-testid="message-box"
+        />
+        <button data-testid="send-button">Enviar</button>
+      </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/index.js"></script>
+    <script src="js/chat.js"></script>
   </body>
 </html>
