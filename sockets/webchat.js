@@ -1,37 +1,34 @@
-class Calendar {
-  constructor() {
-    this.date = new Date();
-    this.day = this.date.getDate();
-    this.month = this.date.getMonth() + 1;
-    this.year = this.date.getFullYear();
-    this.hours = this.date.getHours();
-    this.minutes = this.date.getMinutes();
-    this.seconds = this.date.getSeconds();
-    this.time = `${this.hours}:${this.minutes}:${this.seconds}`;
-    this.dateFormat = `${this.day}-${this.month}-${this.year} ${this.time}`;
-  }
+/* eslint-disable max-lines-per-function */
+const chatController = require('../controllers/chatController');
+const userController = require('../controllers/userController');
 
-  getDate() {
-    return this.dateFormat;
-  }
-}
-
+// prettier-ignore
 module.exports = (io) =>
   io.on('connection', (socket) => {
-    const user = { ...socket };
-    socket.emit('newUser', () => {});
-    socket.on('login', (data) => {
-      user.nickname = data;
-      io.emit('serverAnnouncement', user.nickname);
+    socket.join('chat_room');
+    socket.on('login', async (nickname) => {
+      const userList = await userController.createUser({ nickname, socketId: socket.id });
+      io.to('chat_room').emit('newUserAnnouncement', nickname);
+      io.emit('connectedUsers', userList);
     });
-    socket.on('message', ({ chatMessage, nickname }) => {
-      const date = new Calendar();
-      if (nickname !== user.nickname) user.nickname = nickname;
-      const message = `${date.getDate()}-${user.nickname}-${chatMessage}`;
-      return io.emit('message', message);
+
+    socket.on('message', async ({ chatMessage, nickname }) => {
+      const response = await chatController.createMessage({ message: chatMessage, nickname });
+      return io.emit('message', response);
     });
-    socket.on('setName', (newNickname) => { user.nickname = newNickname; });
-    socket.on('disconnect', () => {
-      io.emit('serverAnnouncement', { id: socket.id, message: `User ${socket.id} disconnected` });
+
+    socket.on('setName', async (data) => {
+      const userList = await userController.setName(data);
+      socket.broadcast.emit('connectedUsers', userList);
+    });
+    socket.on('disconnect', async () => {
+      try {
+        const clients = [...io.sockets.adapter.rooms.get('chat_room')];
+        const userList = await userController.cleanUserList(clients);
+        console.log({ userList });
+        socket.broadcast.emit('connectedUsers', userList);
+      } catch (error) {
+        return null;
+      }
     });
   });
