@@ -67,3 +67,5 @@ socket.on('message', (msg) => {
   console.log(msg);
   window.scrollTo(0, document.body.scrollHeight);
 });
+
+module.exports = setNewNickname;
