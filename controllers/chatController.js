@@ -1,17 +1,12 @@
-const chatModel = require('../models/chatModel');
+const { getMessagesHistory } = require('../models/chatModel');
 
-// ROTA GET
-const getMessagesHistory = async (req, res) => {
-  const history = await chatModel.getMessagesHistory();
-  res.status(200).render('chatView', { history });
+const getMessages = async (req, res) => {
+try {
+  const history = await getMessagesHistory();
+    res.status(200).render('chatView', { history });
+  } catch {
+  res.status(500).json({ message: 'deu problema aqui' });
+}
 };
 
-// ROTA POST
-const postMessage = async (message, nickname, timestamp) => {
-  await chatModel.postMessage(message, nickname, timestamp);
-};
-
-module.exports = {
-  getMessagesHistory,
-  postMessage,
-};
+module.exports = { getMessages };

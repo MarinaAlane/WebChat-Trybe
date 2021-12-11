@@ -1,86 +1,117 @@
 <!DOCTYPE html>
-<head>
-  
-  <script src='socket.io/socket.io.js'></script>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <title>Projeto Web Chat</title>
+  </head>
+  <body>
+    <h1>Projeto Web Chat</h1>
+    
+    <h2>Usuários online</h2>
+    <div id="onlineUsers"> Usuários online:</div>
 
-  <title> Projeto WebChat</title>
+    <h2>Coloque seu apelido aqui:</h2>
+    <form id="nicknameForm">
+      <input id="nicknameInput" data-testid="nickname-box" placeholder='Digite seu apelido'>
+      <button data-testid="nickname-button">Mudar Apelido</button>
+    </form>
 
-</head>
+    <section>
+      <ul id="messagesList">
+        <% history.forEach((message) => { %>
+          <li data-testid="message"> <%= `${message.timestamp} - ${message.nickname}: ${message.message} `%> </li>
+        <% }) %>
+      </ul>
+    </section>
 
-<body>
-  <h1> Projeto WebChat</h1>
-  
-  <input type="text" data-testid="nickname-box" id="inputNickname">
-  <button type="submit" data-testid="nickname-button" id="changeNickname">Mudar Apelido</button>
+    <form id="messageForm">
+      <input id="messageInput" autocomplete="off" data-testid="message-box" />
+      <button type="submit" data-testid="send-button">Enviar mensagem</button>
+    </form>
 
-  <h3>Usuários Online</h3>
-  <ul id='onlineUsers'></ul>
-
-  <h3>Chats</h3>
-  <label for="msg">Mensagens</label>
-  <input type="text" data-testid="message-box" id='inputMessage'>
-  <ul id="chats">
-    <% history.map(({message, nickname, timestamp})=> { %>
-      <li data-testid="message"> <%= `${timestamp} - ${nickname}: ${message}` %></li>
-    <%}) %>
-  </ul>
-
-  <button data-testid="send-button" id="sendButton">Enviar</button>
-
-  <script>
-    let newNickname = '';
-    const socket = io();
-
-
-    const buttonNickname = document.getElementById('changeNickname');
-    const input = document.getElementById('inputNickname')
-    buttonNickname.addEventListener('click', (e) => {
-    e.preventDefault();
-    newNickname = input.value;
-      socket.emit('nickname', newNickname);
-    })
-
-
-    const usersStillOnline = (users) => {
-      const randomCode = socket.id.substring(0, 16)
-      const list = document.getElementById('onlineUsers');
-      list.innerHTML = '';
-      users.forEach((user) => {
-        const currentUser = randomCode;
-        const li = document.createElement('li');
-        li.setAttribute('data-testid', 'online-user');
-        li.innerHTML = user;
-        if(currentUser === user) {
-          list.prepend(li) 
-        } else {
-          list.appendChild(li)
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      
+      const messagesList = document.querySelector('#messagesList');
+      const messageForm = document.querySelector('#messageForm');
+      const inputMsg = document.querySelector('#messageInput');
+      const nicknameInput = document.querySelector('#nicknameInput');
+      const nicknameForm = document.querySelector('#nicknameForm');
+      const onlineUsers = document.querySelector('#onlineUsers');
+    
+      let allOnlineUsers = [];
+      
+      // Listener para o botão Enviar mensagem
+      messageForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (inputMsg.value) {
+          const chatMessage = inputMsg.value;
+          const { nickname } = findUserById(socket.id);
+          socket.emit('message', { chatMessage, nickname });
+          inputMsg.value = '';
         }
+      });
+      
+      // Listener para o botão Mudar o apelido
+      const findUserById = (id) => {
+        const user = allOnlineUsers.find((u) => u.id === id);
+        return user;
+      };
+      
+      nicknameForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newNickname = nicknameInput.value;
+        if (nicknameInput.value) {
+          const updatedUser = { id: socket.id, nickname: newNickname };
+          socket.emit('nickname', updatedUser);
+        }
+        nicknameInput.value = '';
+      });
+
+      // Listener para quando há uma conexão no server
+      function updateOnlineUsersList(array = []) {
+        onlineUsers.textContent = '';
+        array.forEach((user) => {
+          const newUser = document.createElement('p');
+          newUser.setAttribute('data-testid', 'online-user');
+          newUser.setAttribute('socketId', user.id);
+          newUser.innerText = user.nickname;
+          if (user.id === socket.id) {
+            onlineUsers.prepend(newUser);
+            return
+          }
+          onlineUsers.appendChild(newUser);
+        });
+      }
+      
+      socket.on('connectedUsers', (array) => {
+        allOnlineUsers = array;
+        updateOnlineUsersList(array);
+      });
+
+      // Listener para quando há uma nova mensagem no server
+      const createMessage = (msg) => {
+        const newMessage = document.createElement('li');
+        newMessage.textContent = msg;
+        newMessage.setAttribute('data-testid', 'message');
+        newMessage.setAttribute('userSocketId', socket.id);
+        messagesList.appendChild(newMessage);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+      
+      socket.on('message', (msg) => {
+        createMessage(msg);
       })
-    };
 
-    socket.on('connectedUsers', (user) => usersStillOnline(user));
-     
-    const chats = (message) => {
-      const listChats = document.getElementById('chats');
-      const li = document.createElement('li');
-      li.setAttribute('data-testid', 'message');
-      li.innerHTML = message;
-      listChats.appendChild(li)
-   };
-   
-   
-   socket.on('message', (message) => chats(message));
-   
+      // DESLOGA O USUÁRIO ANTES DE DESCARREGAR A PÁGINA
+      window.onbeforeunload = () => {
+        socket.disconnect();
+      };
 
-   const sendButton = document.getElementById('sendButton');
-   sendButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    const nickname = newNickname || socket.id.substring(0, 16);
-    const message = document.getElementById('inputMessage');
-    socket.emit('message', { nickname, message: message.value })
-   });
-   
-  </script>
-
-</body>
-</html> 
+    </script>
+  </body>
+</html>

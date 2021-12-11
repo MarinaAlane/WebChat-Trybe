@@ -1,60 +1,66 @@
-// Desenvolvido levando em conta o plantão dado pelo John
-const express = require('express');
 const moment = require('moment');
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+const http = require('http').createServer(app);
+const cors = require('cors');
+
+app.set('view engine', 'ejs');
+app.set('views', './views');
+app.use(bodyParser.urlencoded({ extended: true }));
 
 require('dotenv').config();
 
-const app = express();
-const { PORT = 3000 } = process.env;
+const PORT = process.env.PORT || 3000;
 
-const socketIoServer = require('http').createServer(app);
-const io = require('socket.io')(socketIoServer, {
+const io = require('socket.io')(http, {
   cors: {
     origin: `http://localhost:${PORT}`,
     methods: ['GET', 'POST'],
   },
 });
 
-const chatController = require('./controllers/chatController');
+const { getMessages } = require('./controllers/chatController');
+const { postMessage } = require('./models/chatModel');
 
 const onlineUsers = [];
+const date = moment().format('DD-MM-yyyy HH:mm:ss A');
 
-// Listener de conexão
-io.on('connection', (socket) => { 
-  // Definição do código do usuário nessa conexão
-  onlineUsers[socket.id] = socket.id.substring(0, 16);
-  
-  // Emissão dos usuários online para o VIEW
-  io.emit('connectedUsers', Object.values(onlineUsers));
+// Função para alterar apelido do usuário
+const updateNickname = (updatedUser) => {
+  const findUser = onlineUsers.findIndex((user) => user.id === updatedUser.id);
+  onlineUsers.splice(findUser, 1);
+  onlineUsers.push(updatedUser);
+  return onlineUsers;
+};
 
-  // Definição do formato da data
-  const date = moment().format('DD-MM-YYYY hh:mm:ss');
-  
-  // Listener para a criação da mensagem
-  socket.on('message', async ({ message, nickname }) => {
-    // ROTA POST
-    await chatController.postMessage(message, nickname, date);
-    // Emissão do formato para exibir na tela
-    io.emit('message', `${date} - ${nickname} : ${message}`);
+// Remover um usuário da lista quando ele desconectar
+const removeUser = (id) => {
+  const disconnectUser = onlineUsers.findIndex((user) => user.id === id);
+    onlineUsers.splice(disconnectUser, 1);
+  return true;
+};
+
+io.on('connection', async (socket) => {
+  const newUser = { id: socket.id, nickname: socket.id.substring(0, 16) };
+  onlineUsers.push(newUser);
+  io.emit('connectedUsers', onlineUsers);
+  socket.on('nickname', (updatedUser) => {
+    const updatedList = updateNickname(updatedUser);
+    io.emit('connectedUsers', updatedList);
   });
-
-  // Listener para mudar o apelido
-  socket.on('nickname', (nickname) => {
-    onlineUsers[socket.id] = nickname;
-   io.emit('connectedUsers', Object.values(onlineUsers));
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    await postMessage(chatMessage, nickname, date);
+    io.emit('message', `${date} ${nickname}: ${chatMessage}`);
   });
-
-  // Listener para quando um usuário sai da página
   socket.on('disconnect', () => {
-    delete onlineUsers[socket.id];
-    io.emit('connectedUsers', Object.values(onlineUsers));
+    removeUser(socket.id);
+    io.emit('connectedUsers', onlineUsers);  
   });
 });
 
-app.set('view engine', 'ejs');
-app.set('views', './views');
+app.use(cors());
+app.get('/', getMessages);
 
-// ROTA GET
-app.get('/', chatController.getMessagesHistory);
-
-socketIoServer.listen(PORT, () => console.log(`Rodando na porta ${PORT}!`));
+http.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
