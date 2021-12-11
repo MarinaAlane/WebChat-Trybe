@@ -11,6 +11,7 @@ const io = require('socket.io')(http, {
   },
 });
 
+// teste para ver se o git funciona
 const { getChatHistory } = require('./controllers/chatController');
 
 app.set('public engine', 'ejs');
