@@ -4,7 +4,7 @@ const messageForm = document.querySelector('.messageForm');
 const nicknameForm = document.querySelector('.nicknameForm');
 const nicknameInput = document.querySelector('#nick_name');
 const messageInput = document.querySelector('#text_message');
-const usersTable = document.querySelector('#userTable');
+const usersTable = document.querySelector('#userOnlineTable');
 const labelNickName = document.querySelector('#labelNickName');
 
 const bodyTable = document.querySelector('#chatBodyTable');
@@ -17,32 +17,27 @@ function makeNickName() {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
+  sessionStorage.setItem('nickname', text);
   return text;
-}
-
-function createNickName() {
-  const nick = sessionStorage.getItem('nickname');
-  if (nick === null) {
-    const newNick = makeNickName();
-    sessionStorage.setItem('nickname', newNick);
-  }
-  return nick;
 }
 
 messageForm.addEventListener('submit', (e) => {
   const chatMessage = messageInput.value;
+  const nickUser = sessionStorage.getItem('nickname');
   console.log(chatMessage);
   e.preventDefault();
-  socket.emit('message', { chatMessage, nickname: createNickName() });
+  socket.emit('message', { chatMessage, nickname: nickUser });
   messageInput.value = '';
   return false;
 });
 
 nicknameForm.addEventListener('submit', (e) => {
   const nickname = nicknameInput.value;
+  const oldNickname = sessionStorage.getItem('nickname');
   e.preventDefault();
   sessionStorage.setItem('nickname', nickname);
   labelNickName.innerText = 'Nickname';
+  socket.emit('updateNick', { nickname, oldNickname });
   return false;
 });
 
@@ -58,8 +53,7 @@ socket.on('message', (msg) => {
   labelNickName.innerText = 'Nickname';
 });
 
-socket.on('userOn', (user) => {
-  sessionStorage.setItem('nickname', user);
+function createTableUser(user) {
   const trUser = document.createElement('tr');
   const newUser = document.createElement('td');
   newUser.textContent = user;
@@ -67,6 +61,16 @@ socket.on('userOn', (user) => {
   trUser.appendChild(newUser);
   usersTable.appendChild(trUser);
   window.scrollTo(0, document.body.scrollHeight);
+}
+
+socket.on('usersOn', (users) => {
+  console.log(users);
+  const userNick = sessionStorage.getItem('nickname');
+  usersTable.innerHTML = '';
+  createTableUser(userNick);
+  users.forEach((user) => {
+    if (user.nick !== userNick) { createTableUser(user.nick); }
+  });
 });
 
 window.onload = () => {
