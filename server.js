@@ -13,6 +13,8 @@ const io = socketIO(http, {
     methods: ['GET', 'POST'], 
 } });
 
+require('./sockets/chat')(io);
+
 server.listen(PORT, () => {
   console.log(`Ouvindo na porta ${PORT}`);
 });

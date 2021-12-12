@@ -10,6 +10,8 @@
   background-color: silver;
   border-radius: 4px;
   height: 500px;
+  list-style: none;
+  padding: 24px 16px;
   width: 100%;
 }
 
