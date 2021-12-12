@@ -4,14 +4,18 @@
 }
 
 #client-infos {
+<<<<<<< HEAD
   width: 280px;
   background-color: silver;
   padding: 25px;
 
+=======
+>>>>>>> 08d543fe70214a97c61e081b6c4bb63d24ec5c1c
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+<<<<<<< HEAD
 
   border-radius: 4px;
 }
@@ -55,3 +59,14 @@
 .user img {
   border-radius: 50%;
 }
+=======
+  background-color: silver;
+  padding: 25px;
+  width: 250px;
+  gap: 8px;
+}
+
+##client-infos p[data-testid="online-user"] {
+  font-weight: 700;
+}
+>>>>>>> 08d543fe70214a97c61e081b6c4bb63d24ec5c1c
