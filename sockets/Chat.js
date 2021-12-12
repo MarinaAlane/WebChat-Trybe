@@ -1,3 +1,7 @@
+const axios = require('axios');
+
+// HELPER FUNCTIONS
+
 const formatDate = (date) => {
   let day = date.toISOString().split('T')[0].split('-');
   day = [day[2], day[1], day[0]].join('-');
@@ -5,8 +9,32 @@ const formatDate = (date) => {
   return `${day} ${hour}`;
 };
 
+const sendRequest = async (chatMessage, nickname, date) => {
+  const data = {
+    message: chatMessage,
+    nickname,
+    timestamp: date,
+  };
+  await axios
+    .post('http://localhost:3000/messages', data)
+    .then((res) => console.log(`statusCode: ${res.status}`))
+    .catch((e) => console.log(e));
+};
+
+const getPosts = async () => {
+  const posts = await axios({
+    method: 'get',
+    url: 'http://localhost:3000/messages',
+  })
+  .then((response) => response.data);
+
+  return posts;
+};
+
 module.exports = (io) => {
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
+    const oldData = await getPosts();
+    socket.emit('getChatData', oldData);
     socket.emit('enterChat');
 
     socket.on('addOnlineUser', (user) => {
@@ -18,11 +46,9 @@ module.exports = (io) => {
     });
     
     socket.on('message', ({ chatMessage, nickname }) => {
-      io.emit('message', `${formatDate(new Date(Date.now()))} - ${nickname}: ${chatMessage}`);
+      const date = formatDate(new Date(Date.now()));
+      sendRequest(chatMessage, nickname, date);
+      io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
     });
-
-    // socket.on('disconnect', () => {
-    //   socket.broadcast.emit('removeUser', user);
-    // });
   });  
 };

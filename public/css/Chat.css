@@ -40,6 +40,7 @@ body {
   border: 1px solid black;
   border-radius: 5px;
   height: 100%;
+  overflow: scroll;
   width: 70%;
 }
 

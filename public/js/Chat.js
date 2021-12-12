@@ -30,6 +30,26 @@ const updateUser = (user, nickname) => {
   userTag.innerHTML = nickname;
 };
 
+const createMessage = (chatMessage) => {
+  const li = document.createElement('li');
+
+  li.className = 'message';
+  li.setAttribute('data-testid', 'message');
+  li.innerHTML = chatMessage;
+
+  messageList.appendChild(li);
+  return false;
+};
+
+// RENDER CHAT HISTORY
+
+socket.on('getChatData', (data) => {
+  data.forEach(({ message, nickname, timestamp }) => {
+    const fullMessage = `${timestamp} - ${nickname}: ${message}`;
+    createMessage(fullMessage);
+  });
+});
+
 // ENTER CHAT
 
 socket.on('enterChat', () => {
@@ -59,17 +79,6 @@ socket.on('updateNickname', ({ user, newNickname }) => {
 });
 
 // MESSAGE CREATING
-
-const createMessage = (chatMessage) => {
-  const li = document.createElement('li');
-
-  li.className = 'message';
-  li.setAttribute('data-testid', 'message');
-  li.innerHTML = chatMessage;
-
-  messageList.appendChild(li);
-  return false;
-};
 
 sendButton.addEventListener('click', (e) => {
   e.preventDefault();
