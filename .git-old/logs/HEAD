@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 787faf724d5ed6b6ebe7b3f96dc1364779e48be8 Sergio Martins <sergiomos2010@gmail.com> 1639253592 -0300	clone: from git@github.com:tryber/sd-011-project-webchat.git
+787faf724d5ed6b6ebe7b3f96dc1364779e48be8 787faf724d5ed6b6ebe7b3f96dc1364779e48be8 Sergio Martins <sergiomos2010@gmail.com> 1639254560 -0300	checkout: moving from master to sergiomos-webchat
+787faf724d5ed6b6ebe7b3f96dc1364779e48be8 76ed3139a43d5cebac7a9870837eb7db96954249 Sergio Martins <sergiomos2010@gmail.com> 1639254575 -0300	commit: Initial commit
+76ed3139a43d5cebac7a9870837eb7db96954249 5cb56ae2782f4b8e9d6a4124e9c1233ea6545ee7 Sergio Martins <sergiomos2010@gmail.com> 1639255187 -0300	commit: create server.js
+5cb56ae2782f4b8e9d6a4124e9c1233ea6545ee7 f9e85240143085dcc66f21539056b7ab2d53ec3d Sergio Martins <sergiomos2010@gmail.com> 1639260152 -0300	commit: fix: server and create app.js & index.html
+f9e85240143085dcc66f21539056b7ab2d53ec3d 08d543fe70214a97c61e081b6c4bb63d24ec5c1c Sergio Martins <sergiomos2010@gmail.com> 1639261632 -0300	commit: feat: sidebar
