@@ -1,16 +1,13 @@
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
   background-color: #fafafa;
-<<<<<<< HEAD
-  font-size: 16px;
   display: flex;
-=======
->>>>>>> 08d543fe70214a97c61e081b6c4bb63d24ec5c1c
+  font-size: 16px;
 }
 
 a {
