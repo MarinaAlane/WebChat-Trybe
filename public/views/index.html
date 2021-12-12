@@ -13,12 +13,16 @@
   <aside class="main-sidebar">
     <section class="client-infos">
       <img src="https://i.pravatar.cc/100" alt="foto de perfil do usuario">
-      <p data-testid="online-user" class="online-user">Sérgio Martins</p>
+      <p data-testid="online-user" class="online-user"></p>
       <p class="online-status">Online</p>
 
       <form class="nickname-form">
-        <input type="text" placeholder="Digite seu nome">
-        <button type="submit">Salvar</button>
+        <input 
+          type="text" 
+          placeholder="Digite seu nome"
+          data-testid="nickname-box"
+        >
+        <button type="submit" data-testid="nickname-button">Salvar</button>
       </form>
     </section>
 
@@ -35,12 +39,6 @@
 
   <main class="chat">
     <ul class="messages-container">
-      <li 
-        class="message"
-        data-testid="message"
-      >
-        Eu sou uma mensagem
-      </li>
     </ul>
     <form id="chat-form">
       <input 

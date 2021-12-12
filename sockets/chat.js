@@ -1,6 +1,4 @@
 module.exports = (io) => io.on('connection', (socket) => {
-  console.log(`Cliente ${socket.id} se conectou`);
-  
   socket.on('message', ({ chatMessage, nickname }) => {
     const response = JSON.stringify({
       message: chatMessage,
@@ -8,6 +6,8 @@ module.exports = (io) => io.on('connection', (socket) => {
       date: new Date().toLocaleDateString().replace(/[/]/g, '-'),
       time: new Date().toLocaleTimeString(),
     });
+
+    console.log(response);
 
     io.emit('message', response);
   });
