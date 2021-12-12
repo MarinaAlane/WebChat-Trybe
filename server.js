@@ -7,7 +7,7 @@ const app = require('./app');
 
 const server = http.createServer(app);
 
-const io = socketIO(http, {
+const io = socketIO(server, {
   cors: {
     origin: `http://localhost:${PORT}`,
     methods: ['GET', 'POST'], 
