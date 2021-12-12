@@ -5,9 +5,9 @@ const usersOnline = [];
 
 const createUser = (socket) => {
   const { id } = socket;
-  const [newNickname] = id.match(/[\w'-]{16}/g);
-  usersOnline.push({ id, nickname: newNickname });
-  socket.emit('newUser', newNickname);
+  const newId = id.substr(0, 16);
+  usersOnline.push({ id, nickname: newId });
+  socket.emit('newUser', newId);
 };
 
 const getMessages = async (socket) => {
