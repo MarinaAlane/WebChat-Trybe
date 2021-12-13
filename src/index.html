@@ -7,12 +7,66 @@
   <title>Chat</title>
 </head>
 <body>
+  <p data-testid="online-user" id="online-user"></p>
+  <ul id="ul-message"></ul>
+  <form>
+    <input data-testid="message-box" autocomplete="off" id="message-box"/> <button data-testid="send-button" id="send-button">Enviar</button>
+    <input data-testid="nickname-box" autocomplete="off" id="nickname-box"/> <button data-testid="nickname-button" id="nickname-button">Salvar</button>
+
+  </form>
   <script src='/socket.io/socket.io.js'></script>
   <script>
     const socket = io();
-    
-    socket.emit('new-client', {nickname})
-    socket.on('message', message)
+
+
+    socket.emit('new-client', generateNickName());
+    socket.on('message', (message) => newMessage(message));
+    socket.on('new-login', (object) => usersRender(object));
+
+    const sendButton = document.querySelector('#send-button');
+    const saveNickName = document.querySelector('#nickname-button');
+
+    saveNickName.addEventListener('click', (event) => {
+      event.preventDefault();
+      const getUser = document.querySelector('#online-user');
+      const inputNickName = document.querySelector('#nickname-box');
+      getUser.innerHTML = inputNickName.value;
+    });
+
+    sendButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      const inputMessage = document.querySelector('#message-box');
+      const inputNickName = document.querySelector('#nickname-box');
+      const getUser = document.querySelector('#online-user');
+      const obj = {
+        chatMessage: inputMessage.value,
+        nickname: inputNickName.value || getUser.innerText,
+      };
+      socket.emit('message', obj);
+    })
+
+    function usersRender(obj) {
+      console.log(obj)
+      // document.querySelector('#online-user').innerText = nickname;
+    }
+
+
+    function newMessage(message) {
+      const messageUl = document.querySelector('#ul-message');
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'message');
+      li.innerText = message;
+      messageUl.appendChild(li);
+    }
+
+    function generateNickName() {
+      const name = 'aaaaaaaaaaaaaaaa';
+      const abc = 'ABCDEFGHIJKLMNOPQRSTUVXZ';
+      const random = name.split('').map((e, i , a) => abc.charAt(Math.floor(Math.random() * 16))).join('');
+      const getUser = document.querySelector('#online-user');
+      getUser.innerHTML = random;
+      return { nickname: random };
+    }
 
   </script>
 </body>
