@@ -69,6 +69,9 @@
     <input id="nickname-input" placeholder="Insira seu nickname" data-testid="nickname-box">
     <button id="nickname-button" data-testid="nickname-button">Enviar</button>
   </form>
+  <ul id="online-user-list">
+    <li id="local-client"></li>
+  </ul>
   <h3 id="nickname" data-testid="online-user"></h3>
   <ul id="messages"></ul>
   <form id="form" >
@@ -87,11 +90,13 @@
     const nicknameButton = document.querySelector('#nickname-button');
     const nicknameText = document.querySelector('#nickname')
     const messages = document.querySelector('#messages');
+    const onlineUserList = document.querySelector('#online-user-list');
+    const localClientUser = document.querySelector('#local-client')
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (input.value) {
-        const nickname = sessionStorage.getItem('nickname');
+        const nickname = sessionStorage.getItem('nickname');   
         const message = {
           chatMessage: input.value,
           nickname 
@@ -105,25 +110,32 @@
       e.preventDefault();
       if (nicknameInput.value) {
         sessionStorage.setItem('nickname', nicknameInput.value);
-        socket.emit('nickname', nicknameInput.value)
+        socket.emit('nickname', nicknameInput.value);
         nicknameText.innerText = nicknameInput.value;
+        localClientUser.innerText = nicknameInput.value;
         nicknameInput.value = '';
       }
-    })
+    });
 
     socket.on('userLogin', (nickname) => {
+      sessionStorage.setItem('nickname', nickname);
       const newMessage = document.createElement('li');
-      newMessage.textContent = nickname;
+      newMessage.textContent = `usuário ${nickname} conectado`;
       newMessage.dataset.testid = 'message';
       messages.appendChild(newMessage);
-      window.scrollTo(0, document.body.scrollHeight);
-    })
+      const newUser = document.createElement('li');
+      newUser.textContent = nickname;
+      newUser.dataset.testid = 'online-user';
+      onlineUserList.appendChild(newUser);
+    });
 
     socket.on('setUser', (nickname) => {
       sessionStorage.setItem('nickname', nickname);
       nicknameText.innerText = nickname;
+      localClientUser.textContent = nickname;
+      socket.emit('userLogin', nickname);
       window.scrollTo(0, document.body.scrollHeight);
-    })
+    });
 
     socket.on('message', (chatMessage) => {
       const newMessage = document.createElement('li');
@@ -131,7 +143,26 @@
       newMessage.dataset.testid = 'message';
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
-    })
+    });
+
+    socket.on('nickname', ({ nickname, randomNick }) => {
+      const userList = onlineUserList.children;
+      for (let index = 0; index < userList.length; index += 1) {
+        if (userList[index].innerText === randomNick) {
+          return userList[index].innerText = nickname;
+        }
+      }
+    });
+
+    socket.on('removeUser', (nickname) => {
+      const userList = onlineUserList.children;
+      for (let index = 0; index < userList.length; index += 1) {
+        if (userList[index].innerText === nickname) {
+          return userList[index].remove();
+        }
+      }
+    });
+
   </script>
 </body>
 
