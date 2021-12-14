@@ -1,5 +1,21 @@
 <%- contentFor('body') %>
 <div class="jumbotron text-center">
-  Testando
+  <ul class="list-unstyled" id="usersPane"></ul>
+  <form id="nicknameForm">
+    <input data-testid="nickname-box" type="text" name="nickname" id="nicknameInput" autocomplete="off">
+    <button data-testid="nickname-button">Novo Nick</button>
+  </form>
+  WebChat
+  <ul class="list-unstyled" id="messagesPane">
+    <% if (oldMessages) { %>
+        <% oldMessages.forEach((oldMessage) => { %>
+            <li data-testid="message"><%= oldMessage.timestamp%> <%= oldMessage.nickname%> : <%= oldMessage.message%></li>
+          <% })%>
+      <% }%>
+  </ul>
+  <form id="messageForm">
+    <input data-testid="message-box" type="text" name="message" id="messageInput" autocomplete="off">
+    <button data-testid="send-button">Enviar</button>
+  </form>
 </div>
 <script src='./js/webchat.js'></script>

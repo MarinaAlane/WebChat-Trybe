@@ -1,6 +1,9 @@
-exports.getChat = (req, res, next) => {
+const { webchat } = require('../models');
+
+exports.getChat = async (req, res, next) => {
   try {
-    res.render('pages/webchat', { extractScripts: true });
+    const oldMessages = await webchat.getMessages();
+    res.render('pages/webchat', { extractScripts: true, oldMessages });
   } catch (error) {
     next(error);
   }
