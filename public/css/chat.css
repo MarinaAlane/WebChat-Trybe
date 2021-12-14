@@ -1,26 +1,26 @@
-* {
+/* * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font: 13px Helvetica, Arial;
+  font-family: 'Helvetica Neue', 'Helvetica',;
 }
 
 
 form {
-  background: #000;
+  background: black;
   padding: 3px;
 }
 
-#userForm {
+.userForm {
   width: 100%;
 }
 
-#messageForm {
+.messageForm {
   bottom: 0;
-  position:fixed;
+  position: fixed;
   width: 100%;
 }
 
@@ -39,16 +39,16 @@ form button {
   width: 9%;
 }
 
-#messages {
+.messages {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-#messages li {
+.messages li {
   padding: 5px 10px;
 }
 
-#messages li:nth-child(odd) {
+.messages li:nth-child( odd ) {
   background: #eee;
-}
+} */
