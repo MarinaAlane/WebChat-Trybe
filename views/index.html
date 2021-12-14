@@ -64,13 +64,10 @@
       })
 
       // Não é mais necessário porque o requisito 4 já cumpre essa lógica
-      // socket.on('logIn', (newUser)=>{
-      //   const ulUsers = document.querySelector('#ulUsers')   
-      //   const user = document.createElement('li');
-      //   user.innerText = newUser;
-      //   user.setAttribute("data-testid", "online-user");
-      //   ulUsers.appendChild(user);
-      // });
+      socket.on('logIn', (nickname)=>{
+        socket.emit('Nickname', nickname);
+      });
+      
 
       socket.on('userOnline', (online) => {
         const ulUsers = document.querySelector('#ulUsers');
