@@ -1,19 +1,22 @@
-// Faça seu código aqui
 require('dotenv').config();
-const app = require('express')();
-const path = require('path');
+const socketio = require('socket.io');
 const http = require('http');
-const { Server } = require('socket.io');
+const app = require('./app');
+const { chat } = require('./socket/socketChat');
 
 const server = http.createServer(app);
-const io = new Server(server); 
 
-const PORT = 3000;
-
-require('./src/socket/socketChat')(io); 
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, './src/index.html'));
+const io = socketio(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
 });
 
-server.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));
+chat(io);
+
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`Server is up on port ${PORT}`);
+});

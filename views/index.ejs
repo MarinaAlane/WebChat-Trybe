@@ -7,22 +7,54 @@
   <title>Chat</title>
 </head>
 <body>
-  <p data-testid="online-user" id="online-user"></p>
-  <ul id="ul-message"></ul>
-  <form>
+  <p data-testid="online-user" id="online-user"><%= nickname %></p>
+  <ul id="ul-message">
+    <% for(let message of messages) { %>
+      <li data-testid="message"><%= message %></li>
+    <%} %>
+    </ul>
+  <form id="form-data"> 
     <input data-testid="message-box" autocomplete="off" id="message-box"/> <button data-testid="send-button" id="send-button">Enviar</button>
     <input data-testid="nickname-box" autocomplete="off" id="nickname-box"/> <button data-testid="nickname-button" id="nickname-button">Salvar</button>
-
   </form>
   <script src='/socket.io/socket.io.js'></script>
   <script>
+    const actualNickname = document.getElementById('online-user');
     const socket = io();
+    socket.on('new-client', {nickname: actualNickname.innerText});
 
+    socket.on('message',  createNewMessage);
 
-    socket.emit('new-client', generateNickName());
-    socket.on('message', (message) => newMessage(message));
-    socket.on('new-login', (object) => usersRender(object));
+    const inputForm = document.getElementById('message-box');
 
+    function submitMessage(e) {
+      e.preventDefault();
+      sendMessage();
+      clearInput(inputForm);
+    }
+
+    function sendMessage() {
+    socket.emit('message', {
+      nickname: actualNickname.innerText,
+      chatMessage: inputForm.value
+    });
+    }
+
+    const ulMessages = document.getElementById('ul-message')
+    function createNewMessage(content) {
+      const newMessageElement = newMessage(content);
+
+      ulMessages.appendChild(newMessageElement);
+    }
+
+    function newMessage(content) {
+      const element = document.createElement('li');
+      element.innerText = content;
+      element.dataset.testid = 'message';
+      return element;
+    }
+  
+    
     const sendButton = document.querySelector('#send-button');
     const saveNickName = document.querySelector('#nickname-button');
 
@@ -30,7 +62,11 @@
       event.preventDefault();
       const getUser = document.querySelector('#online-user');
       const inputNickName = document.querySelector('#nickname-box');
+      if(inputNickName.value === '') {
+        getUser.innerHTML = sessionStorage.getItem('userId');
+      }
       getUser.innerHTML = inputNickName.value;
+      
     });
 
     sendButton.addEventListener('click', (event) => {
@@ -40,33 +76,10 @@
       const getUser = document.querySelector('#online-user');
       const obj = {
         chatMessage: inputMessage.value,
-        nickname: inputNickName.value || getUser.innerText,
+        nickname: getUser.innerText,
       };
       socket.emit('message', obj);
     })
-
-    function usersRender(obj) {
-      console.log(obj)
-      // document.querySelector('#online-user').innerText = nickname;
-    }
-
-
-    function newMessage(message) {
-      const messageUl = document.querySelector('#ul-message');
-      const li = document.createElement('li');
-      li.setAttribute('data-testid', 'message');
-      li.innerText = message;
-      messageUl.appendChild(li);
-    }
-
-    function generateNickName() {
-      const name = 'aaaaaaaaaaaaaaaa';
-      const abc = 'ABCDEFGHIJKLMNOPQRSTUVXZ';
-      const random = name.split('').map((e, i , a) => abc.charAt(Math.floor(Math.random() * 16))).join('');
-      const getUser = document.querySelector('#online-user');
-      getUser.innerHTML = random;
-      return { nickname: random };
-    }
 
   </script>
 </body>
