@@ -63,14 +63,32 @@
         window.scrollTo(0, document.body.scrollHeight);
       })
 
-      socket.on('logIn', (newUser)=>{
-        const ulUsers = document.querySelector('#ulUsers')   
-        const user = document.createElement('li');
-        user.innerText = newUser;
-        user.setAttribute("data-testid", "online-user");
-        ulUsers.appendChild(user);
-      });
+      // Não é mais necessário porque o requisito 4 já cumpre essa lógica
+      // socket.on('logIn', (newUser)=>{
+      //   const ulUsers = document.querySelector('#ulUsers')   
+      //   const user = document.createElement('li');
+      //   user.innerText = newUser;
+      //   user.setAttribute("data-testid", "online-user");
+      //   ulUsers.appendChild(user);
+      // });
 
+      socket.on('userOnline', (online) => {
+        const ulUsers = document.querySelector('#ulUsers');
+        ulUsers.innerHTML = '';
+        const sortedUsers = [...online].sort((a,b) => {
+          if (a.id === socket.id) return -1;
+          if (b.id === socket.id) return 1;
+          return 0;
+        });
+
+        sortedUsers.forEach(({ randonUser }) => {
+          const ulUsers = document.querySelector('#ulUsers')   
+          const user = document.createElement('li');
+          user.innerText = randonUser;
+          user.setAttribute("data-testid", "online-user");
+          ulUsers.appendChild(user);
+        });
+      })
       salvar.addEventListener('click', (e) => {
           for (let index = 0; index < newUser.length; index += 1) {
             if (newUser[index].innerText === socket.id) {
@@ -78,7 +96,6 @@
             } 
           }
       });
-
       </script>
   </body>
 </html>
