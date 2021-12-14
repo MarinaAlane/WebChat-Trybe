@@ -4,9 +4,12 @@ const formChat = document.querySelector('#form-chat');
 const chat = document.querySelector('#chat-container');
 
 const inputMessage = document.querySelector('#input-message');
-
 const inputNickname = document.querySelector('#input-nickname');
+
 const onlineUser = document.querySelector('#online-user');
+const submitNickname = document.querySelector('#submit-nickname');
+
+const nicknamesList = document.querySelector('#online-users');
 
 let nick;
 
@@ -54,18 +57,43 @@ const setNewNickname = () => {
   if (inputNickname.value) nick = inputNickname.value;
   onlineUser.innerText = nick;
   inputNickname.value = '';
+  socket.emit('changeNickname', nick);
+};
+
+submitNickname.setAttribute('onlick', setNewNickname);
+
+const createNickList = (nicknames) => {
+  nicknames.forEach((nickname) => {
+    const newLi = newElement('li');
+    newLi.setAttribute('data-testid', 'online-user');
+    newLi.innerText = nickname;
+    nicknamesList.appendChild(newLi);
+  });
 };
 
 socket.on('connect', () => {
-  console.log(socket.id);
   nick = (socket.id).substr(0, 16).toLowerCase();
   onlineUser.innerText = nick;
+  socket.emit('user', nick);
 });
 
 socket.on('message', (msg) => {
   createMsgContainer(msg);
-  console.log(msg);
   window.scrollTo(0, document.body.scrollHeight);
 });
 
-module.exports = setNewNickname;
+socket.on('user', (nicknames) => {
+  nicknamesList.innerText = '';
+  createNickList(nicknames);
+});
+
+socket.on('disconnected', (nicknames) => {
+  nicknamesList.innerText = '';
+  createNickList(nicknames);
+});
+
+socket.on('changeNickname', (nicknames) => {
+  console.log(nicknames);
+  nicknamesList.innerText = '';
+  createNickList(nicknames);
+});

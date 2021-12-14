@@ -27,17 +27,28 @@ const getDateHour = () => {
   return formattedDateHour;
 };
 
+const nicknames = [];
+
 module.exports = (io) => {
-  io.on('connection', (socket) => {
-    console.log(`${socket.id} entrou no chat!`);
+  io.on('connection', (socket) => {    
+    socket.on('user', (nickname) => { 
+      nicknames.push(nickname);
+      io.emit('user', nicknames); 
+    });
+
     socket.on('disconnect', () => {
-      console.log(`${socket.id} saiu do chat!`);
+      nicknames.splice(nicknames.findIndex((nick) => nick.match(/socket.id/i)));
+      io.emit('disconnected', nicknames);
     });
 
     socket.on('message', ({ chatMessage, nickname }) => {
-      const dateTime = getDateHour();
-      const messageFormatted = `${dateTime} - ${nickname} - ${chatMessage}`;
-      io.emit('message', messageFormatted);
+      io.emit('message', `${getDateHour()} - ${nickname} - ${chatMessage}`);
+    });
+
+    socket.on('changeNickname', (nickname) => {
+      nicknames.splice(nicknames.findIndex((nick) => nick.match(/socket.id/i)));
+      nicknames.push(nickname);
+      io.emit('changeNickname', nicknames);
     });
   });
 };
