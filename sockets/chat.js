@@ -1,27 +1,21 @@
-function defaultMessage(messageObj) { 
-  const { user, sendMessage } = messageObj;
-  const date = new Date();
-  return `${date} - ${user}: ${sendMessage}`;
+function defaultMessage({ chatMessage, nickname }) { 
+  const date = new Date().toLocaleString().replace(/\//gi, '-');
+  return `${date} - ${nickname}: ${chatMessage}`;
 }
 
 /*
 Função defaultMessage -> criar a messagem padrão que deve conter a Data o usuário e a mensagem padrão
 - Recebe como paramentro um objeto contendo o usuário e a mensagem.
-- usa o date para pegar a data 
-- retorna a mensagem formatada 
+- usa o date para pegar a data o toLocaleString para buscar somente a data e hora e o replace + regex para substituir as barras por traços como pedido no reuqisito
+- retorna a mensagem formatada de acordo com o requisito
 */
 
-module.exports = (io) => io.on('connection', (socket) => {
-  io.on('conection', (user) => { // 1
-    socket.emit('user', `${user.id.slice(0, 16)}`); // 3
+module.exports = (io) => io.on('connection', (socket) => { // 1
+    socket.emit('user', socket.id.slice(0, 16)); // 3
+    socket.on('message', (msg) => { // 2
+      io.emit('message', defaultMessage(msg)); // 4 
+    });
   });
-  
-  socket.on('message', (msg) => { // 2
-    console.log(`Message: ${msg}`);
-    const newMessage = defaultMessage(msg);
-    io.emit('message', newMessage); // 4
-  });
-});
 
 /*
 1- Essa função vai ser executada sempre que um novo client se conectar ao servidor
@@ -38,10 +32,10 @@ de eventos do DOM como o clique em um botão ou ao digitar algo em uma caixa de 
 */
 
 /*
-3- Usamos uma string para enviar uma mensagem, mas podemos usar outros tipos de dados, como um número, uma data,
- um objeto, entre outros tipos, neste caso estamos emitindo o id do usuário 
+3- Usamos uma string para enviar uma mensagem, mas podemos usar outros tipos de dados, como um número, uma data, um objeto, entre outros tipos, neste caso estamos emitindo o id do usuário com 16 caracteres usando a função slice(0, 16)
 */
 
 /*
-4- dentro do listener do evento , usamos a função io.emit , em vez de socket.emit
+4- dentro do listener do evento , usamos a função io.emit , em vez de socket.emit para enviar a mensagem ja formatada com a data/hora o usuário e a mensagem que é feito pela função defaultMessage 
+
 */

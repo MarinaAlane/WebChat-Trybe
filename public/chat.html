@@ -1,20 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-  <title>Projeto WebChat</title>
+  <link rel="stylesheet" href="./css/chat.css">
+  <title>Chat</title>
 </head>
 <body>
-  <h4 id="user" data-testid="online-user"></h4>
+  <h4 id="nickName" data-testid="online-user"></h4>
+  <form action="" id="userForm">
+    <input type="text" autocomplete="off" id="userInput" placeholder="Digite seu User" data-testid="nickname-box"/>
+    <button data-testid="nickname-button">Send</button>
+  </form>
   <ul id="messages"></ul>
-  <form action="" id="message-form">
-    <input id="message-input" data-testid="message-box" />
-    <button data-testid="send-button" >Send</button>
-  </form>
-  <form action="" id="nickname-form">
-    <input id="nickname-input" data-testid="nickname-box" />
-    <button data-testid="nickname-button" >Change nickname</button>
-  </form>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src='./js/chat.js'></script>
+    <form action="" id="messageForm">
+      <input id="messageInput" autocomplete="off" type="text" placeholder="Digite sua Mensagem" data-testid="message-box"/>
+      <button data-testid="send-button">Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- implementação o script do socket.io dentro da página HTML 
+    Pode ser usado um link provido pelo CDNJS , que nos dá toda a biblioteca do socket.io 
+      para uso no front-end. O link da biblioteca é: 
+      https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js . -->
+    <script src='./js/chat.js'>
+      // link para o arquivo script para o chat.js
+    </script> 
 </body>
 </html>
+
+
