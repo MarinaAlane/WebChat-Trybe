@@ -27,28 +27,29 @@ const getDateHour = () => {
   return formattedDateHour;
 };
 
-const nicknames = [];
+let nicknames = [];
 
 module.exports = (io) => {
-  io.on('connection', (socket) => {    
-    socket.on('user', (nickname) => { 
+  io.on('connection', (socket) => {
+    socket.on('newUser', (nickname) => {
       nicknames.push(nickname);
-      io.emit('user', nicknames); 
+      io.emit('newUser', nicknames);
+    });
+  
+    socket.on('disconnect', () => {
+      nicknames.splice(nicknames.findIndex((nick) => nick.includes(socket.id)));
+      io.emit('disconnected', nicknames);
     });
 
-    socket.on('disconnect', () => {
-      nicknames.splice(nicknames.findIndex((nick) => nick.match(/socket.id/i)));
-      io.emit('disconnected', nicknames);
+    socket.on('changeNickname', ({ removedNick, newNick }) => {
+      nicknames = nicknames.filter((nickname) => nickname !== removedNick);
+      nicknames.push(newNick);
+
+      io.emit('changeNickname', nicknames);
     });
 
     socket.on('message', ({ chatMessage, nickname }) => {
       io.emit('message', `${getDateHour()} - ${nickname} - ${chatMessage}`);
-    });
-
-    socket.on('changeNickname', (nickname) => {
-      nicknames.splice(nicknames.findIndex((nick) => nick.match(/socket.id/i)));
-      nicknames.push(nickname);
-      io.emit('changeNickname', nicknames);
     });
   });
 };

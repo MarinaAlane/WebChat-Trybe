@@ -6,7 +6,6 @@ const chat = document.querySelector('#chat-container');
 const inputMessage = document.querySelector('#input-message');
 const inputNickname = document.querySelector('#input-nickname');
 
-const onlineUser = document.querySelector('#online-user');
 const submitNickname = document.querySelector('#submit-nickname');
 
 const nicknamesList = document.querySelector('#online-users');
@@ -53,15 +52,6 @@ formChat.addEventListener('submit', (e) => {
   }
 });
 
-const setNewNickname = () => {
-  if (inputNickname.value) nick = inputNickname.value;
-  onlineUser.innerText = nick;
-  inputNickname.value = '';
-  socket.emit('changeNickname', nick);
-};
-
-submitNickname.setAttribute('onlick', setNewNickname);
-
 const createNickList = (nicknames) => {
   nicknames.forEach((nickname) => {
     const newLi = newElement('li');
@@ -71,18 +61,22 @@ const createNickList = (nicknames) => {
   });
 };
 
+const setNewNickname = () => {
+  if (inputNickname.value) {
+    socket.emit('changeNickname', { removedNick: nick, newNick: inputNickname.value });
+    nick = inputNickname.value;
+    inputNickname.value = '';
+  }
+};
+
+submitNickname.setAttribute('onlick', setNewNickname);
+
 socket.on('connect', () => {
-  nick = (socket.id).substr(0, 16).toLowerCase();
-  onlineUser.innerText = nick;
-  socket.emit('user', nick);
+  nick = (socket.id).substr(0, 16);
+  socket.emit('newUser', nick);
 });
 
-socket.on('message', (msg) => {
-  createMsgContainer(msg);
-  window.scrollTo(0, document.body.scrollHeight);
-});
-
-socket.on('user', (nicknames) => {
+socket.on('newUser', (nicknames) => {
   nicknamesList.innerText = '';
   createNickList(nicknames);
 });
@@ -92,8 +86,12 @@ socket.on('disconnected', (nicknames) => {
   createNickList(nicknames);
 });
 
-socket.on('changeNickname', (nicknames) => {
-  console.log(nicknames);
+socket.on('changeNickname', (newNicknamesList) => {
   nicknamesList.innerText = '';
-  createNickList(nicknames);
+  createNickList(newNicknamesList);
+});
+
+socket.on('message', (msg) => {
+  createMsgContainer(msg);
+  window.scrollTo(0, document.body.scrollHeight);
 });
