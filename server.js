@@ -9,15 +9,11 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   } });
   
-const messageRoutes = require('./routes/messageRoutes');
-
 require('./sockets/chat')(io);
 
 // io.on('connection', (socket) => {
 //   console.log(`Usuário conectado. ID: ${socket.id} `);
 // });
-
-app.use(messageRoutes);
 
 app.use(express.static(`${__dirname}/`));
 

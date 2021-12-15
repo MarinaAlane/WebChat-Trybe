@@ -2,7 +2,7 @@ const utils = require('../utils/functions');
 
 let onlineUsers = [];
 
-const sendMessage = (socket, io) => {
+const sendMessage = async (socket, io) => {
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = utils.dateGenerator();
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
