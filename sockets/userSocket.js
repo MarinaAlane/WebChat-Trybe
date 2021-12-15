@@ -1,5 +1,6 @@
 const { randomNickGenerator } = require('../helpers/helpers');
-const { createUser, findAndUpdateUser, getAllUsers, deleteUser } = require('../models/userModel');
+const { createUser, 
+  findAndUpdateUser, getAllUsers, deleteUser, findById } = require('../models/userModel');
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
@@ -20,7 +21,8 @@ module.exports = (io) => {
     });
     
     socket.on('disconnect', async () => {
-      socket.broadcast.emit('removeUser', randomNick);
+      const nickname = await findById(randomNick);
+      socket.broadcast.emit('removeUser', nickname);
       await deleteUser(randomNick);
     });
   });

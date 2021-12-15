@@ -129,18 +129,27 @@
         } else {
           const newUser = document.createElement('li');
           newUser.textContent = client;
-          newUser.dataset.testid = 'online-user';
+          // newUser.dataset.testid = 'online-user';
           onlineUserList.prepend(newUser);
         }
       };
     }
 
+    socket.once('loadMessages', (messagesDb) => {
+      for(let index = 0; index < messagesDb.length; index += 1) {
+          const newMessage = document.createElement('li');
+          newMessage.textContent = `${messagesDb[index].timestamp} - ${messagesDb[index].nickname}: ${messagesDb[index].message}`;
+          newMessage.dataset.testid = 'message';
+          messages.appendChild(newMessage);
+          window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
     
     socket.once('setUser', ({ randomNick, allUsers }) => {
       sessionStorage.setItem('nickname', randomNick);
       nicknameText.innerText = randomNick;
       localClientUser.textContent = randomNick;
-      socket.emit('userLogin', randomNick);
+      // socket.emit('userLogin', randomNick);
       window.scrollTo(0, document.body.scrollHeight);
       addAllOnlineUsers(allUsers, randomNick);
     });
@@ -152,7 +161,11 @@
       newMessage.textContent = `usuário ${randomNick} conectado`;
       newMessage.dataset.testid = 'message';
       messages.appendChild(newMessage);
-      addAllOnlineUsers(allUsers, randomNick);
+      const newUser = document.createElement('li');
+      newUser.textContent = randomNick;
+      newUser.dataset.testid = 'online-user';
+      onlineUserList.appendChild(newUser);
+      // addAllOnlineUsers(allUsers, randomNick);
     });
 
     socket.on('message', (chatMessage) => {
