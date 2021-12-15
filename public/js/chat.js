@@ -18,6 +18,7 @@ const createServerMessage = (message) => {
 
 const createChatMessage = (chatMessage) => {
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
   li.innerText = chatMessage;
   messagesUl.appendChild(li);
 };
@@ -26,6 +27,7 @@ const renderUsersList = () => {
   usersListUl.innerHTML = '';
   usersListClient.forEach((nickname) => {
     const li = document.createElement('li');
+    li.setAttribute('data-testid', 'online-user');
     li.innerText = nickname;
     usersListUl.appendChild(li);
   });

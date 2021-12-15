@@ -9,12 +9,12 @@
       <ul id="online-users"></ul>
     </div>
     <form id="form-nickname" action="">
-      <input id="nicknameInput" autocomplete="off" />
-      <button>Save Nickname</button>
+      <input id="nicknameInput" data-testid="nickname-box" autocomplete="off" />
+      <button data-testid="nickname-button">Save Nickname</button>
     </form>
     <ul id="messages"></ul>
     <form id="form-messages" action="">
-      <input id="messageInput" autocomplete="off" /><button>Send Message</button>
+      <input id="messageInput" data-testid="message-box" autocomplete="off" /><button data-testid="send-button">Send Message</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/chat.js'></script>
