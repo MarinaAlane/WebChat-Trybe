@@ -35,9 +35,9 @@ let arrayUsers = [];
 io.on('connection', (socket) => {
   console.log(`Usuário ${socket.id} conectado`);
   // Marcelo Leite me deu uma dica nessa lógica porque estava comlicando demais essa randomização
-  const randonUser = socket.id.slice(0, 16);
   // console.log(randonUser);
   
+  const randonUser = socket.id.slice(0, 16);
   socket.emit('logIn', randonUser);
 
   socket.on('Nickname', (nickname) => {

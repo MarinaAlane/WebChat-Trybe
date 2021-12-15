@@ -63,11 +63,14 @@
         window.scrollTo(0, document.body.scrollHeight);
       })
 
-      // Não é mais necessário porque o requisito 4 já cumpre essa lógica
       socket.on('logIn', (newUser)=>{
-        socket.emit('Nickname', nickname);
+        const ulUsers = document.querySelector('#ulUsers')   
+        const user = document.createElement('li');
+        user.innerText = newUser;
+        user.setAttribute("data-testid", "online-user");
+        ulUsers.appendChild(user);
       });
-        // Lógica explicada e entendida pelo aluno Marcelo Leite durante o recesso
+        
       socket.on('userOnline', (online) => {
         const ulUsers = document.querySelector('#ulUsers');
         ulUsers.innerHTML = '';
@@ -76,10 +79,10 @@
           if (b.id === socket.id) return 1;
           return 0;
         });
-        sortedUsers.forEach(({ nickname }) => {
+        sortedUsers.forEach(({ arrayUsers }) => {
           const ulUsers = document.querySelector('#ulUsers')   
           const user = document.createElement('li');
-          user.innerText = nickname;
+          user.innerText = arrayUsers;
           user.setAttribute("data-testid", "online-user");
           ulUsers.appendChild(user);
         });
@@ -88,7 +91,7 @@
       salvar.addEventListener('click', (e) => {
         e.preventDefault();
         const inputUser = document.querySelector('#inputUser').value;
-        socket.emit('nickname', inputUser);
+        socket.emit('Nickname', nickname);
       });
       </script>
   </body>
