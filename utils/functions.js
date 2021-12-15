@@ -1,6 +1,6 @@
 const dateGenerator = () => {
   const date = new Date();
-  const day = (`0${date.getDate()}`).toString();
+  const day = (date.getDate()).toString();
   const month = (date.getMonth() + 1).toString();
   const year = date.getFullYear();
   const hour = date.getHours();
