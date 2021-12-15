@@ -36,26 +36,26 @@ io.on('connection', (socket) => {
   console.log(`Usuário ${socket.id} conectado`);
   // Marcelo Leite me deu uma dica nessa lógica porque estava comlicando demais essa randomização
   const randonUser = socket.id.slice(0, 16);
+  // console.log(randonUser);
+  
   socket.emit('logIn', randonUser);
 
-  socket.on('Nickame', (nickname) => {
+  socket.on('Nickname', (nickname) => {
     arrayUsers = arrayUsers.filter((user) => user.id === socket.id);
     arrayUsers.push({ id: socket.id, nickname });
-    io.emit('randonUser', arrayUsers);
+    io.emit('userOnline', arrayUsers);
   });
-
-  io.emit('userOnline', arrayUsers);
-
-  socket.on('message', (msg) => {
-    const { nickname, chatMessage } = msg;
-    io.emit('message', `${fulldate} - ${nickname}: ${chatMessage}`);
-  });
-
-  socket.on('disconnect', () => {
+  
+  io.on('disconnect', () => {
     console.log(`Usuário ${socket.id} desconectado`);
     arrayUsers = arrayUsers.filter((user) => user.id === socket.id);
-    io.emit('randonUser', arrayUsers);
+    io.emit('userOnline', arrayUsers);
   });
+  
+    socket.on('message', (msg) => {
+      const { nickname, chatMessage } = msg;
+      io.emit('message', `${fulldate} - ${nickname}: ${chatMessage}`);
+    });
 });
 
 server.listen(PORT, () => console.log('Ouvindo a porta 3000'));
