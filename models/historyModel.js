@@ -10,6 +10,16 @@ const messageRegister = async (message, nickname, timestamp) => {
   }
 };
 
+const getAllMessage = async () => {
+  try {
+    const db = await connection();
+    return db.collection('messages').find().toArray();
+  } catch (_err) {
+    return ({ code: 'databaseError' });
+  }
+};
+
 module.exports = {
   messageRegister,
+  getAllMessage,
 };
