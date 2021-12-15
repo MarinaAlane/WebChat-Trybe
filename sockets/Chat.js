@@ -31,24 +31,36 @@ const getPosts = async () => {
   return posts;
 };
 
-module.exports = (io) => {
-  io.on('connection', async (socket) => {
-    const oldData = await getPosts();
-    socket.emit('getChatData', oldData);
-    socket.emit('enterChat');
+let onlineUsers = [];
 
-    socket.on('addOnlineUser', (user) => {
-      io.emit('addOnlineUser', user);
-    });
+const entering = async (socket) => {
+  const user = `_${socket.id.substring(0, 15)}`;
+  onlineUsers.push({ user, nickname: user });
+  const oldData = await getPosts();
+  socket.emit('getChatData', oldData);
+  socket.emit('enterChat', onlineUsers);
+};
+
+module.exports = (io) => {
+  io.on('connection', (socket) => {
+    entering(socket);
+
+    socket.on('addOnlineUser', (user) => socket.broadcast.emit('addOnlineUser', user));
 
     socket.on('updateNickname', ({ user, newNickname }) => {
       io.emit('updateNickname', { user, newNickname });
+      onlineUsers.find((onlineUser) => onlineUser.user === user).nickname = newNickname;
     });
-    
+
     socket.on('message', ({ chatMessage, nickname }) => {
       const date = formatDate(new Date(Date.now()));
       sendRequest(chatMessage, nickname, date);
       io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
+    });
+
+    socket.on('disconnect', () => {
+      io.emit('leaveChat', `_${socket.id.substring(0, 15)}`);
+      onlineUsers = onlineUsers.filter((user) => user.user !== `_${socket.id.substring(0, 15)}`);
     });
   });  
 };

@@ -12,10 +12,10 @@ const messageBox = document.querySelector('#message-box');
 
 // HELP FUNCTIONS
 
-const createLi = (html, className) => {
+const createLi = (nickname, user) => {
   const li = document.createElement('li');
-  li.innerHTML = html;
-  li.className = className;
+  li.innerHTML = nickname;
+  li.className = user;
   return li;
 };
 
@@ -25,10 +25,10 @@ const createUser = (nickname, user) => {
   nicknameList.appendChild(nicknameHTML);
 };
 
-const updateUser = (user, nickname) => {
+const updateUser = (nickname, user) => {
   const userTag = document.querySelector(`.${user}`);
   userTag.innerHTML = nickname;
-};
+};  
 
 const createMessage = (chatMessage) => {
   const li = document.createElement('li');
@@ -52,10 +52,18 @@ socket.on('getChatData', (data) => {
 
 // ENTER CHAT
 
-socket.on('enterChat', () => {
+socket.on('enterChat', (onlineUsers) => {
+  sessionStorage.clear();
   const user = `_${socket.id.substring(0, 15)}`;
   sessionStorage.setItem(user, user);
+  createUser(user, user);
   socket.emit('addOnlineUser', user);
+
+  onlineUsers.forEach((onlineUser) => {
+    if (onlineUser.user !== user) {
+      createUser(onlineUser.nickname, onlineUser.user);
+    }
+  });
 });
 
 // NICKNAME CREATING
@@ -75,7 +83,7 @@ nicknameButton.addEventListener('click', () => {
 
 socket.on('updateNickname', ({ user, newNickname }) => {
   sessionStorage.setItem(user, newNickname);
-  updateUser(user, newNickname);
+  updateUser(newNickname, user);
 });
 
 // MESSAGE CREATING
@@ -85,10 +93,23 @@ sendButton.addEventListener('click', (e) => {
   const user = `_${socket.id.substring(0, 15)}`; 
   const nickname = sessionStorage.getItem(user);
   const chatMessage = messageBox.value;
+  messageBox.value = '';
 
   socket.emit('message', { chatMessage, nickname });
 });
 
 socket.on('message', (chatMessage) => {
   createMessage(chatMessage);
+});
+
+// LEAVE CHAT
+
+const deleteUser = (user) => {
+  const userOnline = document.querySelector(`.${user}`);
+  nicknameList.removeChild(userOnline);
+  sessionStorage.removeItem(user);
+};
+
+socket.on('leaveChat', (user) => {
+  deleteUser(user);
 });
