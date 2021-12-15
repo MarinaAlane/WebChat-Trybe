@@ -8,12 +8,16 @@ const io = require('socket.io')(http, {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
   } });
+  
+const messageRoutes = require('./routes/messageRoutes');
 
 require('./sockets/chat')(io);
 
 // io.on('connection', (socket) => {
 //   console.log(`Usuário conectado. ID: ${socket.id} `);
 // });
+
+app.use(messageRoutes);
 
 app.use(express.static(`${__dirname}/`));
 
