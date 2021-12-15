@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000; // usando porta 3000 ou variavel de ambie
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:3001', // url aceita pelo cors
+    origin: 'http://localhost:3000', // url aceita pelo cors 
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
@@ -25,9 +25,9 @@ app.use(express.static(`${__dirname}/public`)); // acesso aos arquivos dentro do
 require('./sockets/chat')(io); // require necessario para o arquivo chat.js ter acesso ao modulos do io na pasta sockets
 
 app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/public/chat.html`); // devolvendo um arquivo chamado /index.html 
+  res.sendFile(`${__dirname}/public/chat.html`); // devolve o arquivo chamado /chat.html quando acessa a rota 
 });
 
 http.listen(PORT, () => {
-  console.log('Ouvindo na porta 3000');
+  console.log(`Ouvindo na porta ${PORT}`);
 });

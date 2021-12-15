@@ -1,13 +1,8 @@
-/* * {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
-body {
-  font-family: 'Helvetica Neue', 'Helvetica',;
-}
-
 
 form {
   background: black;
@@ -51,4 +46,4 @@ form button {
 
 .messages li:nth-child( odd ) {
   background: #eee;
-} */
+}
