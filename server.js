@@ -8,7 +8,7 @@ const http = require('http').createServer(app);
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: '*', // url aceita pelo cors http://localhost:3000
+    origin: `http://localhost:${PORT}`, // url aceita pelo cors
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
 

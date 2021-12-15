@@ -34,7 +34,11 @@ const renderUsersList = () => {
 };
 
 // NORMAL FUNCTIONS
-const setNicknameIntoSessionStorage = (nickname) => sessionStorage.setItem('nickname', nickname);
+const setNicknameIntoSessionStorage = (nickname) => {
+  if (typeof nickname === 'string') {
+    sessionStorage.setItem('nickname', nickname);
+  }
+};
 const getNicknameFromSessionStorage = () => sessionStorage.nickname || (socket.id).substr(4);
 
 const sendUsersListToServer = () => {
@@ -77,6 +81,18 @@ const removeNicknameFromServer = (nickname) => {
   renderUsersList();
 };
 
+const requestMessagesToLoad = () => {
+  socket.emit('getMessagesFromDB');
+};
+
+const loadDBMessages = (messages) => {
+  messages.forEach((document) => {
+    const { message, nickname, timestamp } = document;
+    const formatedMessage = `${timestamp} - ${nickname}: ${message}`;
+    createChatMessage(formatedMessage);
+  });
+};
+
 // LISTENNERS FUNCTIONS
 formMessages.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -100,7 +116,9 @@ socket.on('updateNickname', (nicknameToUpdateData) => {
   updateNicknameFromServer(nicknameToUpdateData);
 });
 socket.on('removeNickname', (nicknameToRemove) => removeNicknameFromServer(nicknameToRemove));
+socket.on('messagesToLoad', (messages) => loadDBMessages(messages));
 
 window.onload = () => {
-  setNicknameIntoSessionStorage((socket.id).substr(4));
+  setNicknameIntoSessionStorage((socket.id));
+  requestMessagesToLoad();
 };
