@@ -12,14 +12,88 @@
       <button type="submit">Definir</button>
     </form>
 
-    <div id="users"></div>
-    <div id="messages"></div>
+    <div id="users">
+      <ul class="users">
+
+      </ul>
+    </div>
+    <div id="messages">
+      <ul class="messages">
+
+      </ul>
+    </div>
 
     <form name="message_form_name" id="message_form">
       <input name="msg" id="message" type="text" placeholder="message"/>
       <button type="submit">Enviar</button>
     </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./chat.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io('http://localhost:3000');
+
+let user = null;
+
+
+const ulUsers = document.querySelector('#users');
+
+function updateMessages(messages) {
+  const ulMessages = document.querySelector('.messages');
+  
+  const li = document.createElement('li');
+  li.innerText = messages;
+  li.setAttribute('data-testid', 'message');
+  ulMessages.appendChild(li);
+}
+
+
+function connectionUsers(users) {
+
+  const li = document.createElement('li');
+  li.innerText = users;
+  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute('class', 'online-user');
+  ulUsers.appendChild(li);
+}
+
+socket.on('connect_user', (data) => {
+  const userRes = data[data.length - 1];
+  console.log(userRes)
+    sessionStorage.setItem('nickname', userRes);
+    connectionUsers(userRes)
+    
+    console.log(data)
+    for (let i = 0; i < data.length - 1; i+=1) {
+      // const usrs = data[i]
+      connectionUsers(data[i]);
+    }
+  });
+
+socket.on('message', (messages) => {
+  console.log(messages)
+  updateMessages(messages);
+});
+
+socket.on('id_users', (users) => {
+  connectionUsers(users);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('#message_form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = document.forms.message_form_name.msg.value;
+    document.forms.message_form_name.value = '';
+    
+    socket.emit('message', { chatMessage: message, nickname: sessionStorage.nickname });
+  });
+});
+
+const userForm = document.querySelector('#user_form');
+userForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  user = document.forms.user_form_name.user.value;
+  socket.emit('new_user', { user });
+});
+    </script>
   </body>
 </html>
