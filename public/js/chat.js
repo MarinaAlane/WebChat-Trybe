@@ -21,6 +21,9 @@ const randomNickGenerator = () => {
   return nickname;
 };
 
+/* Mauricio Ieiri indicou uso do insertBefore
+https://developer.mozilla.org/pt-BR/docs/Web/API/Node/insertBefore
+https://www.w3schools.com/jsref/met_node_insertbefore.asp */
 socket.on('userLogged', (nickUsers) => {
   const userOnline = document.querySelector('#user-online');
   userOnline.innerHTML = '';
@@ -31,11 +34,9 @@ socket.on('userLogged', (nickUsers) => {
     nickLi.innerText = currentNick;
     nickLi.setAttribute(DATA_TESTID, 'online-user');
     if (nickname !== currentNick) {
-      const newNickLi = document.createElement('li');
       nickLi.innerText = nickname;
       nickLi.setAttribute(DATA_TESTID, 'online-user');
       userOnline.appendChild(nickLi);
-      console.log(newNickLi.innerText = nickname, 'NEW-USER');
     } else {
       userOnline.insertBefore(nickLi, userOnline.firstChild);
     }
