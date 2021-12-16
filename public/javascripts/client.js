@@ -4,7 +4,7 @@ socket.on('connect', () => {
   console.log('usuário conectado');
 });
 
-socket.emit('newMessage', { // emitindo mensagem para o servidor
+socket.emit('message', { // emitindo mensagem para o servidor
   nickname: 'leon',
   chatMessage: 'Olá',
 });
