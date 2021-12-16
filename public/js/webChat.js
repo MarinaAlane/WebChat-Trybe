@@ -1,9 +1,11 @@
 const socket = window.io();
+// const { getMessages } = require('../../controllers/messages');
 
 const nicknameForm = document.querySelector('#nickname-form');
 const nicknameInput = document.querySelector('#nickname');
 const messageForm = document.querySelector('#message-form');
 const messageInput = document.querySelector('#messageInput');
+const dataTestId = 'data-testid';
 
 nicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -24,7 +26,7 @@ const createUserList = (message) => {
   message.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user.randomNickname;
-    li.setAttribute('data-testid', 'online-user');
+    li.setAttribute(dataTestId, 'online-user');
     li.setAttribute('id', user.randomNickname);
     if (user.randomNickname === pageOwner) {
       userUl.insertBefore(li, userUl.firstChild);
@@ -49,8 +51,18 @@ const createMessage = (message) => {
   const messageUl = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(dataTestId, 'message');
   messageUl.appendChild(li);
+};
+
+const firstMessages = (message) => {
+  const messageUl = document.querySelector('#messages');
+  message.forEach((msg) => {
+    const li = document.createElement('li');
+    li.innerText = `${msg.timestamp} ${msg.nickname} ${msg.message}`;
+    li.setAttribute(dataTestId, 'message');
+    messageUl.appendChild(li);
+  });
 };
 
 socket.on('connect', () => {
@@ -63,6 +75,10 @@ socket.on('userLoggedIn', (message) => {
   createUserList(message);
 });
 
+socket.on('histMessages', (histMessages) => {
+  firstMessages(histMessages);
+});
+
 socket.on('newNickName', (message) => {
   createUserList(message);
 });
@@ -70,9 +86,3 @@ socket.on('newNickName', (message) => {
 socket.on('message', (message) => {
   createMessage(message);
 });
-
-// window.onbeforeunload = () => {
-//   const pageOwner = sessionStorage.getItem('userNickname');
-//   socket.emit('end', pageOwner);
-//   socket.disconnect();
-// };
