@@ -1,6 +1,6 @@
-body, p, h1, ul, li {
-  padding: 0px;
-  margin: 0px;
+body , p , h1 , ul , li {
+  margin: 0;
+  padding: 0;
 }
 
 li {
@@ -9,40 +9,38 @@ li {
 
 .estrutura {
   display: grid;
+  grid-template-areas: 'header header'
+    'nickNameInput messages'
+    'nickName messages';
   grid-template-columns: 1fr 3fr;
-  grid-template-areas:
-  "header header"
-  "nickNameInput messages"
-  "nickName messages"
-  ;
 }
 
 .header {
-  grid-area: header;
   align-items: center;
-  text-align: center;
   background-color: tomato;
+  grid-area: header;
+  text-align: center;
 }
 
 .nickNameInput {
+  background-color: yellow;
   grid-area: nickNameInput;
   padding: 5px;
-  background-color: yellow;
 }
 
 .nickName {
+  background-color: grey;
   grid-area: nickName;
   padding: 5px;
-  background-color: grey;
 }
 
 .messages {
+  background-color: turquoise;
   grid-area: messages;
   padding: 5px;
-  background-color: turquoise;
 }
 
 .messages div {
-  padding: 5px;
   background-color: white;
+  padding: 5px;
 }
