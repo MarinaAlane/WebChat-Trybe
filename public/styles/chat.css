@@ -5,7 +5,7 @@
 }
 
 body {
-  background: #674480;
+  background: #a78abd;
   font: 13px Helvetica, Arial, sans-serif;
   margin: 20px;
 }
@@ -44,8 +44,9 @@ body {
 
 .nickname-form input {
   background: #dcd3e8;
+  margin: 10px;
   padding: 5px;
-  width: 100%;
+  width: 20%;
 }
 
 .form-input-message-container {
@@ -82,8 +83,10 @@ body {
 }
 
 .chat-messages {
+  float: right;
   max-height: 500px;
   padding: 30px;
+  width: 80%;
 }
 
 /* form {

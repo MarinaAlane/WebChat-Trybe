@@ -2,19 +2,28 @@ const moment = require('moment');
 /* refatorado usando moment() - https://momentjs.com/ */
 const curretTime = moment().format('MM-DD-YYYY h:mm:ss');
 
+const nickUsers = [];
+
 module.exports = (io) => io.on('connection', (socket) => {
-  console.log(`User ${socket.id} connected!`);
-  // logica do 'randomNickname' feito com auxilio da Islene e Marcelo Leite
-  const randomNickname = socket.id.slice(0, 16);
-  socket.emit('userLogged', randomNickname); 
-  // escutando o chat
-  socket.on('message', ({ nickname, chatMessage }) => {    
-    const data = `${curretTime} - ${nickname}: ${chatMessage}`;
-    // enviar mensagem para todos
-    io.emit('message', `${data}`);
+  socket.on('userLogged', (nickname) => {
+    nickUsers.push({ nickname, id: socket.id });
+    io.emit('userLogged', nickUsers);
+    // console.log(nickUsers.length, 'PUSH-USERLOGGED');
+  });
+  socket.on('updateNickname', (newNick) => {
+    const findUser = nickUsers.findIndex((user) => user.id === socket.id);
+    nickUsers[findUser].nickname = newNick;
+    io.emit('userLogged', nickUsers);
+   // console.log(nickUsers, 'UPDATENICK');
+  });
+  socket.on('message', ({ chatMessage, nickname }) => {
+    io.emit('message', `${curretTime} - ${nickname}: ${chatMessage}`);
   });
   socket.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} desconectado`);
+    const disconnectUser = nickUsers.find((user) => user.id === socket.id);
+    nickUsers.splice(nickUsers.indexOf(disconnectUser), 1);
+    console.log(`${socket.id} desconectou`);
+    socket.broadcast.emit('userLogged', nickUsers);
   });
 });
 

@@ -18,18 +18,11 @@ const io = require('socket.io')(http, {
   },
 });
 
-// sempre que um cliente se conectar esse função será executada
-/* io.on('connection', (socket) => {
-  // console.log(`Usuário conectado. ID: ${socket.id}`);
-  socket.emit('Ola mensagem recebida');
-}); */
-
-/* app.set('view engine', 'ejs');
-app.set('views', './views'); */
-/* app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/public/index.html`);
-}); */
 app.use(express.static(path.join(__dirname, 'public'))); 
+
+/* app.get('/', (_req, res) => {
+  res.status(201).sendFile(path.join(__dirname, '/index.html'));
+}); */
 
 require('./sockets/chatServer')(io);
 

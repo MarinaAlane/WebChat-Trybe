@@ -5,46 +5,76 @@ const msgInput = document.querySelector('#msg-input');
 const nickForm = document.querySelector('#nick-form');
 const nickInput = document.querySelector('#nickname');
 
-// evento do input mensagem
-msgForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (msgInput.value) {
-    socket.emit('message', { chatMessage: msgInput.value, nickname: nickInput.value });
-    // console.log(msgInput.value, 'CHATMESSAGE');
-    // console.log(nickInput.value, 'NICKNAME');
-    msgInput.value = '';
-    nickInput.value = '';
+// evitar problema de duplicidade
+const DATA_TESTID = 'data-testid';
+
+// criando nickname randomico
+// https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
+const randomNickGenerator = () => {
+  let nickname = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 16; i += 1) {
+    nickname += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  return false;
+  sessionStorage.setItem('nickname', nickname);
+  socket.emit('userLogged', nickname);
+  return nickname;
+};
+
+socket.on('userLogged', (nickUsers) => {
+  const userOnline = document.querySelector('#user-online');
+  userOnline.innerHTML = '';
+  const currentNick = sessionStorage.getItem('nickname');
+  console.log(userOnline, 'USERONLINE');
+  nickUsers.forEach(({ nickname }) => {
+    const nickLi = document.createElement('li');
+    nickLi.innerText = currentNick;
+    nickLi.setAttribute(DATA_TESTID, 'online-user');
+    if (nickname !== currentNick) {
+      const newNickLi = document.createElement('li');
+      nickLi.innerText = nickname;
+      nickLi.setAttribute(DATA_TESTID, 'online-user');
+      userOnline.appendChild(nickLi);
+      console.log(newNickLi.innerText = nickname, 'NEW-USER');
+    } else {
+      userOnline.insertBefore(nickLi, userOnline.firstChild);
+    }
+  });
 });
 
-const createMessage = (message) => {
+socket.on('message', (message) => {
   const messages = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
   messages.appendChild(li);
   window.scrollTo(0, document.body.scrollHeight);
-};
+});
 
 // evento do nickname
 nickForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  const nickname = nickInput.value;
   if (nickInput.value) {
-    const nicknameInput = nickInput.value;
-    socket.emit('saveNickname', nicknameInput);
+    socket.emit('updateNickname', nickname);
+    sessionStorage.setItem('nickname', nickname);
   }
-  return false;  
+  return false;
 });
 
-const createUser = (newNickname) => {
-  const onlineUser = document.querySelector('#user-online');
-  const li = document.createElement('li');
-  li.innerText = newNickname;
-  li.setAttribute('data-testid', 'online-user');
-  onlineUser.appendChild(li);
-};
+// evento do input mensagem
+msgForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const getNick = sessionStorage.getItem('nickname');
+  const chatMessage = msgInput.value;
+  if (msgInput.value) {
+    socket.emit('message', { chatMessage, nickname: getNick });
+    // console.log(msgInput.value, 'CHATMESSAGE');
+    msgInput.value = '';
+  }
+  return false;
+});
 
-// evento será disparado pelo message
-socket.on('message', (message) => createMessage(message));
-socket.on('userLogged', (nickname) => createUser(nickname));
+window.onload = () => {
+  randomNickGenerator();
+};
