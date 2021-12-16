@@ -4,14 +4,60 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="style.css">
   <title>WebChat</title>
 </head>
 <body>
-  <h1>WebChat</h1>
+  <div class="estrutura">
 
+    <header class="header">
+      <h1>Webchat</h1>
+    </header>
+
+    <div class="nickNameInput">
+      <input type="text">
+      <button>salvar</button>
+    </div>
+
+    <div class="nickName">
+      <ul id="users"></ul>
+    </div>
+
+    <div class="messages">
+      <div class="teste">
+        <ul>
+          <li>message</li>
+        </ul>
+      </div>
+      <input type="text">
+      <button>enviar</button>
+    </div>
+
+  </div>
   <script>
-    const socket = io('localhost:3000')
+    const socket = io('localhost:3000');
+
+    const createLi = (user) => {
+      const li = document.createElement('li');
+      const userId = document.createTextNode(user);
+      li.appendChild(userId);
+      document.getElementById('users').appendChild(li);
+    }
+
+    socket.on('userList', (user) => {
+      const userUl = document.querySelector('#users');
+      const usersLi = userUl.childElementCount;
+      // tirando todas li's para colocar de novo
+      if (usersLi > 0) {
+        while (userUl.firstChild) {
+          userUl.removeChild(userUl.lastChild);
+        }
+      }
+      user.forEach(user => {
+        createLi(user)
+      });
+    });
   </script>
 </body>
 </html>

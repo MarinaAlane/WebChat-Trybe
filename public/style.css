@@ -1,0 +1,48 @@
+body, p, h1, ul, li {
+  padding: 0px;
+  margin: 0px;
+}
+
+li {
+  list-style: none;
+}
+
+.estrutura {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-areas:
+  "header header"
+  "nickNameInput messages"
+  "nickName messages"
+  ;
+}
+
+.header {
+  grid-area: header;
+  align-items: center;
+  text-align: center;
+  background-color: tomato;
+}
+
+.nickNameInput {
+  grid-area: nickNameInput;
+  padding: 5px;
+  background-color: yellow;
+}
+
+.nickName {
+  grid-area: nickName;
+  padding: 5px;
+  background-color: grey;
+}
+
+.messages {
+  grid-area: messages;
+  padding: 5px;
+  background-color: turquoise;
+}
+
+.messages div {
+  padding: 5px;
+  background-color: white;
+}

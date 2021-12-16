@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -12,12 +13,22 @@ const io = require('socket.io')(http, {
   },
 });
 
+app.use(express.static(path.join(__dirname, '/public')));
+
+const users = [];
+
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id} `);
+  users[socket.id] = socket.id;
+  io.emit('userList', Object.values(users));
+
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+    io.emit('userList', Object.values(users));
+  });
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/public/index.html`);
+  res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
 http.listen(PORT, () => {
