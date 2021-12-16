@@ -134,7 +134,7 @@ socket.on('userList', (users) => {
   updateUserList(users);
 });
 
-window.onbeforeunload = function () {
+window.onbeforeunload = function disconect() {
   socket.disconnect();
 };
 
