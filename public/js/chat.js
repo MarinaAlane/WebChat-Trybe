@@ -9,6 +9,16 @@ const usersListUl = document.querySelector('#online-users');
 
 let usersListClient = [];
 
+// SESSION STORAGE FUNCTION
+const setNicknameIntoSessionStorage = (nickname) => sessionStorage.setItem('nickname', nickname);
+const getNicknameFromSessionStorage = () => sessionStorage.nickname || (socket.id).substr(4);
+const setInitialNicknameIntoSessionStorage = () => {
+  if (typeof socket.id === 'string') {
+    const nicknameToSet = (socket.id).substr(4);
+    setNicknameIntoSessionStorage(nicknameToSet);
+  }
+};
+
 // HTML FUNCTIONS
 const createServerMessage = (message) => {
   const li = document.createElement('li');
@@ -23,24 +33,25 @@ const createChatMessage = (chatMessage) => {
   messagesUl.appendChild(li);
 };
 
-const renderUsersList = () => {
-  usersListUl.innerHTML = '';
-  usersListClient.forEach((nickname) => {
-    const li = document.createElement('li');
+const createUserLi = (nickname) => {
+  const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
     li.innerText = nickname;
     usersListUl.appendChild(li);
+};
+
+const renderUsersList = () => {
+  usersListUl.innerHTML = '';
+  const clientNickname = getNicknameFromSessionStorage();
+  createUserLi(clientNickname);
+  usersListClient.forEach((nickname) => {
+    if (clientNickname !== nickname) {
+      createUserLi(nickname);
+    }
   });
 };
 
 // NORMAL FUNCTIONS
-const setNicknameIntoSessionStorage = (nickname) => {
-  if (typeof nickname === 'string') {
-    sessionStorage.setItem('nickname', nickname);
-  }
-};
-const getNicknameFromSessionStorage = () => sessionStorage.nickname || (socket.id).substr(4);
-
 const sendUsersListToServer = () => {
   socket.emit('usersListFromClient', usersListClient);
 };
@@ -62,6 +73,8 @@ const updateNicknameAndSendToServer = () => {
   const previusNickname = getNicknameFromSessionStorage();
   const newNickname = inputNickname.value;
   const nicknameIndex = usersListClient.indexOf(previusNickname);
+  console.log(usersListClient);
+  console.log(previusNickname);
   usersListClient[nicknameIndex] = newNickname;
   setNicknameIntoSessionStorage(newNickname);
   socket.emit('updateNickname', newNickname);
@@ -119,6 +132,6 @@ socket.on('removeNickname', (nicknameToRemove) => removeNicknameFromServer(nickn
 socket.on('messagesToLoad', (messages) => loadDBMessages(messages));
 
 window.onload = () => {
-  setNicknameIntoSessionStorage((socket.id));
+  setInitialNicknameIntoSessionStorage();
   requestMessagesToLoad();
 };
