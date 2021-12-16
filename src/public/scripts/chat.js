@@ -16,6 +16,13 @@ const createUserLi = (id) => {
   divUser.appendChild(UserLi);
 };
 
+const createMessageLi = (msg) => {
+  const newMessage = document.createElement('li');
+  newMessage.innerText = msg;
+  newMessage.setAttribute('data-testid', 'message');
+  messages.appendChild(newMessage);
+};
+
 socket.on('connection', (id) => {
   createUserLi(id);
 });
@@ -37,10 +44,7 @@ formMessage.addEventListener('submit', (event) => {
 });
 
 socket.on('message', (msg) => {
-  const newMessage = document.createElement('li');
-  newMessage.innerText = msg;
-  newMessage.setAttribute('data-testid', 'message');
-  messages.appendChild(newMessage);
+  createMessageLi(msg);
 });
 
 formUser.addEventListener('submit', (event) => {
@@ -70,3 +74,14 @@ socket.on('updateUsers', (oldNickname, userNickname) => {
     }
   });
 });
+
+const fetchMessages = async () => {
+  const result = await fetch('http://localhost:3000/chat');
+  const jsonResult = await result.json();
+  jsonResult.forEach((item) => {
+    const message = `${item.timestamp} - ${item.nickname}: ${item.message}`;
+    createMessageLi(message);
+  });
+};
+
+fetchMessages();

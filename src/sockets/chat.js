@@ -1,4 +1,5 @@
 const moment = require('moment');
+const axios = require('axios');
 
 let arrId = [];
 
@@ -7,6 +8,7 @@ const setMessage = (socket, io) => {
     const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss A');
     const inform = `${date} - ${nickname}: ${chatMessage}`;
     io.emit('message', inform);
+    axios.post('http://localhost:3000', { message: chatMessage, nickname, timestamp: date });
   });
 };
 
@@ -15,7 +17,9 @@ module.exports = (io) => {
     let id = socket.id.substring(0, 16);
     arrId.push(id);
     socket.broadcast.emit('connection', id);
+
     socket.emit('connection_users', arrId);
+
     socket.on('alterUsername', ({ oldNickName, userNickname }) => {
       id = userNickname;
       arrId = arrId.map((value) => (value === oldNickName ? userNickname : value));
