@@ -10,12 +10,40 @@ Função defaultMessage -> criar a messagem padrão que deve conter a Data o usu
 - retorna a mensagem formatada de acordo com o requisito
 */
 
-module.exports = (io) => io.on('connection', (socket) => { // 1
-    socket.emit('user', socket.id.slice(0, 16)); // 3
-    socket.on('message', (msg) => { // 2
-      io.emit('message', defaultMessage(msg)); // 4 
-    });
+let arrayUsers = [];
+
+function changeUser(users) {
+  arrayUsers = arrayUsers.map((item) => {
+    if (item.nickname === users.oldUser) {
+      return { nickname: users.newUser, id: item.id };
+    }
+    return item;
   });
+}
+
+module.exports = (io) => io.on('connection', (socket) => { // 1
+  socket.emit('user', socket.id.slice(0, 16)); // 3
+  arrayUsers.push({
+    id: socket.id,
+    nickname: socket.id.slice(0, 16),
+  });
+  io.emit('userList', arrayUsers);
+
+  socket.on('message', (msg) => { // 2
+    const newMessage = defaultMessage(msg);
+    io.emit('message', newMessage); // 4 
+  });
+  
+  socket.on('changeUser', (nicknames) => {
+    changeUser(nicknames);
+    io.emit('userList', arrayUsers);
+  });
+
+  socket.on('disconnect', () => {
+    arrayUsers = arrayUsers.filter((item) => item.id !== socket.id);
+    socket.broadcast.emit('userList', arrayUsers);
+  });
+});
 
 /*
 1- Essa função vai ser executada sempre que um novo client se conectar ao servidor
