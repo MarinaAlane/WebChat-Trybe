@@ -16,9 +16,14 @@ const io = require('socket.io')(http, {
   },
 });
 
+const messagesController = require('./controllers/message');
+
 app.use(cors());
 
 app.use(express.static(path.join(__dirname, '/public')));
+
+app.get('/api/messages/new', messagesController.getAllMessages);
+app.post('/api/messages/all', messagesController.insertMessage);
 
 require('./sockets/chat')(io);
 

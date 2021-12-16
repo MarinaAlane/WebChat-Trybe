@@ -53,7 +53,6 @@ formChat.addEventListener('submit', (e) => {
 });
 
 const reorderList = (nicknames) => {
-  console.log('nick', nick);
   const newList = [];
   nicknames.forEach((nickname) => {
     if (nickname === nick) {
@@ -62,13 +61,11 @@ const reorderList = (nicknames) => {
       newList.push(nickname);
     }
   });
-  console.log('newList', newList);
 
   return newList;
 };
 
 const createNickList = (nicknames) => {
-  console.log('nicknames', nicknames);
   const reorderedNickList = reorderList(nicknames);    
   reorderedNickList.forEach((nickname) => {
     const newLi = newElement('li');

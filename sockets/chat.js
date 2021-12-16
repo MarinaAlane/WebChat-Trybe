@@ -1,3 +1,5 @@
+const messagesModel = require('../models/messages');
+
 const formatNumber = (num) => (num >= 10 ? num : `0${num}`);
 
 const getDateHour = () => {
@@ -29,11 +31,48 @@ const getDateHour = () => {
 
 let nicknames = [];
 
-module.exports = (io) => {
+const getMessages = async () => {
+  const messages = await messagesModel.getAllMessages();
+  return messages;
+};
+
+const saveMessages = async (message, nickname) => {
+  const timestamp = getDateHour();
+  await messagesModel.insertMessage(message, nickname, timestamp);
+};
+
+// const sendMessagesToClient = async (io) => {
+//   const messages = await getMessages();
+//   messages.forEach(({ message, nickname, timestamp }) => {
+//     io.emit('message', `${timestamp} - ${nickname} - ${message}`);
+//   });
+// };
+
+const sendNewMessage = async (message, nickname, io) => {
+  const timestamp = getDateHour();
+  io.emit('message', `${timestamp} - ${nickname} - ${message}`);
+};
+
+const sendMessagesToClient = async (io) => {
+  const messages = await getMessages();
+  console.log(messages);
+  messages.forEach(({ message, nickname, timestamp }) => {
+    io.emit('message', `${timestamp} - ${nickname} - ${message}`);
+  });
+};
+
+const changeNickname = (removedNick, newNick, io) => {
+  nicknames = nicknames.filter((nickname) => nickname !== removedNick);
+  nicknames.push(newNick);
+  io.emit('changeNickname', nicknames);
+};
+
+const socketIo = (io) => {
   io.on('connection', (socket) => {
-    socket.on('newUser', (nickname) => {
+    socket.on('newUser', async (nickname) => {
       nicknames.push(nickname);
       io.emit('newUser', nicknames);
+      await sendMessagesToClient(io);
     });
   
     socket.on('disconnect', () => {
@@ -42,14 +81,14 @@ module.exports = (io) => {
     });
 
     socket.on('changeNickname', ({ removedNick, newNick }) => {
-      nicknames = nicknames.filter((nickname) => nickname !== removedNick);
-      nicknames.push(newNick);
-
-      io.emit('changeNickname', nicknames);
+      changeNickname(removedNick, newNick, io);
     });
 
-    socket.on('message', ({ chatMessage, nickname }) => {
-      io.emit('message', `${getDateHour()} - ${nickname} - ${chatMessage}`);
+    socket.on('message', async ({ chatMessage, nickname }) => {
+      saveMessages(chatMessage, nickname);
+      await sendNewMessage(chatMessage, nickname, io);
     });
   });
 };
+
+module.exports = socketIo;

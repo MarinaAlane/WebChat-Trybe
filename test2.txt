@@ -1,0 +1,8 @@
+const createNickList = (nicknames) => {
+  nicknames.forEach((nickname) => {
+    const newLi = newElement('li');
+    newLi.setAttribute('data-testid', 'online-user');
+    newLi.innerText = nickname;
+    nicknamesList.appendChild(newLi);
+  });
+};

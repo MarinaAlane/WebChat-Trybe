@@ -1,0 +1,26 @@
+const reorderList = (nicknames) => {
+  console.log('nick', nick);
+  const newList = [];
+  nicknames.forEach((nickname) => {
+    if (nickname === nick) {
+      newList.unshift(nickname);
+    } else {
+      newList.push(nickname);
+    }
+  });
+  console.log('newList', newList);
+
+  return newList;
+};
+
+const createNickList = (nicknames) => {
+  console.log('nicknames', nicknames);
+  const reorderedNickList = reorderList(nicknames);    
+  reorderedNickList.forEach((nickname) => {
+    const newLi = newElement('li');
+    newLi.setAttribute('data-testid', 'online-user');
+    newLi.innerText = nickname;
+    nicknamesList.appendChild(newLi);
+  });
+  console.log('reorderedNickList', reorderedNickList);
+};
