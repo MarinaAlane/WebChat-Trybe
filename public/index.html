@@ -12,18 +12,18 @@
 </head>
 
 <body>
-  <section class="chat">
+  <form class="chat" id="chat">
     <div class="users">
-      <input type="text" class="inputUser" data-testid="nickname-box" placeholder="Digite o nome do usuário">
-      <button type="submit" data-testid="nickname-button" class="saveButton">Salvar</button>
+      <input type="text" class="inputUser" data-testid="nickname-box" id="nickname-box" placeholder="Digite o nickname">
+      <button type="button" data-testid="nickname-button" id="save-button" class="saveButton">Salvar</button>
     </div>
     <div class="container">
-      <ul class="usersOnline"></ul>
-      <ul class="messages"></ul>
+      <ul data-testid="online-user" class="usersOnline" id="users"></ul>
+      <ul data-testid="message" class="messages" id="messages"></ul>
     </div>
-    <input data-testid="message-box" placeholder="Digite a sua mensagem" name="message">
+    <input data-testid="message-box" placeholder="Digite a sua mensagem" name="message" id="message-box">
     <button type="submit" data-testid="send-button" class="sendButton">Enviar</button>
-  </section>
+  </form>
   <script src='./javascripts/client.js'></script>
 </body>
 
