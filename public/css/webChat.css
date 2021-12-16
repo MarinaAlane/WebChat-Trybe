@@ -8,14 +8,14 @@
   font: 13px Helvetica, Arial;
 } */
 
-#nickname-form {
+.nickname-form {
   background: black;
   padding: 3px;
   top: 0;
   width: 100%;
 }
 
-#message-form {
+.message-form {
   background: black;
   bottom: 0;
   padding: 3px;
@@ -23,7 +23,7 @@
   width: 100%;
 }
 
-#messageInput , #nickname {
+.messageInput , .nickname {
   border: 0;
   margin-right: 0.5%;
   padding: 10px;
@@ -38,24 +38,24 @@ form button {
   width: 9%;
 }
 
-#users-container {
+.users-container {
   border: 1px solid black;
 }
 
-#messages-container {
+.messages-container {
   border: 1px solid black;
 }
 
-#messages {
+.messages {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-#messages li {
+.messages li {
   padding: 5px 10px;
 }
 
-#messages li:nth-child( odd ) {
+.messages li:nth-child( odd ) {
   background: #eee;
 }
