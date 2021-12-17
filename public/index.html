@@ -116,7 +116,10 @@
           userUl.removeChild(userUl.lastChild);
         }
       }
-      user.forEach(user => {
+      if (!nameNick) nameNick = user.slice(-1)[0];
+      createLi(nameNick);
+      const newUsers = user.filter((u) => u !== nameNick);
+      newUsers.forEach(user => {
         createLi(user)
       });
     });
