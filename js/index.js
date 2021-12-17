@@ -35,7 +35,7 @@ form.addEventListener('submit', (e) => {
   return false;
 });
 
-const createMessage = (message) => {
+const createMessage = async (message) => {
   const messagesUl = document.querySelector('#messages');
   const messagesLi = document.createElement('li');
   messagesLi.setAttribute(datatest, 'message');
@@ -52,10 +52,9 @@ const createUsersBox = (user) => {
   li.innerText = user;
 };
 
-socket.on('messageServer', (message) => {
+socket.on('messageServer', (_message) => {
   onlineUser.innerText = (socket.id).substring(0, 16);
-
-  createMessage(message);
+  // createMessage(message);
 });
 
 socket.on('onLineUsers', (usersId) => {
@@ -66,6 +65,10 @@ socket.on('onLineUsers', (usersId) => {
       createUsersBox(usersId[i]);
     }
   }
+});
+
+socket.on('history', (message) => {
+  createMessage(message);
 });
 
 socket.on('message', (message) => createMessage(message));

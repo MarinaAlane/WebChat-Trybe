@@ -3,11 +3,11 @@ const connection = require('./connection');
 const messageRegister = async (message, nickname, timestamp) => {
   try {
     const db = await connection();
-    const register = await db.collection('messages').insertOne({ nickname, message, timestamp });
-    console.log(register);
-    return ({ nickname, message, timestamp, _id: register.insertedId });
+    const register = await db.collection('messages').insertOne({ message, nickname, timestamp },
+      { projection: { _id: 0 } });
+    return ({ _id: register.insertedId, message, nickname, timestamp });
   } catch (_err) {
-      return ({ code: 'databaseError' });
+    return ({ code: 'databaseError' });
   }
 };
 
