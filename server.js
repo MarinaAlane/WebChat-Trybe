@@ -3,6 +3,7 @@ const path = require('path');
 
 const app = express();
 const http = require('http').createServer(app);
+const moment = require('moment');
 
 const PORT = 3000;
 
@@ -17,12 +18,19 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 const users = [];
 
+const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
+
 io.on('connection', (socket) => {
   users[socket.id] = socket.id;
   io.emit('userList', Object.values(users));
 
-  socket.on('message', (m) => {
-    io.emit('message', m);
+  socket.on('message', ({ nickname, chatMessage }) => {
+    io.emit('message', `${timestamp} - ${nickname} - ${chatMessage}`);
+  });
+
+  socket.on('nickName', (nickName) => {
+    users[socket.id] = nickName;
+      io.emit('userList', Object.values(users));
   });
 
   socket.on('disconnect', () => {

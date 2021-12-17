@@ -16,8 +16,16 @@
     </header>
 
     <div class="nickNameInput">
-      <input type="text">
-      <button>salvar</button>
+      <input
+        type="text"
+        id="nickNameInput"
+      >
+      <button
+      type="submit"
+        id="nickNameBtn"
+      >
+        salvar
+      </button>
     </div>
 
     <div class="nickName">
@@ -54,11 +62,25 @@
     const sendBtn = document.getElementById('sendBtn');
     const inputMessage = document.getElementById('inputMessage')
 
+    let nameNick = '';
+
     sendBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if(inputMessage.value) {
-        socket.emit('message', inputMessage.value);
+        const nickname = nameNick || socket.id;
+        socket.emit('message', {chatMessage: inputMessage.value, nickname});
         inputMessage.value = '';
+      }
+    });
+
+    const nickNameBtn = document.getElementById('nickNameBtn');
+
+    nickNameBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(nickNameInput.value) {
+        nameNick = nickNameInput.value
+        socket.emit('nickName', nickNameInput.value);
+        nickNameInput.value = '';
       }
     });
 
