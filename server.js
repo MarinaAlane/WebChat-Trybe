@@ -10,15 +10,12 @@ const io = require('socket.io')(http, {
   } });
   
 require('./sockets/chat')(io);
-const messagesRouter = require('./routes/messagesRouter');
 
 // io.on('connection', (socket) => {
 //   console.log(`Usuário conectado. ID: ${socket.id} `);
 // });
 
 app.use(express.static(`${__dirname}/`));
-
-app.use(messagesRouter);
 
 http.listen(3000, () => {
   console.log('Servidor on na porta 3000');
