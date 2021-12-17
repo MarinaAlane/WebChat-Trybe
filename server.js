@@ -21,6 +21,10 @@ io.on('connection', (socket) => {
   users[socket.id] = socket.id;
   io.emit('userList', Object.values(users));
 
+  socket.on('message', (m) => {
+    io.emit('message', m);
+  });
+
   socket.on('disconnect', () => {
     delete users[socket.id];
     io.emit('userList', Object.values(users));

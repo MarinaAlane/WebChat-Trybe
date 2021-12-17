@@ -25,13 +25,19 @@
     </div>
 
     <div class="messages">
-      <div class="teste">
-        <ul>
-          <li>message</li>
-        </ul>
+      <div>
+        <ul id="messageUl"></ul>
       </div>
-      <input type="text">
-      <button>enviar</button>
+      <input
+       type="text"
+       id="inputMessage"
+      >
+      <button
+        type="submit"
+        id="sendBtn"
+      >
+        enviar
+      </button>
     </div>
 
   </div>
@@ -44,6 +50,24 @@
       li.appendChild(userId);
       document.getElementById('users').appendChild(li);
     }
+
+    const sendBtn = document.getElementById('sendBtn');
+    const inputMessage = document.getElementById('inputMessage')
+
+    sendBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(inputMessage.value) {
+        socket.emit('message', inputMessage.value);
+        inputMessage.value = '';
+      }
+    });
+
+    socket.on('message', (text) => {
+      const li = document.createElement('li');
+      const messageText = document.createTextNode(text);
+      li.appendChild(messageText)
+      const messageUl = document.getElementById('messageUl').appendChild(li);
+    });
 
     socket.on('userList', (user) => {
       const userUl = document.querySelector('#users');
