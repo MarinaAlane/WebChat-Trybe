@@ -97,6 +97,16 @@
       const messageUl = document.getElementById('messageUl').appendChild(li);
     });
 
+    socket.on('chatHistory', (text) => {
+      text.forEach((message) => {
+        const li = document.createElement('li');
+        const messageText = document.createTextNode(`${message.timestamp} - ${message.nickname} - ${message.chatMessage}`);
+        li.setAttribute('data-testid', 'message');
+        li.appendChild(messageText)
+        const messageUl = document.getElementById('messageUl').appendChild(li);
+      });
+    });
+
     socket.on('userList', (user) => {
       const userUl = document.querySelector('#users');
       const usersLi = userUl.childElementCount;
