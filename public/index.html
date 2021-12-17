@@ -19,10 +19,12 @@
       <input
         type="text"
         id="nickNameInput"
+        data-testid="nickname-box"
       >
       <button
-      type="submit"
+        type="submit"
         id="nickNameBtn"
+        data-testid="nickname-button"
       >
         salvar
       </button>
@@ -39,10 +41,12 @@
       <input
        type="text"
        id="inputMessage"
+       data-testid="message-box"
       >
       <button
         type="submit"
         id="sendBtn"
+        data-testid="send-button"
       >
         enviar
       </button>
@@ -55,6 +59,7 @@
     const createLi = (user) => {
       const li = document.createElement('li');
       const userId = document.createTextNode(user);
+      li.setAttribute('data-testid', 'online-user');
       li.appendChild(userId);
       document.getElementById('users').appendChild(li);
     }
@@ -87,6 +92,7 @@
     socket.on('message', (text) => {
       const li = document.createElement('li');
       const messageText = document.createTextNode(text);
+      li.setAttribute('data-testid', 'message');
       li.appendChild(messageText)
       const messageUl = document.getElementById('messageUl').appendChild(li);
     });
