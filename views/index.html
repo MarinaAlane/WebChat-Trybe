@@ -80,13 +80,20 @@
           return 0;
         });
         sortedUsers.forEach(({ arrayUsers }) => {
-          const ulUsers = document.querySelector('#ulUsers')   
-          const user = document.createElement('li');
-          user.innerText = arrayUsers;
-          user.setAttribute("data-testid", "online-user");
-          ulUsers.appendChild(user);
+          user.innerHTML = arrayUsers[arrayUsers.length - 1]
         });
       });
+
+      socjket.on('chat', (msg) => {
+        msg.forEach((message) => {
+          const { date, nickname, chatMessage } = msg
+          const li = document.createElement('li');
+          li.setAttribute("data-testid", "message");
+          li.textContent = msg;
+          // console.log(li, 'esse é o li da mensagem')
+          ul.appendChild(li);
+        });
+      })
 
       salvar.addEventListener('click', (e) => {
         e.preventDefault();

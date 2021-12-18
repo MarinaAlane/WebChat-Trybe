@@ -32,29 +32,28 @@ app.get('/', (_req, res) => {
 
 let arrayUsers = [];
 
-io.on('connection', (socket) => {
+const messages = require('./models/message');
+
+io.on('connection', async (socket) => {
   console.log(`Usuário ${socket.id} conectado`);
   // Marcelo Leite me deu uma dica nessa lógica porque estava comlicando demais essa randomização
-  // console.log(randonUser);
-  
-  const randonUser = socket.id.slice(0, 16);
-  socket.emit('logIn', randonUser);
+  arrayUsers[socket.id] = socket.id.slice(0, 16);
+  socket.emit('logIn', Object.values(arrayUsers));
 
-  socket.on('Nickname', (nickname) => {
-    arrayUsers = arrayUsers.filter((user) => user.id === socket.id);
-    arrayUsers.push({ id: socket.id, nickname });
-    io.emit('userOnline', arrayUsers);
-  });
-  
   io.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} desconectado`);
     arrayUsers = arrayUsers.filter((user) => user.id === socket.id);
     io.emit('userOnline', arrayUsers);
   });
-  
-    socket.on('message', (msg) => {
+    socket.on('message', async (msg) => {
       const { nickname, chatMessage } = msg;
+      await messages.createMessage({ nickname, chatMessage });
       io.emit('message', `${fulldate} - ${nickname}: ${chatMessage}`);
+    });
+    socket.emit('chat', await messages.getAll());
+
+    socket.on('Nickname', (nickname) => {
+      arrayUsers[socket.id] = nickname;
+      io.emit('userOnline', Object.values(arrayUsers));
     });
 });
 
