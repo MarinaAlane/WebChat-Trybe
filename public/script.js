@@ -57,6 +57,9 @@ const setName = () => {
   const newName = nameInput.value;
   sessionStorage.setItem('nickname', newName);
   socket.emit('setName', { oldName, newName });
+  const user = chatUsers.querySelector('[data-testid="online-user"]');
+
+  user.innerText = newName;
   userName.innerText = newName;
   nameInput.value = '';
 };
@@ -67,7 +70,7 @@ const newUserAnnouncement = (nickname) => {
   const div2 = document.createElement('div');
   div2.classList.add('message', 'other-message');
   const span = document.createElement('span');
-  span.setAttribute(dataTestid, 'online-user');
+  // span.setAttribute(dataTestid, 'online-user');
   span.innerText = nickname;
   const span2 = document.createElement('span');
   span2.innerText = ' has joined the chat';
@@ -81,7 +84,6 @@ const newUserAnnouncement = (nickname) => {
 nameButton.addEventListener('click', setName);
 
 const refreshUserList = ({ nickname }) => {
-  console.log(nickname);
   const randomNumber = Math.floor(Math.random() * 8) + 1;
   const src = `https://bootdey.com/img/Content/avatar/avatar${randomNumber}.png`;
   const li = document.createElement('li');
@@ -108,12 +110,13 @@ const refreshUserList = ({ nickname }) => {
   div.appendChild(status);
   li.appendChild(img);
   li.appendChild(div);
-  chatUsers.appendChild(li);
+  if (nickname === getUser()) {
+    return chatUsers.insertBefore(li, chatUsers.childNodes[0]);
+  }
+  return chatUsers.appendChild(li);
 };
 
-socket.on('newUserAnnouncement', (data) => {
-  newUserAnnouncement(data);
-});
+socket.on('newUserAnnouncement', (data) => newUserAnnouncement(data));
 
 socket.on('connectedUsers', (data) => {
   chatUsers.innerHTML = '';
