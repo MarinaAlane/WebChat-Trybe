@@ -43,7 +43,6 @@ const addMessageToChat = (message) => {
   const li = document.createElement('li');
   li.classList.add('clearfix');
   const span = document.createElement('span');
-
   span.innerText = message;
   span.setAttribute(dataTestid, 'message');
   li.appendChild(span);
@@ -78,7 +77,6 @@ const newUserAnnouncement = (nickname) => {
   div2.appendChild(span2);
   li.appendChild(div2);
   chatList.appendChild(li);
-  // chatList.insertBefore(li, chatUsers.childNodes[0]);
 };
 
 nameButton.addEventListener('click', setName);
@@ -122,5 +120,11 @@ socket.on('connectedUsers', (data) => {
   chatUsers.innerHTML = '';
   data.forEach((user) => {
     refreshUserList(user);
+  });
+});
+
+socket.on('messageHistory', (messageList) => {
+  messageList.forEach((message) => {
+    addMessageToChat(message);
   });
 });

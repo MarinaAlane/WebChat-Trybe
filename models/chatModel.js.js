@@ -14,7 +14,14 @@ const createMessage = async ({ message, nickname, timestamp }) => {
   return result;
 };
 
+const cleanMessageList = async () => {
+  const db = await connection();
+  const result = await db.collection('messages').deleteMany({});
+  return result;
+};
+
 module.exports = {
   getAllMessages,
   createMessage,
+  cleanMessageList,
 };

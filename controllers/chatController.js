@@ -1,9 +1,11 @@
 const moment = require('moment');
 const model = require('../models/chatModel.js');
 
-const getAllMessages = async () => {
+const getMessages = async () => {
   const messages = await model.getAllMessages();
-  return messages;
+  return messages.map(
+    (message) => `${message.timestamp}-${message.nickname}-${message.message}`,
+  );
 };
 
 const createMessage = async (data) => {
@@ -17,7 +19,17 @@ const createMessage = async (data) => {
   }
 };
 
+const cleanMessageList = async () => {
+  try {
+    const response = await model.cleanMessageList();
+    return response;
+  } catch (e) {
+    return e.message;
+  }
+};
+
 module.exports = {
-  getAllMessages,
+  getMessages,
   createMessage,
+  cleanMessageList,
 };
