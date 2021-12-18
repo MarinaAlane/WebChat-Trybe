@@ -28,7 +28,7 @@ socket.on('userLogged', (nickUsers) => {
   const userOnline = document.querySelector('#user-online');
   userOnline.innerHTML = '';
   const currentNick = sessionStorage.getItem('nickname');
-  console.log(userOnline, 'USERONLINE');
+ // console.log(userOnline, 'USERONLINE');
   nickUsers.forEach(({ nickname }) => {
     const nickLi = document.createElement('li');
     nickLi.innerText = currentNick;
@@ -43,13 +43,20 @@ socket.on('userLogged', (nickUsers) => {
   });
 });
 
-socket.on('message', (message) => {
+const createMessage = (message) => {
   const messages = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
   messages.appendChild(li);
   window.scrollTo(0, document.body.scrollHeight);
+};
+
+socket.on('historyMessages', (history) => {
+  history.forEach((msg) => {
+    const msgData = `${msg.timestamp} - ${msg.nickname}: ${msg.message}`;
+    createMessage(msgData);
+  });
 });
 
 // evento do nickname
@@ -75,6 +82,8 @@ msgForm.addEventListener('submit', (e) => {
   }
   return false;
 });
+
+socket.on('message', (message) => createMessage(message));
 
 window.onload = () => {
   randomNickGenerator();

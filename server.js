@@ -18,11 +18,7 @@ const io = require('socket.io')(http, {
   },
 });
 
-app.use(express.static(path.join(__dirname, 'public'))); 
-
-/* app.get('/', (_req, res) => {
-  res.status(201).sendFile(path.join(__dirname, '/index.html'));
-}); */
+app.use(express.static(path.join(__dirname, 'public')));
 
 require('./sockets/chatServer')(io);
 
