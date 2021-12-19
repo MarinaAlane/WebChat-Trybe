@@ -104,18 +104,18 @@ function updateUserList(users) {
 }
 
 /*
-Função updateUserList - atualiza a lista para atender aos requisito 3
-- primeiro ele usa a função clearUserList criada anteriormente para limpar os usuários 
-que estao na userUl
-- depois busca a userUl via document 
-- e percorre o array de usuários procurando para ver se é o usuário caso não seja ele 
-  ele o  cria usando a função createUser 
-- cria uma li
-- seta o atributo para o teste teste
-- coloca o valor na nova li
-- por fim insere antes essa li antes do primeiro do primeiro elemento dentro de userUl
+Função updateUserList - atualiza a lista para atender aos requisito 4
+- Primeiro ele usa a função clearUserList criada anteriormente para limpar os usuários 
+  que estao na userUl
+- Depois busca a userUl via document 
+- Percorre o array de usuários procurando para ver se é o usuário caso não seja ele 
+  ele o cria usando a função createUser 
+- Cria uma li
+- Seta o atributo para o teste teste
+- Coloca o valor na nova li
+- Por fim insere antes essa li antes do primeiro do primeiro elemento dentro de userUl
 [
-  exemplo: elementoPai.insertBefore(novoElemento, elementoDeReferencia);
+  Exemplo: elementoPai.insertBefore(novoElemento, elementoDeReferencia);
   - elementoPai Pai do nó recentemente inserido.
   - novoElemento O nó a ser inserido.
   - elementoDeReferencia O nó antes do qual o novoElemento será inserido.

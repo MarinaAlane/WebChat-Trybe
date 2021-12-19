@@ -1,6 +1,7 @@
-function defaultMessage({ chatMessage, nickname }) { 
-  const date = new Date().toLocaleString().replace(/\//gi, '-');
-  return `${date} - ${nickname}: ${chatMessage}`;
+const { saveMessages } = require('../controllers/chatController');
+
+function setMessage({ nickname, chatMessage }, date) {
+  return `${date} - ${nickname} - ${chatMessage}`;
 }
 
 /*
@@ -21,6 +22,13 @@ function changeUser(users) {
   });
 }
 
+function setDefaultMsg(message) {
+  const date = new Date().toLocaleString().replace(/\//gi, '-');
+  saveMessages(message, date);
+  const formatMsg = setMessage(message, date);
+  return formatMsg;
+}
+
 module.exports = (io) => io.on('connection', (socket) => { // 1
   socket.emit('user', socket.id.slice(0, 16)); // 3
   arrayUsers.push({
@@ -30,7 +38,7 @@ module.exports = (io) => io.on('connection', (socket) => { // 1
   io.emit('userList', arrayUsers);
 
   socket.on('message', (msg) => { // 2
-    const newMessage = defaultMessage(msg);
+    const newMessage = setDefaultMsg(msg);
     io.emit('message', newMessage); // 4 
   });
   

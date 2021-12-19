@@ -20,13 +20,21 @@ Implementando a instância do socket.io usando a função io e passando dois par
 conexões do cliente que acessar pela URL http://localhost:3000 usando verbos GET e POST.
 */
 
+const { getMessages } = require('./controllers/chatController');
+
+app.set('view engine', 'ejs');
+
+app.set('views', './public');
+
 app.use(express.static(`${__dirname}/public`)); // acesso aos arquivos dentro do diretório public adicionando a seguinte linha de código
 
 require('./sockets/chat')(io); // require necessario para o arquivo chat.js ter acesso ao modulos do io na pasta sockets
 
-app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/public/chat.html`); // devolve o arquivo chamado /chat.html quando acessa a rota 
-});
+app.get('/', getMessages);
+
+// app.get('/', (_req, res) => {
+//   res.sendFile(`${__dirname}/public/chat.html`); // devolve o arquivo chamado /chat.html quando acessa a rota 
+// });
 
 http.listen(PORT, () => {
   console.log(`Ouvindo na porta ${PORT}`);

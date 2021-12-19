@@ -5,9 +5,11 @@
 </head>
 <body>
   <h4 id="nickName"></h4>
-  <ul id="users" className="users"></ul>
-    <li>
-    </li>
+  <ul id="users"></ul>
+    <ul id="messages">
+      <% result.forEach((message) => { %>
+      <li data-testid="message"><%= `${message.timestamp} - ${message.nickname}: ${message.message}`%></li>
+    <% }) %>
   </ul>
   <form action="" id="userForm" className="userForm">
     <input type="text" autocomplete="off" id="userInput" placeholder="Digite seu User" data-testid="nickname-box"/>
