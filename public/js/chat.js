@@ -5,15 +5,10 @@ let nickname;
 const setNickname = (nicknameData = '') => {
   const nicknameTag = document.querySelector('.online-user');
   nickname = nicknameData;
-
   nicknameTag.innerHTML = nicknameData;
 };
 
 const generateNickname = () => Math.random().toFixed(16).toString(16).slice(2);
-
-window.onload = () => {
-  setNickname(generateNickname());
-};
 
 const sendMessage = (e) => {
   e.preventDefault();
@@ -35,17 +30,6 @@ const createMessageText = (message, userName) => {
   return text;
 };
 
-document.querySelector('.nickname-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const nicknameInput = e.target.querySelector('input');
-
-  setNickname(nicknameInput.value);
-
-  nicknameInput.value = '';
-});
-
-document.querySelector('#chat-form').addEventListener('submit', sendMessage);
-
 const displayMessage = (data) => {
   const { message, nickname: userName } = JSON.parse(data);
   const messagesContainer = document.querySelector('.messages-container');
@@ -56,4 +40,22 @@ const displayMessage = (data) => {
   messagesContainer.appendChild(messageBox);
 };
 
+const displayMessageHistory = (history) => {
+  history.forEach((messageData) => displayMessage(JSON.stringify(messageData)));
+};
+
 socket.on('message', displayMessage);
+socket.on('messagesHistory', displayMessageHistory);
+
+window.onload = () => {
+  setNickname(generateNickname());
+  document.querySelector('.nickname-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nicknameInput = e.target.querySelector('input');
+  
+    setNickname(nicknameInput.value);
+  
+    nicknameInput.value = '';
+  });
+  document.querySelector('#chat-form').addEventListener('submit', sendMessage);
+};
