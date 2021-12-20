@@ -38,8 +38,16 @@ socket.on('connection', (users) => {
 });
 
 // Escuta o evento throwId para armazenar o ID de cada usuário no nickname
-socket.on('throwId', (userId) => {
+socket.on('throwId', ({ userId, users }) => {
   nickname = userId;
+  const orderedUsers = [];
+  const lastUser = users[users.length - 1];
+
+  orderedUsers.push(lastUser);
+
+  const limitedUsers = users.slice(0, users.length - 1);
+  limitedUsers.forEach((user) => orderedUsers.push(user));
+  updateUsers(orderedUsers);
 });
 
 // Evento para enviar uma mensagem e nickname ao servidor
@@ -70,7 +78,14 @@ enterButton.addEventListener('click', (e) => {
 
 // Evento que altera o username dos usuários
 socket.on('changeUsersName', (users) => {
-  updateUsers(users);
+  const orderedUsers = [];
+  const lastUser = users[users.length - 1];
+
+  orderedUsers.push(lastUser);
+
+  const limitedUsers = users.slice(0, users.length - 1);
+  limitedUsers.forEach((user) => orderedUsers.push(user));
+  updateUsers(orderedUsers);
 });
 
 socket.on('connectedMessages', (messages) => {
@@ -82,17 +97,9 @@ socket.on('connectedMessages', (messages) => {
   });
 });
 
-// const showUsers = (userName, hashNick) => {
-//   const usersLi = document.querySelectorAll('.userId-Name');
-//   usersLi.forEach((i, index) => {
-//     if (i.innerText === hashNick) {
-//       usersLi[index].innerText = userName;
-//       nickHash = userName;
-//     }
-//   });
-// };
-
-// socket.on('userLogin', ({ userName, hashNick }) => showUsers(userName, hashNick));
+socket.on('discon', (users) => {
+  updateUsers(users);
+});
 
 window.onbeforeunload = (_e) => {
   socket.disconnect();
