@@ -11,25 +11,30 @@ const port = 3000;
 const server = app.listen(port, () => console.log(`Listening on port ${port}!`));
 
 const messages = [];
-const users = [];
+let users = [];
 
 const io = socketIo(server);
 
 io.on('connection', (socket) => {
-  console.log('new connection');
-  socket.emit('update_messages', messages);
+  let userName = socket.id.substring(0, 16);
+  users.push(userName);
+  // socket.emit('update_messages', messages);
+  socket.emit('update_users', users);
+  socket.broadcast.emit('new_user', userName);
+  
+  // socket.on('new_user', () => {
+  // });
 
-  socket.on('new_user', (data) => {
-    console.log(data);
-    users.push(data);
-    io.emit('update_users', users);
-    io.emit('update_messages', messages);
+  socket.on('update_user', (data) => {
+    users = users.map((user) => (user === data.lastName ? data.user : user));
+    userName = data.user;
+    socket.broadcast.emit('update_logged_users', data);
+    // io.emit('update_messages', messages);
   });
 
   socket.on('new_message', (data) => {
-    console.log(data);
     messages.push(data);
-    io.emit('update_users', users);
-    io.emit('update_messages', messages);
+    // io.emit('update_users', users);
+    io.emit('message', messages);
   });
 });

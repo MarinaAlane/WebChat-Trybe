@@ -16,22 +16,44 @@ function updateMessagesOnScreen(messages) {
 
 function updateUsersOnScreen(users) {
   const ulUsers = document.querySelector('.users');
+  const lastLogin = users[users.length - 1];
+  sessionStorage.setItem('nickName', lastLogin);
 
-  if (!users) return;
+  ulUsers.innerHTML = `<li class="log-user">${lastLogin}</li>`;
 
-  ulUsers.innerHTML = '';
-
-  users.forEach(({ user }) => {
-    ulUsers.innerHTML += `<li>${user}</li>`;
-  });
+  for (let index = 0; index < users.length - 1; index += 1) {
+    ulUsers.innerHTML += `<li class="log-user">${users[index]}</li>`;
+  }
 }
 
-socket.on('update_messages', (messages) => {
+function createUser(user) {
+  const ulUsers = document.querySelector('.users');
+
+  ulUsers.innerHTML += `<li class="log-user">${user}</li>`;
+}
+
+socket.on('message', (messages) => {
   updateMessagesOnScreen(messages);
 });
 
 socket.on('update_users', (users) => {
   updateUsersOnScreen(users);
+});
+
+socket.on('update_logged_users', (data) => {
+  const nomes = document.querySelectorAll('.log-user');
+
+  nomes.forEach((el) => {
+    const newEl = el;
+    if (newEl.innerText === data.lastName) {
+      newEl.innerText = data.user;
+    }
+  });
+});
+
+socket.on('new_user', (user) => {
+  createUser(user);
+  sessionStorage.setItem('nickName', user);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,11 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const userForm = document.querySelector('.user-form');
-// const usersUl = document.querySelector('.users');
+
 userForm.addEventListener('submit', (event) => {
+  const loggedUser = document.querySelector('.log-user');
   event.preventDefault();
   name = document.forms.userForm.inputName.value;
-  // usersUl.innerHTML += user;
   userForm.parentNode.removeChild(userForm);
-  socket.emit('new_user', { user: name });
+  loggedUser.innerText = name;
+  socket.emit('update_user', { user: name, lastName: sessionStorage.nickName });
+  sessionStorage.setItem('nickName', name);
 });
