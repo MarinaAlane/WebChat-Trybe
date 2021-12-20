@@ -23,7 +23,6 @@ const nickName = document.getElementById('nickName');
 
 userForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  console.log(userInput.value);
   socket.emit('changeUser', { // req 4
     newUser: userInput.value, 
     oldUser: nickName.innerHTML,

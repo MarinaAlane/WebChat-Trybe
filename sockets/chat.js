@@ -1,14 +1,12 @@
-const { saveMessages } = require('../controllers/chatController');
+const { saveMessages } = require('../controllers/chatController'); // importação da função saveMessages 
 
 function setMessage({ nickname, chatMessage }, date) {
   return `${date} - ${nickname} - ${chatMessage}`;
 }
 
 /*
-Função defaultMessage -> criar a messagem padrão que deve conter a Data o usuário e a mensagem padrão
-- Recebe como paramentro um objeto contendo o usuário e a mensagem.
-- usa o date para pegar a data o toLocaleString para buscar somente a data e hora e o replace + regex para substituir as barras por traços como pedido no reuqisito
-- retorna a mensagem formatada de acordo com o requisito
+Função setMessage - recebe como paramentro e
+seta a mensagem como deve ser no caso data - nome - mensagem
 */
 
 let arrayUsers = [];
@@ -22,6 +20,14 @@ function changeUser(users) {
   });
 }
 
+/*
+Função changeUser - 
+recebe os usuarios em um objeto contendo o oldUser e o newUser
+fazendo um map verifica se o usuario sendo mapeado é igual ao usuario antigo
+caso for ele retorna um novo objeto contendo o novo usuaário e o id o item
+caso contreario ele retorna o item antigo
+*/
+
 function setDefaultMsg(message) {
   const date = new Date().toLocaleString().replace(/\//gi, '-');
   saveMessages(message, date);
@@ -29,25 +35,35 @@ function setDefaultMsg(message) {
   return formatMsg;
 }
 
+/*
+Função setDefaultMsg -> criar a messagem padrão que deve conter a Data o usuário e a mensagem padrão
+- Recebe como paramentro um objeto contendo o usuário e a mensagem.
+- usa o date para pegar a data o toLocaleString para buscar somente a data e hora e o replace + 
+regex para substituir as barras por traços como pedido no reuqisito
+- chama a função setMessage para configurara a mensagem
+- retorna a mensagem formatada de acordo com o requisito 1
+*/
+
 module.exports = (io) => io.on('connection', (socket) => { // 1
   socket.emit('user', socket.id.slice(0, 16)); // 3
   arrayUsers.push({
     id: socket.id,
     nickname: socket.id.slice(0, 16),
   });
-  io.emit('userList', arrayUsers);
+
+  io.emit('userList', arrayUsers); // 5
 
   socket.on('message', (msg) => { // 2
     const newMessage = setDefaultMsg(msg);
     io.emit('message', newMessage); // 4 
   });
   
-  socket.on('changeUser', (nicknames) => {
+  socket.on('changeUser', (nicknames) => { // 6
     changeUser(nicknames);
     io.emit('userList', arrayUsers);
   });
 
-  socket.on('disconnect', () => {
+  socket.on('disconnect', () => { // 7
     arrayUsers = arrayUsers.filter((item) => item.id !== socket.id);
     socket.broadcast.emit('userList', arrayUsers);
   });
@@ -68,10 +84,24 @@ de eventos do DOM como o clique em um botão ou ao digitar algo em uma caixa de 
 */
 
 /*
-3- Usamos uma string para enviar uma mensagem, mas podemos usar outros tipos de dados, como um número, uma data, um objeto, entre outros tipos, neste caso estamos emitindo o id do usuário com 16 caracteres usando a função slice(0, 16)
+3- Usamos uma string para enviar uma mensagem, mas podemos usar outros tipos de dados, como um número, 
+uma data, um objeto, entre outros tipos, neste caso estamos emitindo 
+o id do usuário com 16 caracteres usando a função slice(0, 16)
 */
 
 /*
 4- dentro do listener do evento , usamos a função io.emit , em vez de socket.emit para enviar a mensagem ja formatada com a data/hora o usuário e a mensagem que é feito pela função defaultMessage 
 
+*/
+
+/* 
+5- emite o array de usuários que foi montado aqui pela função change users
+*/
+
+/*
+6- socket changeuser recebe o aray de nickname chama a função change user e emit o array de usuarios  
+*/
+
+/*
+7- quando um usuario se disconecta ele retira esse usuario do array de usuarios e emite a nova lista para todos os clientes com o socket.broadcast.emit 
 */
