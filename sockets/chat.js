@@ -15,10 +15,6 @@ module.exports = (io) => {
     // Emite um evento para enviar o ID ao cliente
     socket.emit('throwId', { userId, users });
 
-    // Escuta um evento de disconnect, removendo o usuário desconectado do array users;
-    socket.on('disconnect', 
-    () => { users = users.filter((user) => userId !== user); io.emit('discon', users); });
-
     // Escuta um evento message do cliente, que receberá a mensagem e o nickname
     socket.on('message', async ({ chatMessage, nickname }) => {
       // https://stackoverflow.com/questions/30158574/how-to-convert-result-from-date-now-to-yyyy-mm-dd-hhmmss-ffff
@@ -35,7 +31,11 @@ module.exports = (io) => {
       users = users.map((user) => (user === userId ? name : user));
       userId = name;
       io.emit('changeUsersName', users);
-      socket.emit('throwId', userId);
+      socket.emit('throwId', { userId, users });
     }); socket.emit('connectedMessages', await getAllMessages());
+
+    // Escuta um evento de disconnect, removendo o usuário desconectado do array users;
+    socket.on('disconnect', 
+    () => { users = users.filter((user) => userId !== user); io.emit('discon', users); });
   });
 };
