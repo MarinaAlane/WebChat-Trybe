@@ -5,6 +5,6 @@ module.exports = (io) => io.on('connection', (socket) => {
     const date = moment();
     const formattedDate = date.format('DD-MM-yyyy hh:mm:ss A');
 
-    socket.emit('message', `${formattedDate} - ${nickname}: ${chatMessage}`);
+    io.emit('sendMessage', `${formattedDate} - ${nickname}: ${chatMessage}`);
   });
 });
