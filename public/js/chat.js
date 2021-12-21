@@ -5,6 +5,9 @@ saveBtn.addEventListener('click', () => {
   const usernameInput = document.getElementById('username-input');
   const username = usernameInput.value;
 
+  const onlineUser = document.getElementById('online-user');
+  onlineUser.innerText = username;
+
   sessionStorage.setItem('username', username);
 
   usernameInput.value = '';
