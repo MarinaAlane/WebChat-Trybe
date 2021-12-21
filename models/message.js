@@ -6,10 +6,10 @@ const getAll = async () => {
   return msg;
 };
 
-const createMessage = async ({ data, nickname, chatMessage }) => {
+const createMessage = async ({ fulldate, nickname, chatMessage }) => {
   const db = await connection();
-  const messages = await db.collection('messages').insert({
-    data,
+  const messages = await db.collection('messages').insertOne({
+    fulldate,
     nickname,
     chatMessage,
   });
