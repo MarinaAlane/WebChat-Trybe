@@ -1,20 +1,11 @@
-const d = new Date();
-const date = d.toISOString().slice(0, 10).split('-').reverse();
-const convertDate = date.join('-');
+// ..source: https://github.com/tryber/sd-011-project-webchat/blob/luiz-wendel-webchat-project/sockets/messageSocket.js
 
-let AM_OR_PM = 'AM';
+const moment = require('moment');
 
 const getFormatTime = () => {
-  const hour = d.getHours();
-  if (hour > 12) {
-    AM_OR_PM = 'PM';
-  }
-
-  const formatHour = hour - 12;
-  const minutesAndSeconds = d.toString().slice(18, 24);
-  return {
-    timestamp: `${convertDate} ${formatHour + minutesAndSeconds} ${AM_OR_PM}`,
-  };
+  const date = moment();
+  const formatDate = date.format('DD-MM-YYYY hh:mm:ss A');
+  return { timestamp: formatDate };
 };
 
 module.exports = {

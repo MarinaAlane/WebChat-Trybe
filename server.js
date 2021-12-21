@@ -1,32 +1,30 @@
 // ..source: https://socket.io/get-started/chat
+require('dotenv').config();
 
 const express = require('express');
 const http = require('http');
-const path = require('path');
 const { Server } = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const messageController = require('./controller/message');
+
+const path = require('path');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.get('/', async (_req, res) => {
-  const allMessages = await messageController.getAll();
-  res.render(`${__dirname}/views/index`, { allMessages });
+// const messageController = require('./controller/message');
+
+app.get('/', (_req, res) => {
+// app.get('/', async (_req, res) => {
+  // const allMessages = await messageController.getAllMessages();
+  // ..source: https://github.com/tryber/sd-011-live-lectures/blob/lecture/30.3/index.js
+  // res.render(`${__dirname}/views`, { allMessages });
+  res.render(`${__dirname}/views`);
 });
 
-io.on('connection', (socket) => {
-  socket.on('message', async (msg) => {
-    const message = await messageController.createMessage(msg);
-    io.emit('message', message);
-  });
-  socket.on('connectUser', (msg) => {
-    io.emit('connectUser', msg);
-  });
-});
+require('./socket/user')(io);
 
 const PORT = process.env.PORT || 3000;
 

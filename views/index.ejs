@@ -9,10 +9,11 @@
   </head>
   <body>
     <ul id="users"></ul>
+    <!-- ..source: https://github.com/tryber/sd-011-live-lectures/blob/lecture/30.3/views/board.ejs -->
     <ul id="messages">
-      <% allMessages.forEach((item) => { %>
-        <li data-testid="message" ><%= item %></li>
-        <% }) %>
+      <!-- <.% allMessages.forEach(({timestamp, nickname, message}) => { %>
+        <li data-testid="message" ><.%= timestamp %> - <.%= nickname %> : <.%= message %></li>
+        <.% }) %> -->
     </ul>
     <form id="form-username" action="">
       <input
@@ -43,38 +44,89 @@
     <script>
       const socket = io();
 
-      const userList = document.getElementById('users');
-
       const chars = "abcdefghijklmnopqrstuvwxyz";
       const passwordLength = 15;
-      let nickname = "";
+      let randomName = "";
 
       for (var i = 0; i <= passwordLength; i++) {
         const randomNumber = Math.floor(Math.random() * chars.length);
-        nickname += chars.substring(randomNumber, randomNumber + 1);
+        randomName += chars.substring(randomNumber, randomNumber + 1);
       }
-      socket.emit('connectUser', nickname);
+      socket.emit('connectUser', randomName);
 
-      socket.on('connectUser', (name) =>  {
-        const userName = document.createElement('li');
-        userName.textContent = name;
-        userName.setAttribute('data-testid', 'online-user');
-        userList.appendChild(userName);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+      const messageList = document.getElementById('messages');
+
+      const insertIntoMessageList = (messages) => {
+        messages.forEach(({timestamp, nickname, message}) => {
+          const msg = document.createElement('li');
+          msg.textContent = `${timestamp} - ${nickname}: ${message}`;
+          msg.setAttribute('data-testid', 'message');
+          messageList.appendChild(msg);
+          window.scrollTo(0, document.body.scrollHeight);
+        })
+      }
+
+      const listAllMessages = () => {
+        socket.on('messageHistory', (allMessages) => {
+          messageList.innerHTML = '';
+          insertIntoMessageList(allMessages);
+        });
+      }
+
+      listAllMessages();
+
+      const userList = document.getElementById('users');
+
+      const insertIntoUserList = (users) => {
+        users.forEach(({nickname}) => {
+          const userName = document.createElement('li');
+          userName.textContent = nickname;
+          userName.setAttribute('data-testid', 'online-user');
+          // userName.setAttribute('class', 'online-user');
+          userList.appendChild(userName);
+          window.scrollTo(0, document.body.scrollHeight);
+        })
+      }
+
+      const listAllUsersOnline = () => {
+        socket.on('getAllUsers', (allUsers) => {
+          const userId = socket.id;
+          userList.innerHTML = '';
+          const infoUser = allUsers.filter(({id}) => id === userId);
+          const infoWithoutUser = allUsers.filter(({id}) => id !== userId);
+          insertIntoUserList(infoUser);
+          insertIntoUserList(infoWithoutUser);
+        });
+      }
+
+      listAllUsersOnline();
 
       const formUsername = document.getElementById('form-username');
       const inputUsername = document.getElementById('input-username');
+
+      let nickname = randomName;
 
       formUsername.addEventListener('submit', (e) => {
         e.preventDefault();
         if (inputUsername.value) {
           nickname = inputUsername.value;
+          // const usersItems = document.getElementsByClassName('online-user');
+          const userId = socket.id;
+          socket.emit('changeUserName', { id: userId, nickname });
           inputUsername.value = '';
+          listAllUsersOnline();
         }
       });
 
-      const messages = document.getElementById('messages');
+      // ..source: https://www.geeksforgeeks.org/how-to-detect-browser-or-tab-closing-in-javascript/
+      window.addEventListener('beforeunload', (e) => {
+          e.preventDefault();
+          const userId = socket.id;
+          socket.emit('onCloseChat', userId);
+          e.returnValue = '';
+          listAllUsersOnline();
+      });
+
       const form = document.getElementById('form');
       const input = document.getElementById('input');
 
@@ -87,14 +139,20 @@
         }
       });
 
-      // https://stackoverflow.com/questions/18648500/add-id-class-to-objects-from-createelement-method
+      // ..source: https://stackoverflow.com/questions/18648500/add-id-class-to-objects-from-createelement-method
+      const messagesHistory = [];
+
       socket.on('message', (msg) =>  {
+        const messages = document.getElementById('messages');
         const item = document.createElement('li');
         item.textContent = msg;
+        messagesHistory.push(msg)
         item.setAttribute('data-testid', 'message');
+        sessionStorage.setItem('messages', messagesHistory);
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
+
     </script>
   </body>
 </html>
