@@ -19,7 +19,7 @@ sendBtn.addEventListener('click', () => {
     chatMessage: messageInput.value,
     nickname: username,   
   };
-  socket.emit('newMessage', newMessage);
+  socket.emit('sendMessage', newMessage);
 
   messageInput.value = '';
 });
