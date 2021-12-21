@@ -9,8 +9,8 @@
 <body>
   <main>
     <section class="user-info-input">
-      <input type="text" id="username-input" placeholder="Insira seu username">
-      <button type="button" id="save-btn">Salvar</button>
+      <input type="text" id="username-input" placeholder="Insira seu username" data-testid="nickname-box">
+      <button type="button" id="save-btn" data-testid="nickname-button">Salvar</button>
     </section>
     <section class="users-container">
       <ul id="users"></ul>
@@ -19,8 +19,8 @@
       <ul id="messages"></ul>
     </section>
     <section class="message-input">
-      <input type="text" id="message-input" placeholder="Digite sua mensagem aqui">
-      <button type="button" id="send-btn">Enviar</button>
+      <input type="text" id="message-input" placeholder="Digite sua mensagem aqui" data-testid="message-box">
+      <button type="button" id="send-btn" data-testid="send-button">Enviar</button>
     </section>
   </main>
   <script src="./js/chat.js"></script>
