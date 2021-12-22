@@ -7,7 +7,7 @@ const randomNickname = () => {
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.emit('setUsername', randomNickname());
+  socket.emit('username', randomNickname());
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = moment();

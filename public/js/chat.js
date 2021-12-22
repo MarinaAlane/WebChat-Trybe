@@ -28,7 +28,7 @@ sendBtn.addEventListener('click', () => {
   messageInput.value = '';
 });
 
-socket.on('setUsername', (data) => {
+socket.on('username', (data) => {
   onlineUser.innerText = data;
   sessionStorage.setItem('username', data);
 });
