@@ -1,13 +1,6 @@
 const socket = window.io();
 
-// Ref: https://www.codegrepper.com/code-examples/javascript/generate+unique+username+in+JavaScript
-const randomNickname = () => {
-  const randomEightChar = Math.random().toString(36).substr(2, 8);
-  return randomEightChar + randomEightChar;
-};
-
 const onlineUser = document.getElementById('online-user');
-onlineUser.innerText = randomNickname();
 
 const saveBtn = document.getElementById('save-btn');
 saveBtn.addEventListener('click', () => {
@@ -33,6 +26,11 @@ sendBtn.addEventListener('click', () => {
   socket.emit('sendMessage', newMessage);
 
   messageInput.value = '';
+});
+
+socket.on('setUsername', (data) => {
+  onlineUser.innerText = data;
+  sessionStorage.setItem('username', data);
 });
 
 socket.on('sendMessage', (data) => {
