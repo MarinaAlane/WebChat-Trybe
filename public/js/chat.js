@@ -34,3 +34,12 @@ sendBtn.addEventListener('click', () => {
 
   messageInput.value = '';
 });
+
+socket.on('sendMessage', (data) => {
+  const messagesList = document.getElementById('messages-list');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
+  li.innerText = data;
+  
+  messagesList.appendChild(li);
+});
