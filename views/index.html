@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebChat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .grid-container { 
+      display: grid;
+      padding: 1.5rem 5rem;
+      grid-template-areas:
+        'head head head'
+        'menu main main'
+        'foot foot foot';
+      grid-template-rows: 10% 75% 15%;
+      grid-template-columns: 20% auto auto;
+      grid-gap: 0.6rem;
+      background-color: gray;
+      border: solid 10px red;
+    }
+
+    .chat-head {
+      grid-area: head;
+      background-color: white;
+      border: solid 10px red;
+    }
+
+    .chat-users {
+      grid-area: menu;
+      background-color: white;
+      border: solid 10px red;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .chat-messages {
+      grid-area: main;
+      background-color: white;
+      border: solid 10px red;
+      overflow-y: scroll
+    }
+
+    .chat-text-iput {
+      grid-area: foot;
+      background-color: white;
+      border: solid 10px red;
+    }
+  </style>
+</head>
+<body class="grid-container">
+  <header class="chat-head">
+    <h1>Esse é o pior chat de todos os tempos</h1>
+  </header>
+  <aside class="chat-users">
+    <h1>Online now</h1>
+    <form id="nickname-form">
+      <input id='nick-input' type="text">
+      <button id='save-nick' type="submit">Save</button>
+    </form>
+    <ul id='users-list'></ul>
+  </aside>
+  <main class="chat-messages" >
+    <div>
+      <ul id='messageList'></ul>
+    </div>
+  </main>
+  <footer class="chat-text-iput" >
+    <form id="chat-form">
+      <input id="message-input" type="text">
+      <button id="send-message" type="submit">Send</button>
+    </form>
+  </footer>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const formNick = document.querySelector('#nickname-form');
+    const inputNick = document.querySelector('#nick-input');
+    const userList = document.querySelector('#users-list');
+    const formMsg = document.querySelector('#chat-form');
+    const inputMsg = document.querySelector('#message-input');
+    const msgFeed = document.querySelector('#messageList');
+
+    // input listener - emite a mensagem do front para o back.
+    formMsg.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (inputMsg.value) {
+        socket.emit('message', { chatMessage: inputMsg.value, nickname: socket.id});
+        inputMsg.value = '';
+      }
+    });
+
+    // message listener - atualiza a UI
+    socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = msg;
+      msgFeed.appendChild(newMessage);
+    })
+
+    socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = msg;
+      msgFeed.appendChild(newMessage);
+      window.scrollTo(0, document.body.scrollHeight);
+    })
+  </script>
+</body>
+</html>
