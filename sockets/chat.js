@@ -9,10 +9,10 @@ const randomNickname = () => {
 module.exports = (io) => io.on('connection', (socket) => {
   socket.emit('setUsername', randomNickname());
 
-  socket.on('sendMessage', ({ chatMessage, nickname }) => {
+  socket.on('message', ({ chatMessage, nickname }) => {
     const date = moment();
     const formattedDate = date.format('DD-MM-yyyy hh:mm:ss A');
 
-    io.emit('sendMessage', `${formattedDate} - ${nickname}: ${chatMessage}`);
+    io.emit('message', `${formattedDate} - ${nickname}: ${chatMessage}`);
   });
 });

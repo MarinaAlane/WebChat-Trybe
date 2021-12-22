@@ -23,7 +23,7 @@ sendBtn.addEventListener('click', () => {
     chatMessage: messageInput.value,
     nickname: username,   
   };
-  socket.emit('sendMessage', newMessage);
+  socket.emit('message', newMessage);
 
   messageInput.value = '';
 });
@@ -33,7 +33,7 @@ socket.on('setUsername', (data) => {
   sessionStorage.setItem('username', data);
 });
 
-socket.on('sendMessage', (data) => {
+socket.on('message', (data) => {
   const messagesList = document.getElementById('messages-list');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
