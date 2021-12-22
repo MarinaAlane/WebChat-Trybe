@@ -17,7 +17,7 @@ const io = require('socket.io')(http, {
 
 app.use(express.static(`${__dirname}/public`));
 
-require('./sockets/chat')(io);
+require('./sockets/chat.js')(io);
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/public/chat.html`);

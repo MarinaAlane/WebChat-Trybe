@@ -40,6 +40,6 @@ socket.on('sendMessage', (data) => {
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = data;
-  
+
   messagesList.appendChild(li);
 });
