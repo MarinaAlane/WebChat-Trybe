@@ -62,6 +62,15 @@
         window.scrollTo(0, document.body.scrollHeight);
       })
 
+      socket.on('history', (msg) => {
+        msg.forEach(({nickname, message, timestamp}) => {
+          const li = document.createElement('li');
+          li.setAttribute("data-testid", "message");
+          li.textContent = msg;
+          // console.log(li, 'esse é o li da mensagem')
+          ul.appendChild(li);
+        });
+      });
       // Não é mais necessário porque o requisito 4 já cumpre essa lógica
       socket.on('logIn', (newUser)=>{
         const ulUsers = document.querySelector('#ulUsers')   
