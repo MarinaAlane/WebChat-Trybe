@@ -7,6 +7,7 @@ const cors = require('cors'); // o cors  é um recurso para utilizar a origem cr
 
 const PORT = 3000; // porta utilizada na aplicação
 
+// comentários das linhas 11 à 15, utilizei os mesmos da aula do Prof. Renato na aula ao vivo 30.3
 const http = require('http').createServer(app); // criando um servidor http
 const io = require('socket.io')(http, { // usando o servidor pra poder rodar o socket.io
   cors: { // Aqui existe um objeto de configuração, essas options são necessárias a partir da major 3 do socket.io 
