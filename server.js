@@ -1,11 +1,11 @@
-const express = require('express');
+const express = require('express'); // importação do express
 
-const app = express();
+const app = express(); // o app recebe o express
 
-const { join } = require('path');
-const cors = require('cors');
+const { resolve } = require('path'); // o resolve para apontar o caminho da pasta public e do arquivo html
+const cors = require('cors'); // o cors  é um recurso para utilizar a origem cruzada (front e back end) da aplicação e seus métodos permitidos
 
-const PORT = 3000;
+const PORT = 3000; // porta utilizada na aplicação
 
 const http = require('http').createServer(app); // criando um servidor http
 const io = require('socket.io')(http, { // usando o servidor pra poder rodar o socket.io
@@ -15,15 +15,15 @@ const io = require('socket.io')(http, { // usando o servidor pra poder rodar o s
   },
 });
 
-require('./sockets/socket')(io); // faz a importação do io que cria a conexão
+require('./sockets/socket')(io); // faz a importação do io que cria a conexão feito na linha 11
 
-app.use(express.static(join(__dirname, 'public')));
+app.use(express.static(resolve(__dirname, 'public'))); // aponta o caminho do diretório
 
 app.use('/', (req, res) => {
-  res.render((join(__dirname, 'public'), 'index.html'));
+  res.sendFile(resolve(__dirname, 'public', 'index.html')); // aponta o caminho do arquivo para ser renderizado
 });
 
-app.use(express.json());
-app.use(cors());
+app.use(express.json()); // simplifica a comunicação navegador servidor, permitindo a troca de JSON no campo da solicitação
+app.use(cors()); // é um middleware de compartilhamento de recursos de origem cruzada (back e front end)
 
-http.listen(PORT, console.log(`Socket.io rodando na porta ${PORT}!`));
+http.listen(PORT, console.log(`Socket.io rodando na porta ${PORT}!`)); // ouvindo o servidor da aplicação com o socket.io

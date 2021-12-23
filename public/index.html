@@ -2,29 +2,31 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src='/socket.io/socket.io.js'></script>
-  <!-- socket.io está abrindo uma conexão cliente - servidor -->
-  <link rel="stylesheet" href='./css/style.css'>
-  <title>Projeto Webchat</title>
+  <meta charset="UTF-8" />
+  <title>WebChat</title>
 </head>
 
 <body>
-  <form class="chat" id="chat">
-    <div class="users">
-      <input type="text" class="inputUser" data-testid="nickname-box" id="nickname-box" placeholder="Digite o nickname">
-      <button type="button" data-testid="nickname-button" id="save-button" class="saveButton">Salvar</button>
-    </div>
-    <div class="container">
-      <ul data-testid="online-user" class="usersOnline" id="users"></ul>
-      <ul data-testid="message" class="messages" id="messages"></ul>
-    </div>
-    <input data-testid="message-box" placeholder="Digite a sua mensagem" name="message" id="message-box">
-    <button type="submit" data-testid="send-button" class="sendButton">Enviar</button>
-  </form>
-  <script src='./javascripts/client.js'></script>
+  <h1>Project Web Chat</h1>
+  <main>
+    <h2>Users:</h2>
+    <ul id="users"></ul>
+    <h2>Messages:</h2>
+    <ul id="messages"></ul>
+  </main>
+  <div>
+    <form action="" id="form">
+      <input type="text" name="nickname-box" id="nickname-box" data-testid="nickname-box" />
+      <button type="button" id="nickname-button" data-testid="nickname-button">
+        Save NickName
+      </button>
+      <input type="text" name="message-box" id="message-box" placeholder="message" data-testid="message-box" />
+      <button data-testid="send-button">Enviar</button>
+    </form>
+  </div>
+  <!-- permite o acesso do socket.io na aplicação -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="javascripts/client.js"></script>
 </body>
 
 </html>
