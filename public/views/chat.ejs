@@ -9,25 +9,46 @@
   </head>
   <body>
     <h1>Web chat</h1>
-    <ul id="webchat"></ul>
+
+    <form id="chat-form">
+      <input type="text" name="nickname" placeholder="nome" />
+
+      <input type="text" name="chatMessage" placeholder="mensagem" />
+
+      <ul id="webchat"></ul>
+
+      <button type="submit" id="btn-form">enviar</button>
+    </form>
 
     <script>
       const socket = io('http://localhost:3000');
 
-      const sendMessage = ({ data, time, chatMessage, nickname }) => {
+      const btn = document.querySelector('#btn-form');
+
+      function onSubmit(event) {
+        event.preventDefault();
+        const nickname = document.querySelector('input[name=nickname').value;
+        const userMsg = document.querySelector('input[name=chatMessage').value;
+        const msg = `${nickname} - ${userMsg}`;
+        console.log(msg);
+        socket.emit('message', msg);
+      }
+
+      function sendMessage(msg) {
         const ul = document.querySelector('#webchat');
         const li = document.createElement('li');
-        const message = document.createTextNode(
-          `${data} ${time} - ${nickname}: ${chatMessage}`
-        );
+        const message = document.createTextNode(msg);
 
         li.append(message);
         ul.appendChild(li);
-      };
+      }
 
-      socket.on('message', ({ data, time, chatMessage, nickname }) => {
-        console.log(data, 'rodando socket com message no chat.ejs');
-        sendMessage({data, time, chatMessage, nickname });
+      btn.addEventListener('click', onSubmit);
+
+      socket.on('message', (msg) => {
+        console.log('asdfffffffffffffffffffffffff');
+
+        sendMessage(msg);
       });
     </script>
   </body>

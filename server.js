@@ -29,6 +29,10 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`Novo usuário ${socket.id} conectado ao socket.io`);
+
+  socket.on('message', (msg) => {
+    io.emit('message', `${msg}`);
+  });
 });
 
 app.post('/message', (req, res) => {
@@ -37,7 +41,7 @@ app.post('/message', (req, res) => {
   const data = moment().locale('pt-br').format('L').replace(/\//g, '-');
   const time = moment().format('LTS');
 
-  io.emit('message', { data, time, chatMessage, nickname });
+  io.emit('message', `${data} ${time} - ${nickname}: ${chatMessage}`);
 
   return res.status(200).json({ chatMessage, nickname });
 });
