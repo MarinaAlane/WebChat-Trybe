@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web chat</title>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Web chat</h1>
+    <ul id="webchat"></ul>
+
+    <script>
+       const socket = io("http://localhost:3000");
+
+      const sendMessage = (msg) => {
+        const ul = document.querySelector('#webchat');
+        const li = document.createElement('li');
+        const message = document.createTextNode(msg);
+
+        li.append(message);
+        ul.appendChild(li);
+      };
+
+      socket.on('message', (msg) => {
+        console.log('rodando socket com message no chat.ejs');
+        sendMessage(msg);
+      });
+    </script>
+  </body>
+</html>
