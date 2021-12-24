@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat do Boff</title>
+
+  <style>
+    #nickname-input {
+      border-radius: 51px solid;
+    }
+
+    #nickname {
+      width: 260px;
+    }
+
+    #nickname-list {
+      display: flex;
+      width: 300px;
+      height: 600px;
+      margin-right: 30px;
+      border: 1px solid;
+      border-color: black;
+      border-radius: 5px;
+    }
+
+    #messages-list {
+      display: flex;
+      width: 1350px;
+      height: 600px;
+      border: 1px solid;
+      border-color: black;
+      border-radius: 5px;
+    }
+
+    #flex-div {
+      display: inline-flex;
+      padding: 15px 0 30px;
+    }
+
+    #send-message-btn {
+      margin-left: 94%;
+    }
+
+    #messages {
+      list-style: none;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="nickname-input">
+    <input type="text" name="nickname" id="nickname">
+    <button type="submit">Salvar</button>
+  </form>
+
+  <div id="flex-div">
+    <div id="nickname-list">
+      <ul>
+
+      </ul>
+    </div>
+
+    <div id="messages-list">
+      <ul id="messages"></ul>
+    </div>
+  </div>
+  <form id="form">
+    <textarea name="" id="chatMessage" cols="203" rows="5"></textarea>
+    <button id="send-message-btn">Enviar</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const form = document.getElementById('form');
+    const input = document.getElementById('chatMessage');
+
+    const message = document.getElementById('messages');
+
+    const nicknameForm = document.getElementById('nickname-input');
+    const nickname = document.getElementById('nickname');
+
+    let nicknameValue;
+
+    nicknameForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (nickname.value) {
+        nicknameValue = nickname.value;
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (input.value) {
+        socket.emit('message', {
+          input: input.value,
+          nick: nicknameValue,
+        });
+
+        input.value = '';
+      }
+    });
+
+    socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      console.log(msg)
+      newMessage.innerText = `${msg.data} - ${msg.nickname}: ${msg.message}`;
+
+      messages.appendChild(newMessage);
+    })
+  </script>
+</body>
+
+</html>
