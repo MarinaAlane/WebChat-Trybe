@@ -12,20 +12,22 @@
     <ul id="webchat"></ul>
 
     <script>
-       const socket = io("http://localhost:3000");
+      const socket = io('http://localhost:3000');
 
-      const sendMessage = (msg) => {
+      const sendMessage = ({ data, chatMessage, nickname }) => {
         const ul = document.querySelector('#webchat');
         const li = document.createElement('li');
-        const message = document.createTextNode(msg);
+        const message = document.createTextNode(
+          `${data} - ${nickname}: ${chatMessage}`
+        );
 
         li.append(message);
         ul.appendChild(li);
       };
 
-      socket.on('message', (msg) => {
-        console.log('rodando socket com message no chat.ejs');
-        sendMessage(msg);
+      socket.on('message', ({ data, chatMessage, nickname }) => {
+        console.log(data, 'rodando socket com message no chat.ejs');
+        sendMessage({data, chatMessage, nickname });
       });
     </script>
   </body>

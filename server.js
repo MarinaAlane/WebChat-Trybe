@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const moment = require('moment');
 
 const app = express();
 const PORT = '3000';
@@ -29,12 +30,14 @@ io.on('connection', (socket) => {
 });
 
 app.post('/message', (req, res) => {
-  const { message } = req.body;
-  console.log(message);
+  const { chatMessage, nickname } = req.body;
 
-  io.emit('message', message);
+  const data = moment().format('LLL');
+  console.log(data, chatMessage, nickname);
 
-  return res.status(200).json({ message });
+  io.emit('message', { data: moment().format('LLL'), chatMessage, nickname });
+
+  return res.status(200).json({ chatMessage, nickname });
 });
 
 server.listen(PORT, () => {
