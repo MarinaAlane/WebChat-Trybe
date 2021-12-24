@@ -14,20 +14,20 @@
     <script>
       const socket = io('http://localhost:3000');
 
-      const sendMessage = ({ data, chatMessage, nickname }) => {
+      const sendMessage = ({ data, time, chatMessage, nickname }) => {
         const ul = document.querySelector('#webchat');
         const li = document.createElement('li');
         const message = document.createTextNode(
-          `${data} - ${nickname}: ${chatMessage}`
+          `${data} ${time} - ${nickname}: ${chatMessage}`
         );
 
         li.append(message);
         ul.appendChild(li);
       };
 
-      socket.on('message', ({ data, chatMessage, nickname }) => {
+      socket.on('message', ({ data, time, chatMessage, nickname }) => {
         console.log(data, 'rodando socket com message no chat.ejs');
-        sendMessage({data, chatMessage, nickname });
+        sendMessage({data, time, chatMessage, nickname });
       });
     </script>
   </body>

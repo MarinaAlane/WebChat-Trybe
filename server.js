@@ -1,9 +1,11 @@
 const express = require('express');
 const path = require('path');
 const moment = require('moment');
+require('dotenv').config();
 
 const app = express();
-const PORT = '3000';
+const PORT = process.env.PORT || '3000';
+// const PORT = '3000';
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
@@ -32,10 +34,10 @@ io.on('connection', (socket) => {
 app.post('/message', (req, res) => {
   const { chatMessage, nickname } = req.body;
 
-  const data = moment().format('LLL');
-  console.log(data, chatMessage, nickname);
+  const data = moment().locale('pt-br').format('L').replace(/\//g, '-');
+  const time = moment().format('LTS');
 
-  io.emit('message', { data: moment().format('LLL'), chatMessage, nickname });
+  io.emit('message', { data, time, chatMessage, nickname });
 
   return res.status(200).json({ chatMessage, nickname });
 });
