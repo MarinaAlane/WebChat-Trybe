@@ -41,24 +41,36 @@
     }
 
     #send-message-btn {
-      margin-left: 94%;
+      margin-left: 95%;
     }
 
     #messages {
       list-style: none;
     }
+
+    #nickname-list {
+      list-style: none;
+    }
+
+    #chatMessage {
+      width: 1700px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 
 <body>
+
   <form id="nickname-input">
-    <input type="text" name="nickname" id="nickname">
-    <button type="submit">Salvar</button>
+    <input type="text" name="nickname" id="nickname" data-testid="nickname-box">
+    <button type="submit" data-testid="nickname-button">Salvar</button>
   </form>
 
   <div id="flex-div">
-    <div id="nickname-list">
-      <ul>
+
+    <div>
+      <ul id="nickname-list">
 
       </ul>
     </div>
@@ -66,11 +78,15 @@
     <div id="messages-list">
       <ul id="messages"></ul>
     </div>
+
   </div>
+
   <form id="form">
-    <textarea name="" id="chatMessage" cols="203" rows="5"></textarea>
-    <button id="send-message-btn">Enviar</button>
+    <input id="chatMessage" data-testid="message-box"></input>
+    <button id="send-message-btn" data-testid="send-button">Enviar</button>
   </form>
+
+  <!-- --------------------------------------------------------------------------------------------------------------------- -->
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -84,6 +100,7 @@
     const nicknameForm = document.getElementById('nickname-input');
     const nickname = document.getElementById('nickname');
 
+    const nicknameList = document.getElementById('nickname-list');
     let nicknameValue;
 
     nicknameForm.addEventListener('submit', (e) => {
@@ -107,13 +124,24 @@
       }
     });
 
+    socket.on('connect', () => {
+      // nicknameList
+      const newUserId = document.createElement('li');
+
+      newUserId.innerText = socket.id.split('', 16).join('');
+      newUserId.setAttribute('data-testid', 'online-user');
+
+      nicknameList.appendChild(newUserId);
+
+    })
+
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
-      // console.log(msg)
 
       newMessage.innerText = msg;
+      newMessage.setAttribute('data-testid', 'message');
 
-      messages.appendChild(newMessage);
+      message.appendChild(newMessage);
     })
   </script>
 </body>
