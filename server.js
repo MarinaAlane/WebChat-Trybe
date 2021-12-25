@@ -18,12 +18,8 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log(`Usuário ${socket.id} conectou`);
 
-  socket.on('message', (msg) => {
-    io.emit('message', {
-      message: msg.input,
-      nickname: msg.nick,
-      data: moment().format('DD-MM-yyyy HH:mm:ss A'),
-    });
+  socket.on('message', ({ chatMessage, nickname }) => {
+    io.emit('message', `${moment().format('DD-MM-yyyy HH:mm:ss A')} - ${nickname}: ${chatMessage}`);
   });
 
   socket.on('disconnect', () => {
