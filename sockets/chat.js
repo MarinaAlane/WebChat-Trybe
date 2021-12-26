@@ -35,5 +35,22 @@ module.exports = (socketIo) => socketIo.on('connection', (socket) => {
   io = socketIo;
   handleClientConnection(socket);
 
+  socket.on('userList', (data) => {
+   io.emit('updateUserList', data);
+  });
+
+  socket.on('newClient', ({ username }) => {
+    socket.broadcast.emit('clientDisconnect', socket.id);
+    socket.broadcast.emit('newClient', ({ username, id: socket.id }));
+  });
+
+  socket.on('updateContact', ({ username }) => {
+   io.emit('updateContact', ({ username, id: socket.id }));
+  });
+
+  socket.on('disconnect', () => {
+    io.emit('clientDisconnect', socket.id);
+  });
+
   socket.on('message', handleMessageReceived);
 }); 
