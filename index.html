@@ -60,10 +60,12 @@
   </style>
 </head>
 
+<!-- ------------------------------------------------------------------------------------------------------------------------ -->
+
 <body>
 
   <form id="nickname-input">
-    <input type="text" name="nickname" id="nickname" data-testid="nickname-box">
+    <input type="text" id="nickname" data-testid="nickname-box">
     <button type="submit" data-testid="nickname-button">Salvar</button>
   </form>
 
@@ -86,7 +88,7 @@
     <button id="send-message-btn" data-testid="send-button">Enviar</button>
   </form>
 
-  <!-- --------------------------------------------------------------------------------------------------------------------- -->
+  <!-- ---------------------------------------------------------------------------------------------------------------------  -->
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -95,13 +97,25 @@
     const form = document.getElementById('form');
     const input = document.getElementById('chatMessage');
 
-    const message = document.getElementById('messages');
-
     const nicknameForm = document.getElementById('nickname-input');
-    const nickname = document.getElementById('nickname');
 
-    const nicknameList = document.getElementById('nickname-list');
     let nicknameValue;
+
+    // Renderiza um elemento com base nos parâmetros recebidos.
+    
+    const renderElement = (element, elementId, elementValue, elementAttribute = [null, null]) => {
+      const tag = document.createElement(`${element}`);
+
+      const selectElementById = document.getElementById(`${elementId}`);
+
+      tag.innerText = elementValue;
+
+      tag.setAttribute(`${elementAttribute[0]}`, `${elementAttribute[1]}`)
+
+      selectElementById.appendChild(tag);
+    };
+
+    // Salva o nickname criado no campo.
 
     nicknameForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -110,6 +124,8 @@
         nicknameValue = nickname.value;
       }
     });
+
+    // Envia o objeto com a mensagem e o nome da pessoa.
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -124,24 +140,16 @@
       }
     });
 
+    // Gera um nome aleatório de 16 caracteres e o adiciona ao campo.
+
     socket.on('connect', () => {
-      // nicknameList
-      const newUserId = document.createElement('li');
-
-      newUserId.innerText = socket.id.split('', 16).join('');
-      newUserId.setAttribute('data-testid', 'online-user');
-
-      nicknameList.appendChild(newUserId);
-
+      renderElement('li', 'nickname-list', socket.id.split('', 16).join(''), ['data-testid', 'online-user']);
     })
 
+    // Recebe a mensagem e a adiciona ao campo.
+    
     socket.on('message', (msg) => {
-      const newMessage = document.createElement('li');
-
-      newMessage.innerText = msg;
-      newMessage.setAttribute('data-testid', 'message');
-
-      message.appendChild(newMessage);
+      renderElement('li', 'messages', msg, ['data-testid', 'message']);
     })
   </script>
 </body>
