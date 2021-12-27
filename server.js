@@ -25,6 +25,8 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log(`Novo usuário ${socket.id} conectado ao socket.io`);
 
+  io.emit('nickname', socket.id);
+
   socket.on('message', (msg) => {
     const { chatMessage, nickname } = msg;
     const fullDate = getDate();

@@ -27,9 +27,22 @@ function reciveMessage(msg) {
   webchatList.appendChild(li);
 }
 
+function saveNickname(nickname) {
+  const li = document.createElement('li');
+  li.append(nickname);
+
+  const connectionsList = document.querySelector('#connections-list');
+  connectionsList.appendChild(li);
+}
+
 formSendMessage.addEventListener('submit', sendMessage);
 
 socket.on('message', (msg) => {
   console.log('message socket.on acionada (chat.js)', msg);
   reciveMessage(msg);
+});
+
+socket.on('nickname', (nickname) => {
+  console.log('nickname socket.on acionada (chat.js)', nickname);
+  saveNickname(nickname);
 });
