@@ -22,10 +22,16 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/chat.html'));
 }); // envia formulario quando cliente conecta com a rota
 
+const userList = [];
+
 io.on('connection', (socket) => {
   console.log(`Novo usuário ${socket.id} conectado ao socket.io`);
 
-  io.emit('nickname', socket.id);
+  userList.push(socket.id.substr(0, 16));
+  console.log(`Novo usuário ${userList} conectado ao socket.io`);
+  console.log(`Quantidade: ${userList.length} `);
+
+  io.emit('nickname', { userList });
 
   socket.on('message', (msg) => {
     const { chatMessage, nickname } = msg;
@@ -36,6 +42,10 @@ io.on('connection', (socket) => {
     console.log(`(socket.on server) ${fullDate} - ${nickname}: ${chatMessage}`); // deletar
   });
 });
+
+// io.on('disconnect', (socket) => {
+//   console.log(`Novo usuário ${socket.id} conectado ao socket.io`);
+// });
 
 // app.post('/message', (req, res) => {
 //   const { chatMessage, nickname } = req.body;

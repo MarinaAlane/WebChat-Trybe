@@ -42,7 +42,9 @@ socket.on('message', (msg) => {
   reciveMessage(msg);
 });
 
-socket.on('nickname', (nickname) => {
-  console.log('nickname socket.on acionada (chat.js)', nickname);
-  saveNickname(nickname);
+socket.on('nickname', ({ userList }) => {
+  console.log('nickname socket.on acionada (chat.js)', userList);
+  userList.forEach((nickname) => {
+    saveNickname(nickname);
+  });
 });
