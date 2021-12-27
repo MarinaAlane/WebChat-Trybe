@@ -26,8 +26,10 @@ io.on('connection', (socket) => {
   console.log(`Novo usuário ${socket.id} conectado ao socket.io`);
 
   socket.on('message', (msg) => {
-    io.emit('message', `${msg}`);
-    console.log(`A menssagem do cliente ${socket.id} foi: ${msg}`);
+    const { chatMessage, nickname } = msg;
+    io.emit('message', `${nickname}: ${chatMessage}`);
+
+    console.log(`(socket.on server) ${nickname}: ${chatMessage}`);
   });
 });
 

@@ -14,15 +14,23 @@ function sendMessage(event) {
   // const fullDate = getDate();
   // const msg = `${fullDate} - ${nickname}: ${chatMessage}`;
   event.preventDefault();
+
   console.log('função sendMessage acionada (chat.js)');
   const chatMessage = document.querySelector('input[name=chatMessage');
-  socket.emit('message', chatMessage.value);
+  const nicknameInput = document.querySelector('input[name=nickname');
+
+  socket.emit('message', {
+    chatMessage: chatMessage.value,
+    nickname: nicknameInput.value,
+  });
+
   chatMessage.value = '';
+  nicknameInput.value = '';
 }
 
 function reciveMessage(msg) {
   const li = document.createElement('li');
-  const message = document.createTextNode(msg);
+  const message = document.createTextNode(`${msg}`);
   li.append(message);
 
   const webchatList = document.querySelector('#webchat');
@@ -32,6 +40,6 @@ function reciveMessage(msg) {
 formSendMessage.addEventListener('submit', sendMessage);
 
 socket.on('message', (msg) => {
-  console.log('message socket.on acionada (chat.js)');
+  console.log('message socket.on acionada (chat.js)', msg);
   reciveMessage(msg);
 });
