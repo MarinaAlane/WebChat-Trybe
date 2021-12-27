@@ -20,7 +20,8 @@ function sendMessage(event) {
 
 function reciveMessage(msg) {
   const li = document.createElement('li');
-  const message = document.createTextNode(`${msg}`);
+  li.setAttribute('data-testid', 'message');
+  const message = document.createTextNode(msg);
   li.append(message);
 
   const webchatList = document.querySelector('#webchat');
@@ -29,6 +30,7 @@ function reciveMessage(msg) {
 
 function saveNickname(nickname) {
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
   li.append(nickname);
 
   const connectionsList = document.querySelector('#connections-list');
