@@ -17,6 +17,8 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
+const listaNomes = [];
+
 function generateToken(length) {
   // https://www.ti-enxame.com/pt/javascript/crie-um-token-aleatorio-em-javascript-com-base-nos-detalhes-do-usuario/941136694/
   const a = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('');
@@ -34,6 +36,11 @@ io.on('connection', (socket) => {
   socket.on('message', (msg) => {
     io.emit('message',
     `${DateTime.now().toFormat('dd-LL-yyyy hh:mm:ss')} ${msg.nickname}: ${msg.chatMessage}`);
+  });
+
+  socket.on('lista-nome', (nome) => {
+    listaNomes.push(nome);
+    socket.emit('lista-nome', listaNomes);
   });
 });
 

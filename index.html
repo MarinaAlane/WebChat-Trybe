@@ -37,10 +37,10 @@
       formNome.addEventListener('submit', (event)=>{
         event.preventDefault();
         if(inputNome.value){
-           sessionStorage.setItem('nickname', inputNome.value)
            const tagsLi = document.getElementsByTagName('li');
            for(var i = 0; i < tagsLi.length; i+=1){
-             if(tagsLi[i].innerText === socket.id){
+             if(tagsLi[i].innerText === sessionStorage.getItem('nickname')){
+                sessionStorage.setItem('nickname', inputNome.value)
                 return tagsLi[i].innerText = inputNome.value;
              }
            }
@@ -49,11 +49,28 @@
 
       socket.on('logado', (usuario)=>{
         sessionStorage.setItem('nickname', usuario)
+        sessionStorage.setItem('id', usuario)
         const newUser = document.createElement('li');
         newUser.textContent = usuario;
         newUser.setAttribute("data-testid", "online-user")
         ulUsuarios.appendChild(newUser);
       })
+
+      socket.emit('lista-nome', {
+        id: sessionStorage.getItem('id'), 
+        nickname: sessionStorage.getItem('nickname')
+       });
+
+      socket.on("lista-nome", (nomes)=>{
+         for(var i=0; i<nomes.length; i+=1){
+            if(nomes[i]!== sessionStorage.getItem("nickname")){
+              const newUser = document.createElement('li');
+              newUser.textContent = nomes[i].nickname;
+              newUser.setAttribute("data-testid", "online-user")
+              ulUsuarios.appendChild(newUser);
+            }
+         }
+       })
 
       formMenssagens.addEventListener('submit',(event)=>{
         event.preventDefault();
