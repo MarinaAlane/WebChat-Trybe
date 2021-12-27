@@ -102,7 +102,7 @@
     let nicknameValue;
 
     // Renderiza um elemento com base nos parâmetros recebidos.
-    
+
     const renderElement = (element, elementId, elementValue, elementAttribute = [null, null]) => {
       const tag = document.createElement(`${element}`);
 
@@ -142,15 +142,22 @@
 
     // Gera um nome aleatório de 16 caracteres e o adiciona ao campo.
 
+    const generateNick = () => socket.id.split('', 16).join('');
+
     socket.on('connect', () => {
-      const nickname = socket.id.split('', 16).join('')
+      const nickname = generateNick();
       renderElement('li', 'nickname-list', nickname, ['data-testid', 'online-user']);
 
-      socket.emit('newUser');
     })
 
+    // Verifica se há mensagens salvas no banco de dados.
+
+    socket.on('connect', () => {
+      socket.emit('newUser');
+    });
+
     // Recebe a mensagem e a adiciona ao campo.
-    
+
     socket.on('message', (msg) => {
       renderElement('li', 'messages', msg, ['data-testid', 'message']);
     })
