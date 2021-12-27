@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Project Webchat - Antônio Schappo</title>
+    </head>
+    <body>
+        <h1>THIS WILL BE THE CHAT!</h1>
+        <div id="message-container"></div>
+        <ul id="messages">
+            <% if (messages) { %>
+            <% messages.forEach((message) => { %>
+                <li> <%= message %></li>
+           <% })} %>
+        </ul>
+        <form id="send-container">
+            <input type= "text" id="message-input" autocomplete="off">
+            <button type="submit" id="send-button">Send</button>
+        </form>
+        <script src="/socket.io/socket.io.js"></script>
+    </body>
+</html>
