@@ -31,6 +31,13 @@ sendBtn.addEventListener('click', () => {
 socket.on('username', (data) => {
   onlineUser.innerText = data;
   sessionStorage.setItem('username', data);
+
+  const usersList = document.getElementById('users-list');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = data;
+
+  usersList.appendChild(li);
 });
 
 socket.on('message', (data) => {
