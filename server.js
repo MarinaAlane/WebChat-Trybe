@@ -27,6 +27,7 @@ io.on('connection', (socket) => {
 
   socket.on('message', (msg) => {
     io.emit('message', `${msg}`);
+    console.log(`A menssagem do cliente ${socket.id} foi: ${msg}`);
   });
 });
 
