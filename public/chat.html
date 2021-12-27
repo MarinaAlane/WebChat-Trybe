@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web chat</title>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Web chat</h1>
+
+    <input type="text" name="nickname" placeholder="nome" />
+    <button id="btn-nickname">Salvar</button>
+
+    <ul id="users-list"></ul>
+    <ul id="webchat"></ul>
+
+    <form id="form-chatMessage">
+      <input type="text" name="chatMessage" placeholder="mensagem" />
+      <button>Enviar</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script  type="module" src="./js/chat.js"></script>
+  </body>
+</html>
