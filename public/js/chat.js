@@ -1,21 +1,11 @@
 const socket = window.io();
+// const moment = window.moment();
 
 const formSendMessage = document.querySelector('#form-chatMessage');
 
-//  Não consigo importar o arquivo moment
-// function getDate() {
-//   const date = moment().locale('pt-br').format('L').replace(/\//g, '-');
-//   const time = moment().format('LTS');
-//   return `${date} ${time}`;
-//   // return '12/12/12';
-// }
-
 function sendMessage(event) {
-  // const fullDate = getDate();
-  // const msg = `${fullDate} - ${nickname}: ${chatMessage}`;
   event.preventDefault();
 
-  console.log('função sendMessage acionada (chat.js)');
   const chatMessage = document.querySelector('input[name=chatMessage');
   const nicknameInput = document.querySelector('input[name=nickname');
 
