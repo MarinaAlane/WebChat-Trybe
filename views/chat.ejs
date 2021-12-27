@@ -4,7 +4,6 @@
         <title>Project Webchat - Antônio Schappo</title>
     </head>
     <body>
-        <h1>THIS WILL BE THE CHAT!</h1>
         <div id="message-container"></div>
         <ul id="messages">
            
@@ -16,6 +15,23 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
             const socket = io();
+
+            const form = document.querySelector('#send-container');
+            const input = document.querySelector('#message-input');
+            const messages = document.querySelector('#messages');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // previne recarregamento da página
+                if (input.value) {
+                    socket.emit('message', { chatMessage: input.value, nickName: socket.id });
+                }
+                input.value = '';
+            });
+            socket.on('message', (msg) => {
+                const newMessage = document.createElement('li');
+                newMessage.innerText = msg;
+                messages.appendChild(newMessage);
+                window.scrollTo(0, document.body.scrollHeight);
+            });
         </script>
     </body>
 </html>

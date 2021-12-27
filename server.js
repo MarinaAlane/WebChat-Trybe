@@ -16,7 +16,6 @@ const chatController = require('./controllers/chatController');
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-require('./sockets/ping')(io);
 require('./sockets/chat')(io);
 
 app.get('/', chatController);
