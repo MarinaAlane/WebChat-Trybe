@@ -4,9 +4,29 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Projeto WebChat</title>
 </head>
 <body>
   <h1>Oi turobem</h1>
+  <button id="sendButton">Enviar mensagem</button>
+  <ul id="msgBox"></ul>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const button = document.querySelector('#sendButton');
+    const messages = document.querySelector('#msgBox');
+
+    button.addEventListener('click', (e) => {
+      socket.emit('message', 'Pega na minha mensagem');
+      return false;
+    });
+
+    socket.on('message', (mensagem) => {
+      const li = document.createElement('li');
+      li.innerText = mensagem;
+      messages.appendChild(li);
+    })
+
+  </script>
 </body>
 </html>
