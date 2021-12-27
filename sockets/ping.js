@@ -1,5 +1,6 @@
 module.exports = (io) => {
     io.on('connection', (socket) => {
+      console.log(`Usuário ${socket.id} conectado`);
       socket.emit('ola', 'Que bom que você chegou aqui! Fica mais um cadin, vai ter bolo :)');
   
       socket.on('ping', () => {
