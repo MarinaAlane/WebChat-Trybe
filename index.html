@@ -143,7 +143,10 @@
     // Gera um nome aleatório de 16 caracteres e o adiciona ao campo.
 
     socket.on('connect', () => {
-      renderElement('li', 'nickname-list', socket.id.split('', 16).join(''), ['data-testid', 'online-user']);
+      const nickname = socket.id.split('', 16).join('')
+      renderElement('li', 'nickname-list', nickname, ['data-testid', 'online-user']);
+
+      socket.emit('newUser');
     })
 
     // Recebe a mensagem e a adiciona ao campo.
