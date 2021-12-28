@@ -9,21 +9,19 @@ const sendMessage = ({ chatMessage, nickname, _id }, usrList, io, socket) => {
   io.emit('message', messageString);
 };
 
-const changeNickname = ({ nickname, id }, usrList, io, _socket) => {
-  console.log(usrList.online);
-  console.log(nickname);
-  const userIndex = usrList.online.findIndex((userData) => id === userData.id);
-  console.log(userIndex);
+const changeNickname = ({ nickname, id }, usrList, io, socket) => {
   usrList.changeUserNick(nickname, id);
   io.emit('updateUserList', usrList.online);
+  console.log(`usuário ${socket.id} trocou nick para: ${nickname}`);
 };
 
 const disconnectUser = (usrList, io, socket) => {
   console.log(`usuário ${socket.id} desconectou`);
-  console.log(usrList.online);
 
   io.emit('userLoggedOut', socket.id);
   usrList.removeUser(socket.id);
+
+  console.log('online users:', usrList.online);
 };
 
 module.exports = {

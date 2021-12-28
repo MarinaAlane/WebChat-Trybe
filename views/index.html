@@ -120,7 +120,15 @@
     })
 
     socket.on('connection', (usersOnline) => {
-      usersOnline.forEach(({id, nickname}) => {
+      const clientID = socket.id;
+      const clientInfo = usersOnline.filter(({id}) => id === socket.id);
+      const otherUsersInfo = usersOnline.filter(({id}) => id !== socket.id);
+      const clientIDFirst = [...clientInfo, ...otherUsersInfo]
+
+      // clear online list
+      userList.textContent = '';
+
+      clientIDFirst.forEach(({id, nickname}) => {
         const newUser = document.createElement('li');
         newUser.dataset.testid = "online-user";
         newUser.textContent = nickname || id;

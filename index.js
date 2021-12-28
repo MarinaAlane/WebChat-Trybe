@@ -30,6 +30,7 @@ const usersList = {
 io.on('connection', (socket) => {
   console.log(`usuário ${socket.id} conectado`);
   usersList.addUser({ id: socket.id, nickname: socket.id.substring(0, 16) });
+  console.log(usersList.online);
   io.emit('connection', usersList.online);
 
   socket.on('message', ({ chatMessage, nickname }) => { 
