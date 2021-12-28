@@ -55,6 +55,6 @@ io.on('connection', (socket) => {
 
 app.get('/', (_req, res) => res.render('index', { clients }));
 
-http.listen(port, () => console.log(`Tá on na porta ${port}`));  
+http.listen(port, () => console.log(`Tá on na porta ${port} !!`));  
 
 // Ref: meu antigo projeto: https://github.com/tryber/sd-010-a-project-webchat/pull/89/files
