@@ -1,4 +1,5 @@
 const moment = require('moment');
+const Messages = require('../models/Messages');
 
 // Ref: https://www.codegrepper.com/code-examples/javascript/generate+unique+username+in+JavaScript
 const randomNickname = () => {
@@ -25,9 +26,15 @@ module.exports = (io) => io.on('connection', (socket) => {
     io.emit('removeUser', username);
   });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
     const date = moment();
     const formattedDate = date.format('DD-MM-yyyy hh:mm:ss A');
+
+    await Messages.create({
+      message: chatMessage,
+      nickname,
+      timestamp: formattedDate,
+    });
 
     io.emit('message', `${formattedDate} - ${nickname}: ${chatMessage}`);
   });
