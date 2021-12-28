@@ -10,6 +10,7 @@ saveBtn.addEventListener('click', () => {
   onlineUser.innerText = username;
 
   sessionStorage.setItem('username', username);
+  socket.emit('updateUsername', username);
 
   usernameInput.value = '';
 });
@@ -28,16 +29,68 @@ sendBtn.addEventListener('click', () => {
   messageInput.value = '';
 });
 
+const getUsers = () => {
+  const usersList = document.getElementById('users-list');
+  return usersList.children;
+};
+
+const addUser = (username) => {
+  const usersList = document.getElementById('users-list');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = username;
+
+  usersList.appendChild(li);
+};
+
+const userIsListed = (username) => {
+  const users = getUsers();
+
+  for (let index = 0; index < users.length; index += 1) {
+    if (users[index].innerText === username) return true;
+  }
+  return false;
+};
+
 socket.on('username', (data) => {
   onlineUser.innerText = data;
   sessionStorage.setItem('username', data);
 
-  const usersList = document.getElementById('users-list');
-  const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
-  li.innerText = data;
+  addUser(data);
+});
 
-  usersList.appendChild(li);
+socket.on('updateUsername', ({ oldUsername, newUsername }) => {
+  const users = getUsers();
+
+  for (let index = 0; index < users.length; index += 1) {
+    if (users[index].innerText === oldUsername) {
+      users[index].innerText = newUsername;
+      break;
+    }
+  }
+});
+
+socket.on('loggedUser', (data) => {
+  addUser(data);
+
+  const username = onlineUser.innerText;
+
+  socket.emit('loggedUser', username);
+});
+
+socket.on('addLoggedUsers', (username) => {
+  if (!userIsListed(username)) addUser(username);
+});
+
+socket.on('removeUser', (username) => {
+  const users = getUsers();
+
+  for (let index = 0; index < users.length; index += 1) {
+    if (users[index].innerText === username) {
+      users[index].remove();
+      break;
+    }
+  }
 });
 
 socket.on('message', (data) => {
