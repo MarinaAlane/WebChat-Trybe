@@ -22,7 +22,8 @@
             form.addEventListener('submit', (e) => {
                 e.preventDefault(); // previne recarregamento da página
                 if (input.value) {
-                    socket.emit('message', { chatMessage: input.value, nickName: socket.id });
+                    socket.emit('message',
+                    { chatMessage: input.value, nickname: socket.id });
                 }
                 input.value = '';
             });
