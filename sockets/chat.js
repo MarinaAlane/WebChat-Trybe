@@ -1,7 +1,7 @@
 const moment = require('moment');
 const Messages = require('../models/Messages');
 
-module.exports = (io) => io.on('connection', (socket) => {
+module.exports = (io) => io.on('connection', async (socket) => {
   socket.on('message', async ({ chatMessage, nickname }) => {
     const date = moment();
     const formattedDate = date.format('DD-MM-yyyy hh:mm:ss A');
@@ -14,4 +14,7 @@ module.exports = (io) => io.on('connection', (socket) => {
 
     io.emit('message', `${formattedDate} - ${nickname}: ${chatMessage}`);
   });
+
+  const messages = await Messages.getAll();
+  socket.emit('messageHistory', messages);
 });

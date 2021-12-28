@@ -1,5 +1,6 @@
 const socket = window.io();
 
+const dataTestId = 'data-testid';
 const onlineUser = document.getElementById('online-user');
 
 const saveBtn = document.getElementById('save-btn');
@@ -37,7 +38,7 @@ const getUsers = () => {
 const addUser = (username) => {
   const usersList = document.getElementById('users-list');
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute(dataTestId, 'online-user');
   li.innerText = username;
 
   usersList.appendChild(li);
@@ -96,8 +97,22 @@ socket.on('removeUser', (username) => {
 socket.on('message', (data) => {
   const messagesList = document.getElementById('messages-list');
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(dataTestId, 'message');
   li.innerText = data;
 
   messagesList.appendChild(li);
+});
+
+socket.on('messageHistory', (messages) => {
+  const messagesList = document.getElementById('messages-list');
+
+  messages.forEach((m) => {
+    const { message, nickname, timestamp } = m;
+
+    const li = document.createElement('li');
+    li.setAttribute(dataTestId, 'message');
+    li.innerText = `${timestamp} - ${nickname}: ${message}`;
+
+    messagesList.appendChild(li);
+  });
 });
