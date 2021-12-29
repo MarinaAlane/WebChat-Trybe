@@ -1,27 +1,27 @@
-const messageModel = require('../models/messages');
+const messageModel = require('../models/message');
 
-let Users = [];
+let allUsers = [];
 
-const getDate = () => new Date().toLocaleString().replace(/\//g, '-');
+const getActualDate = () => new Date().toLocaleString().replace(/\//g, '-');
 
-const showMessage = ({ nickname, timestamp, message }) =>
+const displayedMessage = ({ nickname, timestamp, message }) =>
   `${timestamp} - ${nickname}: ${message}`;
 
 const getAllMessages = async () => {
   const messagesList = await messageModel.getAllMessages();
 
-  const formatedMessages = messagesList.map((message) => showMessage(message));
+  const formatedMessages = messagesList.map((message) => displayedMessage(message));
 
   return formatedMessages;  
 };
 
 const addUpdateUser = (socketId, nickname) => {
-  const usersBySocketId = Users.find((user) => user.id === socketId);
+  const usersBySocketId = allUsers.find((user) => user.id === socketId);
 
   if (!usersBySocketId) {
-    Users.push({ id: socketId, nickname });
+    allUsers.push({ id: socketId, nickname });
   } else {
-    const UsersBMap = Users.map((user) => {
+    const allUsersMapped = allUsers.map((user) => {
       if (user.id === socketId) {
         return {
 
@@ -34,7 +34,7 @@ const addUpdateUser = (socketId, nickname) => {
       return user;
     });
 
-    Users = UsersBMap;
+    allUsers = allUsersMapped;
   }
 };
 
@@ -52,13 +52,13 @@ const saveMessage = (socket) => {
 
       nickname,
 
-      timestamp: getDate(),
+      timestamp: getActualDate(),
 
     };
 
     await messageModel.saveMessage(messageProps);
 
-    const message = showMessage(messageProps);
+    const message = displayedMessage(messageProps);
 
     socket.emit('message', message);
 
@@ -68,11 +68,11 @@ const saveMessage = (socket) => {
 
 const disconnectUser = (socket, socketId) => {
   socket.on('disconnect', () => {
-    Users = Users.filter((user) => user.id !== socketId);
+    allUsers = allUsers.filter((user) => user.id !== socketId);
 
-    socket.emit('users', Users);
+    socket.emit('users', allUsers);
 
-    socket.broadcast.emit('users', Users);
+    socket.broadcast.emit('users', allUsers);
   });
 };
 
@@ -92,13 +92,13 @@ module.exports = (io) =>
 
       addUpdateUser(socketId, nickname);
 
-      const changeFirst = Users.filter((user) => user.id !== socketId);
+      const changeFirst = allUsers.filter((user) => user.id !== socketId);
 
       changeFirst.unshift({ id: socketId, nickname });
 
       socket.emit('users', changeFirst);
 
-      socket.broadcast.emit('users', Users);
+      socket.broadcast.emit('users', allUsers);
 
       disconnectUser(socket, socketId);
     });
