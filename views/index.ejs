@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Projeto WebChat</title>
+</head>
+<body>
+  <div>
+    <input data-testid="nickname-box" id="nickname-box" placeholder="Enter new nickname" autocomplete="off" />
+    <button id="nickname-button" data-testid="nickname-button">Change Nickname</button>
+  </div>
+  <p>Usuário online: <span id="online-user" data-testid="online-user"></span></p>
+
+  <form action="">
+    <input data-testid="message-box" id="message-box" autocomplete="off" />
+    <button data-testid="send-button">Send</button>
+  </form>
+
+  <ul id="messages-list">
+    <% messages.forEach((message) => { %>
+      <li data-testid="message"><%= message %></li>
+    <% }) %>
+  </ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/message.js"></script>
+</body>
+</html>

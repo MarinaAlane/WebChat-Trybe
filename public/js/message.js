@@ -3,6 +3,7 @@ const socket = window.io();
 const userNicknameBox = document.querySelector('#online-user');
 const nickname = [...Array(16)].map(() => Math.floor(Math.random() * 10)).join('');
 userNicknameBox.innerText = nickname;
+window.sessionStorage.setItem('nickname', nickname);
 
 const form = document.querySelector('form');
 const inputMessage = document.querySelector('#message-box');

@@ -10,6 +10,11 @@ const io = require('socket.io')(http, {
   },
 });
 
+const Message = require('./models/Message');
+
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
 app.use(express.static(`${__dirname}/public`));
 
 io.on('connection', (socket) => {
@@ -21,13 +26,18 @@ io.on('connection', (socket) => {
     const month = time.getMonth();
     const year = time.getFullYear();
     const date = `${day}-${month}-${year} ${time.toLocaleTimeString('en-US')}`;
+
+    Message.create({ date, nickname, chatMessage });
     
     io.emit('message', `${date} ${nickname} ${chatMessage}`);
   });
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/public/index.html`);
+app.get('/', async (req, res) => {
+  const messages = await Message.getAll();
+  const formattedMessages = messages
+    .map(({ date, nickname, chatMessage }) => `${date} ${nickname} ${chatMessage}`);
+  res.status(200).render('index', { messages: formattedMessages });
 });
 
 http.listen(3000, () => {
