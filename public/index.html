@@ -6,10 +6,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webchat Project</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> 
 </head>
 <body>
-  <script>
-    const socket = io('http://localhost:3000');
+  <main>
+    <div>
+      <form id="nickname-form">
+        <input type="text" data-testid="nickname-box" name="nickname" placeholder="Troque aqui o seu nickname">
+        <button type="submit" data-testid="nickname-button">Salvar</button>
+      </form>
+    </div>
+    <div id="online-user"></div>
+    <div>
+      <form id="message-form">
+        <input type="text" data-testid="message-box" name="message" placeholder="Digite aqui sua mensagem">
+        <button type="submit" data-testid="send-button">Enviar</button>
+      </form>
+    </div>
+    <div class="render-message">
+      <div></div>
+    </div>
+  </main>
+  <script type="text/javascript">
+    var socket = io('http://localhost:3000');
+
+    var nicknameInfo;
+
+    socket.on('connectedUser', function(userId){
+      nicknameInfo = userId;
+      $('#online-user').append('<p data-testid="online-user">' + userId + '</p>');
+    });
+
+    $('#nickname-form').submit((event) => {
+      event.preventDefault();
+      nicknameInfo = $('input[name="nickname"]').val();
+    });
+
+    $('#message-form').submit(function(event){
+      event.preventDefault();
+      var bodyMessage = $('input[name="message"]').val();
+      console.log(bodyMessage);
+
+      socket.emit('message', { nickname: nicknameInfo, chatMessage: bodyMessage });
+    });
+
+    socket.on('message', function(info){
+      $('.render-message').append('<p data-testid="message">' + info + '</p>');
+    });
+
   </script>
 </body>
 </html>
+
+<!--
+- Será validado que um _nickname_ aleatório é gerado quando o cliente se conecta;
+
+- Será validado que as mensagens enviadas possuem o _data-test-id_ correto;
+
+- Será validado que as mensagens são exibidas na ordem correta;
+
+- Será validado que é possível enviar mensagens após alterar o _nickname_.-->

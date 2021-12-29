@@ -16,10 +16,14 @@ const io = require('socket.io')(server, {
 
 // é um escutador, escuta o que está no 'remetente/cliente' - escuta a conexão de forma geral
 io.on('connection', (socket) => {
-  console.log(socket.id);
+  const userId = socket.id.slice(0, 16);
+
+  socket.emit('connectedUser', userId);
+  console.log(userId);
 
   // escuta a msg de quem está enviando (tipo uma msg privada)
   socket.on('message', (info) => {
+    console.log(info);
     io.emit('message', `${date} - ${info.nickname}: ${info.chatMessage}`);
   });
 });
