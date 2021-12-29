@@ -17,8 +17,6 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-const listaNomes = [];
-
 function generateToken(length) {
   // https://www.ti-enxame.com/pt/javascript/crie-um-token-aleatorio-em-javascript-com-base-nos-detalhes-do-usuario/941136694/
   const a = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('');
@@ -30,17 +28,37 @@ function generateToken(length) {
   return b.join('');
 }
 
+let clientes = [];
+
+function formataCliente(cliente) {
+  return { nome: cliente.nickname || cliente.id };
+}
+
+function notificaTodosListaDeClientes() {
+  const listaDeClientes = clientes.map(formataCliente);
+
+  clientes.forEach((clienteExistente) => {
+    clienteExistente.socket.emit('clientes-logados', listaDeClientes);
+  });
+}
+
 io.on('connection', (socket) => {
-  socket.emit('logado', generateToken(16));
+  const cliente = { id: generateToken(16), socket, nickname: null };
+  clientes.push(cliente);
+  socket.emit('logado', cliente.id);
+  notificaTodosListaDeClientes();
+  socket.on('nickname', (nickname) => {
+    cliente.nickname = nickname;
+    notificaTodosListaDeClientes();
+  });
+  socket.on('disconnect', () => {
+    clientes = clientes.filter(((c) => c.socket.id !== socket.id));
+    notificaTodosListaDeClientes();
+  });
 
   socket.on('message', (msg) => {
     io.emit('message',
     `${DateTime.now().toFormat('dd-LL-yyyy hh:mm:ss')} ${msg.nickname}: ${msg.chatMessage}`);
-  });
-
-  socket.on('lista-nome', (nome) => {
-    listaNomes.push(nome);
-    socket.emit('lista-nome', listaNomes);
   });
 });
 

@@ -5,6 +5,8 @@
   </head>
   <body>
     <h1> Web Chat da Jé</h1>
+    <h2 id="eu"> Conectando...</h2>
+
     <div>
       <form id = 'nome'>
         <input type="text" id='input-nome' data-testid="nickname-box" >
@@ -34,43 +36,53 @@
       const inputNome = document.getElementById('input-nome');
       const ulUsuarios =  document.getElementById('lista-usuarios');
 
-      formNome.addEventListener('submit', (event)=>{
-        event.preventDefault();
-        if(inputNome.value){
-           const tagsLi = document.getElementsByTagName('li');
-           for(var i = 0; i < tagsLi.length; i+=1){
-             if(tagsLi[i].innerText === sessionStorage.getItem('nickname')){
-                sessionStorage.setItem('nickname', inputNome.value)
-                return tagsLi[i].innerText = inputNome.value;
-             }
-           }
-        }
-      })
 
       socket.on('logado', (usuario)=>{
+        document.getElementById('eu').innerText = usuario
+
         sessionStorage.setItem('nickname', usuario)
         sessionStorage.setItem('id', usuario)
+
         const newUser = document.createElement('li');
         newUser.textContent = usuario;
         newUser.setAttribute("data-testid", "online-user")
         ulUsuarios.appendChild(newUser);
-      })
+      });
 
-      socket.emit('lista-nome', {
-        id: sessionStorage.getItem('id'), 
-        nickname: sessionStorage.getItem('nickname')
-       });
+      socket.on('clientes-logados',(clientes)=>{
+        ulUsuarios.innerHTML = "";
+        for(var i=0; i<clientes.length; i+=1){
+          if(sessionStorage.getItem('nickname') === clientes[i].nome){
+            const cliente = clientes[i];
+            const nomeCliente = cliente.nome
+          
+            const newUser = document.createElement('li');
+            newUser.textContent = nomeCliente;
+            newUser.setAttribute("data-testid", "online-user")
+            ulUsuarios.appendChild(newUser);
+          }
+        }
+        for(var i=0; i<clientes.length; i+=1){
+          if(sessionStorage.getItem('nickname') !== clientes[i].nome){
+            const cliente = clientes[i];
+            const nomeCliente = cliente.nome
+          
+            const newUser = document.createElement('li');
+            newUser.textContent = nomeCliente;
+            newUser.setAttribute("data-testid", "online-user")
+            ulUsuarios.appendChild(newUser);
+          }
+        }
 
-      socket.on("lista-nome", (nomes)=>{
-         for(var i=0; i<nomes.length; i+=1){
-            if(nomes[i]!== sessionStorage.getItem("nickname")){
-              const newUser = document.createElement('li');
-              newUser.textContent = nomes[i].nickname;
-              newUser.setAttribute("data-testid", "online-user")
-              ulUsuarios.appendChild(newUser);
-            }
-         }
-       })
+      });
+      
+      formNome.addEventListener('submit', (event)=>{
+        event.preventDefault();
+        if(inputNome.value){
+         socket.emit('nickname', inputNome.value)
+         sessionStorage.setItem('nickname', inputNome.value)
+          }
+        });
 
       formMenssagens.addEventListener('submit',(event)=>{
         event.preventDefault();
@@ -81,7 +93,7 @@
            }
           )
         }
-      })
+      });
 
       socket.on('message',(msg)=>{
         const newMessage = document.createElement('li');
@@ -89,7 +101,7 @@
         newMessage.textContent = msg;
         ulMenssagens.appendChild(newMessage);
         window.scrollTo(0, document.body.scrollHeight);
-      })
+      });
     </script>
   </body>
 
