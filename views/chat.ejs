@@ -4,35 +4,26 @@
         <title>Project Webchat - Antônio Schappo</title>
     </head>
     <body>
-        <div id="message-container"></div>
-        <ul id="messages">
+        <div id="nickname-container">
+            <ul id="nickname-list">
+
+            </ul>
+            <form id="nickname-form">
+                <input type="text" id="nickname-input">
+                <button type="submit" id="nickname-button">Change name</button>
+            </form>
+        </div>
+        <div id="message-container">
+            <ul id="messages">
            
-        </ul>
+            </ul>
+        </div>
+       
         <form id="send-container">
             <input type= "text" id="message-input" autocomplete="off">
             <button type="submit" id="send-button">Send</button>
         </form>
         <script src="/socket.io/socket.io.js"></script>
-        <script>
-            const socket = io();
-
-            const form = document.querySelector('#send-container');
-            const input = document.querySelector('#message-input');
-            const messages = document.querySelector('#messages');
-            form.addEventListener('submit', (e) => {
-                e.preventDefault(); // previne recarregamento da página
-                if (input.value) {
-                    socket.emit('message',
-                    { chatMessage: input.value, nickname: socket.id });
-                }
-                input.value = '';
-            });
-            socket.on('message', (msg) => {
-                const newMessage = document.createElement('li');
-                newMessage.innerText = msg;
-                messages.appendChild(newMessage);
-                window.scrollTo(0, document.body.scrollHeight);
-            });
-        </script>
+        <script src="./js/chat.js"></script>
     </body>
 </html>
