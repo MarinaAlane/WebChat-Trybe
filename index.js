@@ -27,12 +27,13 @@ const usersList = {
   },
 };
 
+// acho que tenho que refazer essa estrutura... 😞
 io.on('connection', async (socket) => {
   const msgHist = await retrieveHistory();
   console.log(`usuário ${socket.id} conectado`);
   usersList.addUser({ id: socket.id, nickname: socket.id.substring(0, 16) });
   io.emit('connection', usersList.online);
-  io.emit('msgHistory', msgHist);
+  io.to(socket.id).emit('msgHistory', msgHist);
 
   socket.on('message', async ({ chatMessage, nickname }) => { 
     await sendMessage({ chatMessage, nickname }, usersList, io, socket);
