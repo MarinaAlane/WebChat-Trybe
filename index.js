@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
-const { sendMessage, changeNickname, disconnectUser } = require('./callbacks');
+const { sendMessage, changeNickname, disconnectUser, retrieveHistory } = require('./callbacks');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,14 +27,15 @@ const usersList = {
   },
 };
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+  const msgHist = await retrieveHistory();
   console.log(`usuário ${socket.id} conectado`);
   usersList.addUser({ id: socket.id, nickname: socket.id.substring(0, 16) });
-  console.log(usersList.online);
   io.emit('connection', usersList.online);
+  io.emit('msgHistory', msgHist);
 
-  socket.on('message', ({ chatMessage, nickname }) => { 
-    sendMessage({ chatMessage, nickname }, usersList, io, socket);
+  socket.on('message', async ({ chatMessage, nickname }) => { 
+    await sendMessage({ chatMessage, nickname }, usersList, io, socket);
   });
 
   socket.on('changeNickname', ({ nickname, id }) => {

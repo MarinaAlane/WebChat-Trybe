@@ -119,6 +119,16 @@
       msgFeed.appendChild(newMessage);
     })
 
+    socket.on('msgHistory', (hist) => {
+      hist.forEach(({message, nickname, timestamp}) => {
+        const msgString = `${timestamp} ${nickname} ${message}`;
+        const newMessage = document.createElement('li');
+        newMessage.dataset.testid = "message"
+        newMessage.textContent = msgString;
+        msgFeed.appendChild(newMessage);
+      });
+    })
+
     socket.on('connection', (usersOnline) => {
       const clientID = socket.id;
       const clientInfo = usersOnline.filter(({id}) => id === socket.id);
