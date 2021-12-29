@@ -1,105 +1,51 @@
-const messageModel = require('../models/message');
+const model = require('../models/message');
 
-let allUsers = [];
-
-const getActualDate = () => new Date().toLocaleString().replace(/\//g, '-');
-
-const displayedMessage = ({ nickname, timestamp, message }) =>
-  `${timestamp} - ${nickname}: ${message}`;
-
-const getAllMessages = async () => {
-  const messagesList = await messageModel.getAllMessages();
-
-  const formatedMessages = messagesList.map((message) => displayedMessage(message));
-
-  return formatedMessages;  
-};
-
-const addUpdateUser = (socketId, nickname) => {
-  const usersBySocketId = allUsers.find((user) => user.id === socketId);
-
-  if (!usersBySocketId) {
-    allUsers.push({ id: socketId, nickname });
-  } else {
-    const allUsersMapped = allUsers.map((user) => {
-      if (user.id === socketId) {
-        return {
-
-          id: user.id,
-
-          nickname,
-
-        };
-      }
-      return user;
-    });
-
-    allUsers = allUsersMapped;
+// https://github.com/tryber/sd-010-b-project-talker-manager/pull/34/files
+function generateNickname(n) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let newNickname = '';
+  for (let i = 0; i < n; i += 1) {
+    newNickname += chars[Math.floor(Math.random() * chars.length)];
   }
+  return newNickname;
+}
+
+const userList = [];
+
+const historico = (socket, historic) => {
+  socket.emit('newConnection', historic);
+  socket.emit('userOnline', userList);
+  socket.on('newNickname', (newNickname) => {
+    // https://www.ti-enxame.com/pt/javascript/como-alterar-o-valor-do-objeto-que-esta-dentro-de-um-array-usando-javascript-ou-jquery/971965804/
+    const index = userList.findIndex((list) => list.userID === socket.id);
+    if (newNickname.userID === socket.id) userList[index].nickname = newNickname.nickname; 
+  });
 };
 
-const emitAllMessages = async (socket) => {
-  const messagesList = await getAllMessages();
+module.exports = (io) => io.on('connection', async (socket) => {
+  const historic = await model.getAllMessage()
+    .then((e) => e
+    .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
 
-  socket.emit('allMessages', messagesList);
-};
+  // historico(socket, historic);
 
-const saveMessage = (socket) => {
+  const usuario = { nickname: generateNickname(16), userID: socket.id };
+  userList.push(usuario);
+
+  io.emit('users', usuario);
+
+  historico(socket, historic);
+  
+  socket.on('users', (user) => io.emit('nickname', user));
+
   socket.on('message', async ({ chatMessage, nickname }) => {
-    const messageProps = {
-
-      message: chatMessage,
-
-      nickname,
-
-      timestamp: getActualDate(),
-
-    };
-
-    await messageModel.saveMessage(messageProps);
-
-    const message = displayedMessage(messageProps);
-
-    socket.emit('message', message);
-
-    socket.broadcast.emit('message', message);
+    const response = await model.createMessage({ chatMessage, nickname });
+    io.emit('message', response);    
   });
-};
 
-const disconnectUser = (socket, socketId) => {
   socket.on('disconnect', () => {
-    allUsers = allUsers.filter((user) => user.id !== socketId);
-
-    socket.emit('users', allUsers);
-
-    socket.broadcast.emit('users', allUsers);
+    const i = userList.findIndex((list) => list.userID === socket.id);
+    userList.splice(i, 1);
+    io.emit('userOff', socket.id);
   });
-};
-
-module.exports = (io) =>
-
-  io.on('connection', (socket) => {
-    console.log(`Usuário conectado. ID: ${socket.id} `);
-
-    let socketId = '';
-
-    emitAllMessages(socket);
-
-    saveMessage(socket);
-
-    socket.on('users', (nickname) => {
-      socketId = socket.id;
-
-      addUpdateUser(socketId, nickname);
-
-      const changeFirst = allUsers.filter((user) => user.id !== socketId);
-
-      changeFirst.unshift({ id: socketId, nickname });
-
-      socket.emit('users', changeFirst);
-
-      socket.broadcast.emit('users', allUsers);
-
-      disconnectUser(socket, socketId);
-    });
-  });
+});

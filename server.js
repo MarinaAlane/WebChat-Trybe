@@ -26,6 +26,8 @@ const socket = require('socket.io')(server, {
 
 app.use(cors());
 
+require('./sockets/chat')(socket);
+
 app.use(express.static(path.join(__dirname, 'views')));
 
 app.set('views', path.join(__dirname, 'views'));
@@ -38,7 +40,7 @@ app.use('/', (req, res) => {
   res.render('index.ejs');
 });
 
-require('./sockets/chat.js')(socket);
+app.get('/', (_req, res) => res.render('chat'));
 
 server.listen(PORT, () => {
   console.log(`Porta ${PORT}`);

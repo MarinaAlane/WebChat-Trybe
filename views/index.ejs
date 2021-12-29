@@ -1,53 +1,50 @@
-<!DOCTYPE html/>
-<html lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Chat Trybe</title>
+    <title>WebChat</title>
   </head>
+
   <body>
-    <form id="nickname-form">
-      <input
-        type="text"
-        name="nickname-box"
-        class="nickname-box"
-        data-testid="online-user"
-        placeholder="Digite seu nickname"
-      />
-      <button
-        type="submit"
-        name="nickname-button"
-        class="btn btn-nickname"
-        data-testid="nickname-button"
-      >
-        Salvar nickname
+  
+    <div>
+      <input 
+        placeholder="Insira seu nickname" 
+        data-testid="nickname-box" 
+        id="inputNickname" 
+        autocomplete="off" />
+      <button 
+      data-testid="nickname-button" 
+      id="btnNickname">
+        Salvar
       </button>
-    </form>
+    </div>
 
-    <ul class="all-users"></ul>
+    <div>
+      <ul id="user">Usuários</ul>
+    </div>
 
-    <div class="messages"></div>
+    <div>
+      <ul id="message">Mensagens</ul>
+    </div>
 
-    <form id="form-chat">
-      <input
-        type="text"
-        name="message-box"
-        class="message-box"
-        placeholder="Digite sua mensagem"
-        data-testid="message-box"
+    <div>
+      <input 
+        placeholder="Digite uma nova mensagem aqui" 
+        data-testid="message-box" 
+        id="inputMessage" 
+        autocomplete="off" 
       />
-      <button
-        type="submit"
-        name="send-button"
-        class="btn btn-send"
-        data-testid="send-button"
+      <button 
+        data-testid="send-button" 
+        id="btnMessage"
       >
         Enviar
       </button>
-    </form>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+    <script src='./js/chat.js'></script>
+
   </body>
+
 </html>
