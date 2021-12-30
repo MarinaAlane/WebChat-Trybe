@@ -19,6 +19,6 @@ module.exports = (io) => io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         delete users[socket.id];
-        io.emit('updateUserList', users);
+        io.emit('updateUsersList', users);
       });
 });
