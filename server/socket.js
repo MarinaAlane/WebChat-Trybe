@@ -2,7 +2,7 @@ const { saveMessage, getAllMessages } = require('../models/messagesModel');
 const { formatDate } = require('../utils/formatDate');
 
 const users = {};
-const userNickname = null;
+const userNickname = '';
 
 const onConnection = async (socket) => {
   const nickname = userNickname || socket.id.slice(0, 16);
