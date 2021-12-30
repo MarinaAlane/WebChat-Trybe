@@ -1,3 +1,5 @@
+const Messages = require('../models/messagesModel');
+
 const users = {}; // Stores users in object in order to manage connect
                     // and disconnect listing and nickname updates
 
@@ -12,9 +14,10 @@ module.exports = (io) => io.on('connection', (socket) => {
         io.emit('updateUsersList', users);
     });
 
-    socket.on('message', ({ chatMessage, nickname }) => {
-        const todayDate = new Date().toLocaleString().replaceAll('/', '-');
-        io.emit('message', `${todayDate} ${nickname}: ${chatMessage}`);
+    socket.on('message', async ({ chatMessage, nickname }) => {
+        const timestamp = new Date().toLocaleString().replaceAll('/', '-');
+        await Messages.createMessage(chatMessage, timestamp, nickname);
+        io.emit('message', `${timestamp} ${nickname}: ${chatMessage}`);
     });
 
     socket.on('disconnect', () => {

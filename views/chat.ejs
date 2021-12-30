@@ -15,12 +15,20 @@
         </div>
         <div id="message-container">
             <ul id="messages">
-           
+                <% if (messages) {%>
+            <% messages.forEach(({ message, nickname, timestamp }) => { %>
+                <li data-testid="message"><%=`${ timestamp } - ${ nickname }: ${ message }`%></li>
+            <% })} %>
             </ul>
         </div>
        
         <form id="send-container">
-            <input type= "text" id="message-input" data-testid="message-box" autocomplete="off">
+            <input
+                type= "text"
+                id="message-input"
+                data-testid="message-box"
+                autocomplete="off"
+                name="message">
             <button type="submit" id="send-button" data-testid="send-button">Send</button>
         </form>
         <script src="/socket.io/socket.io.js"></script>

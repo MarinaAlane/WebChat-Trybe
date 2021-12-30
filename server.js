@@ -1,8 +1,9 @@
 const express = require('express');
-
+const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 const server = require('http').createServer(app);
 
 const PORT = process.env.PORT || 3000;
@@ -21,7 +22,7 @@ app.set('view engine', 'ejs');
 
 require('./sockets/chat')(io);
 
-app.get('/', chatController);
+app.get('/', chatController.listMessages);
 
 server.listen(PORT, () => {
   console.log(`Servidor ouvindo na porta ${PORT}`);
