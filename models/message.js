@@ -10,7 +10,7 @@ const getMessages = async () => {
 
 const getMessagesByNickname = async (nickname) => {
   const db = await connection();
-  const query = await db.collection(messages).find({ nickname });
+  const query = await db.collection(messages).find({ nickname }).toArray();
   return query;
 };
 
@@ -20,8 +20,18 @@ const getMessageById = async (id) => {
   return query;
 };
 
+const addMessage = async (message) => {
+  const db = await connection();
+  const insert = await db.collection(messages).insertOne({ ...message });
+  return {
+    _id: insert.insertedId,
+    ...message,
+  };
+};
+
 module.exports = {
   getMessages,
   getMessagesByNickname,
   getMessageById,
+  addMessage,
 };
