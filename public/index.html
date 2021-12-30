@@ -11,7 +11,13 @@
     <section>
       <form id="nickname-form">
         <label for="nickname">Nickname</label>
-        <input type="text" name="nickname" id="nickname-input" placeholder="Enter your nickname">
+        <input 
+          type="text" 
+          name="nickname" 
+          id="nickname-input" 
+          placeholder="Enter your nickname" 
+          data-testid="nickname-box"
+        >
         <button type="submit" data-testid="nickname-button">Submit</button>
       </form>
 
@@ -31,7 +37,7 @@
       placeholder="Enter your message" 
       data-testid="message-box"
     >
-    <button type="submit">Send</button>
+    <button type="submit" data-testid="send-button">Send</button>
   </form>
 
 </body>
