@@ -23,7 +23,9 @@ form.addEventListener('submit', (e) => {
 });
 
 socket.on('connect', () => {
-    const nickname = socket.id;
+    const sessionID = socket.id;
+    const nickname = sessionID.slice(0, 16);
+    console.log(nickname.length);
     socket.emit('newUser', nickname);
 });
 

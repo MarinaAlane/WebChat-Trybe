@@ -1,4 +1,5 @@
-const users = {};
+const users = {}; // Store users in object in order to manage connect
+                    // and disconnect listing and nickname updates
 
 module.exports = (io) => io.on('connection', (socket) => {
     socket.on('newUser', (nickname) => {
