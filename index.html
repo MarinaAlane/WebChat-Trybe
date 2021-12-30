@@ -36,7 +36,6 @@
       const inputNome = document.getElementById('input-nome');
       const ulUsuarios =  document.getElementById('lista-usuarios');
 
-
       socket.on('logado', (usuario)=>{
         document.getElementById('eu').innerText = usuario
 
@@ -75,6 +74,16 @@
         }
 
       });
+
+      socket.on('messagens-DB', (listaMsg)=>{
+          listaMsg.forEach((mensagem) => {
+          const mensagemDoBanco = document.createElement('li');
+          mensagemDoBanco.setAttribute("data-testid", "message")
+          mensagemDoBanco.textContent = `${mensagem.time} ${mensagem.nickname}: ${mensagem.chatMessage}`;
+          ulMenssagens.appendChild(mensagemDoBanco);
+        });
+        
+      })
       
       formNome.addEventListener('submit', (event)=>{
         event.preventDefault();
