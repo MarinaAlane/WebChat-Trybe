@@ -44,9 +44,9 @@
       $('#online-user').html('');
       
       // semelhante ao exemplo da documentação do MDN em: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-      const idComparision = [...onlineUser].sort(function(a, b) {
-        if (b.position === socket.id) return -1;
-        if (a.position === socket.id) return 1;
+      const idComparision = onlineUser.sort(function(a, b) {
+        if (a.id === socket.id) return -1;
+        if (b.id === socket.id) return 1;
         return 0;
       });
 
@@ -58,6 +58,7 @@
     $('#nickname-form').submit((event) => {
       event.preventDefault();
       nicknameInfo = $('input[name="nickname"]').val();
+      socket.emit('saveNickname', nicknameInfo);
     });
 
     $('#message-form').submit(function(event){

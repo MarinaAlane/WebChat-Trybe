@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
     onlineUser = onlineUser.filter((user) => user.id !== socket.id);
 
     // para o requisito 4, tive ajuda do meu colega Marcelo Leite - Turma 11, na elaboração da ordenação dos id's de usuários. Usamos a HOF sort por ser aquela que mais se aproximava do que o requisito pedia, e por na sua documentação, ter um exemplo que fosse similar de comparações e ordenações.
-    onlineUser.push({ position: socket.id, nicknameId });
+    onlineUser.push({ id: socket.id, nicknameId });
     console.log(onlineUser);
     io.emit('allLogged', onlineUser);
   });
