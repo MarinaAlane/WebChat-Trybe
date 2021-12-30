@@ -10,19 +10,22 @@
 </head>
 <body>
   <main>
+    <ul id="online-user"></ul>
+
     <div>
       <form id="nickname-form">
         <input type="text" data-testid="nickname-box" name="nickname" placeholder="Troque aqui o seu nickname">
         <button type="submit" data-testid="nickname-button">Salvar</button>
       </form>
     </div>
-    <div id="online-user"></div>
+    
     <div>
       <form id="message-form">
         <input type="text" data-testid="message-box" name="message" placeholder="Digite aqui sua mensagem">
         <button type="submit" data-testid="send-button">Enviar</button>
       </form>
     </div>
+
     <div class="render-message">
       <div></div>
     </div>
@@ -34,7 +37,22 @@
 
     socket.on('connectedUser', function(userId){
       nicknameInfo = userId;
-      $('#online-user').append('<p data-testid="online-user">' + userId + '</p>');
+      socket.emit('saveNickname', nicknameInfo);
+    });
+
+    socket.on('allLogged', function(onlineUser){
+      $('#online-user').html('');
+      
+      // semelhante ao exemplo da documentação do MDN em: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+      const idComparision = [...onlineUser].sort(function(a, b) {
+        if (b.position === socket.id) return -1;
+        if (a.position === socket.id) return 1;
+        return 0;
+      });
+
+      idComparision.forEach(({ nicknameId }) => {
+        $('#online-user').append('<li data-testid="online-user">' + nicknameId + '<li>');
+      });
     });
 
     $('#nickname-form').submit((event) => {
