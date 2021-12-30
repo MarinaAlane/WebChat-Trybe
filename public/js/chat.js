@@ -22,9 +22,10 @@ form.addEventListener('submit', (e) => {
     input.value = '';
 });
 
+const formNickname = (value) => value.slice(0, 16);
+
 socket.on('connect', () => {
-    const sessionID = socket.id;
-    const nickname = sessionID.slice(0, 16);
+    const nickname = formNickname(socket.id);
     console.log(nickname.length);
     socket.emit('newUser', nickname);
 });
