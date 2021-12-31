@@ -1,6 +1,5 @@
 const model = require('../models/message');
 
-
 function generateNickname(n) {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let newNickname = '';
