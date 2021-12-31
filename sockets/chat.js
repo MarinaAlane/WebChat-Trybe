@@ -21,6 +21,7 @@ const historico = (socket, historic) => {
 };
 
 module.exports = (io) => io.on('connection', async (socket) => {
+  
   const historic = await model.getAllMessage()
     .then((e) => e
     .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
