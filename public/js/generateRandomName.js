@@ -16,6 +16,13 @@ const firstname = [
   'Wayne',
   'Khalil',
 ];
+const middleName = [
+  'Doidao',
+  'DaQuebrada',
+  'ExBBB',
+  'Diferenciado',
+  '10Colado',
+];
 const lastname = [
   'Mills',
   'Mercer',
@@ -37,8 +44,9 @@ const lastname = [
 
 /* eslint-disable */
 function generateName() {
-  let rand_first = Math.floor(Math.random() * firstname.length);
-  let rand_last = Math.floor(Math.random() * lastname.length);
-  return `${firstname[rand_first]}-${lastname[rand_last]}`;
+  const randFirst = Math.floor(Math.random() * firstname.length);
+  const randMiddle = Math.floor(Math.random() * middleName.length);
+  const randLast = Math.floor(Math.random() * lastname.length);
+  return `${firstname[randFirst]}-${middleName[randMiddle]}-${lastname[randLast]}`;
 }
 /* eslint-enable */
