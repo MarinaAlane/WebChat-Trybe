@@ -2,16 +2,22 @@
 <html>
     <head>
         <title>Project Webchat - Antônio Schappo</title>
+        <link rel="stylesheet" href="./css/styles.css">
+</head>
+        </style>
     </head>
     <body>
         <div id="nickname-container">
-            <ul id="nickname-list">
-
-            </ul>
             <form id="nickname-form">
-                <input type="text" id="nickname-input" data-testid="nickname-box">
-                <button type="submit" id="nickname-button" data-testid="nickname-button">Change name</button>
+                <input
+                    type="text"
+                    id="nickname-input"
+                    data-testid="nickname-box"
+                    placeholder="Please type your name">
+                <button type="submit" id="nickname-button" data-testid="nickname-button">Save</button>
             </form>
+            <ul id="nickname-list">
+            </ul>
         </div>
         <div id="message-container">
             <ul id="messages">
