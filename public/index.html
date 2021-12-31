@@ -8,9 +8,12 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Chat</h1>
+  <h1>Chat</h1>tes
+  <script src="../utils/generateRandomName.js"></script>
   <script>
+    const firstName = 'sa'
     const socket = io('http://localhost:3000')
+    console.log(firstName);
 
     socket.emit('salve', 'testadasso')
     socket.on('salvado', () => console.log('teje salvo'))

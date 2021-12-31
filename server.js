@@ -11,10 +11,7 @@ const io = require('socket.io')(http, {
   },
 });
 
-// app.set('view-engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views'));
-
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views', './index.html')));
+app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', './index.html')));
 
 io.on('connection', (socket) => {
   console.log(`${socket} conectado`);
