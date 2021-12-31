@@ -22,6 +22,6 @@ app.use('/', message);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`Ouvindo a porta ${PORT}`);
 });
