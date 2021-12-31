@@ -1,6 +1,6 @@
 const model = require('../models/message');
 
-// https://github.com/tryber/sd-010-b-project-talker-manager/pull/34/files
+
 function generateNickname(n) {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let newNickname = '';
@@ -16,7 +16,6 @@ const historico = (socket, historic) => {
   socket.emit('newConnection', historic);
   socket.emit('userOnline', userList);
   socket.on('newNickname', (newNickname) => {
-    // https://www.ti-enxame.com/pt/javascript/como-alterar-o-valor-do-objeto-que-esta-dentro-de-um-array-usando-javascript-ou-jquery/971965804/
     const index = userList.findIndex((list) => list.userID === socket.id);
     if (newNickname.userID === socket.id) userList[index].nickname = newNickname.nickname; 
   });
@@ -26,8 +25,6 @@ module.exports = (io) => io.on('connection', async (socket) => {
   const historic = await model.getAllMessage()
     .then((e) => e
     .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
-
-  // historico(socket, historic);
 
   const usuario = { nickname: generateNickname(16), userID: socket.id };
   userList.push(usuario);

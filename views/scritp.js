@@ -10,8 +10,8 @@ const createMessage = (message) => {
   ul.appendChild(li);
 };
 
-const btnMessage = document.querySelector('#btnMessage');
-const inputMessage = document.querySelector('#inputMessage');
+const btnMessage = document.getElementById('btnMessage');
+const inputMessage = document.getElementById('inputMessage');
 btnMessage.addEventListener('click', () => {
   const message = inputMessage.value;
   socket.emit('message', { chatMessage: message, nickname });
