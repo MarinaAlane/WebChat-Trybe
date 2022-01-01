@@ -16,5 +16,4 @@ module.exports = (io) =>
   socket.on('message', (data) => {
     io.emit('message', message(data));
   });
-
 });
