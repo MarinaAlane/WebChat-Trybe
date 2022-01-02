@@ -8,34 +8,34 @@
 
 <body>
 
-  <ul id="messages"></ul>
+  <div id="messages-container"></div>
 
-  <form action="">
-    <input id="nicknameInput" autocomplete="off" />
-    <input id="messageInput" autocomplete="off" />
+  <form id="message-send">
+    <input id="nickname-input" autocomplete="off" />
+    <input id="message-input" autocomplete="off" />
     <button>Send</button>
   </form>
 
   <script>
     const socket = io();
-    const form = document.querySelector('form');
-    const inputMessage = document.querySelector('#messageInput');
-    const inputNickname = document.querySelector('#nicknameInput');
+    const messageForm = document.querySelector('#message-send');
+    const messageInput = document.querySelector('#message-input');
+    const nicknameInput = document.querySelector('#nickname-input');
+    const messagesContainer = document.querySelector('#messages-container');
 
-    form.addEventListener('submit', (e) => {
+    messageForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      socket.emit('message', inputMessage.value, inputNickname.value);
+      socket.emit('message', messageInput.value, nicknameInput.value);
       inputMessage.value = '';
       return false;
     })
 
-    const createMessage = (message, nickname) => {
-      const messagesUl = document.querySelector('#messages');
-      const li = document.createElement('li');
+    const createMessage = (chatMessage, nickname) => {
+      const messageElement = document.createElement('div'); 
       const date = new Date();
 
-      li.innerText = `${date.toLocaleDateString()} ${date.toLocaleTimeString()} PM - ${nickname}: ${message}`;
-      messagesUl.appendChild(li);
+      messageElement.innerText = `${date.toLocaleString()} PM - ${nickname}: ${chatMessage}`;
+      messagesContainer.append(messageElement);
     }
 
     // socket.on('welcome', (message) => createMessage(message));
