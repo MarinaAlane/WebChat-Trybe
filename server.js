@@ -18,8 +18,8 @@ io.on('connection', (socket) => {
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date();
-    const message = `${date.toLocaleString()} PM - ${nickname}: ${chatMessage}`;
-    
+    const message = `${date.toLocaleString()} - ${nickname}: ${chatMessage}`;
+
     io.emit('message', message);
   });
 
