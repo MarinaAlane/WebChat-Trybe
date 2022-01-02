@@ -32,13 +32,14 @@ socket.on('message', (message) => {
   const li = document.createElement('li');
   li.innerHTML = `<p data-testid="message">${message}</p>`;
   messageList.appendChild(li);
+  window.scrollTo(0, document.body.scrollHeight);
 });
 
 const addUser = ({ id, username }) => {
   const userList = document.getElementById('usersList');
   const li = document.createElement('li');
   li.innerHTML = `<p id="${id}" data-testid="online-user">${username}</p>`;
-  userList.prepend(li);
+  userList.appendChild(li);
 };
 
 socket.on('username', (user) => addUser(user));

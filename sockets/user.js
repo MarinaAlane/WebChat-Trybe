@@ -1,7 +1,7 @@
 let users = [];
 module.exports = (io) => io.on('connection', (socket) => {
-  users = [...users, { id: socket.id, username: socket.id.substring(0, 16) }];
-  socket.emit('users', users.slice(1));
+  users = [{ id: socket.id, username: socket.id.substring(0, 16) }, ...users];
+  socket.emit('users', users);
   socket.broadcast.emit('username', { id: socket.id, username: socket.id.substring(0, 16) });
   socket.on('editUser', ({ id, username }) => {
     users = users.map((user) => { if (user.id === id) return { id, username }; return user; });
