@@ -21,6 +21,14 @@
     <% }) %>
   </ul>
 
+  <h4>Usuários conectados</h4>
+
+  <ul id="online-users-list">
+    <% connectedUsers.forEach(({ nickname }) => { %>
+      <li data-testid="online-user"><%= nickname %></li>
+    <% }) %>
+  </ul>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/message.js"></script>
 </body>

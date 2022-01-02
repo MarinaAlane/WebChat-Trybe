@@ -17,19 +17,39 @@ app.set('views', './views');
 
 app.use(express.static(`${__dirname}/public`));
 
+const connectedUsers = [];
+
+const getDate = () => {
+  const time = new Date();
+  const day = time.getDay();
+  const month = time.getMonth();
+  const year = time.getFullYear();
+  return `${day}-${month}-${year} ${time.toLocaleTimeString('en-US')}`;
+};
+
+const onConnectUser = (socket) => ({ nickname }) => {
+    const index = connectedUsers.findIndex((user) => user.id === socket.id);
+    if (index === -1) {
+ connectedUsers.push({ id: socket.id, nickname });
+    } else {
+      connectedUsers[index] = { id: socket.id, nickname };
+    }
+    io.emit('updateConnectedUsers', connectedUsers);
+  };
+
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id}`);
-
+  socket.on('connectUser', onConnectUser(socket));
+  
   socket.on('message', ({ chatMessage, nickname }) => {
-    const time = new Date();
-    const day = time.getDay();
-    const month = time.getMonth();
-    const year = time.getFullYear();
-    const date = `${day}-${month}-${year} ${time.toLocaleTimeString('en-US')}`;
-
+    const date = getDate();
     Message.create({ date, nickname, chatMessage });
-    
     io.emit('message', `${date} ${nickname} ${chatMessage}`);
+  });
+
+  socket.on('disconnect', () => {
+    const index = connectedUsers.findIndex((user) => user.id === socket.id);
+    connectedUsers.splice(index, 1);
+    io.emit('updateConnectedUsers', connectedUsers);
   });
 });
 
@@ -37,7 +57,7 @@ app.get('/', async (req, res) => {
   const messages = await Message.getAll();
   const formattedMessages = messages
     .map(({ date, nickname, chatMessage }) => `${date} ${nickname} ${chatMessage}`);
-  res.status(200).render('index', { messages: formattedMessages });
+  res.status(200).render('index', { messages: formattedMessages, connectedUsers });
 });
 
 http.listen(3000, () => {
