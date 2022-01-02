@@ -15,6 +15,7 @@ app.set('view engine', 'ejs');
 app.set('views', './public');
 
 require('./sockets/chat')(io);
+require('./sockets/user')(io);
 
 const message = require('./routes/message');
 
