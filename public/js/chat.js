@@ -1,18 +1,17 @@
-const socket = window.io('localhost:3000');
+const socket = window.io();
 
-let nickname = 'xxxx';
+let nickname;
 let chatMessage = '';
 
 const TEST_ID = 'data-testid';
 
 const userNameElement = document.querySelector('#username');
+const onlineUsersScreen = document.querySelector('#onlineUsers');
+const nicknameForm = document.querySelector('#formUserNickname');
 
 const changeUserName = (newUserName) => {
   userNameElement.innerText = newUserName;
 };
-
-const onlineUsersScreen = document.querySelector('#onlineUsers');
-const nicknameForm = document.querySelector('#formUserNickname');
 
 nicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -20,6 +19,7 @@ nicknameForm.addEventListener('submit', (event) => {
   nickname = input.value;
   input.value = '';
   userNameElement.innerText = nickname;
+  socket.emit('changeNickname', nickname);
   return false;
 });
 
@@ -42,10 +42,9 @@ const createMessage = (message) => {
 };
 
 const renderOnlineUsers = (users) => {
-  console.log('AQUI OS USERS:', users);
+  onlineUsersScreen.innerHTML = '';
 
-  onlineUsersScreen.innerText = '';
-  
+  console.log('USERS', users);
   users.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user;
@@ -54,16 +53,42 @@ const renderOnlineUsers = (users) => {
   });
 };
 
+const orderOnlineUsersList = (usersOnline) => {
+  const onlineUsers = [];
+ const lastUserInArray = usersOnline[usersOnline.length - 1];
+ console.log('usersOnline', usersOnline, lastUserInArray);
+
+  // [X] 4º - Para o cliente que acabou de se conectar, seu nickname deve ser colocado no começo da lista;
+  onlineUsers.push(lastUserInArray);
+
+  const onlineUsersWithCurrentUserFirst = usersOnline.slice(0, usersOnline.length - 1);
+  onlineUsersWithCurrentUserFirst.forEach((user) => onlineUsers.push(user));
+  renderOnlineUsers(onlineUsers);
+};
+
 socket.on('message', (message) => createMessage(message));
 
-socket.on('userConnected', (serverInfos) => {
-// [ ] 2º - Remover deste escopo a função de setar o nome do usuário;
-  // changeUserName(serverInfos.userNickname);
-
-  console.log('server infos:', serverInfos);
-  renderOnlineUsers(serverInfos.usersOnline);
+socket.on('userConnected', (usersOnline) => {
+// [X] 2º - Remover deste escopo a função de setar o nome do usuário;
+  renderOnlineUsers(usersOnline);
 });
 
-socket.on('setUserId', (userNickName, _onlineUsers) => {
-  nickname = userNickName;
+socket.on('setUserId', ({ userNickname, usersOnline }) => {
+  /*
+    [X] 3º - No changeUserName re-renderizar os users na ordem:
+  */
+//  nickname = userNickname;
+changeUserName(userNickname);
+orderOnlineUsersList(usersOnline);
 });
+
+socket.on('changeUsersName', (usersOnline) => {
+  orderOnlineUsersList(usersOnline);
+});
+
+socket.on('userDisconnected', (usersOnline) => renderOnlineUsers(usersOnline));
+
+  // Essa eu n lembrava:
+  window.onbeforeunload = (_e) => {
+    socket.disconnect();
+  };
