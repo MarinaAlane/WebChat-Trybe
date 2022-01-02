@@ -1,5 +1,5 @@
-<ul>
-  <% messages.forEach((message) => { %>
-    <li><%= message %></li>
+<ul class="h-full" id="messageList">
+  <% messages.forEach(({ message, nickname, timestamp }) => { %>
+    <li data-testid="message"><%= `${timestamp} - ${nickname}: ${message}` %></li>
   <% }) %>
 </ul>

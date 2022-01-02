@@ -2,6 +2,7 @@ const service = require('../services/message');
 
 const getMessages = async (_req, res) => {
   const messages = await service.getMessages();
+  
   return res.render('index', { messages });
 };
 
