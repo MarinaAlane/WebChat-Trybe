@@ -8,13 +8,21 @@
 </head>
 <body>
   <h1>Gab's Webchat</h1>
-  <form id="formMessages" action="">
+  
+  <span id="randomNickname" data-testid="online-user"></span>
+ 
+  <form id="formNickname" action="">
     <label for="nickname">Nickname:</label>
-    <input type="text" id="nicknameInput" name="nicknameInput" placeholder="nickname"><br><br>
-    <label for="lname">Message:</label>
-    <input type="text" id="messageInput" name="messageInput" placeholder="message">
-    <button type="submit" id="sendButton">Enviar</button> 
+    <input type="text" id="nicknameInput" placeholder="Insira seu nickname aqui" data-testid="nickname-box"> 
+    <button type="button" data-testid="nickname-button">Salvar </button><br><br>
   </form>
+  <form id="formMessages" action="">
+    <label for="lname">Message:</label>
+    <input type="text" id="messageInput" placeholder="Insira sua mensagem aqui" data-testid="message-box">
+    <button type="button" id="sendButton" data-testid="send-button">Enviar</button> 
+  </form>
+  <ul id="messages"></ul>
+ 
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/chat.js"></script>
 </body>
