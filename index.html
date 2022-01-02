@@ -30,7 +30,7 @@
       return false;
     })
 
-    const createMessage = (chatMessage, nickname) => {
+    const createMessage = ({ chatMessage, nickname }) => {
       const messageElement = document.createElement('div'); 
       const date = new Date();
 
