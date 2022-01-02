@@ -17,7 +17,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (chatMessage, nickname) => {
-    io.emit('message', { chatMessage, nickname });
+    io.emit('message', chatMessage, nickname);
   });
 
   // socket.emit('welcome', ('Seja bem vindo(a) ao Web Chat'));
