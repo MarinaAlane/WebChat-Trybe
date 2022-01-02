@@ -18,7 +18,7 @@ function getRandomChars() {
 randomNickname.innerText = getRandomChars(); // adiciona random no HTML
 
 formButtonMessages.addEventListener('click', (e) => {
-  e.preventDefault();
+  e.preventDefault(); // cancela a atualizacado da pãgina
  
   const message = messageInput.value;
   messageInput.value = '';
@@ -43,3 +43,13 @@ const createMessage = (chatMessage) => {
 };
 
 socket.on('message', (chatMessage) => createMessage(chatMessage));
+// socket.on('welcomeMessage', (message) => createMessage(message));
+
+socket.on('history', (messages) => {
+  messages.forEach((message) => {
+    const li = document.createElement('li');
+    li.setAttribute('data-testid', 'message');
+    li.innerText = message;
+    messagesUl.appendChild(li);
+  });
+});
