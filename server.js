@@ -16,8 +16,11 @@ io.on('connection', (socket) => {
     console.log('Alguem se desconectou');
   });
 
-  socket.on('message', (chatMessage, nickname) => {
-    io.emit('message', chatMessage, nickname);
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const date = new Date();
+    const message = `${date.toLocaleString()} PM - ${nickname}: ${chatMessage}`;
+    
+    io.emit('message', message);
   });
 
   // socket.emit('welcome', ('Seja bem vindo(a) ao Web Chat'));

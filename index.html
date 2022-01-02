@@ -25,21 +25,22 @@
 
     messageForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      socket.emit('message', messageInput.value, nicknameInput.value);
+      const chatMessage = messageInput.value;
+      const nickname = nicknameInput.value;
+      socket.emit('message', { chatMessage, nickname });
       inputMessage.value = '';
       return false;
     })
 
-    const createMessage = (chatMessage, nickname) => {
+    const createMessage = (message) => {
       const messageElement = document.createElement('div'); 
-      const date = new Date();
 
-      messageElement.innerText = `${date.toLocaleString()} PM - ${nickname}: ${chatMessage}`;
+      messageElement.innerText = message;
       messagesContainer.append(messageElement);
     }
 
     // socket.on('welcome', (message) => createMessage(message));
-    socket.on('message', (chatMessage, nickname) => createMessage(chatMessage, nickname));
+    socket.on('message', (message) => createMessage(message));
   </script>
 
 </body>
