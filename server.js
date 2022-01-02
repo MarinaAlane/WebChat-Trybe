@@ -1,6 +1,7 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const cors = require('cors');
+const moment = require('moment');
 
 const io = require('socket.io')(http, {
   cors: {
@@ -17,7 +18,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    const date = new Date();
+    const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
     const message = `${date.toLocaleString()} - ${nickname}: ${chatMessage}`;
 
     io.emit('message', message);
