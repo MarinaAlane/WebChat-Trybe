@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>WEB CHAT</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js'></script>
+</head>
+
+<body>
+
+  <ul id="messages"></ul>
+
+  <form action="">
+    <input id="nicknameInput" autocomplete="off" />
+    <input id="messageInput" autocomplete="off" />
+    <button>Send</button>
+  </form>
+
+  <script>
+    const socket = io();
+    const form = document.querySelector('form');
+    const inputMessage = document.querySelector('#messageInput');
+    const inputNickname = document.querySelector('#nicknameInput');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      socket.emit('message', inputMessage.value, inputNickname.value);
+      inputMessage.value = '';
+      return false;
+    })
+
+    const createMessage = (message, nickname) => {
+      const messagesUl = document.querySelector('#messages');
+      const li = document.createElement('li');
+      const date = new Date();
+
+      li.innerText = `${date.toLocaleDateString()} ${date.toLocaleTimeString()} PM - ${nickname}: ${message}`;
+      messagesUl.appendChild(li);
+    }
+
+    // socket.on('welcome', (message) => createMessage(message));
+    socket.on('message', ({ chatMessage, nickname }) => createMessage(chatMessage, nickname));
+  </script>
+
+</body>
+
+</html>
