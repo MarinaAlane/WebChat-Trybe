@@ -3,7 +3,6 @@ const connection = require('./connection');
 const createMessage = async (message) => {
   const db = await connection();
   await db.collection('messages').insertOne(message);
-  return result;
 };
 
 const getAllMessage = async () => {

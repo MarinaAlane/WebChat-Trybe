@@ -4,7 +4,7 @@ const moment = require('moment');
 const userList = [];
 
 module.exports = (io, socket, onlineUser) => {
-  socket.on('message', async (message) => {
+  io.on('message', async (message) => {
     const cDate = moment().format('DD-MM-YYYY hh:mm:ss A');
     let nickName = '';
     if (!message.nickname) {
@@ -22,4 +22,5 @@ module.exports = (io, socket, onlineUser) => {
     };
 
     await model.createMessage(saveMessage);
-});
+  });
+}
