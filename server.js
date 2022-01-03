@@ -17,12 +17,13 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(socket.id);
-  socket.on('message', (msg) => { // socket.on escuta somente a mensagem do usuario emissor.
-      console.log('message: ', msg.message);
+  socket.on('message', (msg) => { 
+    // socket.on escuta somente a mensagem do usuario emissor.
       const date = moment().format('DD-MM-YYYY HH:mm:ss');
-      const chatLine = `${date} ${msg.nickname}: ${msg.chatMessage}`;
+      const chatLine = `${date} - ${msg.nickname}: ${msg.chatMessage}`;
       io.emit('message', chatLine); // io.emit emite a todos a mensagem que foi enviada por um usuario
   });
+  socket.emit('user', socket.id.slice(0, 16));
 });
 
 server.listen(3000, () => {

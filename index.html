@@ -16,32 +16,59 @@
     </style>
   </head>
   <body>
+    <div id='onlineUsers'>
+
+    </div>
+      <form id="form1" action="">
+      <input id="nickname" data-testid="nickname-box"/>
+      <button data-testid="nickname-button">Send</button>
+    </form>
     <ul id="messages"></ul>
     <form id="form" action="">
-      <input id="nickname" />
-      <input id="input" autocomplete="off" /><button>Send</button>
+      <input id="input" autocomplete="off" data-testid="message-box" /><button data-testid="send-button">Send</button>
     </form>
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io();
-
+    var socket = io('http://localhost:3000');
+    var nicknameUser;
     var messages = document.getElementById('messages');
+    var form1 = document.getElementById('form1');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
+    var inputNickname = document.getElementById('nickname')
     var nickname = document.getElementById('nickname');
+    var onlineUser = document.getElementById('onlineUsers');
+
+    socket.on('user', (userId) => {
+      nicknameUser = userId;
+      var item = document.createElement('p');
+      item.textContent = userId;
+      item.setAttribute('data-testid', 'online-user');
+      onlineUser.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    })
+
+    form1.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (inputNickname.value) {
+        nicknameUser = inputNickname.value
+        inputNickname.value = '';
+      }
+    });
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       if (input.value) {
-        socket.emit('message', { message: input.value, nickname: nickname.value });
+        socket.emit('message', { chatMessage: input.value, nickname: nicknameUser });
         input.value = '';
       }
     });
 
     socket.on('message', function(msg) {
       var item = document.createElement('li');
-      item.textContent = `${msg.date} ${msg.nickname}: ${msg.chatMessage}`;
+      item.textContent = msg;
+      item.setAttribute('data-testid', 'message');
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
