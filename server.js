@@ -33,3 +33,5 @@ io.on('connection', (socket) => {
     io.emit('message', `${timestamp} - ${nickname}: ${message}`);
   });
 });
+
+server.listen(3000, () => console.log('3000'));
