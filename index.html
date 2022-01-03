@@ -7,21 +7,29 @@
 </head>
 
 <body>
+  <form id="nickname-send">
+    <input id="nickname-input" autocomplete="off" data-testid="message-box" />
+    <button data-testid="nickname-button">Send nickname</button>
+  </form>
+
+  <div id="users-container"></div>
 
   <div id="messages-container"></div>
 
   <form id="message-send">
-    <input id="nickname-input" autocomplete="off" />
-    <input id="message-input" autocomplete="off" />
-    <button>Send</button>
+    <input id="message-input" autocomplete="off" data-testid="nickname-box" />
+    <button data-testid="send-button">Send</button>
   </form>
 
   <script>
     const socket = io();
     const messageForm = document.querySelector('#message-send');
+    const nicknameForm = document.querySelector('#nickname-send');
     const messageInput = document.querySelector('#message-input');
     const nicknameInput = document.querySelector('#nickname-input');
     const messagesContainer = document.querySelector('#messages-container');
+    const usersContainer = document.querySelector('#users-container');
+    let users = [];
 
     messageForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -32,15 +40,43 @@
       return false;
     })
 
+    nicknameForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = nicknameInput.value;
+      if (name) {
+        const newNickname = {
+          id: socket.id,
+          nickname: name
+        }
+        socket.emit('newNickname', newNickname);
+      }
+      nicknameInput.value = '';
+    })
+
     const createMessage = (message) => {
       const messageElement = document.createElement('div'); 
 
       messageElement.innerText = message;
+      messageElement.setAttribute('data-testid', 'message');
       messagesContainer.append(messageElement);
     }
 
-    // socket.on('welcome', (message) => createMessage(message));
+    const newUser = (arrayUsers) => {
+      usersContainer.textContent = '';
+      users = [...arrayUsers];
+      users.forEach((user) => {
+        const userElement = document.createElement('div');
+  
+        userElement.innerText = user.nickname;
+        userElement.setAttribute('data-testid', 'online-user');
+        userElement.setAttribute('userId', user.id);
+        usersContainer.append(userElement)
+      })
+    }
+
+    socket.on('online-user', (arrayUsers) => newUser(arrayUsers));
     socket.on('message', (message) => createMessage(message));
+    // socket.on('user-updating', (newArrayUsers) => createMessage(newArrayUsers));
   </script>
 
 </body>
