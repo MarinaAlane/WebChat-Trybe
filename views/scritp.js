@@ -1,4 +1,5 @@
-  const socket = window.io();
+const socket = window.io();
+let nickname;
 
   const btnMessage = document.querySelector('#btnMessage');
   const inputMessage = document.querySelector('#inputMessage');
@@ -8,7 +9,7 @@
   btnNickname.addEventListener('click', (e) => {
     e.preventDefault();
     if (inputMessage.value) {
-      let nickname = inputUser.value;
+      nickname = inputUser.value;
       socket.emit('users', { nickname: inputUser.value, userID: socket.id });
       inputUser.value = '';
     }
@@ -72,4 +73,3 @@ socket.on('userOff', (userId) => deleteUser(userId));
 window.onload = function disconnect() {
   socket.disconnect();
 };
-
