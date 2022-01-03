@@ -17,7 +17,7 @@ const displayNewMessage = (message) => {
   const messages = document.querySelector('.messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
-  li.innerText = `${message}, ${nickName.innerHTML}`;
+  li.innerText = `${message}`;
   messages.appendChild(li);
   return li;
 };

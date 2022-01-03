@@ -25,8 +25,9 @@
   <div>
     <ul class="messages">
       <% messages.forEach(({ message: textMessage, nickname, timestamp }) => { %>
-        <% console.log(textMessage, nickname, timestamp) %> 
-        <li data-testid="message"><%= timestamp %> - <%= nickname %>: <%= textMessage %></li>
+        <li data-testid="message">
+          <%= `${timestamp}` %> - <%= nickname %>: <%= textMessage %>
+        </li>
       <% }) %> 
     </ul>
   </div>
