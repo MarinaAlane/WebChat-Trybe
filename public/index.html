@@ -6,10 +6,14 @@
   </head>
   <body>
     <ul id="messages"></ul>
-    <form action="">
-      <input id="nickName" autocomplete="off" />
-      <input id="messageInput" autocomplete="off" />
-      <button>Send</button>
+    <form action="" id="nick">
+      <p id="nickName" data-testid="online-user"></p>
+      <input id="nick-name-box" autocomplete="off" data-testid="nickname-box" />
+      <button data-testid="nickname-button" id="save-nick">Save</button>
+    </form>
+    <form action="" id="message">
+      <input id="messageInput" autocomplete="off" data-testid="message-box" />
+      <button data-testid="send-button" id="send-message">Send</button>
     </form>
     <script src='./js/chat.js'></script>
   </body>
