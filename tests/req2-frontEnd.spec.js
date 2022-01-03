@@ -12,7 +12,6 @@ const chatMessage = 'The more I study, the more insatiable do I feel my genius f
 const anotherChatMessage = 'Your best and wisest refuge from all troubles is in your science.';
 const yetAnotherChatMessage = 'The science of operations, as derived from mathematics more especially, is a science of itself, and has its own abstract truth and value.';
 const nickname = 'Ada Lovelace';
-console.log('opa');
 
 describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => {
   let browser;
@@ -122,6 +121,7 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
 
     //Message comes with new nickname
     const messages = await page.$$eval(dataTestid('message'), (nodes) => nodes.map((n) => n.innerText));
+    console.log(messages);
 
     expect(messages).toEqual(
       expect.arrayContaining([

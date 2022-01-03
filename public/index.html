@@ -4,19 +4,27 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <script src="./js/generateRandomName.js"></script>
-  <script src="http://localhost:3000/socket.io/socket.io.js"></script> -->
-  <title>Document</title>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <title>Webchat</title>
 </head>
 <body>
   <h1>Chat</h1>
-  <!-- <script>
-    const firstName = generateName();
-    const socket = io('http://localhost:3000')
-    console.log(firstName);
-    console.log('salvinho');
-    socket.emit('salve', 'testadasso')
-    socket.on('salvado', () => console.log('teje salvo'))
-  </script> -->
+  <form action="">
+    <div>
+      <p>Nickname: <span id="nickName" data-testid="online-user"></span></p>
+      <label for="nickInput">Insira seu apelido</label>
+      <input type="text" id="nickInput" data-testid="nickname-box" />
+      <button id="nickBtn" data-testid="nickname-button">Ok</button>
+    </div>
+    <div>
+      <label for="textMessage">Insira sua mensagem: </label>
+      <input type="text" id="textMessage" data-testid="message-box" maxlength="500" />
+      <button type="submit" id="submitMessage" data-testid="send-button">Enviar</button>
+    </div>
+  </form>
+  <div>
+    <ul class="messages"></ul>
+  </div>
+  <script src="./js/chat.js"></script>
 </body>
 </html>
