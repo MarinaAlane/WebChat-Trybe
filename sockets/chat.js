@@ -11,7 +11,7 @@ module.exports = (io, socket, onlineUser) => {
       nickName = message.nickname;
     }
     
-    const editMessage = `${cDate} - ${nickname}: ${message.chatMessage}`
+    const editMessage = `${cDate} - ${nickName}: ${message.chatMessage}`;
     io.emit('message', editMessage);
   
     const saveMessage = {
