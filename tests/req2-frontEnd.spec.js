@@ -121,7 +121,6 @@ describe('2 - Crie um frontend para que as pessoas interajam com o chat', () => 
 
     //Message comes with new nickname
     const messages = await page.$$eval(dataTestid('message'), (nodes) => nodes.map((n) => n.innerText));
-    console.log(messages);
 
     expect(messages).toEqual(
       expect.arrayContaining([

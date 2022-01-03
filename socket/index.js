@@ -1,7 +1,9 @@
+const getDate = require('../utils/getDate');
+
 let nick = '';
 
 const handleConnection = (socket) => {
-  socket.emit('nickName', `${nick || socket.id.slice(0, 16)}`);
+  socket.emit('nickName', nick || socket.id.slice(0, 16));
 };
 
 module.exports = (io) => {
@@ -15,11 +17,8 @@ module.exports = (io) => {
   
     socket.on('message', ({ nickname, chatMessage }) => {
       console.log(nickname, chatMessage);
-      const date = new Date();
-      const hour = date.toLocaleTimeString();
-      const dateFormated = date.toISOString().split('T')[0].split('-').reverse().join('-');
-      const completeDate = `${dateFormated} ${hour}`;
-      socket.broadcast.emit('message', `${completeDate} - ${nickname}: ${chatMessage}`);
+      const date = getDate();
+      io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
     });
 
     socket.on('disconnect', () => {

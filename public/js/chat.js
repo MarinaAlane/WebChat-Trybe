@@ -5,6 +5,10 @@ const nickBtn = document.querySelector('#nickBtn');
 const messageInput = document.querySelector('#textMessage');
 const submitBtn = document.querySelector('#submitMessage');
 
+const setSessionStorage = (nick) => sessionStorage.setItem('webChatNickName', nick);
+
+const getSessionStorage = () => sessionStorage.getItem('webChatNickName');
+
 socket.on('nickName', ((nick) => {
   nickName.innerHTML = nick;
 }));
@@ -21,19 +25,24 @@ const displayNewMessage = (message) => {
 submitBtn.addEventListener('click', (e) => {
   e.preventDefault();
   const message = messageInput.value;
-  displayNewMessage(message);
   socket.emit('message', ({ nickname: nickName.innerText, chatMessage: message }));
   messageInput.value = '';
 });
 
 nickBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  const nickInput = document.querySelector('#nickInput').value;
-  console.log(nickInput);
-  socket.emit('nickName', nickInput);
+  const nick = document.querySelector('#nickInput');
+  setSessionStorage(nick.value);
+  socket.emit('nickName', nick.value);
+  nick.value = '';
 });
 
 socket.on('message', (message) => displayNewMessage(message));
+
+window.onload = () => {
+  const nick = getSessionStorage();
+  if (nick) socket.emit('nickName', nick);
+};
 
 window.onbeforeunload = () => {
   socket.disconnect();
