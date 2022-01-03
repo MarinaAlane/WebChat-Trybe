@@ -3,15 +3,16 @@ const socket = window.io();
 let nickname;
 
 const createMessage = (message) => {
-  const ul = document.querySelector('#message');
+  const ul = document.querySelector('#messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = message;
-  ul.appendChild(li);
+  ul.append(li);
 };
 
 const btnMessage = document.getElementById('btnMessage');
 const inputMessage = document.getElementById('inputMessage');
+
 btnMessage.addEventListener('click', () => {
   const message = inputMessage.value;
   socket.emit('message', { chatMessage: message, nickname });
@@ -25,14 +26,7 @@ const createUser = (user) => {
   li.setAttribute('id', user.userID);
   if (socket.id === user.userID) nickname = user.nickname;
   li.innerText = user.nickname;
-  ul.appendChild(li);
-};
-
-const updateUser = (newNickname) => {
-  const li = document.getElementById(newNickname.userID);
-  if (socket.id === newNickname.userID) nickname = newNickname.nickname;
-  li.innerText = newNickname.nickname;
-  socket.emit('newNickname', newNickname); 
+  ul.append(li);
 };
 
 const deleteUser = (userId) => {
@@ -50,8 +44,6 @@ btnNickname.addEventListener('click', () => {
 
 socket.on('users', (user) => createUser(user));
 socket.on('message', (message) => createMessage(message));
-socket.on('nickname', (newNickname) => updateUser(newNickname));
-socket.on('newConnection', (historic) => historic.forEach((message) => createMessage(message)));
 socket.on('userOnline', (userList) => {
   const i = userList.findIndex((list) => list.userID === socket.id);
   userList.splice(i, 1);

@@ -1,47 +1,25 @@
 const model = require('../models/message');
-
-function generateNickname(n) {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let newNickname = '';
-  for (let i = 0; i < n; i += 1) {
-    newNickname += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return newNickname;
-}
+const moment = require('moment');
 
 const userList = [];
 
-const historico = (socket, historic) => {
-  socket.emit('newConnection', historic);
-  socket.emit('userOnline', userList);
-  socket.on('newNickname', (newNickname) => {
-    const index = userList.findIndex((list) => list.userID === socket.id);
-    if (newNickname.userID === socket.id) userList[index].nickname = newNickname.nickname; 
-  });
-};
-
-module.exports = (io) => io.on('connection', async (socket) => {
-  const historic = await model.getAllMessage()
-    .then((e) => e
-    .map(({ timeStamp, nickname, chatMessage }) => `${timeStamp} - ${nickname}: ${chatMessage}`));
-
-  const usuario = { nickname: generateNickname(16), userID: socket.id };
-  userList.push(usuario);
-
-  io.emit('users', usuario);
-
-  historico(socket, historic);
+module.exports = (io, socket, onlineUser) => {
+  socket.on('message', async (message) => {
+    const cDate = moment().format('DD-MM-YYYY hh:mm:ss A');
+    let nickName = '';
+    if (!message.nickname) {
+      nickName = onlineUser;
+    } else {
+      nickName = message.nickname
+    }
+    
+    const editMessage = `${timeStamp} - ${nickname}: ${message.chatMessage}`
+    io.emit('message', editMessage);
   
-  socket.on('users', (user) => io.emit('nickname', user));
+    const saveMessage = {
+      message: message.chatMessage, nickname: nickName,
+      timeStamp: timeStamp,
+    };
 
-  socket.on('message', async ({ timeStamp, nickname, chatMessage }) => {
-    const response = await model.createMessage({ timeStamp, nickname, chatMessage });
-    io.emit('message', response);    
-  });
-
-  socket.on('disconnect', () => {
-    const i = userList.findIndex((list) => list.userID === socket.id);
-    userList.splice(i, 1);
-    io.emit('userOff', socket.id);
-  });
+    await model.createMessage(saveMessage);
 });
