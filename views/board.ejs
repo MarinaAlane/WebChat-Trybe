@@ -11,7 +11,7 @@
     <ul id='nicknames'></ul>
     <form id="nickname-form">
       <input id='nickname-input' placeholder="Insira seu nickname" data-testid="nickname-box">
-      <button type='button' data-testid="nickname-button">Salvar</button>
+      <button type='submit' data-testid="nickname-button">Salvar</button>
     </form>
 
 
@@ -32,12 +32,12 @@
       chatForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        if(chatInput.value) {
-          socket.emit('message', {
-            nickname: socket.id.slice(0, 16),
-            chatMessage: chatInput.value,
-          });
-        }
+        const chatMessage = chatInput.value;
+
+        socket.emit('message', {
+          chatMessage,
+          nickname: sessionStorage.nickname,
+        });
 
         chatInput.value = '';
       });
@@ -50,46 +50,65 @@
       });
       
       // Req 2
-      socket.on('nicknames', (users) => {
-        users.map((user) => {
+      const ulUsersConnected = document.querySelector('#nicknames');
+
+      socket.on('connection', (id) => {
+        const li2 = document.createElement("li");
+        li2.setAttribute('data-testid', 'online-user');
+        li2.setAttribute('id', 'current-nickname');
+        li2.innerText = id;
+        ulUsersConnected.appendChild(li2);
+      });
+
+      socket.on('usersConected', (users) => {
+        console.log('users', users);
+        const lastUser = users[users.length - 1];
+        sessionStorage.setItem('nickname', lastUser);
+
+        const li2 = document.createElement("li");
+        li2.setAttribute('data-testid', 'online-user');
+        li2.setAttribute('id', 'current-nickname');
+        li2.innerText = lastUser;
+        ulUsersConnected.appendChild(li2);
+
+        for (let index = 0; index < users.length - 1; index += 1) {
           const li2 = document.createElement("li");
           li2.setAttribute('data-testid', 'online-user');
           li2.setAttribute('id', 'current-nickname');
-          li2.textContent = user;
-          document.querySelector('#nicknames').appendChild(li2);
-        })
+          li2.innerText = users[index];
+          ulUsersConnected.appendChild(li2);
+        }
       });
 
-      // Req 2 atualizar nickname
-      let getNickname = document.querySelector('#current-nickname').innerText;
-
-      // passo 1
-      // Recebe um objeto com nickname antigo e novo.
-      // Capturar o antigo nickname e atualizar.
-      socket.on('updateNickname', ({ oldNickname, newNickname }) => {
-        const indexByNickname = ({ oldNickname, newNickname }) => {
-          const index = users.indexOf(oldNickname);
-          newNickname = users[index];
-        };
-
-        io.emit('updateNickname', users);
-        
-      }); 
-
+      // Req 2 update nickname - ajuda do colega Rodolfo Ramos 
       const nicknameForm = document.querySelector('#nickname-form');
       const nicknameInput = document.querySelector('#nickname-input');
 
-      nicknameForm.addEventListener('submit', (event) => {
-        event.preventDefault();
+      nicknameForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-        if(nicknameInput.value) {
-          // passo 2 enviar o oldNick e newNick ao server
-          io.emit('updateNickname', {
-            oldNickname, newNickname
-          });
-        }
+        const newNickname = nicknameInput.value;
+        const getUsername = document.querySelector('#current-nickname');
+        console.log('getUsername', getUsername);
 
-        chatInput.value = '';
+        getUsername.innerText = newNickname;
+
+        socket.emit('updateNickname', {
+          oldNickname: sessionStorage.nickname,
+          newNickname,
+        });
+
+        sessionStorage.setItem('nickname', newNickname);
+      });
+
+      socket.on('updateUsers', (oldNickname, newNickname) => {
+        const getUsernames = document.querySelectorAll('.online-user');
+        
+        getUsernames.forEach( (username) => {
+          if(username.innerText === oldNickname) {
+            username.innerText = newNickname;
+          }
+        });
       });
 
     </script>

@@ -7,7 +7,7 @@ const { format } = require('date-fns');
 const app = express();
 const PORT = 3000;
 
-const users = [];
+let users = [];
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -27,22 +27,17 @@ const io = require('socket.io')(socketIoServer, {
 io.on('connection', (socket) => {
   // console.log(`usuário ${socket.id} conectado`);
 
-  const nickname = socket.id.slice(0, 16);
-  users.push(nickname);
-  io.emit('nicknames', users);
+  let id = socket.id.slice(0, 16);
+  users.push(id);
+  socket.broadcast.emit('connection', id);
 
-  // const updateNick = ({ oldNickname, newNickname }) => {
-  //   const findIndex = users.indexOf(oldNoldNicknameick);
-  //   users[index] = newNickname;
-  // };
+  socket.emit('usersConected', users);
 
-  // socket.on('updateNickname', ({ oldNickname, newNickname }) => {
-  //   // Passo 3 io.emit com o (antigo, novo)
-  //   const index = users.findIndex(({ nickname }) => nickname === oldNickname);
-
-  //   connectedUsers[indexToUpdateUser].nickname = newNickname;
-  //   io.emit('updateNickname', users); 
-  // });
+  socket.on('updateNickname', ({ oldNickname, newNickname }) => {
+    id = newNickname;
+    users = users.map((value) => (value === oldNickname ? newNickname : value));
+    socket.broadcast.emit('updateUsers', oldNickname, newNickname);
+  });
   
   socket.on('message', (msg) => {
     const timestamp = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
