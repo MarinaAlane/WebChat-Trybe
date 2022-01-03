@@ -15,16 +15,21 @@ app.set('views', './views');
 
 app.use(express.static(`${__dirname}/public`));
 
-app.get('/', (_req, res) => 
-  res.render('index'));
+app.get('/', (_req, res) => res.render('index'));
 
-// const users = {};
+const users = {};
 const timestamp = moment().format('MMMM Do YYYY, h:mm:ss a');
 
 io.on('connection', (socket) => {
+  socket.on('newChatUser', async (nickname) => {
+    socket.emit('history', await chat.getChatHistory());
+    users[socket.id] = { nickname };
+    io.emit('usersOnline', users);
+  });
+
   socket.on('message', async (userMessage) => {
     const { message, nickname } = userMessage;
-    await chat.savedHistory({ nickname, message, timestamp });
+    await chat.chatHistory({ nickname, message, timestamp });
     io.emit('message', `${timestamp} - ${nickname}: ${message}`);
   });
 });
