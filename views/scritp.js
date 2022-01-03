@@ -1,32 +1,11 @@
 const socket = window.io();
+
 let nickname;
 
   const btnMessage = document.querySelector('#btnMessage');
   const inputMessage = document.querySelector('#inputMessage');
   const btnNickname = document.querySelector('#btnNickname');
   const inputUser = document.querySelector('#inputNickname');
-
-  btnNickname.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (inputMessage.value) {
-      nickname = inputUser.value;
-      socket.emit('users', { nickname: inputUser.value, userID: socket.id });
-      inputUser.value = '';
-    }
-    console.log(inputUser.value);
-  }, false);
-
-  btnMessage.addEventListener('click', (e) => {
-    e.preventDefault();
-    const currentDate = new Date();
-    socket.emit('message', {
-      timestamp: currentDate,
-      nickname: inputUser.value,
-      chatMessage: inputMessage.value,
-    });
-    console.log(inputMessage.value, currentDate);
-    inputMessage.value = '';
-  }, false);
 
   const createUser = (user) => {
     const ul = document.querySelector('#user');
@@ -57,6 +36,30 @@ let nickname;
     const li = document.getElementById(userId);
     li.remove();
   };
+
+  btnNickname.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (inputMessage.value) {
+      nickname = inputUser.value;
+      socket.emit('users', { nickname: inputUser.value, userID: socket.id });
+      inputUser.value = '';
+    }
+    console.log(inputUser.value);
+  }, false);
+
+  btnMessage.addEventListener('click', (e) => {
+    e.preventDefault();
+    const currentDate = new Date();
+    socket.emit('message', {
+      timestamp: currentDate,
+      nickname: inputUser.value,
+      chatMessage: inputMessage.value,
+    });
+    console.log(inputMessage.value, currentDate);
+    inputMessage.value = '';
+  }, false);
+
+  
   socket.on('users', (user) => createUser(user));
   socket.on('message', (message) => createMessage(message));
   socket.on('nickname', (newNickname) => updateUser(newNickname));
@@ -68,8 +71,3 @@ let nickname;
   });
 
 socket.on('userOff', (userId) => deleteUser(userId));
-
-
-window.onload = function disconnect() {
-  socket.disconnect();
-};
