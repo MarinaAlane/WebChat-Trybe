@@ -21,6 +21,7 @@ const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
+  li.setAttribute('data-testid', 'message');
   messagesUl.appendChild(li);
 };
 
@@ -39,9 +40,18 @@ const createUser = (nickname) => {
   nicksUl.appendChild(li);
 };
 
-socket.on('serverMessage', (message) => createMessage(message));
+const createRandomUser = () => {
+  const nicksUl = document.querySelector('#users');
+  const li = document.createElement('li');
+  li.innerText = socket.id.split('', 16).join('');
+  userNickname = li.innerText;
+  li.setAttribute('data-testid', 'online-user');
+  nicksUl.appendChild(li);
+};
+
+socket.on('message', (message) => createMessage(message));
 socket.on('serverNick', (nickname) => createUser(nickname));
-socket.on('hello', (mensagem) => createMessage(mensagem));
+socket.on('connect', () => createRandomUser());
 
 window.onbeforeunload = () => {
   socket.disconnect();

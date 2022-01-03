@@ -9,8 +9,8 @@
   </head>
   <body>
     <form id="userForm">
-      <input id="nickname" placeholder="Insira seu nickname" />
-      <button id="nickBtn">Salvar</button>
+      <input id="nickname" placeholder="Insira seu nickname" data-testid="nickname-box" />
+      <button id="nickBtn" data-testid="nickname-button">Salvar</button>
     </form>
 
     <div id="users">
@@ -20,8 +20,8 @@
     <ul id="messages"></ul>
 
     <form id="messageForm">
-      <input id="messageInput" placeholder="Digite uma mensagem aqui" />
-      <button>Enviar</button>
+      <input id="messageInput" placeholder="Digite uma mensagem aqui" data-testid="message-box" />
+      <button data-testid="send-button">Enviar</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
