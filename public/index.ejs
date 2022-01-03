@@ -23,7 +23,12 @@
     </div>
   </form>
   <div>
-    <ul class="messages"></ul>
+    <ul class="messages">
+      <% messages.forEach(({ message: textMessage, nickname, timestamp }) => { %>
+        <% console.log(textMessage, nickname, timestamp) %> 
+        <li data-testid="message"><%= timestamp %> - <%= nickname %>: <%= textMessage %></li>
+      <% }) %> 
+    </ul>
   </div>
   <script src="./js/chat.js"></script>
 </body>

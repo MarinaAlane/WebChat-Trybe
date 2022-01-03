@@ -1,4 +1,5 @@
 const getDate = require('../utils/getDate');
+const { newMessage } = require('../models/messages');
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
@@ -10,6 +11,7 @@ module.exports = (io) => {
   
     socket.on('message', ({ nickname, chatMessage }) => {
       const date = getDate();
+      newMessage({ message: chatMessage, nickname, timestamp: date });
       io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
     });
 
