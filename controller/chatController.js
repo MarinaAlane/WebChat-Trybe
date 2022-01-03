@@ -1,7 +1,7 @@
 const messageModel = require('../models/message');
 
 const createMessage = async ({ nickname, chatMessage }, date) => {
-  date = new Date();
+  // date = new Date();
   try {
     await messageModel.createMessage(nickname, chatMessage, date);
   } catch (error) {

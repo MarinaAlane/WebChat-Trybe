@@ -34,8 +34,8 @@ module.exports = (io) => io.on('connection', async (socket) => {
   
   socket.on('users', (user) => io.emit('nickname', user));
 
-  socket.on('message', async ({ timeStamp, nickname , chatMessage }) => {
-    const response = await model.createMessage({ timeStamp, nickname , chatMessage});
+  socket.on('message', async ({ timeStamp, nickname, chatMessage }) => {
+    const response = await model.createMessage({ timeStamp, nickname, chatMessage });
     io.emit('message', response);    
   });
 

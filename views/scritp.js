@@ -1,19 +1,20 @@
-window.onload = function () {
+window.onload = () => {
 
   const socket = window.io();
 
-  let nickname;
   const btnMessage = document.querySelector('#btnMessage');
   const inputMessage = document.querySelector('#inputMessage');
   const btnNickname = document.querySelector('#btnNickname');
   const inputUser = document.querySelector('#inputNickname');
 
-  btnNickname.addEventListener("click", (e) => {
+  btnNickname.addEventListener('click', (e) => {
     e.preventDefault();
-    nickname = inputUser.value;
-    socket.emit('users', { nickname: inputUser.value, userID: socket.id });
-    inputUser.value = '';
-    console.log(inputUser.value)
+    if (inputMessage.value) {
+      // let nickname = inputUser.value;
+      socket.emit('users', { nickname: inputUser.value, userID: socket.id });
+      inputUser.value = '';
+    }
+    console.log(inputUser.value);
   }, false);
 
   btnMessage.addEventListener('click', (e) => {
@@ -22,9 +23,9 @@ window.onload = function () {
     socket.emit('message', {
       timestamp: currentDate,
       nickname: inputUser.value,
-      chatMessage: inputMessage.value
+      chatMessage: inputMessage.value,
     });
-    console.log(inputMessage.value, currentDate)
+    console.log(inputMessage.value, currentDate);
     inputMessage.value = '';
   }, false);
 
@@ -68,4 +69,4 @@ window.onload = function () {
   });
 
   socket.on('userOff', (userId) => deleteUser(userId));
-} 
+};
