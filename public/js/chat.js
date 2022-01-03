@@ -1,10 +1,9 @@
-const socket = window.io();
-
 const formMsg = document.querySelector('#message');
 const formNick = document.querySelector('#nick');
 const nick = document.querySelector('#nickName');
 const nickBox = document.querySelector('#nick-name-box');
 const msg = document.querySelector('#messageInput');
+const usersList = document.querySelector('#users');
 
 const getRandomNumb = () => {
   let result = Math.floor(Math.random() * 75) + 48;
@@ -23,10 +22,23 @@ function getRandomNick() {
   return newNick;
 }
 
-if (nick.innerText === '') nick.innerText = getRandomNick();
+function setNick(name) {
+  sessionStorage.setItem('nick', name);
+  nick.innerText = name;
+}
+
+if (!sessionStorage.nick) setNick(getRandomNick());
+else setNick(sessionStorage.nick);
+
+const socket = window.io({
+  query: { nick: nick.innerText },
+});
+
 formNick.addEventListener('submit', (e) => {
   e.preventDefault();
-  nick.innerText = nickBox.value;
+  const name = nickBox.value;
+  socket.emit('users', name);
+  setNick(name);
 });
 
 formMsg.addEventListener('submit', (e) => {
@@ -44,7 +56,28 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-// socket.on('message', (messages) => messages.map(
-//   (message) => createMessage(message),
-// ));
+const createUser = (user) => {
+  const usersUl = document.querySelector('#users');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = user;
+  usersUl.appendChild(li);
+};
+
+const filteruser = (users) => {
+  users.forEach(({ id, nick: name }) => {
+    if (id !== socket.id) createUser(name);
+  });
+};
+
 socket.on('message', (message) => createMessage(message));
+socket.on('users', (users) => {
+  while (usersList.firstElementChild.nextElementSibling) {
+    usersList.removeChild(usersList.firstElementChild.nextElementSibling);
+  }
+  filteruser(users);
+});
+
+window.onbeforeunload = (_event) => {
+  socket.disconnect();
+};

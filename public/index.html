@@ -5,9 +5,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
   </head>
   <body>
+    <ul id="users">
+      <li id="nickName" data-testid="online-user"></li>
+    </ul>
     <ul id="messages"></ul>
     <form action="" id="nick">
-      <p id="nickName" data-testid="online-user"></p>
       <input id="nick-name-box" autocomplete="off" data-testid="nickname-box" />
       <button data-testid="nickname-button" id="save-nick">Save</button>
     </form>
