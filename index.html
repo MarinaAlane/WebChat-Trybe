@@ -1,0 +1,49 @@
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webchat - Project</title>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body>
+  <h1>Projeto WebChat</h1>
+  <ul id="messages"></ul>
+
+  <form id="form">
+    <input id="nickname" placeholder="Digite seu apelido">
+    <input id="input" placeholder="Digite sua mensagem">
+    <button>Enviar</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.querySelector('#form');
+    const message = document.querySelector('#input');
+    const nickname = document.querySelector('#nickname')
+    const messages = document.querySelector('#messages');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+/*
+      const chatStorage = sessionStorage();
+      sessionStorage.setItem('nickname', nickname.value);
+      console.log('nickname' + sessionStorage.nickname);
+      const dataMessage = Date(); */
+      if (message.value) {
+        const objMessage = { nickname: nickname.value, chatMessage: message.value };
+        socket.emit('message', objMessage);
+        message.value = '';
+      }
+    });
+
+    socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = msg;
+      messages.appendChild(newMessage);
+      window.scrollTo(0, document.body.scrollHeight);
+    })
+  </script>
+</body>
+</html>
