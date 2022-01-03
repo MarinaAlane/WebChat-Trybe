@@ -3,6 +3,8 @@
   <head>
     <title>Project Webchat</title>
     
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
   <body>
     <div class="message">
@@ -25,10 +27,8 @@
       </form>
     </div>
   </div>
-  <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-
+    <script type="text/javascript">
+      const socket = io('http://localhost:3000');
       const form = document.querySelector('#form');
       const input = document.querySelector('#input');
       const ul = document.querySelector('#messages');
@@ -53,6 +53,24 @@
       const formUser = document.querySelector('#formUser');
       const salvar = document.querySelector('#salvar');
       
+      // formUser.addEventListener('submit', (e) => {
+      //   e.preventDefault();
+      //   ulUsers.innerHTML = '';
+      //   const inputUser = document.querySelector('#inputUser');
+      //   const nickname = inputUser.value
+      //   console.log(nickname);
+      //   const ulUsers = document.querySelector('#ulUsers');
+      //   const user = document.createElement('li');
+      //   ulUsers.appendChild(user);
+      //   user.innerHTML = nickname;
+      //   const sortedUsers = user.sort((a,b) => {
+      //     if (a.id === socket.id) return -1;
+      //     if (b.id === socket.id) return 1;
+      //     return 0;
+      //   });
+      //   socket.emit('Nickname', nickname);
+      // });
+
       socket.on('message', (msg) => {
         const { date, nickname, chatMessage } = msg
         const li = document.createElement('li');
@@ -63,36 +81,37 @@
         window.scrollTo(0, document.body.scrollHeight);
       })
 
+      socket.on('history', (msg) => {
+        msg.forEach(({nickname, message, timestamp}) => {
+          const li = document.createElement('li');
+          li.setAttribute("data-testid", "message");
+          li.textContent = msg;
+          // console.log(li, 'esse é o li da mensagem')
+          ul.appendChild(li);
+        });
+      });
+
       socket.on('logIn', (newUser)=>{
+        sessionStorage.setItem('nick', newUser)
         const ulUsers = document.querySelector('#ulUsers')   
         const user = document.createElement('li');
         user.innerText = newUser;
         user.setAttribute("data-testid", "online-user");
         ulUsers.appendChild(user);
       });
-        
+
       socket.on('userOnline', (online) => {
-        const ulUsers = document.querySelector('#ulUsers');
-        ulUsers.innerHTML = '';
-        const sortedUsers = [...online].sort((a,b) => {
-          if (a.id === socket.id) return -1;
-          if (b.id === socket.id) return 1;
-          return 0;
-        });
-        sortedUsers.forEach(({ arrayUsers }) => {
+        online.forEach(({ arrayUsers }) => {
+          if (sessionStorage.getItem('nick') !== arrayUsers.id)
           const ulUsers = document.querySelector('#ulUsers')   
           const user = document.createElement('li');
           user.innerText = arrayUsers;
+          console.log(arrayUsers)
           user.setAttribute("data-testid", "online-user");
           ulUsers.appendChild(user);
         });
       });
 
-      salvar.addEventListener('click', (e) => {
-        e.preventDefault();
-        const inputUser = document.querySelector('#inputUser').value;
-        socket.emit('Nickname', nickname);
-      });
       </script>
   </body>
 </html>
