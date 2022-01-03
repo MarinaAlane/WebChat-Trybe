@@ -13,14 +13,14 @@ const io = require('socket.io')(server, {
   },
 });
 
-const Messages = require('./controllers/messages');
+const Messages = require('./models/message');
 
 app.use(cors());
 app.set(express.static(path.join('views')));
 app.set('views', path.join('views'));
 
 app.post('/', async (req, res) => {
-  const msg = await Messages.saveHistory(req.body);
+  const msg = await Messages.createMessage(req.body);
   return res.status(201).json(msg);
 });
 

@@ -27,6 +27,10 @@
       </form>
     </div>
   </div>
+<<<<<<< HEAD
+=======
+  <script src="/socket.io/socket.io.js"></script>
+>>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
     <script type="text/javascript">
       const socket = io('http://localhost:3000');
       const form = document.querySelector('#form');
@@ -90,7 +94,11 @@
           ul.appendChild(li);
         });
       });
+<<<<<<< HEAD
 
+=======
+      // Não é mais necessário porque o requisito 4 já cumpre essa lógica
+>>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
       socket.on('logIn', (newUser)=>{
         sessionStorage.setItem('nick', newUser)
         const ulUsers = document.querySelector('#ulUsers')   
@@ -98,11 +106,18 @@
         user.innerText = newUser;
         user.setAttribute("data-testid", "online-user");
         ulUsers.appendChild(user);
+        // socket.emit('Nickname', nickname);
       });
 
+<<<<<<< HEAD
       socket.on('userOnline', (online) => {
         online.forEach(({ arrayUsers }) => {
           if (sessionStorage.getItem('nick') !== arrayUsers.id)
+=======
+        // Lógica explicada e entendida pelo aluno Marcelo Leite durante o recesso
+        socket.on('userOnline', (online) => {
+        online.forEach(({ arrayUsers }) => {
+>>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
           const ulUsers = document.querySelector('#ulUsers')   
           const user = document.createElement('li');
           user.innerText = arrayUsers;
@@ -112,6 +127,24 @@
         });
       });
 
+<<<<<<< HEAD
+=======
+      formUser.addEventListener('submit', (e) => {
+        e.preventDefault();
+        ulUsers.innerHTML = '';
+        const inputUser = document.querySelector('#inputUser').value;
+        const ulUsers = document.querySelector('#ulUsers');
+        const user = document.createElement('li');
+        ulUsers.appendChild(user);
+        user.innerHTML = inputUser;
+        const sortedUsers = user.sort((a,b) => {
+          if (a.id === socket.id) return -1;
+          if (b.id === socket.id) return 1;
+          return 0;
+        });
+        socket.emit('Nickname', nickname);
+      });
+>>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
       </script>
   </body>
 </html>
