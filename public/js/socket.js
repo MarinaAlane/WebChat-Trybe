@@ -18,8 +18,9 @@ const createMessage = (message) => {
   const ul = document.querySelector('#messages');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
-  if (typeof message === 'string') {
-    li.innerText = message;
+  // console.log('socket', message);
+  if (message.message) {
+    li.innerText = message.message;
   } else {
     li.innerText = `${today} ${message.nickname}: ${message.chatMessage}`;
   }
@@ -38,7 +39,7 @@ input.addEventListener('submit', (e) => {
 });
 
 const inputName = (name) => {
-  console.log(name);
+  // console.log('input', name);
   const div = document.querySelector('#input-name');
   const user = name.filter((e) => e.id === socket.id.substr(1, 16));
   div.innerHTML = `<h3 data-testid="online-user">Olá ${user[0].nickname}</h3>`;
@@ -51,7 +52,22 @@ const getAllOnline = (object) => {
   all.innerHTML = `${send}`;
 };
 
+const renderAll = (object) => {
+  const ul = document.querySelector('#messages');
+  object.forEach((e) => {
+    const li = document.createElement('li');
+    li.setAttribute('data-testid', 'message');
+    li.innerText = `${e.timestamp} ${e.nickname}: ${e.text}`;
+    ul.appendChild(li);
+    window.scrollTo(0, document.querySelector('#div-message').scrollHeight);
+  });
+  const li = document.createElement('li');
+  li.innerText = `${socket.id.substr(1, 16)} entrou na sala!`;
+  ul.appendChild(li);
+};
+
 socket.on('message', (message) => createMessage(message));
 socket.on('serverMessage', (object) => createMessage(object));
 socket.on('userServer', ({ users }) => getAllOnline(users));
-socket.on('serverName', (name) => inputName(name.message));
+socket.on('userServer', (name) => inputName(name.users));
+socket.on('serverAllMessages', (object) => renderAll(object.message));
