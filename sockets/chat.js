@@ -1,7 +1,5 @@
-const model = require('../models/message');
 const moment = require('moment');
-
-const userList = [];
+const model = require('../models/message');
 
 module.exports = (io, socket, onlineUser) => {
   io.on('message', async (message) => {
@@ -10,17 +8,18 @@ module.exports = (io, socket, onlineUser) => {
     if (!message.nickname) {
       nickName = onlineUser;
     } else {
-      nickName = message.nickname
+      nickName = message.nickname;
     }
     
-    const editMessage = `${timeStamp} - ${nickname}: ${message.chatMessage}`
+    const editMessage = `${cDate} - ${nickname}: ${message.chatMessage}`
     io.emit('message', editMessage);
   
     const saveMessage = {
-      message: message.chatMessage, nickname: nickName,
-      timeStamp: timeStamp,
+      message: message.chatMessage,
+      nickname: nickName,
+      timeStamp: cDate,
     };
 
     await model.createMessage(saveMessage);
   });
-}
+};
