@@ -65,6 +65,10 @@ const firstMessages = (message) => {
   });
 };
 
+const randomId = () => socket.id.slice(-16);
+
+socket.emit('teste', randomId);
+
 socket.on('connect', () => {
   const randomNickname = socket.id.slice(0, 16);
   sessionStorage.setItem('userNickname', randomNickname);
