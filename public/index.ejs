@@ -26,7 +26,7 @@
     <ul class="messages">
       <% messages.forEach(({ message: textMessage, nickname, timestamp }) => { %>
         <li data-testid="message">
-          <%= `${timestamp}` %> - <%= nickname %>: <%= textMessage %>
+          <%= `${timestamp} - ${nickname}: ${textMessage}` %>
         </li>
       <% }) %> 
     </ul>
