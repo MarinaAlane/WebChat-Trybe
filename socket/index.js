@@ -1,18 +1,15 @@
 const getDate = require('../utils/getDate');
 
-let nick = '';
-
 const handleConnection = (socket) => {
-  socket.emit('nickName', nick || socket.id.slice(0, 16));
+  socket.emit('getNickName', socket.id.slice(0, 16));
 };
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
     handleConnection(socket);
 
-    socket.on('nickName', (nickName) => {
-      nick = nickName;
-      socket.emit('nickName', nickName);
+    socket.on('updateNickName', (nickName) => {
+      socket.emit('getNickName', nickName);
     });
   
     socket.on('message', ({ nickname, chatMessage }) => {

@@ -9,7 +9,7 @@ const setSessionStorage = (nick) => sessionStorage.setItem('webChatNickName', ni
 
 const getSessionStorage = () => sessionStorage.getItem('webChatNickName');
 
-socket.on('nickName', ((nick) => {
+socket.on('getNickName', ((nick) => {
   nickName.innerHTML = nick;
 }));
 
@@ -33,7 +33,7 @@ nickBtn.addEventListener('click', (e) => {
   e.preventDefault();
   const nick = document.querySelector('#nickInput');
   setSessionStorage(nick.value);
-  socket.emit('nickName', nick.value);
+  socket.emit('updateNickName', nick.value);
   nick.value = '';
 });
 
@@ -41,7 +41,7 @@ socket.on('message', (message) => displayNewMessage(message));
 
 window.onload = () => {
   const nick = getSessionStorage();
-  if (nick) socket.emit('nickName', nick);
+  if (nick) socket.emit('updateNickName', nick);
 };
 
 window.onbeforeunload = () => {
