@@ -1,3 +1,5 @@
+// const { addMsg, getAll } = require('../models/msgsModel');
+
 const msgs = [];
 
 const format = ({ nickname, text }) => {
@@ -14,11 +16,21 @@ const format = ({ nickname, text }) => {
 const getAllMsg = () => msgs;
 
 const deleteOneMsg = (id, nickname) => {
-  const index1 = msgs.findIndex((e) => e.nickname === id);
-  const index2 = msgs.findIndex((e) => e.nickname === nickname);
+  // console.log(id, nickname);
+  let index1 = msgs.findIndex((e) => e.id === id);
+  let index2 = msgs.findIndex((e) => e.nickname === nickname);
   // console.log(index1, index2);
-  if (index1 !== -1) msgs.splice(index1, 1);
-  if (index2 !== -1) msgs.splice(index2, 1);
+  // if (index1 !== -1) msgs.splice(index1, 1);if (index2 !== -1) msgs.splice(index2, 1);
+    // index2 = msgs.findIndex((e) => e.nickname === nickname);
+  while (index2 !== -1 || index1 !== -1) {
+    console.log('1', index1, index2);
+    msgs.splice(index1, 1);
+    index1 = msgs.findIndex((e) => e.nickname === id);
+    console.log('2', index1, index2);
+    msgs.splice(index2, 1);
+    index2 = msgs.findIndex((e) => e.nickname === nickname);
+    console.log('3', index1, index2);
+  }
 };
 
 module.exports = { format, getAllMsg, deleteOneMsg };

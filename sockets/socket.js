@@ -24,8 +24,8 @@ module.exports = (io) => io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     io.emit('serverMessage', { message: `${byId(socket.id.substr(1, 16)).nickname} saiu da sala` });
+    deleteOneMsg(byId(socket.id.substr(1, 16)).id, byId(socket.id.substr(1, 16)).nickname);
     removeOne(user.id);
-    deleteOneMsg(user.id, user.nickname);
     io.emit('userServer', { users: getAllUsers() });
   });
 });

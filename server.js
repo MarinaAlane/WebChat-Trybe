@@ -5,9 +5,11 @@ const http = require('http').createServer(app);
 const cors = require('cors');
 const path = require('path');
 
+const PORT = process.env.PORT || 3000;
+
 const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: `http://localhost:${PORT}`,
     method: ['GET', 'POST'],
   },
 });
@@ -15,8 +17,6 @@ const io = require('socket.io')(http, {
 app.use(express.json());
 app.use(cors());
 require('dotenv').config();
-
-const PORT = process.env.PORT || 3001;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
