@@ -4,6 +4,7 @@ const nick = document.querySelector('#nickName');
 const nickBox = document.querySelector('#nick-name-box');
 const msg = document.querySelector('#messageInput');
 const usersList = document.querySelector('#users');
+const messagesList = document.querySelector('#messages');
 
 const getRandomNumb = () => {
   let result = Math.floor(Math.random() * 75) + 48;
@@ -70,7 +71,19 @@ const filteruser = (users) => {
   });
 };
 
-socket.on('message', (message) => createMessage(message));
+const filterMessages = (messages) => {
+  messages.forEach(({ message, nickname, timestamp }) => {
+    const mes = `${timestamp} ${nickname}: ${message}`;
+    createMessage(mes);
+  });
+};
+
+socket.on('message', (messages) => {
+  while (messagesList.firstElementChild) {
+    messagesList.removeChild(messagesList.firstElementChild);
+  }
+  filterMessages(messages);
+});
 socket.on('users', (users) => {
   while (usersList.firstElementChild.nextElementSibling) {
     usersList.removeChild(usersList.firstElementChild.nextElementSibling);
