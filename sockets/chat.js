@@ -23,7 +23,7 @@ const historico = (socket, historic) => {
 module.exports = (io) => io.on('connection', async (socket) => {
   const historic = await model.getAllMessage()
     .then((e) => e
-    .map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`));
+    .map(({ timeStamp, nickname, chatMessage }) => `${timeStamp} - ${nickname}: ${chatMessage}`));
 
   const usuario = { nickname: generateNickname(16), userID: socket.id };
   userList.push(usuario);
@@ -34,8 +34,8 @@ module.exports = (io) => io.on('connection', async (socket) => {
   
   socket.on('users', (user) => io.emit('nickname', user));
 
-  socket.on('message', async ({ chatMessage, nickname }) => {
-    const response = await model.createMessage({ chatMessage, nickname });
+  socket.on('message', async ({ timeStamp, nickname , chatMessage }) => {
+    const response = await model.createMessage({ timeStamp, nickname , chatMessage});
     io.emit('message', response);    
   });
 

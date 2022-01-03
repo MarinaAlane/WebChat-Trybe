@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
   <head>  
     <title>WebChat</title>
   </head>
   <link rel="stylesheet" href="./styles.css"/>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
   <body>
+      <script src='scritp.js'></script>
+    <form>
       <input 
         placeholder="Insira seu nickname" 
         data-testid="nickname-box" 
         id="inputNickname" 
         autocomplete="off" />
       </br>
-      <button 
+      <button
+      type="submit"
       data-testid="nickname-button" 
       id="btnNickname">
         Salvar
@@ -33,13 +37,13 @@
       />
     </br>
       <button 
+        type="submit"
         data-testid="send-button" 
         id="btnMessage"
       >
         Enviar
       </button>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src='./scritp.js'></script>
+    </form>
   </body>
 </html>
