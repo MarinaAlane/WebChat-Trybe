@@ -3,6 +3,7 @@ const path = require('path');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
+const moment = require('moment');
 
 require('dotenv').config();
 
@@ -14,14 +15,25 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (_req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-    console.log(`usuario ${socket.id}`);
+  console.log(`Usuário ${socket.id} conectou`);
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    io.emit(
+      'message',
+      `${moment().format(
+        'DD-MM-yyyy HH:mm:ss A',
+      )} - ${nickname}: ${chatMessage}`,
+    );
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Usuário ${socket.id} desconectou`);
+  });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
