@@ -1,5 +1,3 @@
-window.onload = () => {
-
   const socket = window.io();
 
   const btnMessage = document.querySelector('#btnMessage');
@@ -10,7 +8,7 @@ window.onload = () => {
   btnNickname.addEventListener('click', (e) => {
     e.preventDefault();
     if (inputMessage.value) {
-      // let nickname = inputUser.value;
+      let nickname = inputUser.value;
       socket.emit('users', { nickname: inputUser.value, userID: socket.id });
       inputUser.value = '';
     }
@@ -68,5 +66,10 @@ window.onload = () => {
     userList.forEach((user) => createUser(user));
   });
 
-  socket.on('userOff', (userId) => deleteUser(userId));
+socket.on('userOff', (userId) => deleteUser(userId));
+
+
+window.onload = function disconnect() {
+  socket.disconnect();
 };
+
