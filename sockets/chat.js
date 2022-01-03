@@ -20,16 +20,25 @@ const saveMessage = async (message, nickname) => {
     timestamp: makeDate(),
   };
   await database.addMessage(data);
+  return data;
+};
+
+const sendMessages = async (socket) => {
+  const messages = await database.getAll();
+  messages.forEach(({ message, nickname, timestamp }) => {
+    const mes = `${timestamp} ${nickname}: ${message}`;
+    socket.emit('message', mes);
+  });
 };
 
 module.exports = (io) => io.on('connection', async (socket) => {
   console.log(`Usuário conectado. Nick: ${socket.handshake.query.nick} `);
   users.push({ id: socket.id, nick: socket.handshake.query.nick });
-  io.emit('message', await database.getAll());
+  await sendMessages(socket);
   io.emit('users', users);
   socket.on('message', async ({ chatMessage, nickname }) => {
-    await saveMessage(chatMessage, nickname);
-    io.emit('message', await database.getAll());
+    const data = await saveMessage(chatMessage, nickname);
+    io.emit('message', `${data.timestamp} ${data.nickname}: ${data.message}`);
   });
   socket.on('users', (name) => {
     const index = users.findIndex(({ id }) => id === socket.id);
