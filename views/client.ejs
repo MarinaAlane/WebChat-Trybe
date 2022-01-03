@@ -14,7 +14,13 @@
 
   <div id="users-container"></div>
 
-  <div id="messages-container"></div>
+  <div id="messages-container">
+    <% messages.forEach((msg) => { %>
+      <div data-testid="message">
+        <%= `${msg.timestamp} - ${msg.nickname}: ${msg.message}` %>
+      </div>
+    <% }) %>
+  </div>
 
   <form id="message-send">
     <input id="message-input" autocomplete="off" data-testid="nickname-box" />
@@ -34,9 +40,10 @@
     messageForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const chatMessage = messageInput.value;
-      const nickname = nicknameInput.value;
+      const userId = socket.id;
+      const { nickname } = users.find((user) => user.id === userId);
       socket.emit('message', { chatMessage, nickname });
-      inputMessage.value = '';
+      messageInput.value = '';
       return false;
     })
 
@@ -66,7 +73,7 @@
       users = [...arrayUsers];
       users.forEach((user) => {
         const userElement = document.createElement('div');
-  
+        onlineUser = user.nickname;
         userElement.innerText = user.nickname;
         userElement.setAttribute('data-testid', 'online-user');
         userElement.setAttribute('userId', user.id);
@@ -76,7 +83,6 @@
 
     socket.on('online-user', (arrayUsers) => newUser(arrayUsers));
     socket.on('message', (message) => createMessage(message));
-    // socket.on('user-updating', (newArrayUsers) => createMessage(newArrayUsers));
   </script>
 
 </body>
