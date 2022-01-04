@@ -38,6 +38,10 @@ module.exports = (io) =>
 
     socket.broadcast.emit('newLogin', nickname);
 
+    socket.on('newLogin', (userNickname) => {
+      socket.broadcast.emit('addNewLogin', userNickname);
+    });
+
     socket.on('connectUser', (name) => listAllUsers(socket, io, name));
     socket.on('changeUserName', (userData) => changeUserName(userData, io));
     socket.on('onCloseChat', (userId) => deleteUser(userId, io));
