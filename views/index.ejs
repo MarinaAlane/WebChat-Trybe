@@ -1,50 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
   <head>  
     <title>WebChat</title>
   </head>
   <link rel="stylesheet" href="./styles.css"/>
- 
   <body>
-    <script  type="text/javascript"  src='scritp.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
-    <form>
+  
       <input 
         placeholder="Insira seu nickname" 
         data-testid="nickname-box" 
-        id="inputNickname" 
+        id="inputNickname"
+        class="inputNick"
         autocomplete="off" />
-      </br>
       <button
-      type="submit"
+      class="btnNick"
       data-testid="nickname-button" 
       id="btnNickname">
         Salvar
       </button>
     </div>
-    <div>
-      <ul id="user">Usuários</ul>
+    <div class="box">
+      <div>
+        <ul id="user">Usuários</ul>
+      </div>
+      <div>
+        <ul id="messages">Mensagens</ul>
+      </div>
     </div>
-    <div>
-      <ul id="messages"></ul>
-    </div>
-    <br>
+      <br>
       <input 
         placeholder="Digite uma nova mensagem aqui" 
         data-testid="message-box" 
-        id="inputMessage" 
+        id="inputMessage"
+        class="inputMessage"
         autocomplete="off" 
       />
-    </br>
-      <button 
-        type="submit"
-        data-testid="send-button" 
+      <button
+        class="sendButton"
         id="btnMessage"
+        data-testid="send-button"
       >
         Enviar
       </button>
     </div>
-    </form>
+      <script type="text/javascript" src="./scritp.js"></script>
   </body>
 </html>

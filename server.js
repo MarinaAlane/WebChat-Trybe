@@ -8,25 +8,20 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-const server = require('http').createServer(app);
-
 const urlOrigin = `http://localhost:${PORT}`;
 
-const socket = require('socket.io')(server, {
+const server = require('http').createServer(app);
 
+// app.get('/', (_req, res) => res.render('chat'));
+
+const io = require('socket.io')(server, {
   cors: {
-
-    methods: ['GET', 'POST'],
-    
     origin: urlOrigin,
-
+    methods: ['GET', 'POST'],
   },
-
 });
 
 app.use(cors());
-
-require('./sockets/chat')(socket);
 
 app.use(express.static(path.join(__dirname, 'views')));
 
@@ -36,12 +31,20 @@ app.engine('html', require('ejs').renderFile);
 
 app.set('view engine', 'ejs');
 
-app.use('/', (req, res) => {
+io.on('connection', (socket) => {
+  socket.on('disconnect', () => {
+    console.log('alguem saiu');
+  });
+  socket.on('message', (msg) => {
+    io.emit('serverMessage', { message: msg });
+  });
+  socket.broadcast.emit('serverMessage', { message: 'fulano entrou' });
+});
+
+app.use('/', (req, res) => { 
   res.render('index.ejs');
 });
 
-app.get('/', (_req, res) => res.render('chat'));
-
 server.listen(PORT, () => {
-  console.log(`Porta ${PORT}`);
+  console.log(`Servidor na Porta ${PORT}`);
 });

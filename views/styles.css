@@ -2,8 +2,8 @@ body {
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding-top: 100px;
+  height: 50%;
+  padding-top: 50px;
 }
 
 * {
@@ -17,7 +17,7 @@ input {
   font-size: 14px;
   height: 50px;
   padding: 0 20px;
-  width: 600px;
+  width: 400px;
 }
 
 #chat {
@@ -33,18 +33,31 @@ button {
   color: white;
   font-size: 14px;
   font-weight: bold;
-  height: 50px;
-  line-height: 50px;
-  margin-top: 10px;
+  height: 40px;
   text-align: center;
-  width: 100px;
+  width: 80px;
 }
 
-.messages {
+#messages {
   border: 1px solid #DDD;
-  height: 400px;
+  height: 350px;
   list-style-type: none;
   margin: 20px 0;
   padding: 20px;
+  text-align: center;
   width: 600px;
+}
+
+#user {
+  border: 1px solid #DDD;
+  height: 350px;
+  list-style-type: none;
+  margin: 20px 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.box{
+  display: flex;
+  flex-direction: row;
 }
