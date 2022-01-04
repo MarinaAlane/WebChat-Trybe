@@ -1,5 +1,25 @@
 const socket = window.io();
 
+const onlineUserList = document.getElementById('users');
+
+// ================================== Message Form manipulation ===========================================
+
+const messageBtn = document.getElementById('send-button');
+
+messageBtn.addEventListener('click', () => {
+  const nickname = sessionStorage.getItem('nickname') || onlineUserList;
+  const getMessageFromInput = document.getElementById('message-box');
+  const msg = {
+    nickname,
+    chatMessage: getMessageFromInput.value,
+  };
+
+  socket.emit('message', msg);
+  getMessageFromInput.value = '';
+});
+
+// ====================================================================================================
+
 const messageList = document.getElementById('messages');
 
 const insertIntoMessageList = (messages) => {

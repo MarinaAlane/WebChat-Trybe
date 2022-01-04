@@ -7,6 +7,7 @@
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./Script/userScript.js"></script>
+    <script src="./Script/messageScript.js"></script>
   </head>
   <body>
     <div>
@@ -32,12 +33,13 @@
     <div>
       <form id="form" action="">
         <input
-          id="input"
+          id="message-box"
           autocomplete="off"
           placeholder="chatMessage"
           data-testid="message-box"
         />
         <button
+          id="send-button"
           data-testid="send-button"
         >
           Send message
