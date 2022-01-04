@@ -18,7 +18,7 @@ const io = require('socket.io')(http, {
 
 app.use(express.static(__dirname + '/frontend'));
 
-// require('./backend/socket')(io);
+require('./backend/socket')(io);
 
 app.get('/', (_req, res) => {
   res.sendFile(__dirname + '/index.html');
