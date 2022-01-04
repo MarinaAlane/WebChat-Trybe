@@ -12,15 +12,6 @@ const generateNickname = () => {
 
 let allUsers = [];
 
-const changeUserName = (userData, io) => {
-  allUsers.forEach((elem) => {
-    if (elem.id === userData.id) {
-      Object.assign(elem, userData);
-      io.emit('getAllUsers', allUsers);
-    }
-  });
-};
-
 const deleteUser = (userId, io) => {
   allUsers = allUsers.filter(((user) => user.id !== userId));
   io.emit('getAllUsers', allUsers);
@@ -28,7 +19,8 @@ const deleteUser = (userId, io) => {
 
 module.exports = (io) =>
   io.on('connection', async (socket) => {
-    const nickname = generateNickname();
+    let nickname = generateNickname();
+
     socket.emit('getNickname', nickname);
 
     socket.broadcast.emit('newLogin', nickname);
@@ -37,6 +29,10 @@ module.exports = (io) =>
       socket.broadcast.emit('addNewLogin', userNickname);
     });
 
-    socket.on('changeUserName', (userData) => changeUserName(userData, io));
+    socket.on('changeUserName', (userData) => {
+      io.emit('changeUserName', { oldNickname: nickname, newNickname: userData });
+      nickname = userData;
+    });
+
     socket.on('onCloseChat', (userId) => deleteUser(userId, io));
 });

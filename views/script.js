@@ -85,7 +85,22 @@ socket.on('addNewLogin', (nickname) => {
 //   }
 // });
 
-// ================================== Create User =====================================================
+// ================================== update User =====================================================
+
+socket.on('changeUserName', ({ oldNickname, newNickname }) => {
+  const allUsers = getChildrenFromUserList();
+  // allUsers.forEach((user) => {
+  //   if (user.innerText === oldNickname) {
+  //     user.innerText = newNickname;
+  //   }
+  // });
+  for (let index = 0; index < allUsers.length; index += 1) {
+    if (allUsers[index].innerText === oldNickname) {
+      allUsers[index].innerText = newNickname;
+      break;
+    }
+  }
+});
 
 // ..source: https://www.geeksforgeeks.org/how-to-detect-browser-or-tab-closing-in-javascript/
 // window.addEventListener('beforeunload', (e) => {
