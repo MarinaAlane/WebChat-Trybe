@@ -73,11 +73,6 @@ socket.on('addNewLogin', (nickname) => {
 
 socket.on('changeUserName', ({ oldNickname, newNickname }) => {
   const allUsers = getChildrenFromUserList();
-  // allUsers.forEach((user) => {
-  //   if (user.innerText === oldNickname) {
-  //     user.innerText = newNickname;
-  //   }
-  // });
   for (let index = 0; index < allUsers.length; index += 1) {
     if (allUsers[index].innerText === oldNickname) {
       allUsers[index].innerText = newNickname;
