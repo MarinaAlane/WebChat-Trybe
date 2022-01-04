@@ -4,7 +4,7 @@ const messageList = document.getElementById('messages');
 const onlineUserList = document.getElementById('users');
 
 const insertIntoMessageList = (messages) => {
-  messages.forEach(({timestamp, nickname, message}) => {
+  messages.forEach(({ timestamp, nickname, message }) => {
     const msg = document.createElement('li');
     msg.textContent = `${timestamp} - ${nickname}: ${message}`;
     msg.setAttribute('data-testid', 'message');
