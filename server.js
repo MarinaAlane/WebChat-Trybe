@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const http = require('http');
 const { format } = require('date-fns');
+const axios = require('axios');
 
 const app = express();
 const PORT = 3000;
@@ -24,9 +25,19 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
-io.on('connection', (socket) => {
-  // console.log(`usuário ${socket.id} conectado`);
+const chatController = require('./controllers/chatController');
 
+const sendMessage = (chatMessage, nickname) => {
+  const timestamp = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
+  io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+  axios.post('http://localhost:3000', {
+      message: chatMessage,
+      nickname,
+      timestamp,
+  });
+};
+
+io.on('connection', (socket) => {
   let id = socket.id.slice(0, 16);
   users.push(id);
   socket.broadcast.emit('connection', id);
@@ -40,8 +51,7 @@ io.on('connection', (socket) => {
   });
   
   socket.on('message', (msg) => {
-    const timestamp = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
-    io.emit('message', `${timestamp} - ${msg.nickname}: ${msg.chatMessage}`);
+    sendMessage(msg.chatMessage, msg.nickname);
   });
 
   socket.on('disconnect', () => {
@@ -53,6 +63,8 @@ io.on('connection', (socket) => {
 app.get('/', (_req, res) => {
   res.render('board');
 });
+
+app.use('/', chatController);
 
 socketIoServer.listen(PORT, () => {
   console.log(`Servidor Socket.io ouvindo na porta ${PORT}`);

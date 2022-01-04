@@ -1,4 +1,4 @@
 module.exports = {
   verbose: true,
-  testTimeout: 5000, // Ao subir o teste aumentar pra 30000
+  testTimeout: 30000, // Ao subir o teste aumentar pra 30000
 };

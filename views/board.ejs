@@ -122,6 +122,19 @@
         });
       });
 
+      const fetchWebchat = async () => {
+        const result = await fetch('http://localhost:3000/webchat');
+        const response = await result.json();
+
+        for (let index = 0; index < response.length; index += 1) {
+          const li = document.createElement("li");
+          li.textContent = `${response[index].timestamp} - ${response[index].nickname}: ${response[index].message}`;
+          document.querySelector('#chat').appendChild(li);        
+        }
+      };
+
+      fetchWebchat();
+
     </script>
   </body>
 </html>
