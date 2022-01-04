@@ -1,3 +1,15 @@
+const generateNickname = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz';
+  let randomName = '';
+  const passwordLength = 15;
+
+  const randomNumber = Math.floor(Math.random() * chars.length);
+  for (let i = 0; i <= passwordLength; i += 1) {
+    randomName += chars.substring(randomNumber, randomNumber + 1);
+  }
+  return randomName;
+};
+
 let allUsers = [];
 
 const listAllUsers = (socket, io, nickname) => {
