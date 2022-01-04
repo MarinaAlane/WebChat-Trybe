@@ -8,12 +8,12 @@
 
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
-
-  <input placeholder="Insira seu nickname" data-testid="nickname-box" id="inputNickname" class="inputNick"
-    autocomplete="off" />
-  <button class="btnNick" data-testid="nickname-button" id="btnNickname">
-    Salvar
-  </button>
+  <div class="box">
+    <input placeholder="Insira seu nickname" data-testid="nickname-box" id="inputNickname" class="inputNick"
+      autocomplete="off" />
+    <button class="btnNick" data-testid="nickname-button" id="btnNickname">
+      Salvar
+    </button>
   </div>
   <div class="box">
     <div>
@@ -24,11 +24,12 @@
     </div>
   </div>
   <br>
-  <input placeholder="Digite uma nova mensagem aqui" data-testid="message-box" id="inputMessage" class="inputMessage"
-    autocomplete="off" />
-  <button class="sendButton" id="btnMessage" data-testid="send-button">
-    Enviar
-  </button>
+  <div class="box">
+    <input placeholder="Digite uma nova mensagem aqui" data-testid="message-box" id="inputMessage" class="inputMessage"
+      autocomplete="off" />
+    <button class="sendButton" id="btnMessage" data-testid="send-button">
+      Enviar
+    </button>
   </div>
   <script type="text/javascript" src="./scritp.js"></script>
 </body>

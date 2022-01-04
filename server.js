@@ -1,4 +1,6 @@
 require('dotenv').config();
+const moment = require('moment');
+
 
 const express = require('express');
 const path = require('path');
@@ -31,14 +33,21 @@ app.engine('html', require('ejs').renderFile);
 
 app.set('view engine', 'ejs');
 
+let messages = [];
+
+
 io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('alguem saiu');
   });
   socket.on('message', (msg) => {
-    io.emit('serverMessage', { message: msg });
+    messages.push(msg);
+    const time = moment().format('DD-MM-YYYY hh:mm:ss A');
+    const formatedMessage = `${time} - ${msg.nickname}: ${msg.chatMessage}`;
+    io.emit('serverMessage', formatedMessage);
+
   });
-  socket.broadcast.emit('serverMessage', { message: 'fulano entrou' });
+  socket.broadcast.emit('serverMessage', ('fulano entrou'));
 });
 
 app.use('/', (req, res) => { 

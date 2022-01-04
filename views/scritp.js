@@ -1,32 +1,37 @@
 const socket = window.io();
 
+
 let userNick = '';
 
 const userNew = document.querySelector('.inputNick').value;
-      
-const btnMess = document.querySelector('.sendButton');
-const inputMessage = document.querySelector('.inputMessage');
-btnMess.addEventListener('click', (e) => {
-  socket.emit('message', inputMessage.value);
-  document.querySelector('.inputMessage').value = '';
-  e.preventDefault();
-  if (userNew.length === 0) {
-    userNick = socket.id.slice(0, 16);
-    sessionStorage.setItem('User', userNick);
-    socket.emit('User', userNick);
-}  
-  return true;
-});
 
 const btnNick = document.querySelector('.btnNick');
 const inputNick = userNew;
 btnNick.addEventListener('click', (e) => {
+  e.preventDefault();
+  document.querySelector('.inputNick').value = '';
   socket.emit('User', inputNick.value);
   sessionStorage.setItem('User', inputNick.value);
-  document.querySelector('.inputNick').value = '';
-  e.preventDefault();
   return true;
 });
+      
+const btnMess = document.querySelector('.sendButton');
+const inputMessage = document.querySelector('.inputMessage');
+console.log(inputMessage.value);
+btnMess.addEventListener('click', (e) => {
+    e.preventDefault();
+  if (userNew.length === 0 ) {
+    userNick = socket.id.slice(0, 16);
+    sessionStorage.setItem('User', userNick);
+    socket.emit('User', userNick); //Não Implementado
+  }
+  const Objmsg = { nickname: userNick, chatMessage: inputMessage.value, };
+  socket.emit('message', Objmsg);
+  document.querySelector('.inputMessage').value = '';
+  return true;
+});
+
+
 
 const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
@@ -44,6 +49,6 @@ const createUser = (user) => {
   userUl.appendChild(li);
 };
 
-socket.on('serverMessage', ({ message }) => createMessage(message));
+socket.on('serverMessage',  message  => createMessage(message));
 
 socket.on('User', ({ User }) => createUser(User));
