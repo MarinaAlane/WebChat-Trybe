@@ -69,6 +69,8 @@
     const onlineUsers = (arrayUsers) => {
       usersContainer.textContent = '';
       users = [...arrayUsers];
+      users.sort();
+      users.reverse();
       users.forEach((user) => {
         const userElement = document.createElement('div');
         onlineUser = user.nickname;
