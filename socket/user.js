@@ -10,6 +10,8 @@ const generateNickname = () => {
   return randomName;
 };
 
+let allUsers = [];
+
 const changeUserName = (userData, io) => {
   allUsers.forEach((elem) => {
     if (elem.id === userData.id) {
