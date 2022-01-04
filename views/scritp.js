@@ -34,7 +34,7 @@ const createMessage = (message) => {
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
   messagesUl.appendChild(li);
-}
+};
 
 const createUser = (user) => {
   const userUl = document.querySelector('#user');
@@ -43,9 +43,6 @@ const createUser = (user) => {
   li.setAttribute('data-testid', 'online-user');
   userUl.appendChild(li);
 };
-
-//socket.on('message', (message) => createMessage(message));
-// var activeUser = sessionStorage.getItem("User")
 
 socket.on('serverMessage', ({ message }) => createMessage(message));
 
