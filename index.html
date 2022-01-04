@@ -4,9 +4,153 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <link rel="stylesheet" href="style.css" />
+  <title>Webchat</title>
+
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      font-family: "Roboto", sans-serif;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    .header {
+      text-align: center;
+      color: rgb(65 , 25 , 127);
+      padding: 25px 0;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-direction: row;
+      height: 90hv;
+      width: 100%;
+      padding: 15px 0;
+    }
+
+    .users {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 40vw;
+      height: 100%;
+    }
+
+    .input-nickname {
+      width: 300px;
+      height: 30px;
+      padding: 10px 32px;
+      font-size: 16px;
+      border: none;
+      border-bottom: 2px solid rgb(0 , 109 , 251);
+      outline: none;
+    }
+
+    .button-nickname {
+      background-color: rgb(47 , 193 , 140);
+      border: none;
+      color: white;
+      padding: 10px 32px;
+      text-align: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .button-nickname:hover {
+      background-color: rgb(33 , 134 , 97);
+      border: rgb(47 , 193 , 140);
+    }
+
+    .sign-in {
+      padding: 25px 0;
+      border-bottom: 3px solid rgb(65 , 25 , 127);
+    }
+
+    .users-list {
+      padding: 15px 0;
+    }
+
+    .chat {
+      display: flex;
+      width: 55vw;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+      border: 3px solid rgb(65 , 25 , 127);
+    }
+
+    .button-send {
+      background-color: rgb(47 , 193 , 140);
+      border: none;
+      color: white;
+      padding: 10px 32px;
+      text-align: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .message {
+      display: flex;
+      background-color: rgb(38, 39, 43);
+      font-size: 1.2rem;
+      color: white;
+      padding: 15px 0;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+  </style>
+
 </head>
 <body>
-  <h1>Welcome</h1>
+
+  <header class="header"><h1>Webchat</h1></header>
+
+  <div class="flex-container">
+
+    <section class="users">
+
+      <div class="sign-in">
+        <input 
+          type="text" 
+          name="name" 
+          class="input-nickname" 
+          id="" 
+          placeholder="Insira seu nickname aqui"
+        >
+        <button class="button-nickname">salvar</button>
+      </div>
+
+      <div class="users-list">
+        <h1> Usuários</h1>
+      </div>
+
+    </section>
+
+    <section class="chat">
+      <h1>chat</h1>
+      <h1>chat</h1>
+      <h1>chat</h1>
+      <h1>chat</h1>
+      <h1>chat</h1>
+    </section>
+
+  </div>
+
+  <div class="message">
+    <input 
+      type="text" 
+      name="message" 
+      id="" 
+      placeholder="Digite uma nova mensagem aqui"
+    >
+    <button class="button-send">Enviar</button>
+  </div>
+
 </body>
 </html>
