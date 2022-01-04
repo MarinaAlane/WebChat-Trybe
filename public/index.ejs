@@ -11,7 +11,7 @@
   <h1>Chat</h1>
   <form action="">
     <div>
-      <p>Nickname: <span id="nickName" data-testid="online-user"></span></p>
+      <p>Nickname: <span id="nickName"></span></p>
       <label for="nickInput">Insira seu apelido</label>
       <input type="text" id="nickInput" data-testid="nickname-box" />
       <button id="nickBtn" data-testid="nickname-button">Ok</button>
@@ -30,6 +30,10 @@
         </li>
       <% }) %> 
     </ul>
+  </div>
+  <div>
+    <p>Usuários online</p>
+    <ul class="online-users"></ul>
   </div>
   <script src="./js/chat.js"></script>
 </body>
