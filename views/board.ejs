@@ -21,7 +21,7 @@
       <input id='chat-input' type="text" placeholder="Digite uma nova mensagem aqui" data-testid="message-box">
       <button type="submit" data-testid="send-button">Enviar</button>
     </form>
-
+      
     <script>
       const socket = io("http://localhost:3000");
 
@@ -61,7 +61,7 @@
       });
 
       socket.on('usersConected', (users) => {
-        console.log('users', users);
+        // console.log('users', users);
         const lastUser = users[users.length - 1];
         sessionStorage.setItem('nickname', lastUser);
 
@@ -80,7 +80,7 @@
         }
       });
 
-      // Req 2 update nickname - ajuda do colega Rodolfo Ramos 
+      // Req 2 update nickname
       const nicknameForm = document.querySelector('#nickname-form');
       const nicknameInput = document.querySelector('#nickname-input');
 
@@ -89,7 +89,6 @@
 
         const newNickname = nicknameInput.value;
         const getUsername = document.querySelector('#current-nickname');
-        console.log('getUsername', getUsername);
 
         getUsername.innerText = newNickname;
 
@@ -99,14 +98,26 @@
         });
 
         sessionStorage.setItem('nickname', newNickname);
+        nicknameInput.value = '';
       });
 
       socket.on('updateUsers', (oldNickname, newNickname) => {
-        const getUsernames = document.querySelectorAll('.online-user');
+        const getUsernames = document.querySelectorAll('#current-nickname');
         
-        getUsernames.forEach( (username) => {
+        getUsernames.forEach((username) => {
           if(username.innerText === oldNickname) {
             username.innerText = newNickname;
+          }
+        });        
+      });
+
+      socket.on('logout', (id) => {
+        const onlineUSers = document.querySelectorAll('#current-nickname');
+        
+
+        onlineUSers.forEach((username) => {
+          if(username.innerText === id) {
+            username.remove();
           }
         });
       });

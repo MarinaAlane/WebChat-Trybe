@@ -45,7 +45,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    // console.log(`usuário ${socket.id} desconectou`);
+    users = users.filter((value) => value !== id);
+    socket.broadcast.emit('logout', id);
   });
 });
 
