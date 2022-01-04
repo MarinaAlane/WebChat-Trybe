@@ -1,6 +1,6 @@
 const socket = window.io();
 
-let userNick = "";
+let userNick = '';
       
 const btnMess = document.querySelector('.sendButton');
 const inputMessage = document.querySelector('.inputMessage');
@@ -41,8 +41,10 @@ const createUser = (user) => {
   li.setAttribute('data-testid', 'online-user');
   userUl.appendChild(li);
 };
-//socket.on('message', (message) => createMessage(message));
 
+//socket.on('message', (message) => createMessage(message));
 // var activeUser = sessionStorage.getItem("User")
 
 socket.on('serverMessage', ({ message }) => createMessage(message));
+
+socket.on('User', ({ User }) => createUser(user));
