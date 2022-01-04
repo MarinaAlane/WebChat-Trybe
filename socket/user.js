@@ -36,6 +36,8 @@ module.exports = (io) =>
     const nickname = generateNickname();
     socket.emit('getNickname', nickname);
 
+    socket.broadcast.emit('newLogin', nickname);
+
     socket.on('connectUser', (name) => listAllUsers(socket, io, name));
     socket.on('changeUserName', (userData) => changeUserName(userData, io));
     socket.on('onCloseChat', (userId) => deleteUser(userId, io));
