@@ -44,15 +44,7 @@
     <script>
       const socket = io();
 
-      const chars = "abcdefghijklmnopqrstuvwxyz";
-      const passwordLength = 15;
-      let randomName = "";
-
-      for (var i = 0; i <= passwordLength; i++) {
-        const randomNumber = Math.floor(Math.random() * chars.length);
-        randomName += chars.substring(randomNumber, randomNumber + 1);
-      }
-      socket.emit('connectUser', randomName);
+      
 
       const messageList = document.getElementById('messages');
 
