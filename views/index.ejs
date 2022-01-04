@@ -98,6 +98,20 @@
         socket.emit('newLogin', userNickname)
       })
 
+      const isUserInUserList = (nickname) => {
+        const allUsers = getChildrenFromUserList();
+        allUsers.forEach((user) => {
+          if (user.innerText === nickname) return true;
+        })
+        return false;
+      }
+
+      socket.on('addNewLogin', (nickname) => {
+        if(!isUserInUserList(nickname)) insertIntoUserList(nickname);
+      })
+
+      // ====================================================================================================
+
       const formUsername = document.getElementById('form-username');
       const inputUsername = document.getElementById('input-username');
 
