@@ -10,8 +10,8 @@ module.exports = (io) => {
       msg: `User ${socket.id} acabou de entrar`
     });
   
-    socket.on('clientMessage', clientMsg => {
-      io.emit('serverBroadcast', clientMsg);
+    socket.on('message', clientMsg => {
+      io.emit('serverBroadcast', clientMsg.chatMessage);
     })
 
   });

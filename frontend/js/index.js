@@ -12,10 +12,30 @@ p.innerText = text;
 div.appendChild(p);
 };
 
+let dataAtual;
+let horaAtual;
+
 form.addEventListener('submit', (e) => {
+  let data = new Date();
+  let dia = String(data.getDate()).padStart(2, '0');
+  let mes = String(data.getMonth() + 1).padStart(2, '0');
+  let ano = data.getFullYear();
+
+  dataAtual = dia + '-' + mes + '-' + ano;
+  horaAtual = data.toLocaleTimeString('pt-BR');
+  
     e.preventDefault();
-    socket.emit('clientMessage', inputMessage.value);
+    socket.emit('message', {
+      nickname: userID,
+      chatMessage: `${dataAtual} ${horaAtual} - ${userID}: ${ inputMessage.value }`
+    });
+
     inputMessage.value = '';
+
+    // Debug
+    console.log('dataAtual in addEventListener in frontend js');
+    console.log(dataAtual);
+    
     return false;
 });
 
