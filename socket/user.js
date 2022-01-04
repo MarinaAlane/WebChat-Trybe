@@ -33,9 +33,10 @@ const deleteUser = (userId, io) => {
 
 module.exports = (io) =>
   io.on('connection', async (socket) => {
-    socket.on('connectUser', (nickname) => listAllUsers(socket, io, nickname));
+    const nickname = generateNickname();
+    socket.emit('getNickname', nickname);
+
+    socket.on('connectUser', (name) => listAllUsers(socket, io, name));
     socket.on('changeUserName', (userData) => changeUserName(userData, io));
     socket.on('onCloseChat', (userId) => deleteUser(userId, io));
 });
-
-// for some reason the channel is not updating messages for users that already are in chat

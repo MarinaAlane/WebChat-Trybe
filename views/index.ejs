@@ -44,9 +44,8 @@
     <script>
       const socket = io();
 
-      
-
       const messageList = document.getElementById('messages');
+      const onlineUserList = document.getElementById('users');
 
       const insertIntoMessageList = (messages) => {
         messages.forEach(({timestamp, nickname, message}) => {
@@ -67,19 +66,30 @@
 
       listAllMessages();
 
-      // const userList = document.getElementById('users');
+      // ================================== Create User =====================================================
 
-      const insertIntoUserList = (users) => {
-        users.forEach(({nickname}) => {
-          const userName = document.createElement('li');
-          userName.textContent = nickname;
-          userName.setAttribute('data-testid', 'online-user');
-          // userName.setAttribute('class', 'online-user');
-          const userList = document.getElementById('users');
-          userList.appendChild(userName);
-          window.scrollTo(0, document.body.scrollHeight);
-        })
-      }
+      const getChildrensFromUserList = () => {
+        const userList = document.getElementById('users');
+        return userList.children;
+      };
+
+      const insertIntoUserList = (nickname) => {
+        const userList = document.getElementById('users');
+        const user = document.createElement('li');
+
+        user.setAttribute(dataTestId, 'online-user');
+        user.innerText = nickname;
+        userList.appendChild(user);
+      };
+
+      socket.on('getNickname', (nickname) => {
+        onlineUserList.innerText = nickname;
+        sessionStorage.setItem('nickname', nickname);
+        insertIntoUserList(nickname);
+      });
+
+      // ====================================================================================================
+
 
       const listAllUsersOnline = () => {
         socket.on('getAllUsers', (allUsers) => {
