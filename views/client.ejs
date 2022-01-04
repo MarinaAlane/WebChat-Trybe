@@ -69,15 +69,15 @@
     const onlineUsers = (arrayUsers) => {
       usersContainer.textContent = '';
       users = [...arrayUsers];
-      users.sort();
-      users.reverse();
+
       users.forEach((user) => {
         const userElement = document.createElement('div');
         onlineUser = user.nickname;
         userElement.innerText = user.nickname;
         userElement.setAttribute('data-testid', 'online-user');
         userElement.setAttribute('userId', user.id);
-        usersContainer.append(userElement)
+        if (user.id === socket.id) return usersContainer.prepend(userElement);
+        usersContainer.append(userElement);
       })
     }
 
