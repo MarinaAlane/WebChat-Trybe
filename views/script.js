@@ -10,15 +10,15 @@ const insertIntoMessageList = (messages) => {
     msg.setAttribute('data-testid', 'message');
     messageList.appendChild(msg);
     window.scrollTo(0, document.body.scrollHeight);
-  })
-}
+  });
+};
 
 const listAllMessages = () => {
   socket.on('messageHistory', (allMessages) => {
     messageList.innerHTML = '';
     insertIntoMessageList(allMessages);
   });
-}
+};
 
 listAllMessages();
 
@@ -33,7 +33,7 @@ const insertIntoUserList = (nickname) => {
   const userList = document.getElementById('users');
   const user = document.createElement('li');
 
-  user.setAttribute(dataTestId, 'online-user');
+  user.setAttribute('dataTestId', 'online-user');
   user.innerText = nickname;
   userList.appendChild(user);
 };
@@ -51,50 +51,50 @@ socket.on('getNickname', (nickname) => {
 socket.on('newLogin', (nickname) => {
   insertIntoUserList(nickname);
   const userNickname = onlineUserList.innerText;
-  socket.emit('newLogin', userNickname)
-})
+  socket.emit('newLogin', userNickname);
+});
 
 const isUserInUserList = (nickname) => {
   const allUsers = getChildrenFromUserList();
   allUsers.forEach((user) => {
     if (user.innerText === nickname) return true;
-  })
+  });
   return false;
-}
+};
 
 socket.on('addNewLogin', (nickname) => {
-  if(!isUserInUserList(nickname)) insertIntoUserList(nickname);
-})
+  if (!isUserInUserList(nickname)) insertIntoUserList(nickname);
+});
 
 // ====================================================================================================
 
-const formUsername = document.getElementById('form-username');
-const inputUsername = document.getElementById('input-username');
+// const formUsername = document.getElementById('form-username');
+// const inputUsername = document.getElementById('input-username');
 
-let nickname = randomName;
+// let nickname = randomName;
 
-formUsername.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (inputUsername.value) {
-    nickname = inputUsername.value;
-    // const usersItems = document.getElementsByClassName('online-user');
-    const userId = socket.id;
-    socket.emit('changeUserName', { id: userId, nickname });
-    inputUsername.value = '';
-    listAllUsersOnline();
-  }
-});
+// formUsername.addEventListener('submit', (e) => {
+//   e.preventDefault();
+//   if (inputUsername.value) {
+//     nickname = inputUsername.value;
+//     // const usersItems = document.getElementsByClassName('online-user');
+//     const userId = socket.id;
+//     socket.emit('changeUserName', { id: userId, nickname });
+//     inputUsername.value = '';
+//     listAllUsersOnline();
+//   }
+// });
 
 // ================================== Create User =====================================================
 
 // ..source: https://www.geeksforgeeks.org/how-to-detect-browser-or-tab-closing-in-javascript/
-window.addEventListener('beforeunload', (e) => {
-    e.preventDefault();
-    const userId = socket.id;
-    socket.emit('onCloseChat', userId);
-    e.returnValue = '';
-    listAllUsersOnline();
-});
+// window.addEventListener('beforeunload', (e) => {
+//     e.preventDefault();
+//     const userId = socket.id;
+//     socket.emit('onCloseChat', userId);
+//     e.returnValue = '';
+//     listAllUsersOnline();
+// });
 
 const form = document.getElementById('form');
 const input = document.getElementById('input');
@@ -102,8 +102,8 @@ const input = document.getElementById('input');
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (input.value) {
-    const chatMessage = input.value;
-    socket.emit('message', { nickname, chatMessage });
+    // const chatMessage = input.value;
+    // socket.emit('message', { nickname, chatMessage });
     input.value = '';
   }
 });
@@ -111,11 +111,11 @@ form.addEventListener('submit', (e) => {
 // ..source: https://stackoverflow.com/questions/18648500/add-id-class-to-objects-from-createelement-method
 const messagesHistory = [];
 
-socket.on('message', (msg) =>  {
+socket.on('message', (msg) => {
   const messages = document.getElementById('messages');
   const item = document.createElement('li');
   item.textContent = msg;
-  messagesHistory.push(msg)
+  messagesHistory.push(msg);
   item.setAttribute('data-testid', 'message');
   sessionStorage.setItem('messages', messagesHistory);
   messages.appendChild(item);
