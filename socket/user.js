@@ -10,13 +10,6 @@ const generateNickname = () => {
   return randomName;
 };
 
-let allUsers = [];
-
-const deleteUser = (userId, io) => {
-  allUsers = allUsers.filter(((user) => user.id !== userId));
-  io.emit('getAllUsers', allUsers);
-};
-
 module.exports = (io) =>
   io.on('connection', async (socket) => {
     let nickname = generateNickname();
@@ -34,5 +27,7 @@ module.exports = (io) =>
       nickname = userData;
     });
 
-    socket.on('onCloseChat', (userId) => deleteUser(userId, io));
-});
+    socket.on('disconnet', () => {
+      io.emit('removeUserNickname', nickname);
+    });
+  });

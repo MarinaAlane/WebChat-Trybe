@@ -4,9 +4,21 @@ const onlineUserList = document.getElementById('users');
 
 // ================================== User Form manipulation ===========================================
 
+const nicknameBtn = document.getElementById('nickname-button');
+
+nicknameBtn.addEventListener('click', () => {
+  const getNicknameFromInput = document.getElementById('nickname-box');
+  const nickname = getNicknameFromInput.value;
+  onlineUserList.innerText = nickname;
+
+  sessionStorage.setItem('nickname', nickname);
+  socket.emit('changeUserName', nickname);
+  getNicknameFromInput.value = '';
+});
+
 // ====================================================================================================
 
-// ================================== Create User =====================================================
+// =========================================== Create User ============================================
 
 const getChildrenFromUserList = () => {
   const userList = document.getElementById('users');
@@ -52,23 +64,6 @@ socket.on('addNewLogin', (nickname) => {
 
 // ====================================================================================================
 
-// const formUsername = document.getElementById('form-username');
-// const inputUsername = document.getElementById('input-username');
-
-// let nickname = randomName;
-
-// formUsername.addEventListener('submit', (e) => {
-//   e.preventDefault();
-//   if (inputUsername.value) {
-//     nickname = inputUsername.value;
-//     // const usersItems = document.getElementsByClassName('online-user');
-//     const userId = socket.id;
-//     socket.emit('changeUserName', { id: userId, nickname });
-//     inputUsername.value = '';
-//     listAllUsersOnline();
-//   }
-// });
-
 // ================================== update User =====================================================
 
 socket.on('changeUserName', ({ oldNickname, newNickname }) => {
@@ -83,11 +78,19 @@ socket.on('changeUserName', ({ oldNickname, newNickname }) => {
 
 // ====================================================================================================
 
+// ================================== remove User =====================================================
+
 // ..source: https://www.geeksforgeeks.org/how-to-detect-browser-or-tab-closing-in-javascript/
-// window.addEventListener('beforeunload', (e) => {
-//     e.preventDefault();
-//     const userId = socket.id;
-//     socket.emit('onCloseChat', userId);
-//     e.returnValue = '';
-//     listAllUsersOnline();
-// });
+
+socket.on('removeUserNickname', (nickname) => {
+  const allUsers = getChildrenFromUserList();
+
+  for (let index = 0; index < allUsers.length; index += 1) {
+    if (allUsers[index].innerText === nickname) {
+      allUsers[index].remove();
+      break;
+    }
+  }
+});
+
+// ====================================================================================================
