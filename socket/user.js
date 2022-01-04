@@ -10,13 +10,6 @@ const generateNickname = () => {
   return randomName;
 };
 
-let allUsers = [];
-
-const listAllUsers = (socket, io, nickname) => {
-  allUsers.push({ id: socket.id, nickname });
-  io.emit('getAllUsers', allUsers);
-};
-
 const changeUserName = (userData, io) => {
   allUsers.forEach((elem) => {
     if (elem.id === userData.id) {
