@@ -75,7 +75,7 @@
 
       listAllMessages();
 
-      const userList = document.getElementById('users');
+      // const userList = document.getElementById('users');
 
       const insertIntoUserList = (users) => {
         users.forEach(({nickname}) => {
@@ -83,6 +83,7 @@
           userName.textContent = nickname;
           userName.setAttribute('data-testid', 'online-user');
           // userName.setAttribute('class', 'online-user');
+          const userList = document.getElementById('users');
           userList.appendChild(userName);
           window.scrollTo(0, document.body.scrollHeight);
         })
@@ -91,6 +92,7 @@
       const listAllUsersOnline = () => {
         socket.on('getAllUsers', (allUsers) => {
           const userId = socket.id;
+          const userList = document.getElementById('users');
           userList.innerHTML = '';
           const infoUser = allUsers.filter(({id}) => id === userId);
           const infoWithoutUser = allUsers.filter(({id}) => id !== userId);
