@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
   // onlineUsers = onlineUsers.filter((user) => user.id !== socket.id);
     
   socket.on('disconnect', () => {
-    console.log('usuario desconetou')
+    console.log('usuario desconetou');
     onlineUsers = onlineUsers.filter((user) => user.id !== socket.id);
     console.log(onlineUsers);
     io.emit('user', onlineUsers);
