@@ -1,16 +1,18 @@
 const express = require('express');
-// const path = require('path');
-const moment = require('moment');
 const cors = require('cors');
+const path = require('path');
+const moment = require('moment');
+const axios = require('axios');
+require('dotenv').config();
+
+const port = process.env.PORT || 3000;
 
 const app = express();
 const http = require('http').createServer(app);
 
-// app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
 app.use(express.json());
 
-const users = [];
+app.use(cors());
 
 const io = require('socket.io')(http, {
   cors: {
@@ -19,26 +21,54 @@ const io = require('socket.io')(http, {
   },
 });
 
-io.on('connection', (socket) => {
-  console.log('new connection');
-  const idUser = socket.id.substring(0, 16);
-  users.push(idUser);
-  socket.broadcast.emit('id_User', idUser);
-  socket.emit('connect_user', users);
-  
-  socket.on('message', ({ chatMessage, nickname }) => {
-    console.log(chatMessage, nickname);
-    const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
+const fetchApi = require('./src/controller/chatController');
+
+app.use('/', fetchApi);
+
+let user = [];
+
+const createNewUser = (chatMessage, nickname) => {
+  const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
+    
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
+
+    axios.post('http://localhost:3000/chat', {
+      message: chatMessage,
+      nickname,
+      timestamp: date,
+    });
+};
+
+io.on('connection', (socket) => {
+  console.log('connection');
+  let idSocket = socket.id.substring(0, 16);
+  user.push(idSocket);
+
+  socket.broadcast.emit('id', idSocket);
+
+  socket.emit('connection_NewUSer', user);
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    createNewUser(chatMessage, nickname);
+  });
+
+  socket.on('alter_user', ({ newUser, oldUser }) => {
+    idSocket = newUser;
+    user = user.map((users) => (users === oldUser ? newUser : users));
+    // Tales me ajudou nesse erro!
+    socket.broadcast.emit('update_user', { newUser, oldUser });
+  });
+
+  socket.on('disconnect', () => {
+    user = user.filter((users) => users !== idSocket);
+    socket.broadcast.emit('user_disconnect', idSocket);
   });
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/public/index.html`);
+  res.status(200).sendFile(path.join(__dirname, '/src/view/index.html'));
 });
 
-const port = 3000;
-
-http.listen(3000, () => {
-  console.log(`listen port ${port}`);
+http.listen(port, () => {
+  console.log('Escutando na port %s', port);
 });

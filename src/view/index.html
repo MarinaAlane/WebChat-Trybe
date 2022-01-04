@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webchat</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <form name="user_form_name" id="user_form">
+          <input name="user" data-testid="nickname-box" id="user" type="text" />
+          <button data-testid="nickname-button" type="submit">Definir</button>
+        </form>
+
+        <div id="messages"></div>
+        <div class="user"></div>
+      </div>
+      <div class="message"></div>
+    </div>
+    <form name="message_form_name" id="message_form">
+      <input data-testid="message-box" name="msg" id="message" type="text" />
+      <button data-testid="send-button" type="submit">Enviar</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io('http://localhost:3000');
+
+      let userNickname = null;
+
+      const updateMessagesOnScreen = (messages) => {
+        const divMessages = document.querySelector('#messages');
+        const p = document.createElement('p');
+
+        if (!messages) return;
+
+        p.innerText = messages;
+        p.setAttribute('data-testid', 'message');
+        divMessages.appendChild(p);
+      };
+
+      const updateUserOnScreen = (user) => {
+        const divUser = document.querySelector('.user');
+
+        const p = document.createElement('p');
+        if (!user) return;
+
+        p.innerText = user;
+
+        p.id = user;
+        p.setAttribute('class', 'online-user');
+        p.setAttribute('data-testid', 'online-user');
+        divUser.appendChild(p);
+      };
+
+      socket.on('id', (id) => {
+        updateUserOnScreen(id);
+
+      })
+
+      const setUserId = () => {
+        socket.on('connection_NewUSer', (array) => {
+
+          const lastPosition = array[array.length - 1];
+          updateUserOnScreen(lastPosition);
+          sessionStorage.setItem('nickname', lastPosition);
+          for (let index = 0;  index < array.length - 1; index += 1) {
+            const user = array[index];
+            updateUserOnScreen(user);
+          }
+          })
+
+      };
+
+      socket.on('user_disconnect', (id) => {
+          const allUser = document.querySelectorAll('.online-user');
+
+          allUser.forEach((user) => {
+            if(user.innerText === id) {
+              user.remove();
+            }
+          });
+
+      });
+
+      socket.on('update_user', ({ newUser, oldUser }) => {
+        const allUser = document.querySelectorAll('.online-user');
+
+        allUser.forEach((user) => {
+          if(user.innerText === oldUser) {
+            user.innerText = newUser;
+          }
+        });
+      });
+
+
+      socket.on('message', (messages) => {
+        updateMessagesOnScreen(messages);
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('#message_form');
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const message = document.forms.message_form_name.msg.value;
+
+          socket.emit('message', { chatMessage: message, nickname: sessionStorage.nickname  });
+          document.forms.message_form_name.msg.value = '';
+        });
+
+        const userForm = document.querySelector('#user_form');
+
+        userForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fistItem = document.querySelector('.online-user');
+          //Rodolfo, Tales e Gabriel da turma 11, me ajudaram na complexidade dessa função;
+          const oldUser = sessionStorage.nickname;
+          const newUser = document.forms.user_form_name.user.value;
+          fistItem.innerText= newUser;
+          socket.emit('alter_user', { newUser, oldUser });
+          sessionStorage.setItem('nickname', newUser);
+        });
+      });
+      const fetchApi = async () => {
+          const fetchAction = await fetch('http://localhost:3000/chat');
+          const response = await fetchAction.json();
+          response.forEach(({ message, nickname, timestamp }) => {
+            const loadMessage = `${timestamp} - ${nickname}: ${message}`;
+            updateMessagesOnScreen(loadMessage)
+          });
+     }
+     fetchApi()
+      window.onload = () => {
+        setUserId();
+      };
+    </script>
+  </body>
+</html>
