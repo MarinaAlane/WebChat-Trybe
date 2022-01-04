@@ -77,6 +77,7 @@
       display: flex;
       width: 55vw;
       height: 100%;
+      padding: 10px 25px;
       flex-direction: column;
       justify-content: center;
       border: 3px solid rgb(65 , 25 , 127);
@@ -92,16 +93,32 @@
       cursor: pointer;
     }
 
-    .message {
+    .button-send:hover {
+      background-color: rgb(33 , 134 , 97);
+      border: rgb(47 , 193 , 140);
+    }
+
+    .footer-message {
       display: flex;
-      background-color: rgb(38, 39, 43);
-      font-size: 1.2rem;
+      position: absolute;
+      bottom: 0;
+      font-size: 16px;
       color: white;
-      padding: 15px 0;
+      padding: 0 10px 50px 100px;
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      margin-top: 30px;
+      width: 90vw;
+    }
+
+    .input-send-massage {
+      width: 100%;
+      height: 30px;
+      padding: 10px 32px;
+      font-size: 16px;
+      border: none;
+      border-bottom: 2px solid rgb(0 , 109 , 251);
+      outline: none;
     }
 
   </style>
@@ -142,8 +159,9 @@
 
   </div>
 
-  <div class="message">
+  <div class="footer-message">
     <input 
+      class="input-send-massage"
       type="text" 
       name="message" 
       id="" 
