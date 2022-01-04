@@ -1,4 +1,4 @@
-const socket = io();
+const socket = window.io();
 
 const messageList = document.getElementById('messages');
 const onlineUserList = document.getElementById('users');
