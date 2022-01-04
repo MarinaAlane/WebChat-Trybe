@@ -1,0 +1,56 @@
+<!-- ..Source: https://socket.io/get-started/chat -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Chat</title>
+  <style>
+    body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>Hi, <span id="online-user"></span></h2>
+    <section class="user-info-input">
+      <input
+        type="text"
+        id="username-input"
+        placeholder="Insert new username"
+        data-testid="nickname-box"
+      >
+      <button
+        type="button"
+        id="save-btn"
+        data-testid="nickname-button"
+      >
+        Save
+      </button>
+    </section>
+    <section class="users-container">
+      <ul id="users-list"></ul>
+    </section>
+    <section class="messags-container">
+      <ul id="messages-list"></ul>
+    </section>
+    <section class="message-input">
+      <input
+        type="text"
+        id="message-input"
+        placeholder="Type your message"
+        data-testid="message-box"
+      >
+      <button
+        type="button"
+        id="send-btn"
+        data-testid="send-button"
+      >
+        Send message
+      </button>
+    </section>
+  </main>
+  <!-- ..source: https://app.betrybe.com/course/back-end/sockets/sockets-socketio/7eba74a2-260a-4a4d-954e-14d8cc7a9d92/conteudo/8be008a0-ad01-4db8-b58e-965207fd3e30/refatorando/59793ec2-4156-46e5-a9ba-6892523e44cc?use_case=side_bar -->
+  <script src="./socket.io/socket.io.js"></script>
+  <!-- ..source: https://github.com/tryber/sd-011-project-trybewarts/blob/JulioCesar-trybewarts-project/index.html -->
+  <script src="script/chat.js"></script>
+</body>
+</html>

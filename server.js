@@ -1,35 +1,30 @@
-// ..source: https://socket.io/get-started/chat
-
+require('dotenv').config();
 const express = require('express');
-const http = require('http');
-const path = require('path');
-const { Server } = require('socket.io');
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-const messageController = require('./controller/message');
+const http = require('http').createServer(app);
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.get('/', async (_req, res) => {
-  const allMessages = await messageController.getAll();
-  res.render(`${__dirname}/views/index`, { allMessages });
-});
-
-io.on('connection', (socket) => {
-  socket.on('message', async (msg) => {
-    const message = await messageController.createMessage(msg);
-    io.emit('message', message);
-  });
-  socket.on('connectUser', (msg) => {
-    io.emit('connectUser', msg);
-  });
-});
+app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
-  console.log(`listening on ${PORT}`);
+// ..Source: https://socket.io/docs/v4/handling-cors/
+const io = require('socket.io')(http, {
+  cors: {
+    origin: `http://localhost:${PORT}`,
+    methods: ['GET', 'POST'],
+  },
 });
+
+app.use(express.static(`${__dirname}/views`));
+
+// ..Source: https://app.betrybe.com/course/back-end/sockets/sockets-socketio/7eba74a2-260a-4a4d-954e-14d8cc7a9d92/conteudo/8be008a0-ad01-4db8-b58e-965207fd3e30/refatorando/59793ec2-4156-46e5-a9ba-6892523e44cc?use_case=side_bar
+require('./sockets/chat.js')(io);
+require('./sockets/users.js')(io);
+
+// ..Source: https://socket.io/get-started/chat
+app.get('/', (_req, res) => {
+  res.sendFile(`${__dirname}/views/chat.html`);
+});
+
+http.listen(PORT, () => console.log(`Server started on ${PORT}`));
