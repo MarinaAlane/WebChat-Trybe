@@ -32,7 +32,7 @@ app.engine('html', require('ejs').renderFile);
 
 app.set('view engine', 'ejs');
 
-//let messages = [];
+// let messages = [];
 
 io.on('connection', (socket) => {
   socket.on('disconnect', () => {
