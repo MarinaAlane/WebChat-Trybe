@@ -19,7 +19,7 @@ const inputMessage = document.querySelector('.inputMessage');
 console.log(inputMessage.value);
 btnMess.addEventListener('click', (e) => {
     e.preventDefault();
-  if (userNew.length === 0){
+  if (userNew.length === 0) {
     userNick = socket.id.slice(0, 16);
     sessionStorage.setItem('User', userNick);
     socket.emit('User', userNick); // Não Implementado
