@@ -16,7 +16,7 @@ const io = require('socket.io')(http, {
   },
 });
 
-require('./sockets/messageSockets')(io);
+require('./sockets/sockets')(io);
 
 const route2Root = require('./routes');
 

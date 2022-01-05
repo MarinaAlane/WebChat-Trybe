@@ -3,6 +3,8 @@ const Moment = require('moment');
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
+    // Code from test req02 => expect(givenNickname[0]).toMatch(/^[\w'-]{16}$/);
+    socket.emit('randomName', socket.id.slice(-16));
     // Code from test req01 => client1.emit('message', { chatMessage, nickname });
     socket.on('message', ({ chatMessage, nickname }) => {
       const moment = Moment();
