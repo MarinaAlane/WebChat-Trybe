@@ -1,15 +1,24 @@
 const express = require('express');
-const http = require('http');
 const path = require('path');
 
 const app = express();
-const server = http.createServer(app);
+const http = require('http').createServer(app);
+
 const PORT = 3000;
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
 });
 
-server.listen(PORT, () => console.log(`App listening on port ${PORT}!`));
+app.use(express.static(path.join(__dirname, '/public')));
+
+require('./sockets/chat')(io);
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/index.html'));
+});
+
+http.listen(PORT, () => console.log(`App listening on port ${PORT}!`));

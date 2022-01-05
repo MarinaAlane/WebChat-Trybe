@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css" />
   <title>Webchat</title>
 
   <style>
@@ -14,6 +13,7 @@
       font-family: "Roboto", sans-serif;
       box-sizing: border-box;
       scroll-behavior: smooth;
+      font-family: lato;
     }
 
     .header {
@@ -73,6 +73,20 @@
       padding: 15px 0;
     }
 
+    .messages  {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .messages >li {
+      padding: 0.5rem 1rem;
+    }
+
+    .messages >li:nth-child(odd) {
+      background: #efefef;
+    }
+
     .chat {
       display: flex;
       width: 55vw;
@@ -98,27 +112,26 @@
       border: rgb(47 , 193 , 140);
     }
 
-    .footer-message {
-      display: flex;
-      position: absolute;
-      bottom: 0;
-      font-size: 16px;
-      color: white;
-      padding: 0 10px 50px 100px;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      width: 90vw;
+    .input-send-massage {
+      border: none;
+      padding: 0 1rem;
+      flex-grow: 1;
+      border-radius: 2rem;
+      margin: 0.25rem;
+      font-size: 18px;
+      outline: none;
     }
 
-    .input-send-massage {
-      width: 100%;
-      height: 30px;
-      padding: 10px 32px;
-      font-size: 16px;
-      border: none;
-      border-bottom: 2px solid rgb(0 , 109 , 251);
-      outline: none;
+    .form-chat {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      height: 3rem;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+      background: rgb(0 , 109 , 251)
     }
 
   </style>
@@ -132,7 +145,7 @@
 
     <section class="users">
 
-      <div class="sign-in">
+      <form id='form-user' class="sign-in">
         <input 
           type="text" 
           name="name" 
@@ -141,7 +154,7 @@
           placeholder="Insira seu nickname aqui"
         >
         <button class="button-nickname">salvar</button>
-      </div>
+      </form>
 
       <div class="users-list">
         <h1> Usuários</h1>
@@ -150,25 +163,24 @@
     </section>
 
     <section class="chat">
-      <h1>chat</h1>
-      <h1>chat</h1>
-      <h1>chat</h1>
-      <h1>chat</h1>
-      <h1>chat</h1>
+      <ul class="messages" id="messages"></ul>
     </section>
 
   </div>
 
-  <div class="footer-message">
+  <form class="form-chat" id="form-messages">
     <input 
       class="input-send-massage"
       type="text" 
       name="message" 
-      id="" 
+      id="messageInput"
       placeholder="Digite uma nova mensagem aqui"
     >
     <button class="button-send">Enviar</button>
-  </div>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src='./js/chat.js'></script>
 
 </body>
 </html>
