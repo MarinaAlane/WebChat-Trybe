@@ -4,9 +4,59 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
   <title>Webchat</title>
 </head>
 <body>
-  
+  <p id="nickname" data-testid="online-user"></p>
+  <label for="nickname-Box">Nickname</label>
+  <input type="text" name="nickname-box" id="nickname-box" data-testid="nickname-box">
+  <button id="nickname-button" data-testid="nickname-button">Salvar</button>
+  <ul id="message-list">
+  </ul>
+  <label for="message-box">Message</label>
+  <input type="text" name="message-box" id="message-box" data-testid="message-box">
+  <button id="send-button" data-testid="send-button">Enviar</button>
+  <script>
+    const socket = io('http://localhost:3000')
+
+    socket.on('randomNickname', (randomNickname) => {
+      const nicknameElement = document.getElementById('nickname');
+      nicknameElement.innerText = randomNickname;
+      sessionStorage.setItem('nickname', randomNickname);
+    })
+    
+    const sendButton = document.getElementById('send-button');
+    sendButton.addEventListener('click', () => {
+      const nickname = sessionStorage.getItem('nickname');
+      const messageBox = document.getElementById('message-box');
+      socket.emit('message', { nickname, chatMessage: messageBox.value });
+      messageBox.value = '';
+      messageBox.focus();
+    });
+
+    socket.on('message', (message) => {
+      const messageList = document.getElementById('message-list');
+      const messageListItem = document.createElement('li');
+      messageListItem.dataset.testid = 'message';
+      messageListItem.innerText = message;
+      messageList.append(messageListItem);
+    })
+    
+    const nicknameButton = document.getElementById('nickname-button');
+    nicknameButton.addEventListener('click', () => {
+      const nicknameBox = document.getElementById('nickname-box');
+      nickname = nicknameBox.value;
+      socket.emit('updateNickname', nickname);
+      sessionStorage.setItem('nickname', nickname);
+
+      const nicknameElement = document.getElementById('nickname');
+      nicknameElement.innerText = nickname;
+
+      nicknameBox.value = '';
+      nicknameBox.focus();
+    });
+
+  </script>
 </body>
 </html>
