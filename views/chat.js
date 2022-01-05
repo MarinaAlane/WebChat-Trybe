@@ -17,6 +17,7 @@ const socket = window.io();
 
 const saveButton = document.querySelector('#saveButton');
 const sendButton = document.querySelector('#sendButton');
+const randomNickName = randomNickNameGenerator();
 
 sendButton.addEventListener('click', () => {
   const chatMessage = document.querySelector('#chatMessage').value;
@@ -62,20 +63,34 @@ const createMessage = (message) => {
 
 socket.on('message', (mensagem) => createMessage(mensagem));
 socket.on('newUser', (newUser) => createUser(newUser));
+
 socket.on('userList', (users) => {
   const usersUl = document.querySelector('#users');
   while (usersUl.hasChildNodes()) {
     usersUl.removeChild(usersUl.lastChild);
 }
-  users.forEach((element) => {
+  // const index = users.indexOf(randomNickName);
+  let arrAux = users;
+  let firstUser = {};
+  // console.log(arrAux, randomNickName);
+  arrAux.forEach((elem) => {
+    if (elem.user === randomNickName) firstUser = elem;
+  });
+  arrAux = arrAux.filter((el) => randomNickName !== el.user);
+  arrAux = [firstUser, ...arrAux];
+  arrAux.forEach((element) => {
     createUser(element);
   });
 });
 socket.on('updateUser', (userData) => updateUser(userData));
 
+socket.on('disconnected', (id) => {
+  const userElement = document.querySelector(`#${id}`);
+  userElement.remove();
+});
+
 window.onload = () => {
-  const nickName = randomNickNameGenerator();
-  sessionStorage.setItem('nickName', nickName);
-  socket.emit('newUser', nickName);
+  sessionStorage.setItem('nickName', randomNickName);
+  socket.emit('newUser', randomNickName);
   socket.emit('userList');
 };
