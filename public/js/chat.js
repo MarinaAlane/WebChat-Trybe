@@ -103,7 +103,7 @@ const userIsListed = (username) => {
   socket.on('message', (data) => {
     const messagesList = document.getElementById('messages-list');
     const li = document.createElement('li');
-    li.setAttribute('data-testid', 'message');
+    li.setAttribute(dataTestId, 'message');
     li.innerText = data;
   
     messagesList.appendChild(li);
