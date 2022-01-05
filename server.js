@@ -18,5 +18,5 @@ require('./sockets/chat')(io);
 app.use(express.static(`${__dirname}/`));
 
 http.listen(3000, () => {
-  console.log('Servidor on na porta 3000');
+  console.log('Servidor on-line na porta 3000');
 });
