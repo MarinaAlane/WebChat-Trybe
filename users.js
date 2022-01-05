@@ -27,3 +27,5 @@ module.exports = {
     getUsers,
     deleteUser,
 };
+
+// git push para vaildaçao do do recesso da trybe
