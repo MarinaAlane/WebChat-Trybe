@@ -28,10 +28,10 @@ nicknameBtn.addEventListener('click', (e) => {
 sendMsgBtn.addEventListener('click', (e) => {
   e.preventDefault();
   
-  if (!nickname) {
-    warningNickname.innerText = 'Fill your nickname';
-    return false;
-  }
+  // if (!nickname) {
+  //   warningNickname.innerText = 'Fill your nickname';
+  //   return false;
+  // }
   
   socket.emit('message', {
     nickname,
