@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paulo Freire - Websocket project</title>
+</head>
+<body>
+    <main>
+          <input type="text" name="username" id="username" placeholder="USERNAME HERE">
+          <button type="button" id="user">User</button>
+          <ul id="logged-users"></ul>
+          <ul id="sent-messages"></ul>
+          <input type="text" name="message" id="message" placeholder="MESSAGE HERE">
+          <button type="button" id="send">Message</button>
+      </main>
+
+      <script src="./socket.io/socket.io.js"></script>
+      <script>
+        const PORT = 3000 || process.env.PORT;
+        const socket = io(`http://localhost:${PORT}`);
+        const saveButton = document.getElementById('user');
+        saveButton.addEventListener('click', () => {
+          const saveName = document.getElementById('username');
+          sessionStorage.setItem('username', saveName.value);
+          saveName.value = '';
+        });
+        const sendButton = document.getElementById('send');
+        sendButton.addEventListener('click', () => {
+          const userName = sessionStorage.getItem('username') || 'ANONYMOUS';
+          const Message = document.getElementById('message');
+          socket.emit('message', { chatMessage: Message.value, nickname: userName });
+          Message.value = '';
+          Message.focus();
+        });
+        socket.on('message', (data) => {
+            const messagesSent = document.getElementById('sent-messages');
+            const createLi = document.createElement('li');
+            createLi.append(data);
+            messagesSent.append(createLi);
+    });
+    socket.on('message', (data) => {
+      const messagesSent = document.getElementById('sent-messages');
+      const newLi = document.createElement('li');
+      newLi.append(data);
+      messagesSent.append(newLi);
+    });
+  </script>
+</body>
+</html> 
