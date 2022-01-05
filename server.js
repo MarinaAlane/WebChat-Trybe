@@ -16,21 +16,28 @@ const io = require('socket.io')(server, {
   },
 });
 
+const messages = require('./models/messages');
+
 app.use(cors());
 app.use(express.json());
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   const randomNickname = socket.id.slice(-16);
 
   socket.emit('randomNickname', randomNickname);
 
-  socket.on('message', ({ nickname, chatMessage }) => {
+  const previousMessages = await messages.getAllMessages();
+
+  socket.emit('previousMessages', previousMessages);
+
+  socket.on('message', async ({ nickname, chatMessage }) => {
     const moment = Moment();
     const formatedDate = moment.format('DD-MM-yyyy hh:mm:ss A');
-  
+    await messages.insertMessage({ nickname, message: chatMessage, timestamp: formatedDate });
+
     const formatedMessage = `${formatedDate} - ${nickname}: ${chatMessage}`;
   
     io.emit('message', formatedMessage);

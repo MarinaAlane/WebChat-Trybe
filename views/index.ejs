@@ -57,6 +57,17 @@
       nicknameBox.focus();
     });
 
+    socket.on('previousMessages', (previousMessages) => {
+      const messageList = document.getElementById('message-list');
+
+      previousMessages.map(({ nickname, message, timestamp }) => {
+        const messageListItem = document.createElement('li');
+        messageListItem.dataset.testid = 'message';
+        messageListItem.innerText = `${timestamp} - ${nickname}: ${message}`;
+        messageList.append(messageListItem);
+      })
+    })
+
   </script>
 </body>
 </html>
