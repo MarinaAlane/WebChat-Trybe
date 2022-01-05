@@ -1,5 +1,5 @@
 const { getMessagesHistory } = require('../models/chatModel');
-
+// atualizaçao
 const getMessages = async (req, res) => {
 try {
   const history = await getMessagesHistory();
