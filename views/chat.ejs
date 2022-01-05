@@ -8,7 +8,13 @@
     <button data-testid="nickname-button" id="saveButton">Salvar</button>
     <input data-testid="message-box" id="chatMessage" placeholder="Digite uma nova mensagem aqui"></input>
     <button data-testid="send-button" id="sendButton">Enviar</button>
-
+    <div>
+      <% messages.forEach((element) => {  %>
+        <p data-testid="message">
+          <%=`${element.timestamp} - ${element.nickname}: ${element.message}`%>
+        </p>
+      <%})%>
+    </div>
     <ul id='messages'></ul>
     <aside>
       <ul id='users'></ul>
