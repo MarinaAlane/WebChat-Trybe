@@ -8,29 +8,43 @@
 </head>
 <body>
   <ul id="messages"></ul>
-  <form id="form">
-    <input id="input">
+  <form id="formChat">
+    <input id="inputChat">
     <button>Enviar</button>
+  </form>
+  <form id="formUser">
+    <input id="inputUser">
+    <button>Alterar nome</button>
   </form>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
 
-    const form = document.querySelector('#form');
-    const input = document.querySelector('#input');
+    const formChat = document.querySelector('#formChat');
+    const inputChat = document.querySelector('#inputChat');
     const messages = document.querySelector('#messages');
+    const formUser = document.querySelector('#formUser');
+    const inputUser = document.querySelector('#inputUser');
+    let nick = '';
 
-    form.addEventListener('submit', (e) => {
+    formUser.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (input.value) {
-        socket.emit('chatmessage', input.value);
-        input.value = '';
+      if (inputUser.value) {
+        nick = inputUser.value
       }
     });
 
-    socket.on('chatmessage', (chatMessage) => {
+    formChat.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (inputChat.value) {
+        socket.emit('message', { chatMessage: inputChat.value, nickname: nick });
+        inputChat.value = '';
+      }
+    });
+
+    socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
-      newMessage.textContent = chatMessage;
+      newMessage.textContent = msg;
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
