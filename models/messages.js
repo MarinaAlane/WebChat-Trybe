@@ -1,4 +1,4 @@
-const connection = require('./connection');
+const connection = require('../connection/connection');
 
 const create = async (message) => connection()
     .then((db) => db.collection('messages').insertOne(message));
