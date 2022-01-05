@@ -8,4 +8,8 @@ module.exports = (io) => io.on('connection', (socket) => {
     await Chat.createNewMessage({ message: chatMessage, nickname, timestamp: currentDate });
     io.emit('message', `${currentDate} - ${nickname}: ${chatMessage}`);
   });
+  socket.on('load', async () => {
+    const history = await Chat.getAllMessages();
+    io.emit('loadHistory', history);
+  });
 });

@@ -45,16 +45,28 @@ formMessage.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  console.log(message);
-  const messagesUl = document.getElementById('messages');
+  const messagesUl = document.getElementById('chat');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = message;
   messagesUl.appendChild(li);
 };
 
+const loadMessages = (history) => {
+  history.forEach(({ message, nickname, timestamp }) => {
+    const newMessage = `${timestamp} - ${nickname}: ${message}`;
+    createMessage(newMessage);
+  });
+};
+
+const loadHistoryMessagesFromDB = () => {
+  socket.emit('load');
+  socket.on('loadHistory', (history) => loadMessages(history));
+};
+
 socket.on('message', (message) => createMessage(message));
 
 window.onload = () => {
   setRandomNickname();
+  loadHistoryMessagesFromDB();
 };

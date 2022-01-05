@@ -1,3 +1,5 @@
 module.exports = (io) => io.on('connection', (socket) => {
-  console.log(socket);
+  socket.on('user', async () => {
+    io.emit('user', console.log('aqui'));
+  });
 });
