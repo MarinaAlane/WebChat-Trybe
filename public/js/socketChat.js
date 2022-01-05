@@ -1,3 +1,5 @@
+// const { delMsg } = require("../../models/msgsModel");
+
 const socket = window.io();
 
 const formMsg = document.querySelector('#form-messages');
@@ -86,7 +88,7 @@ const updateUserToList = ({ previewNickname, nickname }) => {
 };
 
 const removeUserList = (name) => {
-  console.log('remove before', name);
+  // console.log('remove before', name);
   const index = list.indexOf(name);
   list.splice(index, 1);
   renderAll();
@@ -94,6 +96,7 @@ const removeUserList = (name) => {
 
 const reqMessage = () => {
   socket.emit('serverAllMessage');
+  // delMsg();
 };
 
 const loadMessages = (messages) => {
