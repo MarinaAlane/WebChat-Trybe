@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Projeto WebChat com Socket.io</title>
+    <title>Socket.IO - trybe</title>
   </head>
   <body>
     <div>
       <ul id="online-users"></ul>
     </div>
     <form id="form-nickname" action="">
-      <input id="nickname-input" autocomplete="off"/>
-      <button>Salvar nome</button>
+      <input id="nicknameInput" data-testid="nickname-box" autocomplete="off" />
+      <button data-testid="nickname-button">Save Nickname</button>
     </form>
     <ul id="messages"></ul>
     <form id="form-messages" action="">
-      <input id="message-input" autocomplete="off" />
-      <button>Enviar mensagem</button>
+      <input id="messageInput" data-testid="message-box" autocomplete="off" /><button data-testid="send-button">Send Message</button>
     </form>
-    <script src=""></script>
-    <script src="./scripts/chat.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='./scripts/chat.js'></script>
   </body>
 </html>

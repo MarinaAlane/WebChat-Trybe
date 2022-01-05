@@ -1,14 +1,15 @@
 const socket = window.io();
 
-const formMessage = document.querySelector('#form-messages');
-const inputMessage = document.querySelector('#message-input');
-const formName = document.querySelector('#form-nickname');
-const inputName = document.querySelector('nickname-input');
+const formMessages = document.querySelector('#form-messages');
+const inputMessage = document.querySelector('#messageInput');
+const formNickname = document.querySelector('#form-nickname');
+const inputNickname = document.querySelector('#nicknameInput');
 const messagesUl = document.querySelector('#messages');
-const userList = document.querySelector('#online-users');
+const usersListUl = document.querySelector('#online-users');
 
-let userListClient = [];
+let usersListClient = [];
 
+// SESSION STORAGE FUNCTION
 const setNicknameIntoSessionStorage = (nickname) => sessionStorage.setItem('nickname', nickname);
 const getNicknameFromSessionStorage = () => sessionStorage.nickname || (socket.id).substr(4);
 const setInitialNicknameIntoSessionStorage = () => {
@@ -18,6 +19,7 @@ const setInitialNicknameIntoSessionStorage = () => {
   }
 };
 
+// HTML FUNCTIONS
 const createServerMessage = (message) => {
   const li = document.createElement('li');
   li.innerText = message;
@@ -35,59 +37,60 @@ const createUserLi = (nickname) => {
   const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
     li.innerText = nickname;
-    userList.appendChild(li);
+    usersListUl.appendChild(li);
 };
 
 const renderUsersList = () => {
-  userList.innerHTML = '';
+  usersListUl.innerHTML = '';
   const clientNickname = getNicknameFromSessionStorage();
   createUserLi(clientNickname);
-  userListClient.forEach((nickname) => {
+  usersListClient.forEach((nickname) => {
     if (clientNickname !== nickname) {
       createUserLi(nickname);
     }
   });
 };
 
+// NORMAL FUNCTIONS
 const sendUsersListToServer = () => {
-  socket.emit('usersListFromClient', userListClient);
+  socket.emit('usersListFromClient', usersListClient);
 };
 
 const addNewUserToList = (newUser) => {
-  userListClient.push(newUser);
+  usersListClient.push(newUser);
   renderUsersList();
   sendUsersListToServer();
 };
 
 const updateListWithAllUsers = (usersListFromServer) => {
-  if (usersListFromServer.length > userListClient.length) {
-    userListClient = usersListFromServer;
+  if (usersListFromServer.length > usersListClient.length) {
+    usersListClient = usersListFromServer;
     renderUsersList();
   }
 };
 
 const updateNicknameAndSendToServer = () => {
   const previusNickname = getNicknameFromSessionStorage();
-  const newNickname = inputName.value;
-  const nicknameIndex = userListClient.indexOf(previusNickname);
-  console.log(userListClient);
+  const newNickname = inputNickname.value;
+  const nicknameIndex = usersListClient.indexOf(previusNickname);
+  console.log(usersListClient);
   console.log(previusNickname);
-  userListClient[nicknameIndex] = newNickname;
+  usersListClient[nicknameIndex] = newNickname;
   setNicknameIntoSessionStorage(newNickname);
   socket.emit('updateNickname', newNickname);
-  inputName.value = '';
+  inputNickname.value = '';
   renderUsersList();
 };
 
 const updateNicknameFromServer = ({ previusNickname, newNickname }) => {
-  const nicknameIndex = userListClient.indexOf(previusNickname);
-  userListClient[nicknameIndex] = newNickname;
+  const nicknameIndex = usersListClient.indexOf(previusNickname);
+  usersListClient[nicknameIndex] = newNickname;
   renderUsersList();
 };
 
 const removeNicknameFromServer = (nickname) => {
-  const nicknameIndex = userListClient.indexOf(nickname);
-  userListClient.splice(nicknameIndex, 1);
+  const nicknameIndex = usersListClient.indexOf(nickname);
+  usersListClient.splice(nicknameIndex, 1);
   renderUsersList();
 };
 
@@ -103,7 +106,8 @@ const loadDBMessages = (messages) => {
   });
 };
 
-formMessage.addEventListener('submit', (e) => {
+// LISTENNERS FUNCTIONS
+formMessages.addEventListener('submit', (e) => {
   e.preventDefault();
   const nickname = getNicknameFromSessionStorage();
   socket.emit('message', { chatMessage: inputMessage.value, nickname });
@@ -111,7 +115,7 @@ formMessage.addEventListener('submit', (e) => {
   return null;
 });
 
-formName.addEventListener('submit', (e) => {
+formNickname.addEventListener('submit', (e) => {
   e.preventDefault();
   updateNicknameAndSendToServer();
   return null;
