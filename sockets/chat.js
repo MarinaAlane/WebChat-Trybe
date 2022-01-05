@@ -23,14 +23,6 @@ const saveMessage = async (message, nickname) => {
   return data;
 };
 
-// const sendMessages = async (socket) => {
-//   const messages = await database.getAll();
-//   messages.forEach(({ message, nickname, timestamp }) => {
-//     const mes = `${timestamp} ${nickname}: ${message}`;
-//     socket.emit('message', mes);
-//   });
-// };
-
 module.exports = (io) => io.on('connection', async (socket) => {
   console.log(`Usuário conectado. Nick: ${socket.handshake.query.nick} `);
   users.push({ id: socket.id, nick: socket.handshake.query.nick });
