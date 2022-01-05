@@ -5,15 +5,20 @@ const inputMessage = document.getElementById('messageInput');
 
 formMessage.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('clientMessage', inputMessage.value);
+  const newMessage = {
+    chatMessage: inputMessage.value,
+    nickname: 'TesteNickName',
+  };
+  socket.emit('message', newMessage);
   inputMessage.value = ''; 
 });
 
 const createMessage = (message) => {
+  console.log(message);
   const messagesUl = document.getElementById('messages');
   const li = document.createElement('li');
   li.innerText = message;
   messagesUl.appendChild(li);
 };
 
-socket.on('serverMessage', (message) => createMessage(message));
+socket.on('message', (message) => createMessage(message));
