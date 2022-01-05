@@ -1,18 +1,16 @@
 module.exports = (io) => {
-  io.on('connection', (socket) => {
-
+  io.on('connection', async (socket) => {
     socket.emit('userID', socket.id);
 
-    socket.emit('youLogged', "You've join");
+    socket.emit('youLogged', 'You are in');
 
-    io.emit('userLogged', { 
+    socket.broadcast.emit('userLogged', { 
       userID: socket.id,
-      msg: `User ${socket.id} acabou de entrar`
+      msg: `User ${socket.id} just joined`,
     });
   
-    socket.on('message', clientMsg => {
-      io.emit('serverBroadcast', clientMsg.chatMessage);
-    })
-
+    socket.on('message', async (clientMsg) => {
+      io.emit('message', clientMsg.chatMessage);
+    });
   });
-}
+};

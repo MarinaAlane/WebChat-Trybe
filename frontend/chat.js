@@ -1,12 +1,12 @@
-const socket = window.io('http://localhost:3000/');
+const socket = window.io();
 const loginBtn = document.getElementById('loginBtn');
 const sendMsgBtn = document.getElementById('sendBtn');
-const warningNickname = document.getElementById('warningNickname');
+// const warningNickname = document.getElementById('warningNickname');
 const messageInput = document.querySelector('#messageInput');
-let userID;
+// let userID;
 let nickname;
 
-socket.on('userID', (id) => { userID = id; });
+// socket.on('userID', (id) => { userID = id; });
 
 const createLIitens = (text) => {
   const div = document.getElementsByClassName('messages-div')[0];
@@ -33,10 +33,10 @@ sendMsgBtn.addEventListener('click', (e) => {
   // dataAtual = dia + '-' + mes + '-' + ano;
   // horaAtual = data.toLocaleTimeString('pt-BR');
   
-  if (!nickname) {
-    warningNickname.innerText = 'Preencha um nickname antes';
-    return false;
-  } 
+  // if (!nickname) {
+  //   warningNickname.innerText = 'Preencha um nickname antes';
+  //   return false;
+  // } 
   
   socket.emit('message', {
     nickname,
@@ -52,10 +52,10 @@ socket.on('youLogged', (msg) => {
 });
 
 socket.on('userLogged', (data) => { // We can also use socket.broadcast.emit (in serverSide) instead.
-  if (data.userID === userID) return;
+  // if (data.userID === userID) return;
   createLIitens(data.msg);
 });
 
-socket.on('serverBroadcast', (msg) => {
+socket.on('message', (msg) => {
   createLIitens(msg);
 });

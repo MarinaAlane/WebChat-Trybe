@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/chat.css">
+  <title>Chat por Tópicos</title>
+</head>
+<body>
+  <div class="login-container">
+    <form class="login-form">
+      <input data-testid="nickname-box" id="nickname" type="text" placeholder="nickname" name="nickname" />
+      <button data-testid="nickname-button" id="loginBtn">Save</button>
+    </form>
+  </div>
+  <div id="chat-container">
+    <div class="messages-div"></div>
+    <form action="">
+      <input data-testid="message-box" id="messageInput" autocomplete="off" /><button data-testid="send-button" id="sendBtn">Send</button>
+      <p id="warningNickname"></p>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./chat.js"></script>
+</body>
+</html>
