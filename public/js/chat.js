@@ -100,9 +100,9 @@ function updateUserList(users) {
   li.setAttribute(DATA_TEST, 'online-user');
   li.innerText = nickName.innerText;
   userUl.insertBefore(li, userUl.firstChild);
-}
+} 
 
-/*
+/* 
 Função updateUserList - atualiza a lista para atender aos requisito 4
 - Primeiro ele usa a função clearUserList criada anteriormente para limpar os usuários 
   que estao na userUl
