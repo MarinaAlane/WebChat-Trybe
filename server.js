@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 require('./sockets')(io);
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'viwes')));
+app.use(express.static(path.join(__dirname, 'views')));
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
 
