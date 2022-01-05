@@ -11,6 +11,7 @@ const io = require('socket.io')(http, {
   } });
 
 require('./sockets/chat')(io);
+require('./sockets/userList')(io);
 
 const viewRoutes = require('./routes/viewRoutes');
 

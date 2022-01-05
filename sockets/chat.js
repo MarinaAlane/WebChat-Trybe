@@ -13,10 +13,4 @@ module.exports = (io) => {
       io.emit('message', `${date} ${nickname}: ${chatMessage}`);
     });
   });
-
-  io.on('connection', (socket) => {
-    socket.on('newUser', (user) => {
-      io.emit('newUser', user);
-    });
-  });
 };
