@@ -11,6 +11,9 @@ let nickname;
 const createLIitens = (text) => {
   const div = document.getElementsByClassName('messages-div')[0];
   const p = document.createElement('p');
+  const attr = document.createAttribute('data-testid');
+  attr.value = 'message';
+  p.setAttributeNode(attr);
   p.innerText = text;
   div.appendChild(p);
 };
