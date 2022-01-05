@@ -16,9 +16,8 @@ module.exports = (io) => {
 
     socket.emit('youLogged', 'You are in');
 
-    socket.broadcast.emit('userLogged', { 
-      userID: socket.id,
-      msg: `User ${socket.id} just joined`,
+    socket.on('userLogged', (nicknameRandom) => {
+      io.emit('userLogged', nicknameRandom);
     });
   
     socket.on('message', async (clientMsg) => {
