@@ -150,20 +150,22 @@
           type="text" 
           name="name" 
           class="input-nickname" 
-          id="" 
+          id="input-nickname" 
           placeholder="Insira seu nickname aqui"
+          data-testid="nickname-box"
         >
-        <button class="button-nickname">salvar</button>
+        <button class="button-nickname" data-testid="nickname-button">salvar</button>
       </form>
 
       <div class="users-list">
-        <h1> Usuários</h1>
+        <h2>Você: <span data-testid="online-user"></span></h2>
+        <h2> Usuários</h2>
       </div>
 
     </section>
 
     <section class="chat">
-      <ul class="messages" id="messages"></ul>
+      <ul class="messages" id="messages" data-testid="message"></ul>
     </section>
 
   </div>
@@ -175,8 +177,9 @@
       name="message" 
       id="messageInput"
       placeholder="Digite uma nova mensagem aqui"
+      data-testid="message-box"
     >
-    <button class="button-send">Enviar</button>
+    <button class="button-send" data-testid="send-button">Enviar</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>
