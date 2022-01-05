@@ -10,28 +10,24 @@
     <input 
       placeholder="Insira seu nickname" 
       data-testid="nickname-box" 
-      id="inputNickname" 
+      id="user" 
       class="inputNick"
       autocomplete="off" 
     />
     <button 
       class="btnNick" 
       data-testid="nickname-button" 
-      id="btnNickname"
+      id="save"
     >
       Salvar
     </button>
   </div>
   <div class="box">
     <div>
-      <ul id="user">Usuários</ul>
+      <ul id="users"></ul>
     </div>
     <div>
-      <ul id="messages">
-          <% allMessages.forEach(({nickname, timestamp, message}) => { %>
-          <li data-testid='message'><%=timestamp%> - <%=nickname%>: <%=message%></li>
-        <%})%>
-      </ul>
+      <ul id="messages"></ul>
     </div>
   </div>
   <br>
@@ -39,13 +35,13 @@
     <input 
       placeholder="Digite uma nova mensagem aqui" 
       data-testid="message-box" 
-      id="inputMessage" 
+      id="message" 
       class="inputMessage"
       autocomplete="off" 
     />
     <button 
       class="sendButton" 
-      id="btnMessage" 
+      id="send" 
       data-testid="send-button">
       Enviar
     </button>

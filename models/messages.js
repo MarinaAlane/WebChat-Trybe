@@ -1,19 +1,12 @@
-const connection = require('../connection/connection');
+const connection = require('./connection');
 
-const getAllMessages = async () => {
-  const connect = await connection();
-  const result = await connect.collection('messages')
-  .find({}, { projection: { _id: 0 } }).toArray();
-  return result;
-};
+const create = async (message) => connection()
+    .then((db) => db.collection('messages').insertOne(message));
 
-const createMessage = async (message) => {
-  const connect = await connection();
-  const result = await connect.collection('messages').insertOne(message);
-  return result.ops[0];
-};
+const find = async () => connection()
+    .then((db) => db.collection('messages').find().toArray());
 
 module.exports = {
-  getAllMessages,
-  createMessage,
+    create,
+    find,
 };
