@@ -5,37 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webchat - socket.io</title>
-  <link rel="stylesheet" href="./css/chat.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
 </head>
 <body>
-  <div style="display: flex;">
-    <div style="position: fixed; top: 0; left: 0; width: 200px;">
-      <div id="input-name">
-        <h3>Olá</h3>
-      </div>
-      <form id="nameInput" style="position: relative; z-index: 99;" action="">
-        <input data-testid="nickname-box" id="name-tag" style="width: 70%;" autocomplete="off" />
-        <button data-testid="nickname-button" style="padding: 0; z-index: 99; width: 20%; margin: 5px;">Send</button>
-      </form>
-    </div>
-    <div style="position: fixed; top: 70px; left: 0; width: 200px;">
-      <ul id="users"></ul>
-    </div>
-    <div id="div-message" style="width: calc(100% - 200px); right: 0; position: absolute;">
-      <ul class="messages" id="messages"></ul>
-    </div>
+  <div>
+    <ul id="online-users"></ul>
   </div>
-  <form id="form" action="">
-    <input data-testid="message-box" id="messageInput" autocomplete="off" />
-    <button data-testid="send-button">Send</button>
+  <form id="form-nickname" action="">
+    <input id="nicknameInput" data-testid="nickname-box" autocomplete="off" />
+    <button data-testid="nickname-button">send</button>
   </form>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
-    integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
-    crossorigin="anonymous"
-  ></script>
+  <div>
+    <ul id="messages"></ul>
+  </div>
+  <form id="form-messages" action="">
+    <input id="messageInput" data-testid="message-box" autocomplete="off" />
+    <button data-testid="send-button">send</button>
+  </form>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="./js/socket.js"></script>
+  <script src='./js/socketChat.js'></script>
 </body>
 </html>

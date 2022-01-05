@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 
 const app = express();
 const http = require('http').createServer(app);
@@ -16,11 +17,11 @@ const io = require('socket.io')(http, {
 
 app.use(express.json());
 app.use(cors());
-require('dotenv').config();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-require('./sockets/socket')(io);
+require('./sockets/socketChat')(io);
+require('./sockets/socketUser')(io);
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));

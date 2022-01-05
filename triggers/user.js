@@ -1,7 +1,9 @@
+const { createUser, getAll, delOneUser, oneById } = require('../models/usersModel');
+
 const users = [];
 
 // add user
-const userJoin = (id, username) => {
+const userJoin = async (id, username) => {
   // deleting user, if it exists, within array
   const index = users.findIndex((e) => e.id === id);
   if (index !== -1) {
@@ -19,8 +21,10 @@ const userJoin = (id, username) => {
     nickname: lowerCaseName,
   };
   users.push(user);
+  const oneUser = await createUser(user);
+  // console.log(oneUser);
   // return user summarized
-  return user;
+  return oneUser;
 };
 
 // const updateUser = (id, update) => {
@@ -42,11 +46,21 @@ const userJoin = (id, username) => {
 //   return users;
 // };
 
-const getAllUsers = () => users;
+const getAllUsers = async () => {
+  // users;
+  const all = await getAll();
+  return all;
+};
 
-const byId = (id) => users.find((e) => e.id === id);
+const byId = async (id) => {
+  const one = await oneById(id);
+  console.log('1', one);
+  return one;
+  // users.find((e) => e.id === id)
+};
 
-const removeOne = (id) => {
+const removeOne = async (id) => {
+  await delOneUser(id);
   const index = users.findIndex((e) => e.id === id);
 
   if (index !== -1) return users.splice(index, 1)[0];

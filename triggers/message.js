@@ -1,8 +1,8 @@
-// const { addMsg, getAll } = require('../models/msgsModel');
+const { addMsg, getAll, delMsg } = require('../models/msgsModel');
 
 const msgs = [];
 
-const format = ({ nickname, text }) => {
+const format = async ({ nickname, text }) => {
   const today = new Date().toLocaleString('pt-BR', { hour12: true });
   const one = {
     text,
@@ -10,12 +10,20 @@ const format = ({ nickname, text }) => {
     timestamp: today,
   };
   msgs.push(one);
-  return one;
+  const saveMsg = await addMsg(one);
+  // console.log('1', test);
+  return saveMsg;
 };
 
-const getAllMsg = () => msgs;
+const getAllMsg = async () => {
+  // msgs;
+  const all = await getAll();
+  // console.log('2', test2);
+  return all;
+};
 
-const deleteOneMsg = (id, nickname) => {
+const deleteOneMsg = async (id, nickname) => {
+  await delMsg(id, nickname);
   // console.log(id, nickname);
   let index1 = msgs.findIndex((e) => e.id === id);
   let index2 = msgs.findIndex((e) => e.nickname === nickname);
