@@ -39,12 +39,15 @@ io.on('connection', (socket) => {
     console.log('alguem saiu');
   });
   socket.on('message', (msg) => {
-  //  messages.push(msg);
+  // messages.push(msg);
     const time = moment().format('DD-MM-YYYY hh:mm:ss A');
     const formatedMessage = `${time} - ${msg.nickname}: ${msg.chatMessage}`;
     io.emit('serverMessage', formatedMessage);
   });
-  socket.broadcast.emit('serverMessage', ('fulano entrou'));
+  socket.broadcast.emit('serverMessage', (`${socket.id} entrou`));
+  socket.on('User', (User) => {
+    io.emit('User', User)
+  })
 });
 
 app.use('/', (req, res) => { 
@@ -54,3 +57,4 @@ app.use('/', (req, res) => {
 server.listen(PORT, () => {
   console.log(`Servidor na Porta ${PORT}`);
 });
+module.exports = io;
