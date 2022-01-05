@@ -46,8 +46,8 @@ io.on('connection', (socket) => {
   });
   socket.broadcast.emit('serverMessage', (`${socket.id} entrou`));
   socket.on('User', (User) => {
-    io.emit('User', User)
-  })
+    io.emit('User', User);
+  });
 });
 
 app.use('/', (req, res) => { 

@@ -6,7 +6,6 @@ const btnNick = document.querySelector('.btnNick');
 
 btnNick.addEventListener('click', (e) => {
   const inputNick = document.querySelector('.inputNick');
-  console.log(inputNick.value);
   e.preventDefault();
   socket.emit('User', inputNick.value);
   sessionStorage.setItem('User', inputNick.value);
@@ -25,7 +24,7 @@ btnMess.addEventListener('click', (e) => {
   }
   const Objmsg = {
     nickname: sessionStorage.getItem('User'),
-    chatMessage: inputMessage.value
+    chatMessage: inputMessage.value,
   };
   socket.emit('message', Objmsg);
   document.querySelector('.inputMessage').value = '';
