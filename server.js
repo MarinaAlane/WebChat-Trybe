@@ -8,7 +8,7 @@ const io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 3000;
 
-require('./sockets')(io);
+require('./sockets/chat')(io);
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'views')));
