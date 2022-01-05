@@ -16,9 +16,9 @@ app.use(express.static(`${__dirname}/public`));
 require('./sockets/chat')(io);
 // require('./sockets/rooms')(io);
 
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/public/chat.html`);
+});
 
 // app.get('/chat', (req, res) => {
 //   res.sendFile(__dirname + '/public/chat.html');
