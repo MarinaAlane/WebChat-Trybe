@@ -19,7 +19,7 @@ module.exports = (io) => {
     });
 
     // socket.on('disconnect', () => {
-    //   console.log(`usuário ${socket.id} desconectou`);
+    //   console.log(`usuário ${socket.id} desconectouu`);
     // });
   });
 };
