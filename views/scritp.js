@@ -1,52 +1,76 @@
 const socket = window.io();
 
-let userNick = '';
-
-const btnNick = document.querySelector('.btnNick');
-
-btnNick.addEventListener('click', (e) => {
-  const inputNick = document.querySelector('.inputNick');
-  e.preventDefault();
-  socket.emit('User', inputNick.value);
-  sessionStorage.setItem('User', inputNick.value);
-  document.querySelector('.inputNick').value = '';
-  return true;
-});
-      
-const btnMess = document.querySelector('.sendButton');
-btnMess.addEventListener('click', (e) => {
-  const inputMessage = document.querySelector('.inputMessage');
-  e.preventDefault();
-  if (sessionStorage.getItem('User').length === 0) {
-    userNick = socket.id.slice(0, 16);
-    sessionStorage.setItem('User', userNick);
-    socket.emit('User', userNick);
-  }
-  const Objmsg = {
-    nickname: sessionStorage.getItem('User'),
-    chatMessage: inputMessage.value,
-  };
-  socket.emit('message', Objmsg);
-  document.querySelector('.inputMessage').value = '';
-  return true;
-});
-
-const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages');
+function renderMessage(message) {
+  const UlMessages = document.querySelector('.messages');
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
-  messagesUl.appendChild(li);
-};
+  UlMessages.append(li);
+}
 
-const createUser = (User) => {
-  const userUl = document.querySelector('#user');
+function renderOnlineUsers(userName, id) {
+  const onlineUsers = document.querySelector('.onlineUsers');
   const li = document.createElement('li');
-  li.innerText = User;
+  li.innerText = userName;
   li.setAttribute('data-testid', 'online-user');
-  userUl.appendChild(li);
-};
+  li.setAttribute('id', id);
+  onlineUsers.append(li);
+}
 
-socket.on('serverMessage', (message) => createMessage(message));
+function deleteUser(id) {
+  const userLi = document.getElementById(id);
+  userLi.remove();
+}
 
-socket.on('User', (User) => createUser(User));
+// messages
+socket.on('message', (message) => {
+  renderMessage(message);
+});
+
+const sendButton = document.querySelector('.sendButton');
+
+sendButton.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  const author = document.querySelector('input[name="username"]').value;
+  const message = document.querySelector('input[name="message"]').value;
+  
+  const updatedUser = sessionStorage.getItem('user');
+
+  const messageObject = {
+    chatMessage: message,
+    nickname: updatedUser || author,
+  };
+  
+    socket.emit('message', messageObject);
+});
+
+// Users
+socket.on('connectedUser', (user) => renderOnlineUsers(user, user));
+
+socket.on('currentConnectedUsers', ({ usersConnected, onlineUser }) => {
+  usersConnected.forEach((user) => {
+    if (user.userConnected !== onlineUser) {
+      renderOnlineUsers(user.userNickName, user.userConnected);
+    }
+  });
+});
+
+const userButton = document.querySelector('.nickButton');
+const userInput = document.querySelector('.nickInput');
+userButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  sessionStorage.setItem('user', userInput.value);
+  const nickName = userInput.value;
+  socket.emit('updatedNickName', nickName);
+});
+
+socket.on('currentNickName', ({ nickName, onlineUser }) => {
+  const userLi = document.getElementById(onlineUser);
+  console.log(nickName);
+  userLi.innerText = nickName;
+});
+
+socket.on('removedUser', ({ onlineUser }) => {
+  deleteUser(onlineUser);
+});

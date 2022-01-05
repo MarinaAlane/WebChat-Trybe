@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
   <title>WebChat</title>
 </head>
 <link rel="stylesheet" href="./styles.css" />
-
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
   <div class="box">
-    <input placeholder="Insira seu nickname" data-testid="nickname-box" id="inputNickname" class="inputNick"
-      autocomplete="off" />
-    <button class="btnNick" data-testid="nickname-button" id="btnNickname">
+    <input 
+      placeholder="Insira seu nickname" 
+      data-testid="nickname-box" 
+      id="inputNickname" 
+      class="inputNick"
+      autocomplete="off" 
+    />
+    <button 
+      class="btnNick" 
+      data-testid="nickname-button" 
+      id="btnNickname"
+    >
       Salvar
     </button>
   </div>
@@ -20,18 +27,29 @@
       <ul id="user">Usuários</ul>
     </div>
     <div>
-      <ul id="messages">Mensagens</ul>
+      <ul id="messages">
+          <% allMessages.forEach(({nickname, timestamp, message}) => { %>
+          <li data-testid='message'><%=timestamp%> - <%=nickname%>: <%=message%></li>
+        <%})%>
+      </ul>
     </div>
   </div>
   <br>
   <div class="box">
-    <input placeholder="Digite uma nova mensagem aqui" data-testid="message-box" id="inputMessage" class="inputMessage"
-      autocomplete="off" />
-    <button class="sendButton" id="btnMessage" data-testid="send-button">
+    <input 
+      placeholder="Digite uma nova mensagem aqui" 
+      data-testid="message-box" 
+      id="inputMessage" 
+      class="inputMessage"
+      autocomplete="off" 
+    />
+    <button 
+      class="sendButton" 
+      id="btnMessage" 
+      data-testid="send-button">
       Enviar
     </button>
   </div>
   <script type="text/javascript" src="./scritp.js"></script>
 </body>
-
 </html>

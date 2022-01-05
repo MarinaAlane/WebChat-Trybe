@@ -1,60 +1,25 @@
-require('dotenv').config();
-const moment = require('moment');
-
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const messagesRouter = require('./routes');
 
 const PORT = process.env.PORT || 3000;
 
-const urlOrigin = `http://localhost:${PORT}`;
-
-const server = require('http').createServer(app);
-
-// app.get('/', (_req, res) => res.render('chat'));
-
-const io = require('socket.io')(server, {
-  cors: {
-    origin: urlOrigin,
-    methods: ['GET', 'POST'],
-  },
-});
+require('./sockets')(io);
 
 app.use(cors());
-
-app.use(express.static(path.join(__dirname, 'views')));
-
+app.use(express.static(path.join(__dirname, 'viwes')));
 app.set('views', path.join(__dirname, 'views'));
-
 app.engine('html', require('ejs').renderFile);
 
 app.set('view engine', 'ejs');
 
-// let messages = [];
-
-io.on('connection', (socket) => {
-  socket.on('disconnect', () => {
-    console.log('alguem saiu');
-  });
-  socket.on('message', (msg) => {
-  // messages.push(msg);
-    const time = moment().format('DD-MM-YYYY hh:mm:ss A');
-    const formatedMessage = `${time} - ${msg.nickname}: ${msg.chatMessage}`;
-    io.emit('serverMessage', formatedMessage);
-  });
-  socket.broadcast.emit('serverMessage', (`${socket.id} entrou`));
-  socket.on('User', (User) => {
-    io.emit('User', User);
-  });
-});
-
-app.use('/', (req, res) => { 
-  res.render('index.ejs');
-});
+app.use('/', messagesRouter);
 
 server.listen(PORT, () => {
-  console.log(`Servidor na Porta ${PORT}`);
+  console.log(`Server started on port ${PORT}`);
 });
-module.exports = io;
