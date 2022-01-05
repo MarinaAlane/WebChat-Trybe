@@ -1,5 +1,5 @@
 const moment = require('moment');
-const Message = require('../models/message');
+const Message = require('../models/messages');
 
 let users = [];
 
