@@ -1,23 +1,22 @@
 const express = require('express');
+const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const path = require('path');
-const cors = require('cors');
 
-require('./sockets/chat')(io);
+const PORT = process.env.PORT || 3000;
 
-app.use(express.static('views'));
+require('./sockets')(io);
 
 app.use(cors());
-
+app.use(express.static(path.join(__dirname, 'views')));
 app.set('views', path.join(__dirname, 'views'));
-
 app.engine('html', require('ejs').renderFile);
 
-app.get('/', (_, res) => {
-    res.render('chat');
-});
+app.set('view engine', 'ejs');
 
-server.listen(3000);
+server.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
