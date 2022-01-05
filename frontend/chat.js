@@ -1,7 +1,7 @@
 const socket = window.io();
-const loginBtn = document.getElementById('loginBtn');
+const nicknameBtn = document.getElementById('nicknameBtn');
 const sendMsgBtn = document.getElementById('sendBtn');
-// const warningNickname = document.getElementById('warningNickname');
+const warningNickname = document.getElementById('warningNickname');
 const messageInput = document.querySelector('#messageInput');
 // let userID;
 let nickname;
@@ -15,28 +15,20 @@ const createLIitens = (text) => {
   div.appendChild(p);
 };
 
-loginBtn.addEventListener('click', (e) => {
-  nickname = document.getElementById('nickname').value;
+nicknameBtn.addEventListener('click', (e) => {
+  nickname = document.getElementById('nicknameInput').value;
+  console.log('nick btn');
+  messageInput.value = '';
   e.preventDefault();
 });
 
-// let dataAtual;
-// let horaAtual;
-
 sendMsgBtn.addEventListener('click', (e) => {
-  // let data = new Date();
-  // let dia = String(data.getDate()).padStart(2, '0');
-  // let mes = String(data.getMonth() + 1).padStart(2, '0');
-  // let ano = data.getFullYear();
   e.preventDefault();
-
-  // dataAtual = dia + '-' + mes + '-' + ano;
-  // horaAtual = data.toLocaleTimeString('pt-BR');
   
-  // if (!nickname) {
-  //   warningNickname.innerText = 'Preencha um nickname antes';
-  //   return false;
-  // } 
+  if (!nickname) {
+    warningNickname.innerText = 'Fill your nickname';
+    return false;
+  }
   
   socket.emit('message', {
     nickname,

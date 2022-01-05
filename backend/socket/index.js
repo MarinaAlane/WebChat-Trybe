@@ -1,3 +1,15 @@
+const currentlyTime = () => {
+  const data = new Date();
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+
+  const dataAtual = `${dia}-${mes}-${ano}`;
+  const horaAtual = data.toLocaleTimeString('pt-BR');
+
+  return `${dataAtual} ${horaAtual}`;
+};
+
 module.exports = (io) => {
   io.on('connection', async (socket) => {
     socket.emit('userID', socket.id);
@@ -10,7 +22,9 @@ module.exports = (io) => {
     });
   
     socket.on('message', async (clientMsg) => {
-      io.emit('message', clientMsg.chatMessage);
+      const { nickname, chatMessage } = clientMsg;
+      const time = currentlyTime();
+      io.emit('message', `${time} - ${nickname}: ${chatMessage}`);
     });
   });
 };
