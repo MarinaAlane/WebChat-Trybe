@@ -16,16 +16,20 @@ form.addEventListener('submit', (e) => {
   return false;
 });
 
-const messagesList = document.querySelector('#messages-list');
-socket.on('message', (message) => {
+const messagesFeed = document.querySelector('#messages-list');
+
+const createMessage = (message) => {
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
-  messagesList.appendChild(li);
-});
+  messagesFeed.appendChild(li);
+};
+
+socket.on('message', (message) => createMessage(message));
 
 const nicknameBox = document.querySelector('#nickname-box');
 const nicknameButton = document.querySelector('#nickname-button');
+
 nicknameButton.addEventListener('click', () => {
   window.sessionStorage.setItem('nickname', nicknameBox.value);
   socket.emit('connectUser', { nickname: nicknameBox.value });
