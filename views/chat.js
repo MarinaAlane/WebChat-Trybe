@@ -72,11 +72,11 @@ socket.on('userList', (users) => {
   // const index = users.indexOf(randomNickName);
   let arrAux = users;
   let firstUser = {};
-  // console.log(arrAux, randomNickName);
+  const userName = sessionStorage.getItem('nickName');
   arrAux.forEach((elem) => {
-    if (elem.user === randomNickName) firstUser = elem;
+    if (elem.user === userName) firstUser = elem;
   });
-  arrAux = arrAux.filter((el) => randomNickName !== el.user);
+  arrAux = arrAux.filter((el) => userName !== el.user);
   arrAux = [firstUser, ...arrAux];
   arrAux.forEach((element) => {
     createUser(element);
