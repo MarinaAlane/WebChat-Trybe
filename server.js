@@ -49,5 +49,5 @@ app.get('/', (req, res) => {
 });
 
 http.listen(PORT, () => {
-  console.log(`Servidor ouvindo na porta ${PORT}`);
+  console.log(`Servidor ouvindo na Porta ${PORT}`);
 });
