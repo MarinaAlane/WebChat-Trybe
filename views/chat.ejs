@@ -9,7 +9,7 @@
 </head>
 <body>
   <main>
-    <div class="first-container">
+    <div class="first-submain">
       <div class="login-container">
         <h3> User Config: </h3>
         <form class="login-form">
@@ -18,13 +18,19 @@
         </form>
       </div>
     </div>
-    <div id="chat-container">
-      <h3> Chat Messages: </h3>
-      <div class="messages-div"></div>
-      <form action="">
-        <input data-testid="message-box" id="messageInput" autocomplete="off" /><button data-testid="send-button" id="sendBtn">Send</button>
-        <p id="warningNickname"></p>
-      </form>
+    <div class="second-submain">
+      <div id="chat-container">
+        <h3> Chat Messages: </h3>
+        <div class="messages-div"></div>
+        <form action="">
+          <input data-testid="message-box" id="messageInput" autocomplete="off" /><button data-testid="send-button" id="sendBtn">Send</button>
+          <p id="warningNickname"></p>
+        </form>
+      </div>
+      <div class="online-users-container">
+        <h3> Online Users: </h3>
+        <div class="online-users-div"></div>
+      </div>
     </div>
   </main>
   
