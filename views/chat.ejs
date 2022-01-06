@@ -7,20 +7,21 @@
         </style>
     </head>
     <body>
-        <div id="nickname-container">
+        <div id="nickname-container" class="nickname-container">
             <form id="nickname-form">
                 <input
                     type="text"
                     id="nickname-input"
+                    class="nickname-input"
                     data-testid="nickname-box"
                     placeholder="Please type your name">
                 <button type="submit" id="nickname-button" data-testid="nickname-button">Save</button>
             </form>
-            <ul id="nickname-list">
+            <ul id="nickname-list" class="nickname-list">
             </ul>
         </div>
-        <div id="message-container">
-            <ul id="messages">
+        <div id="message-container" class="message-container">
+            <ul id="messages" class="messages">
                 <% if (messages) {%>
             <% messages.forEach(({ message, nickname, timestamp }) => { %>
                 <li data-testid="message"><%=`${ timestamp } - ${ nickname }: ${ message }`%></li>
@@ -28,10 +29,11 @@
             </ul>
         </div>
        
-        <form id="send-container">
+        <form id="send-container" class="send-container">
             <input
                 type= "text"
                 id="message-input"
+                class="message-input"
                 data-testid="message-box"
                 autocomplete="off"
                 name="message"

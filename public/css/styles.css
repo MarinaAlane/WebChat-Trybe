@@ -1,69 +1,74 @@
 body {
-    margin: 0;
-    padding-bottom: 3rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-  #nickname-container {
-      float: left;
-  }
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding-bottom: 3rem;
+}
 
-  #nickname-input {
-      position: sticky;
-      padding: 0.5rem 1rem;
-      width: 450px;
-  }
-  
-  #nickname-list>li {
-    list-style-type: none;
-    padding: 0.5rem 1rem;
-  }
+.nickname-container {
+  float: left;
+}
 
-  #send-container {
-    background: rgba(0, 0, 0, 0.15);
-    padding: 0.25rem;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    height: 3rem;
-    box-sizing: border-box;
-    backdrop-filter: blur(10px);
-  }
+.nickname-input {
+  border: none;
+  border-radius: 2rem;
+  flex-grow: 1;
+  margin: 0.25rem;
+  padding: 0.5rem 1rem;
+  position: sticky;
+  width: 450px;
+}
 
-  #message-input {
-    border: none;
-    padding: 0 1rem;
-    flex-grow: 1;
-    border-radius: 2rem;
-    margin: 0.25rem;
-  }
+.nickname-list > li {
+  list-style-type: none;
+  padding: 0.5rem 1rem;
+}
 
-  #input:focus {
-    outline: none;
-  }
+.send-container {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.15);
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  height: 3rem;
+  left: 0;
+  padding: 0.25rem;
+  position: fixed;
+  right: 0;
+}
 
-  form>button {
-    background: #333;
-    border: none;
-    padding: 0.15rem;
-    margin: 0.25rem;
-    border-radius: 3px;
-    outline: none;
-    color: #fff;
-  }
+.message-input {
+  border: none;
+  border-radius: 2rem;
+  flex-grow: 1;
+  margin: 0.25rem;
+  padding: 0 1rem;
+}
 
-  #messages {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    float: right;
-  }
+input:focus {
+  outline: none;
+}
 
-  #messages>li {
-    padding: 0.5rem 1rem;
-  }
+form > button {
+  border: none;
+  border-radius: 3px;
+  color: 'white';
+  margin: 0.25rem;
+  outline: none;
+  padding: 0.15rem;
+}
 
-  #messages>li:nth-child(odd) {
-    background: #efefef;
-  }
+.messages {
+  float: right;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.messages > li {
+  padding: 0.5rem 1rem;
+}
+
+.messages > li:nth-child( odd ) {
+  background: #efefef;
+}
