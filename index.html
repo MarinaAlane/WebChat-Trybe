@@ -54,20 +54,29 @@
       nickForm.addEventListener('click', (event) => { 
         event.preventDefault(); 
         nickname = nickInput.value;
+        nickInput = '';
       });
 
-      socket.on('message', (msg) => {
+      const createMessage = (msg) => {
         const newMsg = document.createElement('li');
         newMsg.textContent = msg;
         newMsg.setAttribute('data-testid', 'message');
         messages.appendChild(newMsg);
+      }
+
+      socket.on('message', createMessage)
+
+      socket.on('getMessages', (msgList) => {
+        msgList.forEach((msg) => {
+          createMessage(
+            `${msg.timestamp} - ${msg.nickname}: ${msg.message}`
+          );
+        })
       })
 
-      //-------------------------
-      // socket.emit('message', {
-      //   nickname: '',
-      //   chatMessage: '',
-      // });
+      socket.on('connect', () => {
+        console.log(`Usuário ${socket.id} conectado`);
+      });
 
       socket.on('newUser', (nick) => {
         const li = document.createElement('li');
