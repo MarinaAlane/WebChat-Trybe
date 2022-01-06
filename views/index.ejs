@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Webchat</title>
+</head>
+<body>
+  <main>
+    <section>
+      <section>
+        <section>
+          <input type="text" name="username" id="username" placeholder="Digite seu nome de usuário aqui">
+          <button type="button" id="save">Salvar</button>
+        </section>
+        <section>
+          <ul id="logged-users"></ul>
+        </section>
+      </section>
+      <section>
+        <ul id="sent-messages"></ul>
+      </section>
+    </section>
+    <section>
+      <input type="text" name="message" id="message" placeholder="Digite sua mensagem aqui">
+      <button type="button" id="send">Enviar</button>
+    </section>
+  </main>
+  
+  <script src="./socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
+
+    const saveButton = document.getElementById('save');
+    saveButton.addEventListener('click', () => {
+      const usernameInput = document.getElementById('username');
+      sessionStorage.setItem('username', usernameInput.value);
+      usernameInput.value = '';
+    });
+
+    const sendButton = document.getElementById('send');
+    sendButton.addEventListener('click', () => {
+      const username = sessionStorage.getItem('username') || 'Usuário não identificado';
+      const messageInput = document.getElementById('message');
+      socket.emit('message', { chatMessage: messageInput.value, nickname: username });
+      messageInput.value = '';
+      messageInput.focus();
+    });
+
+    socket.on('message', (data) => {
+      const sentMessagesUl = document.getElementById('sent-messages');
+      const newLi = document.createElement('li');
+      newLi.append(data);
+      sentMessagesUl.append(newLi);
+    });
+  </script>
+</body>
+</html>
