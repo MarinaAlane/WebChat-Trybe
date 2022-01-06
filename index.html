@@ -5,24 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webchat - Project</title>
   <link rel="stylesheet" type="text/css" href="style.css"/>
+  <style>
+    .container{
+      background-color: #397DE3;
+      border-radius: 3px;
+      border-style: solid;
+      border-width: 1px;
+      display: flex;
+      flex-direction: column;
+      height: 350px;
+      justify-content: space-evenly;
+      padding: 10px;
+      width: 700px;
+    }
+    .form-send-message{
+      align-items: stretch;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    #messages{
+      list-style: none;
+      padding-inline-start: 5px;
+    }
+    .messages-content{
+      background-color: #759608;
+      border-style: solid;
+      border-width: 1px;
+      width: 68%;
+    }
+    .painel{
+      background-color: #B6E322;
+      border-style: solid;
+      border-width: 1px;
+      display: flex;
+      height: 270px;
+      justify-content: space-between;
+      padding: 5px;
+    }
+    .send-message{
+      border-style: solid;
+      border-width: 1px;
+    }
+    .submit-message{
+      background: #0066A2;
+      color: white;
+      border-style: outset;
+      border-color: #0066A2;
+      height: 30px;
+      width: 100px;
+      font: bold 15px arial, sans-serif;
+      text-shadow:none;
+    }
+    .users{
+      align-items: center;
+      display: flex;
+      background-color: #759608;
+      border-style: solid;
+      border-width: 1px;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30%;
+    }
+    .users-nickname-bar{
+      display: inline-block;
+    }
+    .users-online{
+      border-style: solid;
+      border-width: 1px;
+      height: 200px;
+      overflow: auto;
+      overflow-y: auto;
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
   <h1>Projeto WebChat</h1>
-  <ul id="messages"></ul>
-
-  <form id="form">
-    <input id="nickname" placeholder="Digite seu apelido">
-    <input id="input" placeholder="Digite sua mensagem">
-    <button>Enviar</button>
-  </form>
+  <div class="container">
+    <div class="painel">
+      <div class="users">
+        <form id="nickname-form">
+          <input id="teste" type="text" placeholder="Digite seu Nickname" size="15">
+          <button>Salvar</button>
+        </form>
+        <label>
+          Usuários Online
+          <section class="users-online">
+            <ul>
+              <li>Usuarios online</li>
+            </ul>
+          </section>
+        </label>
+      </div>
+      <div class="messages-content">
+        <ul id="messages" data-testid="message-box"></ul>
+      </div>
+    </div>
+    <div class="send-message">
+      <form class="form-send-message" id="form">
+        <input id="input" placeholder="Digite sua mensagem" size="70">
+        <button class="submit-message">Enviar</button>
+      </form>
+    </div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
     const form = document.querySelector('#form');
     const message = document.querySelector('#input');
-    const nickname = document.querySelector('#nickname')
     const messages = document.querySelector('#messages');
+
+    const formNickname = document.querySelector('#nickname-form');
+    const inputTest = document.querySelector('#teste');
+
+    formNickname.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      sessionStorage.setItem('nickname', inputTest.value);
+      console.log(inputTest.value);
+      inputTest.value = '';
+    })
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -32,7 +136,11 @@
       console.log('nickname' + sessionStorage.nickname);
       const dataMessage = Date(); */
       if (message.value) {
-        const objMessage = { nickname: nickname.value, chatMessage: message.value };
+        const objMessage = {
+          nickname: sessionStorage.getItem('nickname'),
+          chatMessage: message.value
+        };
+
         socket.emit('message', objMessage);
         message.value = '';
       }
