@@ -29,13 +29,14 @@ module.exports = (io) => {
 
     socket.on('changeNickname', (name) => {
       users = users.map((user) => (user === userId ? name : user));
-      userId = name;
-      io.emit('changeUsersName', users);
+      userId = name; io.emit('changeUsersName', users);
       socket.emit('throwId', { userId, users });
     }); socket.emit('connectedMessages', await getAllMessages());
 
     // Escuta um evento de disconnect, removendo o usuário desconectado do array users;
-    socket.on('disconnect', 
-    () => { users = users.filter((user) => userId !== user); io.emit('discon', users); });
-  });
+    socket.on('disconnect', () => {
+      users = users.filter((user) => userId !== user); io.emit('discon', users);
+    }); 
+});
 };
+// comentário para dar o push que pediram
