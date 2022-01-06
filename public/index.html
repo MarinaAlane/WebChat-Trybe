@@ -1,128 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/style.css" />
-    <title>Webchat</title>
-  </head>
-  <body>
-    <div class="chat-container">
-      <div class="join-container">
-        <header class="join-header">
-          <h1><i class="fas fa-smile"></i> WebChat</h1>
-        </header>
-        <main class="join-main">
-          <form id="nickname-input">
-            <div class="form-control">
-              <label for="username">Username</label>
-              <input
-              id="nickname" 
-              data-testid="nickname-box"
-                type="text"
-                name="username"
-                placeholder="Enter username..."
-                required
-              />
-            </div>
-            <button type="submit" data-testid="nickname-button" class="btn">Save</button>
-          </form>
-        </main>
-      </div>
-    </body>
-      <header class="chat-header">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+  <title>Webchat</title>
+</head>
+
+<body>
+  <div class="chat-container">
+    <div class="join-container">
+      <header class="join-header">
         <h1><i class="fas fa-smile"></i> WebChat</h1>
-        <a id="leave-btn" class="btn">Leave Chat</a>
       </header>
-      <main class="chat-main">
-        <div class="chat-sidebar">
-          <h3><i class="fas fa-users"></i> Users</h3>
-          <ul id="users"></ul>
-        </div>
-        <div class="chat-messages">
-          <ul id="messages"></ul>
-        </div>
-      </main>
-      <div class="chat-form-container">
-        <form id="chat-form">
-          <input
-            id="chatMessage"
-            data-testid="message-box"
-            type="text"
-            placeholder="Enter Message"
-            required
-            autocomplete="off"
-          />
-          <button class="btn" data-testid="send-button">
-            <i class="fas fa-paper-plane"></i> Send
-          </button>
+      <main class="join-main">
+        <form>
+          <div class="form-control">
+            <label for="username">Username</label>
+            <input id="nicknameInput" data-testid="nickname-box" type="text" name="username"
+              placeholder="Enter username..." required />
+          </div>
+          <button type="button" id="nicknameButton" data-testid="nickname-button" class="btn">Save</button>
         </form>
-      </div>
+      </main>
     </div>
+</body>
+<header class="chat-header">
+  <h1><i class="fas fa-smile"></i> WebChat</h1>
+  <a id="leave-btn" class="btn">Leave Chat</a>
+</header>
+<main class="chat-main">
+  <div class="chat-sidebar">
+    <h3><i class="fas fa-users"></i> Users</h3>
+    <ul id="users"></ul>
+  </div>
+  <div class="chat-messages">
+    <ul id="messages"></ul>
+  </div>
+</main>
+<div class="chat-form-container">
+  <form>
+    <input id="messageInput" data-testid="message-box" type="text" placeholder="Enter Message" required
+      autocomplete="off" />
+    <button type="button" id="messageButton" class="btn" data-testid="send-button">
+      <i class="fas fa-paper-plane"></i> Send
+    </button>
+  </form>
+</div>
+</div>
 
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-      const form = document.querySelector('#chat-form');
-      const input = document.querySelector('#chatMessage');
-      const messages = document.querySelector('#messages');
-      const users = document.querySelector('#users');
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
 
-      const nicknameForm = document.getElementById('nickname-input');
-      const nickname = document.getElementById('nickname');
+  const messageButton = document.getElementById('messageButton');
+  const messageInput = document.getElementById('messageInput');
 
-      let nicknameValue;
+  const nicknameInput = document.getElementById('nicknameInput');
+  const nicknameButton = document.getElementById('nicknameButton');
 
-      nicknameForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+  const messages = document.getElementById('messages');
+  const users = document.getElementById('users');
 
-        if (nickname.value) {
-          nicknameValue = nickname.value;
-        }
-      });
+  let userName = '';
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        if (input.value) {
-          socket.emit('message', {
-            chatMessage: input.value,
-            nickname: nicknameValue,
-          });
-          input.value = '';
-        }
-      });
-
-      const generateNick = () => socket.id.split('', 16).join('');
-
-      socket.on('connect', () => {
-        const nickname = generateNick();
-        const newUser = document.createElement('li');
-        newUser.setAttribute('data-testid', 'online-user');
-        newUser.innerText = nickname;
-        users.appendChild(newUser);
-      });
-
-      socket.on('message', (msg) => {
-        const newMessage = document.createElement('li');
-        newMessage.setAttribute('data-testid', 'message');
-        newMessage.innerText = msg;
-        messages.appendChild(newMessage);
-      });
-
-
-
-      socket.on('history', (history) => {
-        history.forEach(({ message, nickname, timestamp }) => {
-        const newLi = document.createElement('li');
-        newLi.setAttribute('data-testid', 'message');
-        newLi.innerText = `${timestamp} - ${nickname}: ${message}`;
-        messages.append(newLi);
-      });
+  messageButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    const nickname = userName || socket.id.slice(0, 16);
+    socket.emit('message', {
+      chatMessage: messageInput.value,
+      nickname,
     });
+    messageInput.value = '';
+  });
 
-    </script>
-  </body>
+  socket.on('message', (msg) => {
+    const newMessage = document.createElement('li');
+    newMessage.setAttribute('data-testid', 'message');
+    newMessage.innerText = msg;
+    messages.appendChild(newMessage);
+  });
+
+
+  nicknameButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    userName = nicknameInput.value;
+    if (userName !== '') {
+      socket.emit('newUserName', userName);
+      nicknameInput.value = '';
+    }
+  });
+
+  socket.on('onlineUser', (nick) => {
+    const generateNick = socket.id.slice(0, 16);
+    users.innerHTML = '';
+    nick.forEach((el) => {
+      const newLi = document.createElement('li');
+      newLi.setAttribute('data-testid', 'online-user');
+      newLi.innerText = el;
+      if (el === userName || el === generateNick) {
+        return users.prepend(newLi);
+      }
+      users.appendChild(newLi);
+    });
+  });
+
+
+  socket.on('history', (history) => {
+    history.forEach(({ message, nickname, timestamp }) => {
+      const newLi = document.createElement('li');
+      newLi.setAttribute('data-testid', 'message');
+      newLi.innerText = `${timestamp} - ${nickname}: ${message}`;
+      messages.appendChild(newLi);
+    });
+  });
+
+</script>
+</body>
+
 </html>
