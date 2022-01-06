@@ -2,17 +2,18 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Project Webchat</title>
 </head>
 <body>
   <main>
+    <h1>Olá, <span data-testid="online-user" id="nickname"></span></h1>
     <section>
       <section>
         <section>
-          <input type="text" name="username" id="username" placeholder="Digite seu nome de usuário aqui">
-          <button type="button" id="save">Salvar</button>
+          <input data-testid="nickname-box" id="username" name="username" placeholder="Digite seu nome de usuário aqui" type="text">
+          <button data-testid="nickname-button" id="save" type="button">Salvar</button>
         </section>
         <section>
           <ul id="logged-users"></ul>
@@ -23,8 +24,8 @@
       </section>
     </section>
     <section>
-      <input type="text" name="message" id="message" placeholder="Digite sua mensagem aqui">
-      <button type="button" id="send">Enviar</button>
+      <input data-testid="message-box" id="message" name="message" placeholder="Digite sua mensagem aqui" type="text">
+      <button data-testid="send-button" id="send" type="button">Enviar</button>
     </section>
   </main>
   
@@ -32,9 +33,22 @@
   <script>
     const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
 
+    const setNickname = (nickname) => {
+      const nicknameSpan = document.getElementById('nickname');
+      nicknameSpan.innerText = nickname;
+    };
+
+    socket.on('setUsername', (data) => {
+      setNickname(data);
+
+      sessionStorage.setItem('username', data);
+    });
+
     const saveButton = document.getElementById('save');
     saveButton.addEventListener('click', () => {
       const usernameInput = document.getElementById('username');
+
+      setNickname(usernameInput.value);
       sessionStorage.setItem('username', usernameInput.value);
       usernameInput.value = '';
     });
@@ -51,6 +65,8 @@
     socket.on('message', (data) => {
       const sentMessagesUl = document.getElementById('sent-messages');
       const newLi = document.createElement('li');
+
+      newLi.dataset.testid = 'message';
       newLi.append(data);
       sentMessagesUl.append(newLi);
     });

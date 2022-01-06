@@ -21,6 +21,8 @@ const io = require('socket.io')(http, {
 const moment = require('moment');
 
 io.on('connection', (socket) => {
+  socket.emit('setUsername', socket.id.slice(-16));
+  
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = moment();
     const formatedDate = date.format('DD-MM-yyyy hh:mm:ss A');
