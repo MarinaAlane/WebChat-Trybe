@@ -8,24 +8,26 @@ const http = require('http').createServer(app);
 const PORT = 3000;
 
 const io = require('socket.io')(http, {
-    cors: {
-      origin: `http://localhost:${PORT}`,
-      methods: ['GET', 'POST'],
-    } });
+  cors: {
+    origin: `http://localhost:${PORT}`,
+    methods: ['GET', 'POST'],
+  } });
+
+  const messageController = require('./controllers/messageController');
+  const messageModel = require('./models/messageModel');  
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.get('/', (req, res) => {
-  res.render('board');
-});
+app.get('/', messageController.listMessages);
 
 io.on('connection', (socket) => {
-  socket.on('message', (post) => {
+  socket.on('message', async (post) => {
     const { nickname, chatMessage } = post;
     const data = moment().format('DD-MM-yyyy HH:mm:ss A');
     const message = `${data} - ${nickname} ${chatMessage}`;
     io.emit('message', message);
+    await messageModel.insertMessage(chatMessage, nickname, data);
   });
 });
 

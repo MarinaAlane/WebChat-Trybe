@@ -11,10 +11,18 @@
   <input id="nickname" type="text" data-testid="nickname-box" placeholder="Nickname" />
   <button id="newNickname" data-testid="nickname-button">Salvar</button><br>
 
-  <ul id="messages"></ul>
+  <ul id="messages">
+    <% if (messages) {%>
+      <% messages.map(({ message, nickname, timestamp }) => {%>
+        <li data-testid="message"><%= timestamp%> - <%=nickname%>: <%=message%></li>
+      <%})%>
+    <%}%>
+  </ul>
 
-  <input id="text" type="text" data-testid="message-box" placeholder="Mensagem" />
-  <button id="submit" data-testid="send-button">Enviar</button>
+  <form action="board.ejs" method="post">
+    <input id="text" type="text" data-testid="message-box" placeholder="Mensagem" />
+    <button id="submit" data-testid="send-button">Enviar</button>
+  </form>
 
   <script>
     let user = 0;
@@ -39,10 +47,12 @@
     })
     
     const btnSend = document.getElementById('submit');
-    btnSend.addEventListener('click', () => {
+    btnSend.addEventListener('click', (event) => {
+      event.preventDefault();
       const text = document.getElementById('text');
       const nickname = document.getElementById('nick').innerHTML;
       socket.emit('message', { nickname, chatMessage: text.value });
+      text.value = '';
     });
     
   </script>
