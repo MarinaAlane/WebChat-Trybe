@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto WebChat</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="form">
+    <input type="text" id="input">
+    <button>Enviar</button>
+  </form>
+  <script>
+    var socket = io();
+
+    var messages = document.getElementById('messages');
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      if(input.value) {
+        socket.emit('message', { chatMessage: input.value, nickname: socket.id });
+        input.value = '';
+      }
+    });
+
+    socket.on('message', function(msg) {
+      var listItem = document.createElement('li');
+      listItem.textContent = msg;
+      messages.appendChild(listItem);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  </script>
+</body>
+</html>
