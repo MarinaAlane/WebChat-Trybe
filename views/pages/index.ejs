@@ -4,57 +4,101 @@
   <title>Paulo Freire - Websocket project</title>
 </head>
 <body>
-    <main>
-          <span id="nickname" data-testid="online-user"></span>
-          <%/*(this is a comment) CODE FROM REQ02 => const nicknameBox = await page.$(`input${dataTestid('nickname-box')}`); */%>
+  <main>
+    <span id="nickname"></span>
+    <%/*(this is a comment) CODE FROM REQ02 => const nicknameBox = await page.$(`input${dataTestid('nickname-box')}`); */%>
           <input type="text" name="username" id="username" placeholder="USERNAME HERE" data-testid="nickname-box">
-          <button type="button" id="user" data-testid="nickname-button">User</button>
+          <button type="button" id="save" data-testid="nickname-button">Save</button>
           <ul id="logged-users"></ul>
-          <ul id="sent-messages"></ul>
-          <input type="text" name="message" id="message" placeholder="MESSAGE HERE" data-testid="message-box" data-testid="nickname-button">
-          <button type="button" id="send" data-testid="send-button">Message</button>
-      </main>
+        <ul id="sent-messages"></ul>
+      <input type="text" name="message" id="message" placeholder="MESSAGE HEREMESSAGE HERE" data-testid="message-box" data-testid="nickname-button">
+      <button type="button" id="send" data-testid="send-button">Send</button>
+  </main>
 
-      <script src="./socket.io/socket.io.js"></script>
-      <script>
-        const PORT = 3000 || process.env.PORT;
-        const socket = io(`http://localhost:${PORT}`);
-        const userNick = (userName) => {
-        const frontNick = document.getElementById('nickname');
-        frontNick.innerText = userName;
-      };
-        socket.on('randomName', (x) => {
-          userNick(x);
-        sessionStorage.setItem('username', x);
-        });
-        const saveButton = document.getElementById('user');
-        saveButton.addEventListener('click', () => {
-          const saveName = document.getElementById('username');
-          userNick(saveName.value);
-          sessionStorage.setItem('username', saveName.value);
-          saveName.value = '';
-        });
-        const sendButton = document.getElementById('send');
-        sendButton.addEventListener('click', () => {
-          const userName = sessionStorage.getItem('username') || 'ANONYMOUS';
-          const Message = document.getElementById('message');
-          socket.emit('message', { chatMessage: Message.value, nickname: userName });
-          Message.value = '';
-          Message.focus();
-        });
-        socket.on('message', (data) => {
-            const messagesSent = document.getElementById('sent-messages');
-            const createLi = document.createElement('li');
-            createLi.append(data);
-            messagesSent.append(createLi);
+  <script src="./socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const getUsers = () => {
+      const loggedUsersUl = document.getElementById('logged-users');
+      return loggedUsersUl.children;
+    };
+    const getUsername = () => {
+      const usernameSpan = document.getElementById('nickname');
+      return usernameSpan.innerText;
+    };
+    const setName = (nickname) => {
+      const nicknameSpan = document.getElementById('nickname');
+      nicknameSpan.innerText = nickname;
+    };
+    const addUser = (username) => {
+      const loggedUsersUl = document.getElementById('logged-users');
+      const li = document.createElement('li');
+      li.dataset.testid = 'online-user';
+      li.innerText = username;
+      loggedUsersUl.append(li);
+    };
+    socket.on('setUser', (data) => {
+      setName(data);
+      sessionStorage.setItem('username', data);
+      addUser(data);
+    });
+    socket.on('addUser', (data) => {
+      addUser(data);
+      const username = getUsername();
+      socket.emit('addUser', username);
+    });
+    const userExists = (username) => {
+      const users = getUsers();
+      for (let index = 0; index < users.length; index += 1) {
+        if (users[index].innerText === username) return true;
+      }
+      return false;
+    }
+    socket.on('newLoggedUser', (username) => {
+      if (!userExists(username)) addUser(username);
+    });
+    const saveButton = document.getElementById('save');
+    saveButton.addEventListener('click', () => {
+      const usernameInput = document.getElementById('username');
+      const newUsername = usernameInput.value;
+      setName(newUsername);
+      sessionStorage.setItem('username', newUsername);
+      socket.emit('updateName', newUsername);
+      usernameInput.value = '';
+    });
+    const sendButton = document.getElementById('send');
+    sendButton.addEventListener('click', () => {
+      const username = sessionStorage.getItem('username') || 'Unknown user';
+      const messageInput = document.getElementById('message');
+      socket.emit('message', { chatMessage: messageInput.value, nickname: username });
+      messageInput.value = '';
+      messageInput.focus();
     });
     socket.on('message', (data) => {
-      const messagesSent = document.getElementById('sent-messages');
+      const sentMessagesUl = document.getElementById('sent-messages');
       const li = document.createElement('li');
       li.dataset.testid = 'message';
       li.append(data);
-      messagesSent.append(li);
+      sentMessagesUl.append(li);
+    });
+    socket.on('updateName', ({ oldUsername, newUsername }) => {
+      const users = getUsers();
+      for (let index = 0; index < users.length; index += 1) {
+        if (users[index].innerText === oldUsername) {
+          users[index].innerText = newUsername;
+          break;
+        }
+      }
+    });
+    socket.on('userLeft', (username) => {
+      const users = getUsers();
+      for (let index = 0; index < users.length; index += 1) {
+        if (users[index].innerText === username) {
+          users[index].remove();
+          break;
+        }
+      }
     });
   </script>
 </body>
-</html> 
+</html>
