@@ -3,25 +3,26 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
+const moment = require('moment');
 
 const app = express();
-const PORT = 3002;
+const PORT = 3000;
 const server = http.createServer(app);
 const io = new Server(server);
- 
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 io.on('connection', (socket) => {
-  console.log(`usuario ${socket.id} conectado`);
-
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+  socket.on('message', (message) => {
+    const date = moment().format('DD-MM-YYYY, hh:mm:ss');
+    const completeMessage = `${date} - ${message.nickname}: ${message.chatMessage}`;
+    io.emit('message', completeMessage);
   });
 
   socket.on('disconnect', () => {
-    console.log(`usuario ${socket.id} desconectado`);
+    console.log(`Usuário ${socket.id} desconectado`);
   });
 });
 
