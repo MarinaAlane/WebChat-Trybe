@@ -13,21 +13,36 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   } });
 
-  const messageController = require('./controllers/messageController');
-  const messageModel = require('./models/messageModel');  
+const messageController = require('./controllers/messageController');
+const messageModel = require('./models/messageModel');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', messageController.listMessages);
 
+const data = moment().format('DD-MM-yyyy HH:mm:ss A');
+let usersOn = [];
+
 io.on('connection', (socket) => {
+  socket.on('userOn', (nickname) => {
+    usersOn = usersOn.filter((id) => socket.id !== id.id);
+    usersOn.push({ id: socket.id, nickname });
+    io.emit('usersOn', usersOn);
+  });
+
   socket.on('message', async (post) => {
-    const { nickname, chatMessage } = post;
-    const data = moment().format('DD-MM-yyyy HH:mm:ss A');
-    const message = `${data} - ${nickname} ${chatMessage}`;
-    io.emit('message', message);
+    const { chatMessage } = post;
+    let nickname = usersOn.filter((user) => socket.id === user.id).map((user) => user.nickname);
+    if (nickname.length === 0) nickname = post.nickname;
+    const message = `${data} - ${nickname}: ${chatMessage}`;
     await messageModel.insertMessage(chatMessage, nickname, data);
+    io.emit('message', message);
+  });
+
+  socket.on('disconnect', () => {
+    usersOn = usersOn.filter((id) => socket.id !== id.id);
+    io.emit('usersOn', usersOn);
   });
 });
 

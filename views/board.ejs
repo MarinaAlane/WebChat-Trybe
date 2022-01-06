@@ -6,7 +6,9 @@
 <body>
   <h1>Webchat</h1>
 
-  <p id="nick" data-testid="online-user"></p>
+  <ul id="users">
+  </ul>
+
 
   <input id="nickname" type="text" data-testid="nickname-box" placeholder="Nickname" />
   <button id="newNickname" data-testid="nickname-button">Salvar</button><br>
@@ -25,18 +27,16 @@
   </form>
 
   <script>
-    let user = 0;
-    user += 1;
-    const nick = `UmNomeAleatorio${user}`; 
-    document.getElementById('nick').innerHTML = nick;
+    const nick = Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
+    // Ederson Rodrigues PR: https://github.com/tryber/sd-010-b-project-webchat/pull/16
     
     const socket = io('http://localhost:3000');
     
     const btnNewNick = document.getElementById('newNickname');
     btnNewNick.addEventListener('click', () => {
-      const newNickname = document.getElementById('nickname');
-      document.getElementById('nick').innerHTML = newNickname.value;
-    })
+      const newNickname = document.getElementById('nickname').value;
+      socket.emit('userOn', newNickname)
+    });
     
     socket.on('message', (message) => {
       const { chatMessage, data } = message;
@@ -44,8 +44,22 @@
       li.innerHTML = message;
       li.setAttribute('data-testid', 'message')
       document.getElementById('messages').appendChild(li)
-    })
-    
+    });
+
+    socket.emit('userOn', nick);
+    socket.on('usersOn', (users) => {
+      const ulUsers = document.getElementById("users");
+      ulUsers.innerHTML = "";
+      users.map((user) => {
+        const li = document.createElement('li');
+        li.setAttribute("data-testid", "online-user")
+        li.innerText = user.user;
+        socket.id === user.id
+        ? ulUsers.prepend(li)
+        : ulUsers.appendChild(li);
+        });
+    });
+
     const btnSend = document.getElementById('submit');
     btnSend.addEventListener('click', (event) => {
       event.preventDefault();
