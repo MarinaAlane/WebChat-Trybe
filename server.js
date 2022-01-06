@@ -4,6 +4,7 @@ const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
 const moment = require('moment');
+const Chat = require('./models/Chat');
 
 require('dotenv').config();
 
@@ -17,17 +18,22 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log(`Usuário ${socket.id} conectou`);
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    io.emit(
-      'message',
-      `${moment().format(
-        'DD-MM-yyyy HH:mm:ss A',
-      )} - ${nickname}: ${chatMessage}`,
-    );
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    const date = moment();
+    const formatedDate = date.format('DD-MM-yyyy hh:mm:ss A');
+
+    await Chat.create({
+      message: chatMessage,
+      nickname,
+      timestamp: formatedDate,
+    });
+    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
   });
+
+  socket.emit('history', await Chat.getAll());
 
   socket.on('disconnect', () => {
     console.log(`Usuário ${socket.id} desconectou`);

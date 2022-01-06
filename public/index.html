@@ -111,6 +111,18 @@
         newMessage.innerText = msg;
         messages.appendChild(newMessage);
       });
+
+
+
+      socket.on('history', (history) => {
+        history.forEach(({ message, nickname, timestamp }) => {
+        const newLi = document.createElement('li');
+        newLi.setAttribute('data-testid', 'message');
+        newLi.innerText = `${timestamp} - ${nickname}: ${message}`;
+        messages.append(newLi);
+      });
+    });
+
     </script>
   </body>
 </html>
