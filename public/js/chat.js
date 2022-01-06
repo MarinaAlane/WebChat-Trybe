@@ -45,6 +45,7 @@ const addMessageToList = (msgContent) => {
 
 const addUserToList = (nick, testid) => {
   const userElement = document.createElement('li');
+
   userElement.innerText = nick;
   userElement.setAttribute(testIdAttribute, testid);
 
