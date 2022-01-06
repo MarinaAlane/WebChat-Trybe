@@ -51,5 +51,5 @@ app.get('/', (_req, res) => {
 });
 
 http.listen(PORT, () => {
-  console.log(`Rodando fino na porta ${PORT}`);
+  console.log(`Listening in the port ${PORT}`);
 });
