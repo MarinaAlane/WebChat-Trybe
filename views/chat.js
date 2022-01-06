@@ -85,7 +85,7 @@ socket.on('userList', (users) => {
 socket.on('updateUser', (userData) => updateUser(userData));
 
 socket.on('disconnected', (id) => {
-  const userElement = document.querySelector(`#${id}`);
+  const userElement = document.getElementById(id);
   userElement.remove();
 });
 

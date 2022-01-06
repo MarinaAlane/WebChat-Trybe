@@ -24,7 +24,7 @@ const disconnectUserFunc = (io) => {
     socket.on('disconnect', () => {
       const index = users.findIndex((user) => user.id === socket.id);
       users.splice(index, 1);
-      socket.broadcast.emit('disconnected', socket.id);
+      io.emit('disconnected', socket.id);
     });
   });
 };
