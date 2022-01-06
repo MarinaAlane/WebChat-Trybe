@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebChat</title>
+  </head>
+  <body>
+    <main>
+      <section>
+        <div>
+          <form>
+            <input type="text" name="nick" placeholder="Insira seu nickname" required>
+            <button type="submit">Salvar</button>
+          </form>
+          <div>
+            <ul>
+              <li>User1</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <ul>
+            <li>Message1</li>
+          </ul>
+        </div>
+      </section>
+      <section>
+        <form>
+          <input type="text" name="message" placeholder="Digite sua mensagem" required>
+          <button type="submit">Enviar</button>
+        </form>
+      </section>
+    </main>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../sockets/message.js"></script>
+</html>
