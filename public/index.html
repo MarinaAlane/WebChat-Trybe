@@ -5,34 +5,57 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Projeto WebChat</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
 </head>
 <body>
-  <ul id="messages"></ul>
-  <form id="form">
-    <input type="text" id="input">
-    <button>Enviar</button>
+  <form id="chat">
+    <input type="text" name="username" placeholder="Digite seu usuário">
+    <div class="container">
+      <div class="onlineUsers"></div>
+      <div class="messages"></div>
+    </div>
+    <input type="text" name="message" placeholder="Digite sua mensagem">
+    <button type="submit">Enviar</button>
   </form>
-  <script>
-    var socket = io();
 
-    var messages = document.getElementById('messages');
-    var form = document.getElementById('form');
-    var input = document.getElementById('input');
+  <script type="text/javascript">
+    const socket = io('http://localhost:3000');
 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
+    function renderMessage(message) {
+      const messageArea = document.querySelector('.messages');
+      const textMessage = document.createElement('p');
+      messageArea.append(message, textMessage);
+    }
 
-      if(input.value) {
-        socket.emit('message', { chatMessage: input.value, nickname: socket.id });
-        input.value = '';
-      }
+    socket.on('previusMessage', (messages) => {
+      messages.forEach((message) => {
+        renderMessage(message);
+      });
     });
 
-    socket.on('message', function(msg) {
-      var listItem = document.createElement('li');
-      listItem.textContent = msg;
-      messages.appendChild(listItem);
-      window.scrollTo(0, document.body.scrollHeight);
+    socket.on('message', (message) => {
+      renderMessage(message);
+    });
+
+    const form = document.querySelector('#chat');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const messageAuthor = document.querySelector('input[name="username"]').value;
+
+      const message = document.querySelector('input[name="message"]').value;
+
+      if (author.length && message.length) {
+        const obj = {
+          chatMessage: message,
+          nickname: messageAuthor,
+        };
+
+        renderMessage(obj);
+
+        socket.emit('message', obj);
+      }
     });
   </script>
 </body>
