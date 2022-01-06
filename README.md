@@ -299,7 +299,7 @@ Caso prefira testar um requisito por vez pode executar o teste da seguinte forma
 ```
 ---
 
-### 3 - Elabore o histórico do chat para que as mensagens persistam.
+### 3 - Elabore o histórico do chat para que as mensagens persistam
 
 #### ⚠️ &nbsp; DICA: Para desenvolver esse requisito é estritamente necessário se conectar ao banco de dados.
 
