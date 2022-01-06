@@ -15,6 +15,7 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   },  
 });
+
 const { getMessage, postMessage } = require('./models/webChatModel');
 const { geraNickName } = require('./utils/index');
 
