@@ -1,4 +1,3 @@
-// Faça seu código aqui
 const express = require('express');
 const http = require('http');
 const path = require('path');
@@ -15,28 +14,41 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+const online = [];
+
 io.on('connection', async (socket) => {
-  const basNickname = socket.id.slice(0, 16);
+  const { id } = socket;
+  const baseNickname = id.slice(0, 16);
   const list = await Messages.getAll();
 
-  // -----------enviar a mensagem------------------------------
+  online.push({ id, nickname: baseNickname });
+  socket.emit('newUser', baseNickname);
+  
   socket.on('message', async (message) => {
     const date = moment().format('DD-MM-YYYY, hh:mm:ss');
     const completeMessage = `${date} - ${message.nickname}: ${message.chatMessage}`;
     io.emit('message', completeMessage);
     await Messages.create(message.nickname, message.chatMessage, date);
   });
-  // -----------enviar a mensagem------------------------------
+  
+  socket.on('saveNick', (nickname) => {
+    const index = online.findIndex((user) => user.id === socket.id);
+    online[index].nickname = nickname;
+    io.emit('users', online);
+  });
 
-  // --------envia o historico----------
-  socket.emit('getMessages', list);
-  // --------envia o historico----------
-
-  io.emit('newUser', basNickname);
+  socket.on('users', () => {
+    console.log(online);
+    io.emit('users', online);
+  });
 
   socket.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} desconectado`);
+    const index = online.findIndex((user) => user.id === socket.id);
+    online.splice(index, 1); 
+    io.emit('users', online); 
   });
+
+  socket.emit('getMessages', list);
 });
 
 server.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));

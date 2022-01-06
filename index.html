@@ -39,6 +39,8 @@
       const nickForm = document.querySelector('.nickname-form');
       const nickInput = document.querySelector('.nickname-input');
       
+      
+
       let nickname = '';
 
       const socket = window.io();
@@ -54,7 +56,8 @@
       nickForm.addEventListener('click', (event) => { 
         event.preventDefault(); 
         nickname = nickInput.value;
-        nickInput = '';
+        nickInput.value = '';
+        socket.emit('saveNick', nickname);
       });
 
       const createMessage = (msg) => {
@@ -62,6 +65,13 @@
         newMsg.textContent = msg;
         newMsg.setAttribute('data-testid', 'message');
         messages.appendChild(newMsg);
+      }
+
+      const listUsers = (nick) => {
+        const li = document.createElement('li');
+        li.textContent = nick.nickname;
+        li.setAttribute('data-testid', 'online-user');
+        users.appendChild(li);
       }
 
       socket.on('message', createMessage)
@@ -74,15 +84,17 @@
         })
       })
 
-      socket.on('connect', () => {
-        console.log(`Usuário ${socket.id} conectado`);
+      socket.on('users', (userList) => {
+        users.innerHTML = '';
+        console.log(userList)
+        const user = userList.find((item) => item.id === socket.id);
+        listUsers(user); 
+        userList.forEach((item) => item.id !== socket.id && listUsers(item));
       });
 
-      socket.on('newUser', (nick) => {
-        const li = document.createElement('li');
-        li.textContent = nick;
-        li.setAttribute('data-testid', 'online-user');
-        users.appendChild(li);
+      socket.on('newUser', (newId) => {
+        nickname = newId;
+        socket.emit('users');
       })
 
     </script>
