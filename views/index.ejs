@@ -134,6 +134,16 @@
         }
       }
     });
+
+    socket.on('messageHistory', (messages) => {
+      const sentMessagesUl = document.getElementById('sent-messages');
+      messages.forEach(({ message, nickname, timestamp }) => {
+        const newLi = document.createElement('li');
+        newLi.dataset.testid = 'message';
+        newLi.innerText = `${timestamp} - ${nickname}: ${message}`;
+        sentMessagesUl.append(newLi);
+      });
+    });
   </script>
 </body>
 </html>
