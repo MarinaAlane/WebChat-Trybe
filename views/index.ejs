@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Webchat</h1>
+  <ul id="messages"></ul>
+  <div>
+    <input id="nickname" type="text" placeholder="Nickname" />
+    <input id="text" type="text" placeholder="Mensagem" />
+    <button id="submit">Enviar</button>
+  </div>
+  <script>
+      const socket = io('http://localhost:3000');
+      socket.on('message', (message) => {
+        const li = document.createElement('li');
+        li.innerHTML = message;
+        document.getElementById('messages').appendChild(li)
+      })
+      const btn = document.getElementById('submit');
+      btn.addEventListener('click', () => {
+        const text = document.getElementById('text');
+        const nickname = document.getElementById('nickname');
+        socket.emit('message', { nickname: nickname.value, chatMessage: text.value });
+      });
+  </script>
+</body>
+</html> 
