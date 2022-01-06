@@ -3,13 +3,13 @@ const socket = window.io();
 const sendbutton = document.querySelector('#sendButton');
 const inputMessage = document.querySelector('#messageInput');
 
-  function getNickname(id) {
-   const nickName = sessionStorage.getItem('nickname');
-    if (!nickName) return id.substr(0, 16);
-    return nickName;
-  }
+function getNickname(id) {
+  const nickName = sessionStorage.getItem('nickname');
+  if (!nickName) return id.substr(0, 16);
+  return nickName;
+}
 
-   sendbutton.addEventListener('click', (e) => {
+sendbutton.addEventListener('click', (e) => {
     e.preventDefault();
     const id = getNickname(socket.id);
     socket.emit('message', { chatMessage: inputMessage.value, nickname: id });
@@ -39,4 +39,14 @@ const inputMessage = document.querySelector('#messageInput');
           e.preventDefault();
           sessionStorage.setItem('nickname', nickInput.value);
           nickInput.value = '';
+        });
+
+        socket.on('history', (message) => {
+          message.forEach((mess) => {
+            const messagesUl = document.querySelector('#messages');
+            const li = document.createElement('li');
+            li.dataset.testid = 'message';
+            li.innerText = `${mess.timestamp} ${mess.nickname} ${mess.message}`;
+            messagesUl.appendChild(li);
+          });
         });
