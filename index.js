@@ -33,7 +33,21 @@ io.on('connection', async (socket) => {
   console.log(`usuário ${socket.id} conectado`);
   usersList.addUser({ id: socket.id, nickname: socket.id.substring(0, 16) });
   io.emit('connection', usersList.online);
-  io.to(socket.id).emit('msgHistory', msgHist);
+  // https://qastack.com.br/programming/4647348/send-message-to-specific-client-with-socket-io-and-node-js
+  //   Você pode usar
+  // // envia mensagem apenas para o remetente-cliente
+  // socket.emit('message', 'check this');
+  // // ou você pode enviar para todos os ouvintes, incluindo o remetente
+  // io.emit('message', 'check this');
+  // // envia para todos os ouvintes, exceto o remetente
+  // socket.broadcast.emit('message', 'this is a message');
+  // // ou você pode enviá-lo para uma sala
+  // socket.broadcast.to('chatroom').emit('message', 'this is the message to all');
+
+  // originalmente eu usei a solução comentada abaixo para emitir somente para o client que se conectou
+  // io.to(socket.id).emit('msgHistory', msgHist);
+  // porem o código em vigor abaixo parece melhor.
+  socket.emit('msgHistory', msgHist);
 
   socket.on('message', async ({ chatMessage, nickname }) => { 
     await sendMessage({ chatMessage, nickname }, usersList, io, socket);
