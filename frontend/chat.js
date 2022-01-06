@@ -18,7 +18,7 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
 
 let nickname = randomStringGen(16);
 
-const createLIitens = (text, dataTestid) => {
+const createListItens = (text, dataTestid) => {
   const div = document.getElementsByClassName('messages-div')[0];
   const p = document.createElement('p');
   const attr = document.createAttribute('data-testid');
@@ -47,15 +47,15 @@ sendMsgBtn.addEventListener('click', (e) => {
 });
 
 socket.on('youLogged', (msg) => {
-  createLIitens(msg, 'message');
+  createListItens(msg, 'message');
 });
 
 socket.emit('userLogged', nickname);
 
 socket.on('userLogged', (nicknameRandom) => {
-  createLIitens(nicknameRandom, 'online-user');
+  createListItens(nicknameRandom, 'online-user');
 });
 
 socket.on('message', (msg) => {
-  createLIitens(msg, 'message');
+  createListItens(msg, 'message');
 });

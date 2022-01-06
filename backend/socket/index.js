@@ -10,15 +10,37 @@ const currentlyTime = () => {
   return `${dataAtual} ${horaAtual}`;
 };
 
+// let onlineUsers = [];
+
+const connectionUserLoggedEvent = (socket = null, io = null) => {
+  socket.on('userLogged', (nicknameRandom) => {
+    // onlineUsers.push({ socketId: socket.id, nickName: nicknameRandom });
+
+    // io.emit('userLogged', { 
+    //   nickname: nicknameRandom,
+    //   onlineUsers: onlineUsers.reverse(),
+    // });
+
+    io.emit('userLogged', nicknameRandom);
+  });
+};
+
 module.exports = (io) => {
   io.on('connection', async (socket) => {
     socket.emit('userID', socket.id);
 
-    socket.emit('youLogged', 'You are in');
+    connectionUserLoggedEvent(socket, io);
 
-    socket.on('userLogged', (nicknameRandom) => {
-      io.emit('userLogged', nicknameRandom);
-    });
+    // socket.on('userLogged', (nicknameRandom) => {
+    //   // onlineUsers.push({ socketId: socket.id, nickName: nicknameRandom });
+
+    //   // io.emit('userLogged', { 
+    //   //   nickname: nicknameRandom,
+    //   //   onlineUsers: onlineUsers.reverse(),
+    //   // });
+
+    //   io.emit('userLogged', nicknameRandom);
+    // });
   
     socket.on('message', async (clientMsg) => {
       const { nickname, chatMessage } = clientMsg;
