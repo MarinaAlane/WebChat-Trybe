@@ -9,42 +9,73 @@
   <body>
     <div class="container">
       
-      <div class="nickname">
-        <input type="text" class="nickname-input" placeholder="Nome de usuário" />
-        <button type="submit" class="nickname-button">
+      <form class="nickname-form">
+        <input type="text" class="nickname-input" placeholder="Nome de usuário" data-testid="nickname-box"v/>
+        <button type="submit" class="nickname-button" data-testid="nickname-button">
           Salvar
         </button>
-      </div>
+      </form>
 
       <div class="chat">
         <ul class="users"></ul>
         <ul class="messages"></ul>
       </div>
 
-      <div class="message">
-        <input type="text" class="message-input" placeholder="Mensagem" />
-        <button type="submit" class="message-button">
+      <form class="message-form">
+        <input type="text" class="message-input" placeholder="Mensagem" data-testid="message-box"/>
+        <button type="submit" class="message-button" data-testid="send-button">
           Enviar
         </button>
-      </div>
+      </form>
     </div>
 
     <script src='/socket.io/socket.io.js'></script>
     <script>
-      const socket = window.io();
+      const users = document.querySelector('.users');
+      const msgForm = document.querySelector('form.message-form');
+      const msgInput = document.querySelector('.message-input');
+      const msgButton = document.querySelector('.message-button');
+      const messages = document.querySelector('.messages');
+      const nickForm = document.querySelector('.nickname-form');
+      const nickInput = document.querySelector('.nickname-input');
       
-      socket.on('connect', () => {
-        console.log(`Usuário ${socket.id} conectado`);
+      let nickname = '';
+
+      const socket = window.io();
+
+      msgForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (msgInput.value) {
+          socket.emit('message', { nickname, chatMessage: msgInput.value });
+          msgInput.value = '';
+        }
+      })
+
+      nickForm.addEventListener('click', (event) => { 
+        event.preventDefault(); 
+        nickname = nickInput.value;
       });
 
-      socket.emit('message', {
-        nickname: '',
-        chatMessage: '',
-      });
+      socket.on('message', (msg) => {
+        const newMsg = document.createElement('li');
+        newMsg.textContent = msg;
+        newMsg.setAttribute('data-testid', 'message');
+        messages.appendChild(newMsg);
+      })
 
-      socket.on('message', (message) => {
-        console.log(message);
-      });
+      //-------------------------
+      // socket.emit('message', {
+      //   nickname: '',
+      //   chatMessage: '',
+      // });
+
+      socket.on('newUser', (nick) => {
+        const li = document.createElement('li');
+        li.textContent = nick;
+        li.setAttribute('data-testid', 'online-user');
+        users.appendChild(li);
+      })
+
     </script>
   </body>
 </html> 

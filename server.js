@@ -15,11 +15,15 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  const basNickname = socket.id.slice(0, 16);
+
   socket.on('message', (message) => {
     const date = moment().format('DD-MM-YYYY, hh:mm:ss');
     const completeMessage = `${date} - ${message.nickname}: ${message.chatMessage}`;
     io.emit('message', completeMessage);
   });
+
+  io.emit('newUser', basNickname);
 
   socket.on('disconnect', () => {
     console.log(`Usuário ${socket.id} desconectado`);
