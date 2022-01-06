@@ -8,7 +8,9 @@
   <title>Webchat</title>
 </head>
 <body>
-  <p id="nickname" data-testid="online-user"></p>
+  <p id="nickname"></p>
+  <ul id="online-client-list">
+  </ul>
   <label for="nickname-Box">Nickname</label>
   <input type="text" name="nickname-box" id="nickname-box" data-testid="nickname-box">
   <button id="nickname-button" data-testid="nickname-button">Salvar</button>
@@ -30,7 +32,9 @@
     sendButton.addEventListener('click', () => {
       const nickname = sessionStorage.getItem('nickname');
       const messageBox = document.getElementById('message-box');
+
       socket.emit('message', { nickname, chatMessage: messageBox.value });
+
       messageBox.value = '';
       messageBox.focus();
     });
@@ -47,7 +51,9 @@
     nicknameButton.addEventListener('click', () => {
       const nicknameBox = document.getElementById('nickname-box');
       nickname = nicknameBox.value;
+
       socket.emit('updateNickname', nickname);
+
       sessionStorage.setItem('nickname', nickname);
 
       const nicknameElement = document.getElementById('nickname');
@@ -68,6 +74,23 @@
       })
     })
 
+    socket.on('online-clients', (clients) => {
+      const nickname = sessionStorage.getItem('nickname');
+      for (let index = 0; index < clients.length; index += 1) {
+        if (clients[index].nickname === nickname) {
+          const client = clients.pop();
+          clients.unshift(client);
+        }
+      }
+      const onlineClientList = document.getElementById('online-client-list');
+      onlineClientList.innerHTML = '';
+      clients.map((client) => {
+      const onlineClientListItem = document.createElement('li');
+      onlineClientListItem.dataset.testid = 'online-user';
+      onlineClientListItem.innerText = client.nickname;
+      onlineClientList.append(onlineClientListItem);
+      })
+    })
   </script>
 </body>
 </html>
