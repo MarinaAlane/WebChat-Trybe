@@ -69,9 +69,10 @@ io.on('connection', async (socket) => {
   socket.emit('randomNickname', randomNickname);
 
   const onlineClient = createOnlineClient(randomNickname, socket.id);
-
-  onlineClientsList.push(onlineClient);
   
+  onlineClientsList.push(onlineClient);
+  console.log(onlineClientsList);
+
   socket.on('updateNickname', (nickname) => {
     updateNicknameInList(nickname, socket, io);
   });
@@ -79,6 +80,7 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', () => {
     removeUserOnline(socket, io);
   });
+
   ioEmitOnlineClientsList(io);
 
   const previousMessages = await messages.getAllMessages();
@@ -86,7 +88,7 @@ io.on('connection', async (socket) => {
   socket.emit('previousMessages', previousMessages);
 
   socket.on('message', async ({ nickname, chatMessage }) => {
-    const formatedMessage = formatMessage(nickname, chatMessage);  
+    const formatedMessage = await formatMessage(nickname, chatMessage);  
     io.emit('message', formatedMessage);
   });
 });

@@ -4,7 +4,6 @@ const connection = require('./connection');
 const insertMessage = async ({ nickname, message, timestamp }) => {
   const db = await connection();
   const result = await db.collection('messages').insertOne({ nickname, message, timestamp });
-  console.log(result);
   return result;
 };
 
