@@ -5,25 +5,46 @@
 </head>
 <body>
   <h1>Webchat</h1>
+
+  <p id="nick" data-testid="online-user"></p>
+
+  <input id="nickname" type="text" data-testid="nickname-box" placeholder="Nickname" />
+  <button id="newNickname" data-testid="nickname-button">Salvar</button><br>
+
   <ul id="messages"></ul>
-  <div>
-    <input id="nickname" type="text" placeholder="Nickname" />
-    <input id="text" type="text" placeholder="Mensagem" />
-    <button id="submit">Enviar</button>
-  </div>
+
+  <input id="text" type="text" data-testid="message-box" placeholder="Mensagem" />
+  <button id="submit" data-testid="send-button">Enviar</button>
+
   <script>
-      const socket = io('http://localhost:3000');
-      socket.on('message', (message) => {
-        const li = document.createElement('li');
-        li.innerHTML = message;
-        document.getElementById('messages').appendChild(li)
-      })
-      const btn = document.getElementById('submit');
-      btn.addEventListener('click', () => {
-        const text = document.getElementById('text');
-        const nickname = document.getElementById('nickname');
-        socket.emit('message', { nickname: nickname.value, chatMessage: text.value });
-      });
+    let user = 0;
+    user += 1;
+    const nick = `UmNomeAleatorio${user}`; 
+    document.getElementById('nick').innerHTML = nick;
+    
+    const socket = io('http://localhost:3000');
+    
+    const btnNewNick = document.getElementById('newNickname');
+    btnNewNick.addEventListener('click', () => {
+      const newNickname = document.getElementById('nickname');
+      document.getElementById('nick').innerHTML = newNickname.value;
+    })
+    
+    socket.on('message', (message) => {
+      const { chatMessage, data } = message;
+      const li = document.createElement('li');
+      li.innerHTML = message;
+      li.setAttribute('data-testid', 'message')
+      document.getElementById('messages').appendChild(li)
+    })
+    
+    const btnSend = document.getElementById('submit');
+    btnSend.addEventListener('click', () => {
+      const text = document.getElementById('text');
+      const nickname = document.getElementById('nick').innerHTML;
+      socket.emit('message', { nickname, chatMessage: text.value });
+    });
+    
   </script>
 </body>
 </html> 
