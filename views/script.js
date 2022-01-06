@@ -8,19 +8,9 @@ const nickNameBtn = document.getElementById('nickname_btn');
 const messageInput = document.getElementById('messages_input');
 const messageBtn = document.getElementById('messages_btn');
 
-function geraNickName() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let nickname = '';
-  for (let i = 0; i < 16; i += 1) {
-    const r = Math.floor(Math.random() * chars.length);
-    nickname += chars.substring(r, r + 1);
-  }
-  return nickname;
-} 
-
 messageBtn.addEventListener('click', (event) => {
   event.preventDefault();
-  const nickname = userId || geraNickName();
+  const nickname = userId || socket.id.slice(0, 16);
   socket.emit('message', {
     chatMessage: messageInput.value,
     nickname });
@@ -45,6 +35,7 @@ nickNameBtn.addEventListener('click', (event) => {
 });
 
 const users = (usersOnline) => {
+  const loadNickName = socket.id.slice(0, 16);
   const usersSection = document.getElementById('usersOn');
   usersSection.innerHTML = '';
 
@@ -53,6 +44,10 @@ const users = (usersOnline) => {
     userElement.innerText = user;
     userElement.setAttribute(DATA_TESTID, 'online-user');
     usersSection.appendChild(userElement);
+    if (user === userId || user === loadNickName) {
+      return usersSection.prepend(userElement);
+    }
+    return usersSection.appendChild(userElement);
   });
 };
 
