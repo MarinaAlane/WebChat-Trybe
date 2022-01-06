@@ -25,6 +25,8 @@ io.on('connection', (socket) => {
     `${dataMessage.date} ${dataMessage.time} - ${msg.nickname}: ${msg.chatMessage}`);
   });
 
+  io.emit('nickname', randomName);
+
   socket.on('disconnect', () => {
     console.log(`Usuário ${socket.id} desconectou`);
   });

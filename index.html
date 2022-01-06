@@ -86,26 +86,29 @@
     <div class="painel">
       <div class="users">
         <form id="nickname-form">
-          <input id="teste" type="text" placeholder="Digite seu Nickname" size="15">
-          <button>Salvar</button>
+          <input
+            id="teste"
+            type="text"
+            placeholder="Digite seu Nickname"
+            size="15"
+            data-testid="nickname-box">
+          <button data-testid="nickname-button">Salvar</button>
         </form>
         <label>
           Usuários Online
           <section class="users-online">
-            <ul>
-              <li>Usuarios online</li>
-            </ul>
+            <ul id="users"></ul>
           </section>
         </label>
       </div>
       <div class="messages-content">
-        <ul id="messages" data-testid="message-box"></ul>
+        <ul id="messages" ></ul>
       </div>
     </div>
     <div class="send-message">
       <form class="form-send-message" id="form">
-        <input id="input" placeholder="Digite sua mensagem" size="70">
-        <button class="submit-message">Enviar</button>
+        <input id="input" placeholder="Digite sua mensagem" size="70" data-testid="message-box">
+        <button class="submit-message" data-testid="send-button">Enviar</button>
       </form>
     </div>
   </div>
@@ -146,9 +149,19 @@
       }
     });
 
+    const usersOnline = document.querySelector('#users');
+
+    socket.on('nickname', (randomNickname) => {
+      const nickname = document.createElement('li');
+      nickname.textContent = randomNickname;
+      nickname.setAttribute('data-testid', 'online-user')
+      usersOnline.appendChild(nickname);
+    })
+
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
       newMessage.textContent = msg;
+      newMessage.setAttribute('data-testid', 'message');
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
