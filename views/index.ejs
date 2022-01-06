@@ -8,7 +8,7 @@
 </head>
 <body>
   <main>
-    <h1>Olá, <span data-testid="online-user" id="nickname"></span></h1>
+    <h1>Olá, <span id="nickname"></span></h1>
     <section>
       <section>
         <section>
@@ -31,25 +31,69 @@
   
   <script src="./socket.io/socket.io.js"></script>
   <script>
-    const socket = io('http://localhost:<%= process.env.PORT || 3000 %>');
+    const socket = io();
+
+    const getUsers = () => {
+      const loggedUsersUl = document.getElementById('logged-users');
+      return loggedUsersUl.children;
+    };
+
+    const getUsername = () => {
+      const usernameSpan = document.getElementById('nickname');
+      return usernameSpan.innerText;
+    };
 
     const setNickname = (nickname) => {
       const nicknameSpan = document.getElementById('nickname');
       nicknameSpan.innerText = nickname;
     };
 
+    const addLoggedUser = (username) => {
+      const loggedUsersUl = document.getElementById('logged-users');
+      const newLi = document.createElement('li');
+
+      newLi.dataset.testid = 'online-user';
+      newLi.innerText = username;
+      loggedUsersUl.append(newLi);
+    };
+
     socket.on('setUsername', (data) => {
       setNickname(data);
 
       sessionStorage.setItem('username', data);
+
+      addLoggedUser(data);
+    });
+
+    socket.on('addLoggedUser', (data) => {
+      addLoggedUser(data);
+
+      const username = getUsername();
+
+      socket.emit('addLoggedUser', username);
+    });
+
+    const hasLoggedUser = (username) => {
+      const users = getUsers();
+      for (let index = 0; index < users.length; index += 1) {
+        if (users[index].innerText === username) return true;
+      }
+      return false;
+    }
+
+    socket.on('addMissingLoggedUser', (username) => {
+      if (!hasLoggedUser(username)) addLoggedUser(username);
     });
 
     const saveButton = document.getElementById('save');
     saveButton.addEventListener('click', () => {
       const usernameInput = document.getElementById('username');
+      const newUsername = usernameInput.value;
 
-      setNickname(usernameInput.value);
-      sessionStorage.setItem('username', usernameInput.value);
+      setNickname(newUsername);
+      sessionStorage.setItem('username', newUsername);
+      socket.emit('updateUsername', newUsername);
+
       usernameInput.value = '';
     });
 
@@ -69,6 +113,26 @@
       newLi.dataset.testid = 'message';
       newLi.append(data);
       sentMessagesUl.append(newLi);
+    });
+
+    socket.on('updateUsername', ({ oldUsername, newUsername }) => {
+      const users = getUsers();
+      for (let index = 0; index < users.length; index += 1) {
+        if (users[index].innerText === oldUsername) {
+          users[index].innerText = newUsername;
+          break;
+        }
+      }
+    });
+
+    socket.on('removeUser', (username) => {
+      const users = getUsers();
+      for (let index = 0; index < users.length; index += 1) {
+        if (users[index].innerText === username) {
+          users[index].remove();
+          break;
+        }
+      }
     });
   </script>
 </body>

@@ -21,7 +21,24 @@ const io = require('socket.io')(http, {
 const moment = require('moment');
 
 io.on('connection', (socket) => {
-  socket.emit('setUsername', socket.id.slice(-16));
+  let username = socket.id.slice(-16);
+
+  socket.emit('setUsername', username);
+
+  socket.broadcast.emit('addLoggedUser', username);
+
+  socket.on('addLoggedUser', (data) => {
+    socket.broadcast.emit('addMissingLoggedUser', data);
+  });
+
+  socket.on('updateUsername', (data) => {
+    io.emit('updateUsername', { oldUsername: username, newUsername: data });
+    username = data;
+  });
+
+  socket.on('disconnect', () => {
+    io.emit('removeUser', username);
+  });
   
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = moment();
