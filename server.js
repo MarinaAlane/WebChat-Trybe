@@ -1,47 +1,50 @@
 const express = require('express');
-
-const path = require('path');
-const http = require('http');
-
-const { Server } = require('socket.io');
-
 const moment = require('moment');
-const { saveMessage, getMessages } = require('./models/chat');
+require('dotenv').config();
+
+const PORT = process.env.PORT || 3000;
 
 const app = express();
+const http = require('http').createServer(app);
 
-const PORT = 3000;
-
-const server = http.createServer(app);
-const io = new Server(server);
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+const io = require('socket.io')(http, {
+  cors: { origin: `http://localhost:${PORT}`, methods: ['GET', 'POST'] },
 });
 
-io.on('connection', (socket) => {
-  console.log(`Usuário ${socket.id} conectou`);
+const { sendMessageToDB, getMessageFromDB } = require('./models/webchat');
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    saveMessage({
-      message: chatMessage, nickname, timestamp: moment().format('DD-MM-yyyy HH:mm:ss'),
-    });
+app.use(express.static('views'));
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
-    io.emit('message', `${moment().format('DD-MM-yyyy HH:mm:ss A')} - ${nickname}: ${chatMessage}`);
-  });
+const nick = {};
 
-  socket.on('newUser', async () => {
-    const valueMessages = await getMessages();
-    
-    if (valueMessages !== []) {
-      valueMessages.map(({ message, nickname, timestamp }) => 
-        io.emit('message', `${timestamp} - ${nickname}: ${message}`));
-    }
-  });
+io.on('connection', async (socket) => {
+  console.log(`Usuário: ${socket.id} conectado!`); nick[socket.id] = socket.id.slice(0, 16);
 
   socket.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} desconectou`);
+    console.log(`Usuário: ${socket.id} está desconectado!`);
+    delete nick[socket.id]; io.emit('onlineUser', Object.values(nick)); 
   });
+
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    const timeLog = moment().format('DD-MM-yyyy HH:mm:ss');
+    io.emit('message', `${timeLog} ${nickname}: ${chatMessage}`);
+    await sendMessageToDB({ timeLog, nickname, chatMessage });
+  });
+
+  socket.on('novoUsername', (nickname) => {
+    nick[socket.id] = nickname; io.emit('onlineUser', Object.values(nick));
+  });
+
+  const logDeMensagens = async () => {
+    const mensagens = await getMessageFromDB(); return mensagens;
+  };
+
+  io.emit('logDeMensagens', await logDeMensagens());
+  io.emit('onlineUser', Object.values(nick));
 });
 
-server.listen(PORT, () => console.log(`Escutando a porta ${PORT}`));
+app.get('/', (req, res) => { res.render('index'); });
+
+http.listen(3000, () => { console.log(`Server listen PORT ${PORT}`); });

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src='http://localhost:3000/socket.io/socket.io.js'></script>
+  <title>Chat do Boff</title>
+  <style>
+    #nickname-list {
+      display: flex;
+      width: 300px;
+      height: 600px;
+      margin-right: 30px;
+      border: 1px solid;
+      border-color: black;
+      border-radius: 5px;
+    }
+
+    #messages-list {
+      display: flex;
+      width: 1350px;
+      height: 600px;
+      border: 1px solid;
+      border-color: black;
+      border-radius: 5px;
+    }
+
+    #flex-div {
+      display: inline-flex;
+      padding: 15px 0 30px;
+    }
+
+    #usuariosOnline, #mensagensUsuarios {
+      list-style: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Chat</h1>
+  <form>
+    <div>
+      <label for="nickname">Insira seu nickname:</label>
+      <input type="text" id="input-nickname" data-testid="nickname-box" />
+      <button type="button" id="botao-nickname" data-testid="nickname-button">Salvar</button>
+    </div>
+
+    <div id="flex-div">
+      <div id="nickname-list">
+        <br><label for="listaUsuarios">Usuários Online:</label><br>
+        <ul id="usuariosOnline"></ul>
+      </div>
+      <div id="messages-list">
+        <br><label for="mensagensUsuarios">Mensagens:</label><br>
+        <ul id="mensagensUsuarios"></ul>
+      </div>
+    </div>
+    <div>
+      <label for="message">Mensagem:</label>
+      <input type="text" id="input-message" data-testid="message-box" />
+      <button type="button" id="botao-message" data-testid="send-button">Enviar</button>
+    </div>
+  </form>
+  <ul id='chat'></ul>
+  <script src="./scripts.js"></script>
+</body>
+
+</html>
