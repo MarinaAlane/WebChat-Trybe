@@ -1,20 +1,24 @@
+// codigo de Laura Gusmao usado como referencia na criação do server: https://github.com/tryber/sd-011-project-webchat/pull/85/files
 const express = require('express');
-const http = require('http');
-// const cors = require('cors');
-// const bodyParser = require('body-parser');
-const path = require('path');
-const { Server } = require('socket.io');
 
 const app = express();
+const http = require('http').createServer(app);
 
-const server = http.createServer(app);
+app.use(express.json());
 
-const io = new Server(server);
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/index.html'));
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
 });
 
-require('./sockets/chat')(io);
+app.use(express.static(`${__dirname}/frontend`));
 
-server.listen(3000, () => console.log('server online'));
+require('./sockets/chat.js')(io);
+
+app.get('/', (_req, res) => {
+  res.sendFile(`${__dirname}/index.html`);
+});
+
+http.listen(3000, () => console.log('Server on na porta: 3000')); 
