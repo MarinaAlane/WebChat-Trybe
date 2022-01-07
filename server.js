@@ -23,6 +23,8 @@ io.on('connection', (socket) => {
     const amOrPm = hora >= 12 ? 'PM' : 'AM';
     const formatDate = `${dia}-${mes}-${ano} ${hora}:${min} ${amOrPm}`;
 
+    io.emit('onlineUser');
+
     socket.on('message', (msg) => {
         const { nickname, chatMessage } = msg;
         console.log(msg);

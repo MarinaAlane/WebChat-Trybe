@@ -9,41 +9,67 @@
     <link  rel="stylesheet"  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"  integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"  crossorigin="anonymous">
 </head>
 <body>
+  <ul class="list-group" id="client" data-testid="online-user">
+  </ul>
     <ul class="list-group" id="messagens">
       </ul>
     <form class="row g-3" id="form">
         <div class="col-auto">
         </div>
         <div class="col-auto">
-          <input type="text" id="input" class="form-control" id="inputPassword2" placeholder="Escrever">
+          <input type="text" id="input" data-testid="message-box" class="form-control" id="inputPassword2" placeholder="Escrever">
         </div>
         <div class="col-auto">
-          <button type="submit" id="submit" class="btn btn-primary mb-3">Enviar</button>
+          <button type="submit" id="submit" data-testid="send-button" class="btn btn-primary mb-3">Enviar</button>
         </div>
       </form>
     <script src="socket.io/socket.io.js"></script>
     <script>
+      // conexão com o socket do servidor
         const socket = io();
-
+      
+      // elementos id da página
         const form = document.querySelector('#form');
         const input = document.querySelector('#input');
         const messages = document.querySelector('#messagens')
+        const client = document.querySelector('#client')
 
+      // Evento de mensagem (Enviar)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const msg = {
-          nickname: '',
+          nickname: geraStringAleatoria(16),
           chatMessage: input.value,
-        }
+        } 
             socket.emit('message', msg);
         })
 
+        // Evento de receber mensagem e distribuir
         socket.on('message', (msg) => {
             const newMessage = document.createElement('li');
+            newMessage.setAttribute('data-testid', 'message');
             newMessage.textContent = msg;
             messages.appendChild(newMessage);
         })
+    </script>
+    <script>
+       // Função para gerar 16 caracteres aleatórios
+       function geraStringAleatoria(tamanho) {
+    var stringAleatoria = '';
+    var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < tamanho; i++) {
+        stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return stringAleatoria;
+    // solução : https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
+  }
 
+      socket.on('onlineUser', () => {
+        const user = document.createElement('li');
+        user.setAttribute('data-testid', 'online-user');
+        user.textContent = geraStringAleatoria(16);
+        client.appendChild(user);
+       })
     </script>
 </body>
 </html>
