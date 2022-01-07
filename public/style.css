@@ -1,0 +1,194 @@
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+li
+{
+  margin: 0;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  font-family: sans-serif;
+  background: var(--gray-100);
+}
+
+/* Make images easier to work with */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:root {
+  /* Colors */
+  --text: #494949;
+  --gray-90: #d1d5da;
+  --gray-100: #e7ebf0;
+  --white: #fff;
+
+  --outline-box-shadow: 0 0 0 2px var(--outline-blue);
+  --outline-box-shadow-contrast: 0 0 0 2px var(--navy-blue);
+
+  /* Fonts */
+}
+
+/* ---------------------------------------------------------------------------*/
+.main {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  /* overflow: hidden; */
+}
+
+.col {
+  height: 100%;
+}
+
+.logo {
+  height: 20px;
+  width: 22px;
+  margin-inline-end: 13px;
+}
+
+.sidebar {
+  background: var(--white);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1);
+  overflow-y: scroll;
+  z-index: 1000;
+  flex-shrink: 0;
+  width: 350px;
+  min-width: 250px;
+  /* hide scrollbar */
+    /* Firefox */
+  /* scrollbar-width: none;   */
+}
+
+/* hide scrollbar */
+  /* chrome | edge */
+/* .sidebar::-webkit-scrollbar {
+  display: none;
+} */
+
+.sidebar-header {
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  font-size: large;
+}
+
+.sidebar-users {
+  display: flex;
+  flex-direction: column;
+  margin: 0 36px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  width: 100%;
+  height:70px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: var(--gray-100);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.user-info p {
+  display: flex;
+  flex-direction: column;
+  flex-direction: row;
+}
+
+.user-info strong, .user-info p {
+  font-size: 14px;
+}
+
+.user-info p::after {
+  content: "";
+  align-self: center;
+  margin: 2px 0 0 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(23, 187, 23);
+}
+
+.user-img {
+  height: 70%;
+  margin: 10px 15px 10px 10px;
+}
+
+.chat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.chat-input {
+  position: absolute;
+  border-radius: 5px;
+  height:50px;
+  background: var(--white);
+  margin: 15px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input input {
+  position: absolute;
+  width: 90%;
+  left: 0;
+  margin: 15px;
+}
+
+.chat-input input {
+  position: absolute;
+  width: 90%;
+  left: 0;
+  margin: 15px;
+  border: none;
+  color: var(--text);
+}
+
+.chat-input input:focus {
+  outline: none;
+}
+
+.chat-send-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto 8px auto 0;
+  border-radius: 50%;
+  padding: 7px;
+  width: 37px;
+  height: 37px;
+  background: var(--gray-100);
+  transition: ease-in-out .15s;
+}
+
+.chat-send-img:hover {
+  padding: 5px;
+  background: var(--gray-90);
+}

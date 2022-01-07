@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/icons/yellow_chat.png">
+  <link rel="stylesheet" href="/style.css">
+  <title>webchat</title> 
+</head>
+<body>
+  <div class="main">
+    <section class="col sidebar">
+      <section class="sidebar-header">
+        <img class="logo" src="/icons/yellow_chat.png" alt=""/>
+        <strong>Web Chat</strong>
+      </section>
+      <section id="user-card" class="sidebar-users" >
+      </section>
+    </section>
+    <section id="chat" class="col chat">
+      <div class="chat-input">
+        <input id="input" type="text" placeholder="Digite sua mensagem aqui c:">
+        <img id="button" class="chat-send-img" src="/icons/plane-message.png" alt=""/>
+      </div>
+    </section>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+
+  </script>
+  <script type="module" src="/js/main.js"></script>
+  <script type="module" src="/js/onlineUsersClient.js"></script>
+</body>
+</html> 
