@@ -5,28 +5,51 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Projeto Webchat</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href="main.css">
     <link  rel="stylesheet"  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"  integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"  crossorigin="anonymous">
 </head>
 <body>
+
+  <form id="formClient">
+    <div class="col-auto">
+      <label for="inputPassword2" data-testid="nickname-box" class="visually-hidden">Mudar apelido</label>
+      <input type="text" data-testid="nickname-box" class="form-control" id="inputUser" >
+    </div>
+    <div class="col-auto">
+      <button type="submit" data-testid="nickname-button" class="btn btn-primary mb-3">Confirmar</button>
+    </div>
+  </form>
+
   <ul class="list-group" id="client" data-testid="online-user">
   </ul>
     <ul class="list-group" id="messagens">
       </ul>
-    <form class="row g-3" id="form">
+    
+      <form class="row g-3" id="form">
         <div class="col-auto">
         </div>
         <div class="col-auto">
-          <input type="text" id="input" data-testid="message-box" class="form-control" id="inputPassword2" placeholder="Escrever">
+          <input type="text" id="input" data-testid="message-box" class="form-control" id="messagens" placeholder="Escrever">
         </div>
         <div class="col-auto">
           <button type="submit" id="submit" data-testid="send-button" class="btn btn-primary mb-3">Enviar</button>
         </div>
       </form>
-    <script src="socket.io/socket.io.js"></script>
+    
+      <script src="socket.io/socket.io.js"></script>
     <script>
       // conexão com o socket do servidor
         const socket = io();
+
+          // Função para gerar 16 caracteres aleatórios
+       function geraStringAleatoria(tamanho) {
+    var stringAleatoria = '';
+    var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < tamanho; i++) {
+        stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return stringAleatoria;
+    // solução : https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
+  }
       
       // elementos id da página
         const form = document.querySelector('#form');
@@ -34,14 +57,27 @@
         const messages = document.querySelector('#messagens')
         const client = document.querySelector('#client')
 
+        const formUser = document.querySelector('#formClient')
+        const inputUser = document.querySelector('#inputUser');
+
       // Evento de mensagem (Enviar)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+
             const msg = {
-          nickname: geraStringAleatoria(16),
+          nickname: sessionStorage.getItem('nickUser'),
           chatMessage: input.value,
         } 
             socket.emit('message', msg);
+        })
+
+        formUser.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            sessionStorage.setItem('nickUser', inputUser.value);
+            console.log(inputUser)
+
+            socket.emit('newNickName', inputUser.value);
         })
 
         // Evento de receber mensagem e distribuir
@@ -53,21 +89,15 @@
         })
     </script>
     <script>
-       // Função para gerar 16 caracteres aleatórios
-       function geraStringAleatoria(tamanho) {
-    var stringAleatoria = '';
-    var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < tamanho; i++) {
-        stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }
-    return stringAleatoria;
-    // solução : https://www.webtutorial.com.br/funcao-para-gerar-uma-string-aleatoria-random-com-caracteres-especificos-em-javascript/
-  }
+     
 
       socket.on('onlineUser', () => {
+        sessionStorage.setItem('nickUser', geraStringAleatoria(16));
+        const nickOnlineUser = sessionStorage.getItem('nickUser')
+        
         const user = document.createElement('li');
         user.setAttribute('data-testid', 'online-user');
-        user.textContent = geraStringAleatoria(16);
+        user.textContent = nickOnlineUser;
         client.appendChild(user);
        })
     </script>
