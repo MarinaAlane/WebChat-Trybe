@@ -2,12 +2,18 @@
 <html>
   <head>
     <title>WebChat</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
   </head>
   <body>
-    <main>
-      <section>
-        <div>
-          <form>
+    <main class="app">
+      <section class="content-section">
+        <div class="users-container">
+          <form class="nick-form">
             <input type="text" name="nick" placeholder="Insira seu nickname" required>
             <button type="submit">Salvar</button>
           </form>
@@ -23,7 +29,7 @@
           </ul>
         </div>
       </section>
-      <section>
+      <section class="message-section">
         <form>
           <input type="text" name="message" placeholder="Digite sua mensagem" required>
           <button type="submit">Enviar</button>
