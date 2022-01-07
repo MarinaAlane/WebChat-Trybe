@@ -21,56 +21,43 @@
 </style>
 
 <body>
-  <span id="randomNickname" data-testid="online-user"></span>
-
-  <form id="formNick" action="">
-    <label id="labelUser">hjhj</label>
-    <input type="text"
-      id="userName"
-      placeholder="Insira seu nickname"
-      data-testid="nickname-box"
-      data-testid="online-user"
-      maxlength="16"
-    >
-    <button type="button" data-testid="nickname-button">Salvar</button>
+  <h3>Olá, <span id="online-user"></span></h3>
+  <form  id="userSave" action="">
+    <label id="labelUser"></label>
+    <input type="text" id="userName" placeholder="Insira seu nickname" data-testid="nickname-box">
+    <button  type="submit" data-testid="nickname-button">Salvar</button>
   </form>
 
-  <table>
-    <thead>
-      <tr>
-          <th>Users Online</th>
-      </tr>
-    </thead>
-    <tbody id="userOnline">
-    </tbody>
-  </table>
-
   <div>
-    <ul id="onlineUsersId"></ul>
+    <ul id="usersList">
+      <li id="nickName" data-testid="online-user"></li>  
+    </ul>
   </div>
 
   <ul id="ulMessages" data-testid="message"></ul>
 
-  <form id="form" action="">
+  <form  action="" id="sendButton" >
     <label for="">Message</label>
     <input type="text" id="input" placeholder="Digite uma mensagem " data-testid="message-box">
-    <button id="sendButton" type="button" data-testid="send-button">Enviar</button>
+    <button type="submit" data-testid="send-button">Enviar</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>
 
   <script>
-    const socket = window.io();
 
     const form = document.querySelector('#form');
     const formNick = document.querySelector('#formNick');
     const input = document.querySelector('#input');
     const userName = document.querySelector('#userName');
+    const userSave = document.querySelector('#userSave');
     const labelUser = document.querySelector('#labelUser');
-    const userOnline = document.querySelector('#userOnline');
+    const onlineUser = document.querySelector('#online-user');
+    const nick = document.querySelector('#nickName');
     const ulMessages = document.querySelector('#ulMessages');
     const randomNickname = document.querySelector('#randomNickname');
     const sendButton = document.querySelector('#sendButton');
+    const usersList = document.querySelector('#usersList');
 
     const createNickname = () => {
       const userAleatory = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -79,25 +66,40 @@
       for (let i = 0; i < 16; i += 1) {
         text += userAleatory.charAt(Math.floor(Math.random() * userAleatory.length));
       }
-
-      sessionStorage.setItem('nickname', text);
       return text;
-    }
+    };
 
-    randomNickname.innerText = createNickname();
+    const setNicknameSessionStorage = (name) => {
+      sessionStorage.setItem('nick', name);
+      nick.innerText = name;
+    };
 
-    sendButton.addEventListener('click', (e) => {
+    if (!sessionStorage.nick) setNicknameSessionStorage(createNickname());
+    else setNicknameSessionStorage(sessionStorage.nick);
+
+    const socket = window.io({
+      query: { nick: nick.innerText },
+    });
+
+    userSave.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = userName.value;
+      socket.emit('users', name);
+      setNicknameSessionStorage(name);
+      userName.value = '';
+    });
+
+    sendButton.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const message = input.value;
-      input.value = '';
-      const nickname =  userName.value;
-      userName.value = '';
-
+      
       socket.emit('message', {
         chatMessage: message,
-        nickname: nickname,
+        nickname: nick.innerText,
       });
+
+      input.value = '';
     });
 
     const createMessage = (chatMessage) => {
@@ -108,6 +110,30 @@
     };
 
     socket.on('message', (chatMessage) => createMessage(chatMessage));
+
+    const createUser = (data) => {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'online-user');
+      li.innerText = data;
+      usersList.appendChild(li);
+    };
+
+    const filterUser = (users) => {
+      users.forEach(({ id, nick: name }) => {
+        if (id !== socket.id) createUser(name);
+      });
+    };
+
+    socket.on('users', (users) => {
+      while (usersList.firstElementChild.nextElementSibling) {
+        usersList.removeChild(usersList.firstElementChild.nextElementSibling);
+      }
+      filterUser(users);
+    });
+
+    window.onbeforeunload = (_event) => {
+      socket.disconnect();
+    }
 
   </script>
 </body>
