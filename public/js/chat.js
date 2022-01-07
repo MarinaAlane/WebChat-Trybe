@@ -6,40 +6,10 @@ const randomNickname = () => {
   const randomEightChar = Math.random().toString(36).substr(2, 8);
   return randomEightChar + randomEightChar;
 };
-
 const onlineUser = document.getElementById('online-user');
 onlineUser.innerText = randomNickname();
 
 const saveBtn = document.getElementById('save-btn');
-saveBtn.addEventListener('click', () => {
-  const usernameInput = document.getElementById('username-input');
-  const username = usernameInput.value;
-
-onlineUser.innerText = randomNickname();
-
-  sessionStorage.setItem('username', username);
-  socket.emit('updateUsername', username);
-
-  usernameInput.value = '';
-});
-
-const sendBtn = document.getElementById('send-btn');
-sendBtn.addEventListener('click', () => {
-  const username = sessionStorage.getItem('username') || onlineUser;
-  const messageInput = document.getElementById('message-input');
-
-  const newMessage = {
-    chatMessage: messageInput.value,
-    nickname: username,   
-  };
-  socket.emit('message', newMessage);
-
-  messageInput.value = '';
-});
-const getUsers = () => {
-  const usersList = document.getElementById('users-list');
-  return usersList.children;
-};
 
 const addUser = (username) => {
   const usersList = document.getElementById('users-list');
@@ -49,6 +19,39 @@ const addUser = (username) => {
   
   usersList.appendChild(li);
   };
+
+saveBtn.addEventListener('click', () => {
+  const usernameInput = document.getElementById('username-input');
+  const username = usernameInput.value;
+  sessionStorage.setItem('username', username);
+
+  socket.emit('updateUsername', { oldUsername: onlineUser.innerText, newUsername: username });
+  socket.emit('username', username);
+  onlineUser.innerText = username;
+  
+  usernameInput.value = '';
+});
+
+const sendBtn = document.getElementById('send-btn');
+
+sendBtn.addEventListener('click', () => {
+  const verif = sessionStorage.getItem('username') != null;
+  const username = verif ? sessionStorage.getItem('username') : onlineUser.innerText;
+  const messageInput = document.getElementById('message-input');
+
+  const newMessage = {
+    chatMessage: messageInput.value,
+    nickname: username,   
+  };
+ 
+  socket.emit('message', newMessage);
+
+  messageInput.value = '';
+});
+const getUsers = () => {
+  const usersList = document.getElementById('users-list');
+  return usersList.children;
+};
 
 const userIsListed = (username) => {
   const users = getUsers();
@@ -62,13 +65,11 @@ const userIsListed = (username) => {
   socket.on('username', (data) => {
     onlineUser.innerText = data;
     sessionStorage.setItem('username', data);
-  
     addUser(data);
   });
   
   socket.on('updateUsername', ({ oldUsername, newUsername }) => {
     const users = getUsers();
-  
     for (let index = 0; index < users.length; index += 1) {
       if (users[index].innerText === oldUsername) {
         users[index].innerText = newUsername;
@@ -79,10 +80,10 @@ const userIsListed = (username) => {
   
   socket.on('loggedUser', (data) => {
     addUser(data);
-  
+
     const username = onlineUser.innerText;
-  
-    socket.emit('loggedUser', username);
+
+  socket.emit('loggedUser', username);
   });
   
   socket.on('addLoggedUsers', (username) => {
