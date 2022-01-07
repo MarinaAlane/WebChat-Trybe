@@ -1,6 +1,6 @@
 const io = require('socket.io-client');
 
-const BASE_URL = 'http://localhost:3000/';
+const BASE_URL = 'http://localhost:7000/';
 
 describe('1 - Crie um back-end para conexão simultânea de clientes e troca de mensagens em chat público', () => {
   const chatMessage = 'We can only see a short distance ahead, but we can see plenty there that needs to be done.';
@@ -25,6 +25,7 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
     client1.emit('message', { chatMessage, nickname });
 
     client1.on('message', (message) => {
+      console.log(message);
       expect(message.includes(chatMessage)).toBeTruthy();
       expect.assertions(1);
     });
