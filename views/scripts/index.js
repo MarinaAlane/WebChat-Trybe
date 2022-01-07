@@ -1,4 +1,9 @@
 const socket = window.io();
+
+window.onload = () => {
+  socket.emit('nickname', { id: socket.id });
+};
+
 const sendMessageForm = document.querySelector('#send-message-form');
 const saveNicknameForm = document.querySelector('#save-nickname-form');
 let actualNickname = '';
@@ -13,8 +18,7 @@ sendMessageForm.addEventListener('submit', (event) => {
 saveNicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const nicknameInput = document.querySelector('#nickname');
-  actualNickname = nicknameInput.value;
-  socket.emit('clientNickname', actualNickname);
+  socket.emit('nickname', { id: socket.id, nickname: nicknameInput.value });
   nicknameInput.value = '';
 });
 
@@ -26,13 +30,25 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-const createNickname = (nickname) => {
+const createNickname = ({ id = socket.id, nickname }) => {
   const nicknameUl = document.querySelector('#nicknames');
-  const li = document.createElement('li');
-  li.innerText = nickname;
-  li.dataset.testid = 'online-user';
-  nicknameUl.appendChild(li);
+  const nicknameLi = document.createElement('li');
+  nicknameLi.innerText = nickname;
+  nicknameLi.dataset.testid = 'online-user';
+  nicknameLi.dataset.id = id;
+  nicknameUl.appendChild(nicknameLi);
+  actualNickname = nickname;
+};
+
+const updateNickname = ({ id, nickname }) => {
+  const nicknameLi = document.querySelector(
+    `li[data-testid="online-user"][data-id="${id}"]`,
+  );
+  console.log(`li[data-testid="online-user"][data-id="${id}"]`);
+  if (!nicknameLi) return createNickname({ id, nickname });
+  nicknameLi.innerText = nickname;
+  actualNickname = nickname;
 };
 
 socket.on('message', (message) => createMessage(message));
-socket.on('nickname', (nickname) => createNickname(nickname));
+socket.on('nickname', ({ id, nickname }) => updateNickname({ id, nickname }));
