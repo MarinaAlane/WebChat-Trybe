@@ -45,6 +45,7 @@ randomNickname.innerText = savedNick;
     const messagesUl = document.querySelector('#messages');
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'message');
+    li.setAttribute('style', 'padding: 5px 10px;');
     li.innerText = chatMessage;
     messagesUl.appendChild(li);
   };
