@@ -12,6 +12,7 @@ const io = require('socket.io')(http, {
 });
 
 require('./sockets/message')(io);
+require('./sockets/nickname')(io);
 
 app.use(express.static(`${__dirname}/views`));
 
