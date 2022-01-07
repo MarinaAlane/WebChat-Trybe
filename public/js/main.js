@@ -1,5 +1,5 @@
 import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
-import OnlineUsers from  './onlineUsersClient.js';
+import OnlineUsers from './onlineUsersClient.js';
 
 const socket = io();
 const onlineUsers = OnlineUsers();
@@ -20,12 +20,12 @@ socket.on('del-user', (id) => {
   onlineUsers.delUser(id);
 });
 
-  const button = document.getElementById('button')
+  const button = document.getElementById('button');
   button.addEventListener('click', () => {
-    const input = document.getElementById('input').value
+    const input = document.getElementById('input').value;
     console.log(input);
-    socket.emit('message', {chatMessage: input, nickname: 'rafa'})
-  })
+    socket.emit('message', { chatMessage: input, nickname: 'rafa' });
+  });
 
 socket.on('message', (message) => {
   console.log(message);
@@ -35,4 +35,3 @@ socket.on('message', (message) => {
   messageP.innerText = message.chatMessage;
   chat.appendChild(messageP);
 });
-

@@ -5,7 +5,6 @@
 // const fs = require('fs');
 // const path = require('path');
 
-
 // const { DATABANK_PATH = '../databank/online-users.json' } = process.env;
 // const databankPath = path.join(__dirname, DATABANK_PATH);
 
@@ -38,8 +37,8 @@
 //   }
 // };
 
-module.exports = { 
-  getList,
-  addUser,
-  delUser,
-};
+// module.exports = { 
+//   getList,
+//   addUser,
+//   delUser,
+// };

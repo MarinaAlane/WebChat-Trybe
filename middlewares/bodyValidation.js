@@ -1,7 +1,6 @@
 const ApiErrors = require('../errors/ApiErrors');
 
-module.exports = (schema) => {
-  return (req, _res, next) => {
+module.exports = (schema) => (req, _res, next) => {
     const { error } = schema.validate(req.body);
   
     if (error) {
@@ -9,5 +8,4 @@ module.exports = (schema) => {
       next(ApiErrors.badRequest(message));
     }
     next();
-  }
-};
+  };

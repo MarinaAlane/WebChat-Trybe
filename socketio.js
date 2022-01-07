@@ -14,10 +14,10 @@ module.exports = (io) => {
     socket.on('message', (message) => {
       console.log(message);
       io.emit('message', message);
-    })
+    });
 
     socket.on('disconnect', () => {
-      onlineUsers.delUser(socket.id)
+      onlineUsers.delUser(socket.id);
       io.emit('del-user', socket.id);
       console.log('user', socket.id, 'desconectou');
     });

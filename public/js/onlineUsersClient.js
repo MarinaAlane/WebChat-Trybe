@@ -4,14 +4,14 @@ export default function OnlineUsers() {
   const observers = [];
 
   const addObs = (fnc) => {
-    observers.push(fnc)
-  }
+    observers.push(fnc);
+  };
 
   const notifyAllObs = (option) => {
     for (const fnc of observers) {
-      fnc(option)
+      fnc(option);
     }
-  }
+  };
   //--
 
   const userCard = document.getElementById('user-card');
@@ -22,9 +22,9 @@ export default function OnlineUsers() {
   };
 
   const render = (list) => {
-    list.forEach(({userId}) => {
+    list.forEach(({ userId }) => {
       const existingCard = document.getElementById(userId);
-      if(!existingCard) {
+      if (!existingCard) {
         const userSection = document.createElement('section');
         const userImg = document.createElement('img');
         const userInfo = document.createElement('div');
@@ -39,7 +39,7 @@ export default function OnlineUsers() {
         userName.innerHTML = userId;
         onlineTag.innerHTML = 'online';
           
-        userCard.appendChild(userSection)
+        userCard.appendChild(userSection);
         userSection.appendChild(userImg);
         userSection.appendChild(userInfo);
         userInfo.appendChild(userName);
@@ -53,5 +53,5 @@ export default function OnlineUsers() {
     notifyAllObs,
     delUser,
     render,
-  }
+  };
 }

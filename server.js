@@ -1,8 +1,9 @@
 require('dotenv').config();
 const server = require('./app');
 
-const { PORT = 3000 } = process.env;
+const port = 3000;
+// const { PORT = 3000 } = process.env;
 
-server.listen(PORT, () => {
-  console.log(`Servidor online na porta ${PORT}`);
+server.listen(port, () => {
+  console.log(`Servidor online na porta ${port}`);
 });

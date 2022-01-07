@@ -12,7 +12,7 @@ const io = new Server(server, {
 require('./socketio')(io);
 
 const cors = require('cors');
-const path = require('path')
+const path = require('path');
 
 const nextErrors = require('./errors/nextErrors');
 const { webchatRoutes } = require('./routes');
