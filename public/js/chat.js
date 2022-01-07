@@ -17,8 +17,13 @@ const generateRandomString = (num) => {
 
 let savedNick = generateRandomString(16);
 
+randomNickname.innerText = savedNick;
+
 nicknameButton.addEventListener('click', (e) => {
   e.preventDefault();
+  if (!nicknameInput.value) {
+    return alert('digite um nickname!');
+  }
   savedNick = nicknameInput.value;
   randomNickname.innerText = savedNick;
 });
@@ -26,20 +31,11 @@ nicknameButton.addEventListener('click', (e) => {
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const messageInput = document.querySelector('#messageInput');
-  const message = messageInput.value;
+  const chatMessage = messageInput.value;
   messageInput.value = '';
-  const randomNick = generateRandomString(16);
-
-  if (savedNick === '') {
-    const nickname = randomNick;
-    socket.emit('message', { chatMessage: message, nickname });
-  } else {
-  const nickname = nicknameInput.value;
-  socket.emit('message', { chatMessage: message, nickname });
-  }
+  const nickname = savedNick;
+  socket.emit('message', { chatMessage, nickname });
 });
-
-randomNickname.innerText = savedNick;
 
   const createMessage = (chatMessage) => {
     const messagesUl = document.querySelector('#messages');

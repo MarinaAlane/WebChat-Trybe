@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO - trybe</title>
+    <title>Web Chat</title>
     <link rel="stylesheet" href="./css/chat.css">
   </head>
   <body>
     <p>Bem Vindo <span id="randomNickname" data-testid="online-user"></span></p>
     <ul id="messages"  style="list-style-type: none; margin: 0; padding: 0;"></ul>
     <form action="">
-      <input id="nickNameInput" style="margin-bottom: 3px" data-testid="nickname-box" autocomplete="off" placeholder="nickName" /><button data-testid="nickname-button" type="button" id="saveButton" >Salvar</button>
-      <input id="messageInput" autocomplete="off" data-testid="message-box"/><button  data-testid="send-button">Send</button>
+      <input id="nickNameInput" style="margin-bottom: 3px;" data-testid="nickname-box" autocomplete="off" placeholder="nickName" /><button data-testid="nickname-button" type="button" id="saveButton" >Salvar</button>
+      <input id="messageInput" placeholder="Message" autocomplete="off" data-testid="message-box"/><button  data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src='./js/chat.js'></script>
