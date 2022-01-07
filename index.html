@@ -9,13 +9,17 @@
 <body>
   <ul id="messages"></ul>
   <form id="formChat">
-    <input id="inputChat">
-    <button>Enviar</button>
+    <input id="inputChat" data-testid="message-box">
+    <button data-testid="send-button">Enviar</button>
   </form>
   <form id="formUser">
-    <input id="inputUser">
-    <button>Alterar nome</button>
+    <input id="inputUser" data-testid="nickname-box">
+    <button data-testid="nickname-button">Alterar nome</button>
   </form>
+  <div>
+    <h3>Usuários Online</h3>
+    <ul id='usersOnline'></ul>
+  </div>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
@@ -25,7 +29,17 @@
     const messages = document.querySelector('#messages');
     const formUser = document.querySelector('#formUser');
     const inputUser = document.querySelector('#inputUser');
+    const usersOnline = document.querySelector('#usersOnline');
     let nick = '';
+
+    socket.on('connected', (user) => {
+      const newUser = document.createElement('li');
+      let dataTestId = document.createAttribute('data-testid');
+      dataTestId.value = 'online-user';
+      newUser.setAttributeNode(dataTestId);
+      newUser.textContent = user;
+      usersOnline.appendChild(newUser);
+    });
 
     formUser.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -44,6 +58,9 @@
 
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
+      let dataTestId = document.createAttribute('data-testid');
+      dataTestId.value = 'message';
+      newMessage.setAttributeNode(dataTestId);
       newMessage.textContent = msg;
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);

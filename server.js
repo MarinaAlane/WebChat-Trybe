@@ -19,18 +19,20 @@ app.get('/', (_req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log(`usuário ${socket.id} conectado`);
+  const randomNick = socket.id.slice(-16);
+  console.log(`usuário ${randomNick} conectou`);
+  socket.emit('connected', randomNick);
 
   socket.on('message', ({ chatMessage, nickname }) => {
     if (nickname) {
       io.emit('message', `${getData()} - ${nickname}: ${chatMessage}`);
     } else {
-      io.emit('message', `${getData()} - ${socket.id}: ${chatMessage}`);
+      io.emit('message', `${getData()} - ${randomNick}: ${chatMessage}`);
     }
   });
 
   socket.on('disconnect', () => {
-    console.log(`usuário ${socket.id} desconectou`);
+    console.log(`usuário ${randomNick} desconectou`);
   });
 });
 
