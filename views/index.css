@@ -1,3 +1,20 @@
+::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 * {
   border: 0;
   box-sizing: border-box;
@@ -11,8 +28,10 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  padding: 10px 0;
   justify-content: center;
   width: 100vw;
+  overflow: hidden;
   background-color: black;
 }
 
@@ -34,6 +53,7 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
+  align-items: center;
   background-color: green;
 }
 
@@ -58,4 +78,34 @@
   color: black;
   font-size: 1.3em;
   cursor: pointer;
+}
+
+.users {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.users div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: gray;
+  border: 1px solid black;
+  margin: 10px;
+}
+
+.users ul {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.users ul li {
+  margin: 20px 40px;
+  font-size: 1.3em;
 }
