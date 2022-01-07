@@ -1,6 +1,5 @@
 ::-webkit-scrollbar {
   width: 5px;
-  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -18,9 +17,9 @@
 * {
   border: 0;
   box-sizing: border-box;
+  font-family: Montserrat, sans-serif;
   margin: 0;
   padding: 0;
-  font-family: Montserrat, sans-serif;
 }
 
 .app {
@@ -28,84 +27,99 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 10px 0;
   justify-content: center;
-  width: 100vw;
   overflow: hidden;
-  background-color: black;
+  padding: 10px 0;
+  width: 100vw;
 }
 
 .content-section {
   display: flex;
-  width: 100%;
-  background-color: white;
   height: 100%;
+  width: 100%;
 }
 
 .users-container {
   display: flex;
   flex-direction: column;
   width: 30%;
-  background-color: orange;
 }
 
 .nick-form {
+  align-items: center;
   display: flex;
   justify-content: space-around;
   width: 100%;
-  align-items: center;
-  background-color: green;
 }
 
 .nick-form input {
-  width: 100%;
-  margin: 10px;
   border: 1px solid black;
   border-radius: 5px;
-  padding: 3px;
-  background-color: white;
   color: black;
   font-size: 1.3em;
+  margin: 10px;
+  padding: 3px;
+  width: 100%;
 }
 
 .nick-form button {
-  width: 100px;
-  padding: 3px;
-  margin: 10px;
   border: 1px solid black;
   border-radius: 5px;
-  background-color: white;
   color: black;
-  font-size: 1.3em;
   cursor: pointer;
+  font-size: 1.3em;
+  margin: 10px;
+  padding: 3px;
+  width: 100px;
 }
 
 .users {
   display: flex;
-  width: 100%;
   height: 100%;
   overflow: hidden;
+  width: 100%;
 }
 
 .users div {
+  border: 1px solid black;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  background-color: gray;
-  border: 1px solid black;
   margin: 10px;
+  width: 100%;
 }
 
 .users ul {
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100%;
-  overflow-y: scroll;
   overflow-x: hidden;
+  overflow-y: scroll;
+  width: 100%;
 }
 
 .users ul li {
-  margin: 20px 40px;
   font-size: 1.3em;
+  margin: 20px 40px;
+}
+
+.messages-container {
+  display: flex;
+  width: 70%;
+}
+
+.messages-container ul {
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+.messages-container ul li {
+  font-size: 1.1em;
+  list-style: none;
+  margin: 20px 40px;
 }
