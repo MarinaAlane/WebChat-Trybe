@@ -22,6 +22,7 @@ const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
+  li.dataset.testid = 'message';
   messagesUl.appendChild(li);
 };
 
@@ -29,8 +30,9 @@ const createNickname = (nickname) => {
   const nicknameUl = document.querySelector('#nicknames');
   const li = document.createElement('li');
   li.innerText = nickname;
+  li.dataset.testid = 'online-user';
   nicknameUl.appendChild(li);
 };
 
 socket.on('message', (message) => createMessage(message));
-socket.on('serverNickname', (nickname) => createNickname(nickname));
+socket.on('nickname', (nickname) => createNickname(nickname));

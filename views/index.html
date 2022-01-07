@@ -16,12 +16,13 @@
           <form class="nick-form" id="save-nickname-form">
             <input
               id="nickname"
+              data-testid="nickname-box"
               type="text"
               name="nick"
               placeholder="Insira seu nickname"
               required
             >
-            <button type="submit">Salvar</button>
+            <button data-testid="nickname-button" type="submit">Salvar</button>
           </form>
           <div class="users">
             <div>
@@ -43,8 +44,9 @@
             name="message"
             placeholder="Digite sua mensagem"
             required
+            data-testid="message-box"
           >
-          <button type="submit">Enviar</button>
+          <button data-testid="send-button" type="submit">Enviar</button>
         </form>
       </section>
     </main>
