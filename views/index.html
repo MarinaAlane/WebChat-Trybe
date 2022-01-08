@@ -96,17 +96,17 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      // socket.on('history', (msg) => {
-      //   console.log(msg, '<----msg')
-      //   msg.forEach(({timestamp, nickname, message}) => {
-      //     console.log(message)
-      //     const li = document.createElement('li');
-      //     li.setAttribute("data-testid", "message");
-      //     li.textContent = `${timestamp} - ${nickname}: ${message}`;
-      //     // console.log(li, 'esse é o li da mensagem')
-      //     ul.appendChild(li);
-      //   });
-      // });
+      socket.on('history', (msg) => {
+        console.log(msg, '<----msg')
+        msg.forEach(({timestamp, nickname, message}) => {
+          console.log(message)
+          const li = document.createElement('li');
+          li.setAttribute("data-testid", "message");
+          li.textContent = `${timestamp} - ${nickname}: ${message}`;
+          // console.log(li, 'esse é o li da mensagem')
+          ul.appendChild(li);
+        });
+      });
       </script>
   </body>
 </html> 

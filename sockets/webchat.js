@@ -1,4 +1,4 @@
-// const Message = require('../models/message');
+const Message = require('../models/message');
 // a data foi feita através de estudo de como poderia simplificar esse sistema, e encontrei nesse site: https://www.horadecodar.com.br/2021/04/03/como-pegar-a-data-atual-com-javascript/
 const date = new Date();
 const day = String(date.getDate()).padStart(2, '0');
@@ -13,16 +13,16 @@ function message(socket, io) {
   socket.on('message', (msg) => {
     const { nickname, chatMessage } = msg;
     console.log(msg);
-    // const text = { message: chatMessage, nickname, timestamp: fulldate };
-    // Message.saveHistory(text);
+    const text = { message: chatMessage, nickname, timestamp: fulldate };
+    Message.saveHistory(text);
     io.emit('message', `${fulldate} - ${nickname}: ${chatMessage}`);
   });
 }
 
-// async function getAllhistory(socket) {
-//   const getMsg = Message.getAll();
-//   socket.emit('history', getMsg);
-// }
+async function getAllhistory(socket) {
+  const getMsg = await Message.getAll();
+  socket.emit('history', getMsg);
+}
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
@@ -37,8 +37,6 @@ module.exports = (io) => {
       arrayUsers.push({ id: socket.id, nickname }); io.emit('userOnline', arrayUsers);
     });
 
-    // getAllhistory(socket);
-
     socket.on('disconnect', () => {
       console.log(`Usuário ${randonUser} desconectado`);
       arrayUsers = arrayUsers.filter((user) => user.id !== socket.id);
@@ -46,5 +44,7 @@ module.exports = (io) => {
     });
 
     message(socket, io);
+
+    getAllhistory(socket);
   });
 };
