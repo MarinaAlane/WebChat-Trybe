@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body {
+        margin: 0 auto;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          Arial, sans-serif;
+      }
+
+      main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      main > section {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        min-height: 400px;
+      }
+
+      main > section > article {
+        width: auto;
+      }
+
+      main > section > article:nth-child(1) {
+        border-right: rgba(0, 0, 0, 0.15) solid 8px;
+        margin-right: 14px;
+        width: 24.3%;
+      }
+
+      h1 {
+        position: fixed;
+        background-color: yellowgreen;
+        padding: 4px;
+        width: 174px;
+      }
+
+      #form {
+        width: 50%;
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        margin: 0 20%;
+        bottom: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      }
+      #enviar {
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 0 2rem 2rem 0;
+        margin: 0.25rem;
+      }
+      #enviar:focus {
+        outline: none;
+      }
+      #form > button {
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
+      #nickname {
+        border: none;
+        border-radius: 23px 0 0 23px;
+        padding: 0 1rem;
+        margin: 0.25rem;
+      }
+      #message {
+        margin: 0;
+        padding: 50px 0 10px 0;
+      }
+      #message > li {
+        width: 530px;
+        list-style-type: none;
+        padding: 0.5rem 1rem;
+        overflow-wrap: break-word;
+      }
+      #message > li:nth-child(odd) {
+        background: #efefef;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section>
+        <article>
+          <h1>Usuários online</h1>
+          <article id="usersOnline"></article>
+        </article>
+        <article>
+          <h1>Mensagens</h1>
+          <ul id="message"></ul>
+        </article>
+      </section>
+      <form id="form" action="">
+        <input type="text" name="nickname" id="nickname" placeholder="apelido" />
+        <input id="enviar" autocomplete="off" />
+        <button>Enviar</button>
+      </form>
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const ulMensagens = document.getElementById('message');
+      const form = document.getElementById('form');
+      const inputEnviar = document.getElementById('enviar');
+      const inputNickname = document.getElementById('nickname');
+
+      
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (inputEnviar.value) {
+          socket.emit('message', {
+            chatMessage: inputEnviar.value,
+            nickname: inputNickname.value,
+          });
+
+          socket.emit('usuario', {
+            id: socket.id,
+            nickname: inputNickname.value,
+            chatMessage: inputEnviar.value
+          });
+          inputEnviar.value = '';
+        }
+      });
+
+      socket.on('message', (message) => {
+        const liMessages = document.createElement('li');
+        liMessages.textContent = message;
+        ulMensagens.appendChild(liMessages);
+
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+  </body>
+</html>
