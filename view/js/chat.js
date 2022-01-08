@@ -23,7 +23,7 @@ socket.emit('newUserConnected', currentNickname);
 const createMessage = (chatMessage) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
-  li.dataset.testid="message";
+  li.dataset.testid = "message";
   li.innerText = chatMessage;
   messagesUl.appendChild(li);
 };
@@ -35,10 +35,13 @@ socket.on('allMessages', (allMessages) => {
   });
 });
 socket.on('allUsers', (usersList) => {
-  //debugger;
+  // limpa elemento parent
   currentNicknameSpan.innerHTML = '';
+
+  // adiciona todos childs (li)
   usersList.forEach((user) => {
     const li = document.createElement('li');
+    li.dataset.testid = "online-user";
     li.innerText = user;
     currentNicknameSpan.appendChild(li);
   });
@@ -46,7 +49,7 @@ socket.on('allUsers', (usersList) => {
 
 btnSaveNickname.addEventListener('click', () => {
   currentNickname = nicknameInp.value;
-  //currentNicknameSpan.innerHTML = currentNickname;
+  socket.emit('newNickname', currentNickname);
 });
 
 btnSendMessage.addEventListener('click', () => {

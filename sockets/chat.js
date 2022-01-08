@@ -22,6 +22,11 @@ function formatMessage(timestamp, nickname, message){
 const allConnectedUsers = [];
 
 module.exports = (io) => io.on('connection', async (socket) => {
+  function sendAllUsers(){
+    const allConnectedUsersNickname = allConnectedUsers.map((userObject) => userObject.nickname);
+    io.emit('allUsers', allConnectedUsersNickname);
+  }
+  
   console.log(`user ${socket.id} connected!!`);
   const allMessages = await getAllMessages();
   const formatedMessages = allMessages.map((document) => formatMessage(document.timestamp, document.nickname, document.message));
@@ -48,21 +53,21 @@ module.exports = (io) => io.on('connection', async (socket) => {
       nickname
     }
     allConnectedUsers.push(obj);
-    const allConnectedUsersNickname = allConnectedUsers.map((userObject) => {
-      return userObject.nickname
-    })
-    io.emit('allUsers', allConnectedUsersNickname);
+    sendAllUsers();
   });
   socket.on('disconnect', () => {
     console.log(`User ${socket.id} disconected.`);
     let indexToBeDeleted = allConnectedUsers.findIndex((currentItem) => {
       return currentItem.id === socket.id;
     });
-    console.log('AQUI TÁ O INDEX', indexToBeDeleted)
     allConnectedUsers.splice(indexToBeDeleted, 1);
-    const allConnectedUsersNickname = allConnectedUsers.map((userObject) => {
-      return userObject.nickname
-    })
-    io.emit('allUsers', allConnectedUsersNickname);
+    sendAllUsers();
+  });
+  socket.on('newNickname', (newNickname) => {
+    let indexToBeEdited = allConnectedUsers.findIndex((currentItem) => {
+      return currentItem.id === socket.id;
+    });
+    allConnectedUsers[indexToBeEdited].nickname = newNickname;
+    sendAllUsers();
   });
 });
