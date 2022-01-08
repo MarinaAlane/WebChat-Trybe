@@ -1,15 +1,16 @@
 const moment = require('moment');
 
-const currentDate = moment().format('DD-MM-yyyy hh:mm:ss A');
-
 module.exports = (io) => io.on('connection', (socket) => {
     console.log(`Usuário conectado. ID: ${socket.id} `);
-// socket.on escuta o evento do socket.emit
-    socket.on('message', ({ nickname, chatMessage }) => {
-        io.emit('message', `${currentDate} - ${nickname} ${chatMessage}`);
-      }); 
-});
-  
-// js do backend
+    
+    const currentDate = moment().format('DD-MM-yyyy hh:mm:ss A');
 
-// const timestamp = moment().format('DD-MM-yyyy hh:mm:ss A');
+    socket.on('message', ({ nickname, chatMessage }) => {
+        io.emit('message', `${currentDate} - ${nickname}: ${chatMessage}`);
+    }); 
+    
+    const { id } = socket;
+    const nickname = id.substring(0, 16);
+
+    io.emit('nickSapo', nickname);
+});

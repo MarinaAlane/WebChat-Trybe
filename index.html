@@ -2,61 +2,23 @@
 <html>
   <head>
     <title>Socket.IO - trybe</title>
-    <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font: 13px Helvetica, Arial;
-    }
-    
-    form {
-      background: #000;
-      padding: 3px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    
-    form input {
-      border: 0;
-      padding: 10px;
-      width: 90%;
-      margin-right: 0.5%;
-    }
-    
-    form button {
-      width: 9%;
-      background: rgb(130, 224, 255);
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-    }
-    
-    #messages {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-    
-    #messages li {
-      padding: 5px 10px;
-    }
-    
-    #messages li:nth-child(odd) {
-      background: #eee;
-    }</style>
   </head>
+
   <body>
-    <ul id="messages"></ul>
-    <form action="" id="formId">
-      <input id="messageInput" autocomplete="off" data-testid="message-box"/>
-      <button data-testid="send-button" type="submit" id="submitBtn">Send</button>
-    </form>
+    <ul id="nick"></ul>
+        <form action="" id="nickForm">
+        <input id="nickInput" autocomplete="off" data-testid="nickname-box"/>
+        <button data-testid="nickname-button" type="submit" id="submitnick">SAVE</button> 
+        </form>
+
+      <ul id="messages"></ul>
+      <form action="" id="formId">
+        <input id="messageInput" autocomplete="off" data-testid="message-box"/>
+        <button data-testid="send-button" type="submit" id="submitBtn">SEND</button>
+      </form>  
+    
     <script src="/socket.io/socket.io.js"></script>
+    
     <script>
       const socket = window.io();
 
@@ -65,11 +27,8 @@
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        // socket.emit envia mensagem do front para o back
         socket.emit('message', { nickname: socket.id, chatMessage: inputMessage.value });
-      //   console.log({ nickname: socket.id });
-        inputMessage.value = ''; // limpando o input depois de enviar a mensagem
-      //   return false;
+        inputMessage.value = ''; 
       });
 
       const createMessage = (message) => {
@@ -78,11 +37,17 @@
           li.innerText = message;
           li.setAttribute('data-testid', 'message');
           messagesUl.appendChild(li);
-        };  
-        
-      socket.on('message', (message) => createMessage(message));
+        };
 
-// js do frontend
+        socket.on('nickSapo', (nickname) => {
+          const nickUl = document.querySelector('#nick');
+          const li = document.createElement('li');
+          li.textContent = nickname;
+          li.setAttribute('data-testid', 'online-user');
+          nickUl.appendChild(li);
+        });
+        
+        socket.on('message', (message) => createMessage(message));
     </script>
   </body>
 </html>
