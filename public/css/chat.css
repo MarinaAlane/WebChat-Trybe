@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  justify-content: center;
+  margin-left: 10px;
+  width: 100%;
+}
+
+h1 {
+  margin: 20px;
+}
+
+h2 {
+  margin: 20px 0;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+li {
+  list-style: none;
+}
+
+main ul {
+  text-align: center;
+}
+
+.main-content {
+  background-color: rgb(180, 178, 250);
+  border-radius: 4px;
+  box-shadow: 2px 5px 6px gray;
+  margin: 10px;
+  padding: 20px;
+  width: 50%;
+}
+
+.nickname-input {
+  border: 1px solid rgb(114, 112, 255);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px;
+  width: 200px;
+}
+
+.nickname-btn {
+  background: rgb(114, 112, 255);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  padding: 9px;
+  width: 120px;
+}
+
+.send-btn {
+  background: rgb(114, 112, 255);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  width: 100px;
+}
+
+.message-input {
+  border: 1px solid rgb(114, 112, 255);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 9px;
+  width: 100%;
+}
+
+.messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.messages li {
+  padding: 5px 10px;
+}
+
+.messages li:nth-child( odd ) {
+  background: #eee;
+}
