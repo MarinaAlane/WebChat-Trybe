@@ -17,8 +17,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+async function getHistory(socket) {
+  const history = await getChatHistory();
+  history.forEach((line) => socket.emit('history', line));
+}
+
 let onlineUsers = [];
-// eslint-disable-next-line max-lines-per-function
 io.on('connection', async (socket) => {
   socket.emit('userOnline', socket.id.slice(0, 16));
   // console.log(onlineUsers);
@@ -29,8 +33,7 @@ io.on('connection', async (socket) => {
     io.emit('user', onlineUsers);
   });
 
-  const test = await getChatHistory();
-  test.forEach((line) => socket.emit('history', line));
+  getHistory(socket);
  
   socket.on('message', async (msg) => { 
     // socket.on escuta somente a mensagem do usuario emissor.
@@ -42,9 +45,9 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('usuario desconetou');
+    // console.log('usuario desconetou');
     onlineUsers = onlineUsers.filter((user) => user.id !== socket.id);
-    console.log(onlineUsers);
+    // console.log(onlineUsers);
     io.emit('user', onlineUsers);
   });
 });
