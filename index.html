@@ -83,14 +83,11 @@
       socket.on('newNickName', (onLineUsers) => {
         const usersUl = document.getElementById('users');
         while (usersUl.firstChild) {
-          console.log(usersUl.firstChild)
           usersUl.removeChild(usersUl.firstChild);
         }
         for (let newUser in onLineUsers) {
-          console.log(onLineUsers);
           const li = document.createElement('li');
           li.innerText = onLineUsers[newUser];
-          console.log(onLineUsers[newUser]);
           li.setAttribute('data-testid', 'online-user');
           usersUl.appendChild(li);
         }
