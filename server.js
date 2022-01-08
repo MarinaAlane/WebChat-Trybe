@@ -16,8 +16,12 @@ const io = require('socket.io')(http, {
   },
 });
 
+require('./socket/chat')(io);
+
 app.use(cors());
-app.get('/', (req, res) => {
+app.use(express.static(path.resolve(__dirname, 'public')));
+
+app.get('/', (_req, res) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
 
