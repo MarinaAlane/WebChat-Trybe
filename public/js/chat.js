@@ -2,40 +2,49 @@
 //  https://www.ti-enxame.com/pt/javascript/pagina-node.js-socket.io-atualiza-varias-conexoes/830171781/
 const socket = window.io({ transports: ['websocket'], upgrade: false });
 
+const connectionsList = document.querySelector('#connections-list');
 const webchatList = document.querySelector('#webchat');
+const formNickname = document.querySelector('#form-nickname');
+
 const formSendMessage = document.querySelector('#form-chatMessage');
-// const formNickname = document.querySelector('#form-nickname');
-// const connectionsList = document.querySelector('#connections-list');
+const inputMsg = document.querySelector('input[name=chatMessage');
 
 function reciveMessage(msg) {
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
-  const message = document.createTextNode(msg);
-  li.append(message);
+  li.innerText = msg;
+  console.log('reciveMessage --->', msg);
   webchatList.appendChild(li);
 }
 
 function sendMessage(event) {
   event.preventDefault();
 
-  const chatMessage = document.querySelector('input[name=chatMessage');
-
   socket.emit('message', {
-    chatMessage: chatMessage.value,
-    nickname: socket.id,
+    chatMessage: inputMsg.value,
+    nickname: connectionsList.firstChild.innerText,
   });
 
-  chatMessage.value = '';
+  inputMsg.value = '';
 }
 
-// function saveNickname(nickname) {
-//   const li = document.createElement('li');
-//   li.setAttribute('data-testid', 'online-user');
-//   li.setAttribute('name', `${nickname}`);
-//   li.append(nickname);
+function saveNickname(nickname) {
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = `${nickname}`;
 
-//   connectionsList.appendChild(li);
-// }
+  connectionsList.appendChild(li);
+}
+
+function setNickname(event) {
+  event.preventDefault();
+  const newNickname = document.querySelector('input[name=nickname').value;
+
+  connectionsList.firstChild.innerText = newNickname;
+
+  socket.emit('setNickname', newNickname);
+  newNickname.value = '';
+}
 
 //  Buscar deletar essa função - Não deve ser necessario apagar tudo para depois renderizar novamente
 // function removeAllNicknames() {
@@ -58,6 +67,7 @@ function sendMessage(event) {
 
 //  ------------------------------------------------------------------------------------------------------
 socket.on('message', (msg) => reciveMessage(msg));
+socket.on('newUser', (newUser) => saveNickname(newUser));
 
 // socket.on('nickname', (nickname) => {
 //   // removeAllNicknames(); // Mudar essa logica para nõ deletar todos os nomes e depois reescrevee
@@ -70,7 +80,7 @@ socket.on('message', (msg) => reciveMessage(msg));
 
 //  -----------------------------------------------------------------------------------------------------------
 formSendMessage.addEventListener('submit', sendMessage);
-// formNickname.addEventListener('submit', setNickname);
+formNickname.addEventListener('submit', setNickname);
 
 window.onbeforeunload = () => {
   socket.disconnect();

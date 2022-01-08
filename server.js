@@ -25,13 +25,18 @@ const getDate = require('./helpers/getDate');
 
 io.on('connection', (socket) => {
   users[socket.id] = socket.id.substr(0, 16);
+  io.emit('newUser', users[socket.id]);
   console.log(`Novo usuário ${users[socket.id]} conectado ao socket.io`);
 
   socket.on('message', (msg) => {
     const { chatMessage, nickname } = msg;
     const fullDate = getDate();
-    console.log('--------->', users[nickname]);
-    io.emit('message', `${fullDate} - ${users[nickname]}: ${chatMessage}`);
+    console.log('--------->', nickname, socket.id);
+    io.emit('message', `${fullDate} - ${nickname}: ${chatMessage}`);
+  });
+
+  socket.on('setNickname', (newNickname) => {
+    users[socket.id] = newNickname;
   });
 
   // io.emit('message', `Novo usuário ${users[socket.id]} conectado)`);
