@@ -27,10 +27,8 @@ io.on('connection', async (socket) => {
         io.emit('message', `${formatDate} ${nickname}: ${chatMessage}`);
         console.log('Mensagens salvas', saveMessages);
     });
-
     socket.on('onlineUserOn', (msg) => {    
         listUsers.push(msg);
-        console.log(listUsers);
         io.emit('onlineUserOn', { mensagem: msg, socket: socket.id, listUsers });
     });
 
