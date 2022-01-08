@@ -23,13 +23,6 @@
   <script>
     const socket = io();
   
-    const formNickname = document.querySelector('#formNickname');
-    const inputNickname = document.querySelector('#nickname-box');
-    const form = document.querySelector('#form');
-    const input = document.querySelector('#message-box');
-    const messages = document.querySelector('#messages');
-    const onlineUsers = document.querySelector('#online-users')
-
     const generateRandomUser = (size) => {
       const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       let randomNickname = 'User';
@@ -39,13 +32,12 @@
       return randomNickname;
     }
     const randomNickname = generateRandomUser(12)
-    console.log(randomNickname.length)
     window.sessionStorage.setItem('nickname', randomNickname);
-  
+    
     socket.emit('isConnected', randomNickname);
-
+    
+    const onlineUsers = document.querySelector('#online-users')
     socket.on('getOnlineUsers', (clients) => {
-      console.log('users', clients)
       onlineUsers.innerHTML = '';
       const pCurrentUser = document.createElement('p');
       pCurrentUser.innerText = clients.find((client) => client.id === socket.id).nickname
@@ -58,7 +50,9 @@
         onlineUsers.appendChild(p)
       })
     })
-    
+
+    const formNickname = document.querySelector('#formNickname');
+    const inputNickname = document.querySelector('#nickname-box');
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputNickname.value) {
@@ -69,6 +63,8 @@
       }
     })
 
+    const form = document.querySelector('#form');
+    const input = document.querySelector('#message-box');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const nickname = window.sessionStorage.getItem('nickname');
@@ -77,13 +73,24 @@
         input.value = ''
       }
     })
-  
-    socket.on('message', (message) => {
+    
+    const messages = document.querySelector('#messages');
+    const addMessage = (message) => {
       const newMessage = document.createElement('li');
       newMessage.innerText = message;
       newMessage.setAttribute('data-testid', 'message');
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    socket.on('message', (message) => {
+      addMessage(message)
+    })
+
+    socket.on('message-history', (messages) => {
+      messages.forEach(({ message: chatMessage, nickname, timestamp }) => {
+        addMessage(`${timestamp} - ${nickname}: ${chatMessage}`)
+      })
     })
   </script>
 </html>

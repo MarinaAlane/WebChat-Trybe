@@ -17,7 +17,7 @@ app.get('/', (_req, res) => {
 
 // cliente -> servidor -> cliente
 let clients = [];
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log(`User ${socket.id} connected`);
 
   socket.on('isConnected', (nickname) => {
@@ -26,11 +26,8 @@ io.on('connection', (socket) => {
     io.emit('getOnlineUsers', clients);
   });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
-    messageModel.create({ message: chatMessage, nickname, timestamp });
-    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
-  });
+  const messages = await messageModel.getAll();
+  socket.emit('message-history', messages);
 
   socket.on('disconnect', () => {
     console.log(`User ${socket.id} disconnected`);
@@ -40,9 +37,12 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/', async (req, res) => {
-  const messages = await messageModel.getAll();
-  res.status(200).send(messages);
+io.on('connection', (socket) => {
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
+    messageModel.create({ message: chatMessage, nickname, timestamp });
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+  });
 });
 
 server.listen(PORT, () => console.log(`Listening ${PORT}`));
