@@ -48,13 +48,6 @@ const createUsersList = (users, dataTestid, classNameFather) => {
 
 createChatList(nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
 
-// nicknameBtn.addEventListener('click', (e) => {
-//   const alteredNickname = document.getElementById('nicknameInput').value;
-//   socket.emit('alterNickname', alteredNickname);
-//   messageInput.value = '';
-//   e.preventDefault();
-// });
-
 nicknameBtn.addEventListener('click', (e) => {
   nickname = document.getElementById('nicknameInput').value;
   // socket.emit('alterNickname', alteredNickname);
@@ -81,14 +74,11 @@ sendMsgBtn.addEventListener('click', (e) => {
 // socket.on('login', (nickname) => {
 // });
 
-socket.on('LoggedUsers', (onlineUsers) => {
+socket.on('allLoggedUsers', (onlineUsers) => {
   // createChatList(data.nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
   createUsersList(onlineUsers, 'online-user', CLASSNAME__ONLINE_USERS_DIV);
 });
 
 socket.on('message', (msg) => {
-  // debug
-  console.log('typeof msg GHEGANDO (Front)');
-  console.log(typeof msg);
   createChatList(msg, 'message', CLASSNAME__MESSAGE_DIV);
 });
