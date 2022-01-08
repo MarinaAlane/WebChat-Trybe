@@ -80,11 +80,21 @@
     });
 
     socket.on('message', function(msg) {
-      var item = document.createElement('li');
+      const item = document.createElement('li');
       item.textContent = msg;
       item.setAttribute('data-testid', 'message');
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });
+
+    socket.on('history', function(msg) {
+      const { timestamp, nickname, message } = msg;
+      const item = document.createElement('li');
+      item.textContent = (`${ timestamp } - ${ nickname }: ${ message}`);
+      item.setAttribute('data-testid', 'message');
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
   </script>
 </html>
