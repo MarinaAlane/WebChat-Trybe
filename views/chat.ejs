@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEBCHAT</title>
+</head>
+<body>
+  <h1>WEBCHAT</h1>
+  <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="nickname" autocomplete="on" /><input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    window.onload = () => {
+    const user = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    document.getElementById('nickname').value = user;
+    }
+    
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const nickname = document.getElementById('nickname');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value && nickname.value) {
+        // como pedido no requisito 1
+        socket.emit('message', {chatMessage: input.value, nickname: nickname.value}); 
+        input.value = '';
+      }
+    });
+    socket.on('message', (message) => {
+      const messages = document.getElementById('messages');
+      const li = document.createElement('li');
+      li.textContent = message;
+      messages.appendChild(li);
+    });
+  </script>
+</body>
+</html>
