@@ -1,59 +1,56 @@
 /* inspirado +- por: */
+
 /* https://dribbble.com/shots/13869298-Chat-Interface-Web-Application */
 
 /* Box sizing rules */
-*,
-*::before,
-*::after {
+* , *:before , *:after {
   box-sizing: border-box;
 }
 
 /* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-ul,
-ol,
-li
-{
+body , h1 , h2 , h3 , h4 , p , ul , ol , li {
   margin: 0;
 }
 
 /* Set core body defaults */
 body {
+  background: var(--gray-100);
+  font-family: sans-serif;
   min-height: 100vh;
   scroll-behavior: smooth;
-  font-family: sans-serif;
-  background: var(--gray-100);
 }
 
 /* Make images easier to work with */
 img {
-  max-width: 100%;
   display: block;
+  max-width: 100%;
 }
 
 :root {
+
   /* Colors */
+
   --text: #494949;
+
   --gray-90: #d1d5da;
+
   --gray-100: #e7ebf0;
-  --white: #fff;
+
+  --white: white;
 
   --outline-box-shadow: 0 0 0 2px var(--outline-blue);
+
   --outline-box-shadow-contrast: 0 0 0 2px var(--navy-blue);
 
   /* Fonts */
 }
 
-/* ---------------------------------------------------------------------------*/
+/* --------------------------------------------------------------------------- */
 .main {
   display: flex;
   height: 100vh;
   width: 100%;
+
   /* overflow: hidden; */
 }
 
@@ -63,36 +60,41 @@ img {
 
 .logo {
   height: 20px;
-  width: 22px;
   margin-inline-end: 13px;
+  width: 22px;
 }
 
 .sidebar {
   background: var(--white);
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1);
-  overflow-y: scroll;
-  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
-  width: 350px;
   min-width: 250px;
+  overflow-y: scroll;
+  width: 350px;
+  z-index: 1000;
+
   /* hide scrollbar */
-    /* Firefox */
+
+  /* Firefox */
+
   /* scrollbar-width: none;   */
 }
 
 /* hide scrollbar */
-  /* chrome | edge */
+
+/* chrome | edge */
+
 /* .sidebar::-webkit-scrollbar {
   display: none;
 } */
 
 .sidebar-header {
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 36px;
-  display: flex;
   align-items: center;
+  display: flex;
   font-size: large;
+  letter-spacing: 0.15em;
+  padding: 36px;
+  text-transform: uppercase;
 }
 
 .sidebar-users {
@@ -102,35 +104,35 @@ img {
 }
 
 .user {
-  display: flex;
   align-items: center;
+  background-color: var(--gray-100);
+  border-radius: 5px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  height: 70px;
+  margin-bottom: 20px;
+
   /* justify-content: center; */
   width: 100%;
-  height:70px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  background-color: var(--gray-100);
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1);
 }
 
 .user-info p {
   display: flex;
-  flex-direction: column;
   flex-direction: row;
 }
 
-.user-info strong, .user-info p {
+.user-info strong , .user-info p {
   font-size: 1rem;
 }
 
-.user-info p::after {
-  content: "";
+.user-info p:after {
   align-self: center;
+  background-color: rgb(23, 187, 23);
+  border-radius: 50%;
+  content: '';
+  height: 10px;
   margin: 2px 0 0 7px;
   width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgb(23, 187, 23);
 }
 
 .user-img {
@@ -139,38 +141,31 @@ img {
 }
 
 .chat {
-  position: relative;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  position: relative;
 }
 
 .chat-input {
-  position: absolute;
-  border-radius: 5px;
-  height:50px;
   background: var(--white);
-  margin: 15px;
+  border-radius: 5px;
   bottom: 0;
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.1);
+  height: 50px;
   left: 0;
+  margin: 15px;
+  position: absolute;
   right: 0;
-  box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1);
 }
 
 .chat-input input {
-  position: absolute;
-  width: 90%;
-  left: 0;
-  margin: 15px;
-}
-
-.chat-input input {
-  position: absolute;
-  width: 90%;
-  left: 0;
-  margin: 15px;
   border: none;
   color: var(--text);
+  left: 0;
+  margin: 15px;
+  position: absolute;
+  width: 90%;
 }
 
 .chat-input input:focus {
@@ -178,26 +173,26 @@ img {
 }
 
 .chat-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  background: var(--gray-100);
   border-radius: 50%;
+  bottom: 0;
+  height: 37px;
   margin: auto 8px auto 0;
   padding: 7px;
+  position: absolute;
+  right: 0;
+  top: 0;
   width: 37px;
-  height: 37px;
-  background: var(--gray-100);
 }
 
 .chat-send-img {
-  margin: auto 0 auto 0;
-  transition: ease-in-out .15s;
+  margin: auto 0;
+  transition: ease-in-out 0.15s;
 }
 
 .chat-send-img:hover {
-  padding: 5px;
   background: var(--gray-90);
+  padding: 5px;
 }
 
 button {
