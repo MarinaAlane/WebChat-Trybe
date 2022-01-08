@@ -8,6 +8,7 @@
 </head>
 <body>
   <ul id="messages"></ul>
+
   <div id="formulario">
     <form action="" id="form-nickname">
       <input type="text" data-testid="nickname-box" id="input-nickname" placeholder="nickname" />
@@ -19,12 +20,9 @@
     </form>
   </div>
 
-  <table id="user-about">
-    <tr>
-      <th>Online user:</th>
-      <td id="user-nickname" data-testid="online-user"></td>
-    </tr>
-  </table>
+  <ul id="user-about">
+    <li id="user-nickname" data-testid="online-user"></li>
+  </ul>
 
   <script src="socket.io/socket.io.js"></script>
   <script>
@@ -38,23 +36,15 @@
     const userNickname = document.getElementById('user-nickname');
     const userAbout = document.getElementById('user-about');
 
-    // const getRandomNickname = (length) => {
-    //   let result = '';
-    //   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    //   const charactersLength = characters.length;
-    //   for (let i = 0; i < length; i += 1) {
-    //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    //   }
-    //   return result;
-    // };
-
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
 
       if (inputNickname.value) {
-        const oldNickname = sessionStorage.getItem('nickname');
-
-        socket.emit('user', { oldNickname, newNickname: inputNickname.value });
+        socket.emit('user', inputNickname.value);
+        
+        sessionStorage.setItem('nickname', inputNickname.value);
+        const newNickname = sessionStorage.getItem('nickname');
+        userAbout.firstChild.innerText = newNickname;
 
         inputNickname.value = '';
       }
@@ -73,20 +63,30 @@
       }
     });
 
-    socket.on('connect', (socket) => {
-      sessionStorage.setItem('nickname', socket.createdNickname);
-      const nickname = sessionStorage.getItem('nickname');
-      userNickname.innerText = nickname;
+    socket.on('nickname', (newUserNickname) => {
+      sessionStorage.setItem('nickname', newUserNickname);
+      const createdNickname = sessionStorage.getItem('nickname');
+      userNickname.innerText = createdNickname;
     });
 
-    socket.on('onlineUsers', (users) => {
-      console.log(users);
-      users.forEach((name) => {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.innerText = name
-        td.appendChild(tr);
-        tr.appendChild(userAbout);
+    socket.on('online', (users) => {
+      sessionStorage.setItem('users', JSON.stringify(users));
+      const savedUsers = JSON.parse(sessionStorage.getItem('users'));
+      userAbout.innerHTML = '';
+      const nickname = sessionStorage.getItem('nickname');
+
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'online-user');
+      li.innerText = nickname;
+      userAbout.appendChild(li);
+
+      savedUsers.forEach(user => {
+        if (user.nickname !== nickname) {
+          const li = document.createElement('li');
+          li.setAttribute('data-testid', 'online-user');
+          li.innerText = user.nickname;
+          userAbout.appendChild(li);
+        }
       });
     });
 
@@ -97,15 +97,15 @@
       messages.appendChild(newMessage);
     });
 
-    socket.on('user', (nick) => {
-      sessionStorage.setItem('nickname', nick.newNickname);
-      const newNickname = sessionStorage.getItem('nickname');
-      userNickname.innerText = newNickname;
+    // socket.on('user', (nick) => {
+      // sessionStorage.setItem('nickname', nick.newNickname);
+      // const newNickname = sessionStorage.getItem('nickname');
+      // userNickname.innerText = newNickname;
 
-      const p = document.createElement('p');
-      p.innerText = nick.nickUpdateMessage;
-      document.querySelector('body').appendChild(p);
-    });
+    //   const p = document.createElement('p');
+    //   p.innerText = nick.nickUpdateMessage;
+    //   document.querySelector('body').appendChild(p);
+    // });
   </script>
 </body>
 </html>

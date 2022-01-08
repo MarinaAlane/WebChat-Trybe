@@ -36,23 +36,30 @@ const getDateAndTime = (date) => {
   return `${day}-${month}-${year} ${hour}:${minutes}:${seconds} ${ampm}`;
 };
 
-const users = [];
+let users = [];
 
 io.on('connection', (socket) => {
-  users.push(getRandomNickname(16));
-  io.emit('onlineUsers', users);
-  socket.on('nickname', () => {
-    io.emit('nickname', users);
-  });
+  const newUser = getRandomNickname(16);
+  socket.emit('nickname', newUser);
+
+  users.push({ id: socket.id, nickname: newUser });
+
+  io.emit('online', users);
 
   socket.on('message', (msg) => {
     io.emit('message', `${getDateAndTime(now)} - ${msg.nickname}: ${msg.chatMessage}`);
   });
 
-  socket.on('user', (nick) => {
-    io.emit('user', {
-      newNickname: nick.newNickname,
-      nickUpdateMessage: `${nick.oldNickname} alterou seu usuário para ${nick.newNickname}` });
+  socket.on('user', (newNickname) => {
+    users = users.map((user) => (
+      user.id === socket.id ? { id: socket.id, nickname: newNickname } : user
+    ));
+    io.emit('online', users);
+  });
+
+  socket.on('disconnect', () => {
+    users = users.filter((user) => user.id !== socket.id);
+    io.emit('online', users);
   });
 });
 
