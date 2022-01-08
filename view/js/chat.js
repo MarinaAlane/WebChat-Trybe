@@ -28,9 +28,15 @@ const createMessage = (chatMessage) => {
 };
 
 socket.on('message', (chatMessage) => createMessage(chatMessage));
+socket.on('allMessages', (allMessages) => {
+  allMessages.forEach((message) => {
+    createMessage(message)
+  })
+})
 
 btnSaveNickname.addEventListener('click', () => {
   currentNickname = nicknameInp.value;
+  currentNicknameSpan.innerHTML = currentNickname;
 });
 
 btnSendMessage.addEventListener('click', () => {
@@ -40,5 +46,3 @@ btnSendMessage.addEventListener('click', () => {
   });
   inputMessage.value = '';
 });
-
-generateNickname
