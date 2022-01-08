@@ -69,6 +69,12 @@ form.addEventListener('submit', (e) => {
     socket.disconnect();
   };
 
+  socket.on('messageHistory', (messages) => {
+    messages.forEach(({ message: chatMessage, nickname, timestamp }) => {
+      createMessage(`${timestamp} - ${nickname}: ${chatMessage}`);
+    });
+  });
+
   socket.on('disconnectUser', (socketId) => {
     const user = document.getElementById(socketId);
     user.remove();

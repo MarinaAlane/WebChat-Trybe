@@ -3,7 +3,7 @@ const model = require('../models/chat');
 
 const message = ({ chatMessage, nickname }) => {
   const atualDate = moment(new Date()).format('DD-MM-yyyy h:mm:ss a');
-  model.createMessage({ chatMessage, nickname, atualDate });
+  model.createMessage({ message: chatMessage, nickname, timestamp: atualDate });
   return `${atualDate} ${nickname}: ${chatMessage}`;
 };
 
@@ -20,14 +20,16 @@ const disconnectUser = (socket) => {
 };
 
 module.exports = (io) =>
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
     io.emit('message', message({ chatMessage, nickname }));
   });
 
+  const dbmessages = await model.getMessages();
+  socket.emit('messageHistory', dbmessages);
+
   socket.on('userOnline', ({ nickname }) => {
-    const user = { nickname, socketId: socket.id };
-    allUsers = [user, ...allUsers];
+    allUsers = [{ nickname, socketId: socket.id }, ...allUsers];
     io.emit('userOnline', allUsers);
   });
 
