@@ -1,0 +1,29 @@
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.chat-on {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+
+.onlineUsers {
+  border-radius: 0.5rem;
+  height: 400px;
+  margin: 20px 0;
+  padding: 20px;
+  width: 220px;
+}
+
+.messages {
+  border-radius: 0.5rem;
+  height: 400px;
+  margin: 20px 0;
+  padding: 20px;
+  width: 420px;
+}

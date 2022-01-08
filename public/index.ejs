@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webchat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section class="chat-on">
+    <div>
+      <input
+        type="text" 
+        name="username" 
+        class="nickInput" 
+        placeholder="Insira seu nickname"
+        data-testid="nickname-box"
+      />
+      <button
+        type="submit"
+        data-testid="nickname-button"
+        class="nickbutton"
+      >
+        Salvar
+      </button>
+    </div>
+
+    <div>
+      <ul class="onlineUsers"></ul>
+      <ul class="messages">
+        <% allMsg.forEach(({nickname, timestamp, message}) => { %>
+          <li data-testid='message'><%=timestamp%> - <%=nickname%>: <%=message%></li>
+        <%})%>
+      </ul>
+    </div>
+
+    <div>
+      <input 
+        type="text" 
+        name="message"
+        placeholder="Digite sua mensagem"
+        data-testid="message-box"
+      />
+      <button 
+        class="sendButton" 
+        data-testid="send-button"
+      >
+        Enviar
+      </button>
+    </div>
+  </section>
+</body>
+</html>
