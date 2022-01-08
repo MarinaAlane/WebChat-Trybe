@@ -5,6 +5,7 @@ const model = require('../models/chat');
 
 const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss a');
 // console.log({ date });
+const users = {};
 
 const message = ({ chatMessage, nickname }) =>
   `${date} - ${nickname}: ${chatMessage}`;
@@ -12,19 +13,32 @@ const message = ({ chatMessage, nickname }) =>
 
 module.exports = (io) =>
   io.on('connection', async (socket) => {
-  console.log('Usuário conectado');
-
+  console.log(`Usuário ${socket.id} conectado`);
   socket.on('message', (data) => {
     model.saveMessage(data);
     io.emit('message', message(data));
-  });
+  }); // adiciona uma função e escuta um evento
 
 // socket.emit('welcomeMessage', ('Olá, bem vindos!'));
 
   const history = await model.getAll();
-  console.log({ history });
+  // console.log({ history });
   // io.emit('history', history);
 
   io.emit('history', history
     .map(({ messages, ...prev }) => message({ chatMessage: messages, ...prev })));
+
+  socket.on('updateUsername', (nickName) => {
+    io.emit('updateUsername', nickName);
+    // console.log({nickName});
+    users[socket.id] = nickName;
+    // console.log({ users });
+    io.emit('username', users);
+  });
+  
+  socket.on('disconnect', () => {
+    // console.log(`Usuário ${socket.id} saiuuu!`);
+    delete users[socket.id];
+    io.emit('username', users);
+  });
 });
