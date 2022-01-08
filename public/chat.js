@@ -2,8 +2,7 @@ const socket = window.io();
 
 const form = document.querySelector('#form');
 const buttonNick = document.querySelector('#nickname-button');
-/* const userOnline = [];
- */
+
 form.addEventListener('submit', (e) => {
   const input = document.querySelector('#message-box');
   e.preventDefault();
@@ -25,15 +24,18 @@ socket.on('message', (message) => {
   createIl(message, messagesUl, 'message');
 }); 
 
-socket.on('connection', (id) => {
-  const i = id.slice(0, -4);
-/*   userOnline.push(id);
- */ const userUl = document.querySelector('#users');
-  createIl(i, userUl, 'online-user');
-  /* userOnline.forEach((e) => ); */
+socket.on('userName', (id, users) => {
+  const userUl = document.querySelector('#users');
+  userUl.innerHTML = '';
+  createIl(id, userUl, 'online-user');
+
+  const newUsers = Object.values(users);
+  newUsers.forEach((element) => {
+     if (element !== id) createIl(element, userUl, 'online-user');
+    });
 });
 
-buttonNick.addEventListener('button', () => {
-/*   const nickName = document.querySelector('#nickname-box');
- */  
+buttonNick.addEventListener('click', () => {
+  const inputNickName = document.querySelector('#nickname-box');
+  socket.emit('newNick', inputNickName.value);
 });
