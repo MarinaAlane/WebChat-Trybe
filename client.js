@@ -20,4 +20,13 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
+// req 02
+socket.on('sendNickName', (nickname) => {
+  const usersUl = document.getElementById('users'); // lista users
+  const li = document.createElement('li'); // cria elemento lista 
+  li.textContent = nickname;
+  li.setAttribute('data-testid', 'online-user');
+  usersUl.appendChild(li);
+});
+
 socket.on('message', (message) => createMessage(message));
