@@ -5,8 +5,15 @@ const { Server } = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+// const pug = require('pug');
 
-app.get('/', (req, res) => res.sendFile(`${__dirname}/index.html`));
+app.set('view engine', 'pug');
+
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Hey' });
+});
+
+// app.get('/', (req, res) => res.sendFile(`${__dirname}/index.html`));
 
 io.on('connection', (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
@@ -15,7 +22,7 @@ io.on('connection', (socket) => {
 
     io.emit('message', message);
   });
-  
+
   socket.on('usuario', (data) => {
     const { nickname } = data;
     io.emit('usuario', nickname);

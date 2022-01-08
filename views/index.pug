@@ -1,0 +1,23 @@
+html
+  head
+    title= title
+    style
+      include style.css
+  body
+    main
+      section
+        article
+          h1 Usuários online
+          ul(id="usersOnline" data-testid="online-user")
+        article
+          h1 Mensagens 
+          ul(id="message")
+      form(id="form" action="")
+        button(id="salvar" data-testid="nickname-button") Definir
+        input(type="text" data-testid="nickname-box" id="nickname" placeholder="apelido")
+        input(id="enviar" autocomplete="off" data-testid="message-box")
+        button(id="" data-testid="send-button") Enviar
+
+  script(src="/socket.io/socket.io.js") 
+  script
+    include script.js
