@@ -1,4 +1,6 @@
 // Faça seu código aqui
+const randomString = require('randomstring');
+
 const express = require('express');
 const path = require('path');
 
@@ -22,7 +24,8 @@ require('./sockets/chat')(io);
 app.use(express.static(`${__dirname}/public`));
 
 app.get('/', (req, res) => {
-  res.status(200).render('chat.ejs');
+  const randomNickname = randomString.generate(16);
+  res.status(200).render('chat.ejs', { randomNickname });
 });
 
 http.listen(3000, () => {
