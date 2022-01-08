@@ -8,39 +8,94 @@
 </head>
 <body>
   <ul id="messages"></ul>
-  <div id="form">
-    <form action="" id="form">
-      <input type="text" id="input-nickname" placeholder="nickname" />
-      <textarea id="input-chat" placeholder="message" ></textarea>
-      <button>Enviar</button>
+  <div id="formulario">
+    <form action="" id="form-nickname">
+      <input type="text" data-testid="nickname-box" id="input-nickname" placeholder="nickname" />
+      <button type="submit" id="nickname-submit" data-testid="nickname-button">Enviar</button>
+    </form>
+    <form id="form-message">
+      <input type="text" id="input-chat" data-testid="message-box" placeholder="message" ></textarea>
+      <button type="submit" id="message-submit" data-testid="send-button">Enviar</button>
     </form>
   </div>
+
+  <table id="user-about">
+    <tr>
+      <th>Online user:</th>
+      <td id="user-nickname" data-testid="online-user"></td>
+    </tr>
+  </table>
 
   <script src="socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const messages = document.querySelector('#messages');
-    const form = document.querySelector('#form');
-    const inputNickname = document.querySelector('#input-nickname');
-    const inputChat = document.querySelector('#input-chat');
+    const messages = document.getElementById('messages');
+    const formNickname = document.getElementById('form-nickname');
+    const formMessage = document.getElementById('form-message');
+    const inputNickname = document.getElementById('input-nickname');
+    const inputChat = document.getElementById('input-chat');
+    const nickname = sessionStorage.getItem('nickname');
+    const userNickname = document.getElementById('user-nickname');
+    const userAbout = document.getElementById('user-about');
 
-    form.addEventListener('submit', (e) => {
+    const getRandomNickname = (length) => {
+      let result = '';
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      const charactersLength = characters.length;
+      for (let i = 0; i < length; i += 1) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    };
+
+    formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      if (inputNickname.value) {
+        const oldNickname = sessionStorage.getItem('nickname');
+
+        socket.emit('user', { oldNickname, newNickname: inputNickname.value });
+
+        inputNickname.value = '';
+      }
+    });
+
+    formMessage.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nickname = sessionStorage.getItem('nickname');
+
       if (inputChat.value) {
         socket.emit('message', {
-          chatMessage: inputChat.value, nickname: inputNickname.value
+          chatMessage: inputChat.value, nickname,
         });
 
         inputChat.value = '';
       }
     });
 
+    socket.on('connect', () => {
+      const createdNickname = getRandomNickname(16);
+      sessionStorage.setItem('nickname', createdNickname);
+      const nickname = sessionStorage.getItem('nickname');
+      userNickname.innerText = nickname;
+    });
+
     socket.on('message', (msg) => {
-      const newMessage = document
-        .createElement('li')
+      const newMessage = document.createElement('li')
+      newMessage.setAttribute('data-testid', 'message');
       newMessage.innerText = msg;
       messages.appendChild(newMessage);
-    })
+    });
+
+    socket.on('user', (nick) => {
+      sessionStorage.setItem('nickname', nick.newNickname);
+      const newNickname = sessionStorage.getItem('nickname');
+      userNickname.innerText = newNickname;
+
+      const p = document.createElement('p');
+      p.innerText = nick.nickUpdateMessage;
+      document.querySelector('body').appendChild(p);
+    });
   </script>
 </body>
 </html>

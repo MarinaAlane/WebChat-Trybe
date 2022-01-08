@@ -26,11 +26,15 @@ const getDateAndTime = (date) => {
   return `${day}-${month}-${year} ${hour}:${minutes}:${seconds} ${ampm}`;
 };
 
-io.on('connection', (socket) => {
-  console.log(`Usuário ${socket.id} conectado!`);
-
+io.on('connect', (socket) => {
   socket.on('message', (msg) => {
     io.emit('message', `${getDateAndTime(now)} - ${msg.nickname}: ${msg.chatMessage}`);
+  });
+
+  socket.on('user', (nick) => {
+    io.emit('user', {
+      newNickname: nick.newNickname,
+      nickUpdateMessage: `${nick.oldNickname} alterou seu usuário para ${nick.newNickname}` });
   });
 
   socket.on('disconnect', () => {
