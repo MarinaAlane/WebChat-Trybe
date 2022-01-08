@@ -37,7 +37,11 @@ socket.on('allMessages', (allMessages) => {
 socket.on('allUsers', (usersList) => {
   // limpa elemento parent
   currentNicknameSpan.innerHTML = '';
-
+  const lastUser = usersList[usersList.length -1];
+  if(lastUser === currentNickname){
+    usersList.pop();
+    usersList.unshift(currentNickname);
+  };
   // adiciona todos childs (li)
   usersList.forEach((user) => {
     const li = document.createElement('li');
