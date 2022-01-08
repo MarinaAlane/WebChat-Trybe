@@ -38,7 +38,6 @@ function saveNickname(nickname) {
   li.innerText = `${nickname}`;
 
   userh2.innerText = nickname;
-  console.log(document.querySelector('#connections-list'));
   connectionsList.appendChild(li);
 }
 
@@ -54,24 +53,26 @@ function setNickname(event) {
 }
 
 function newUserList(users) {
-  console.log(connectionsList.parentNode);
+  console.log('newUserList client connectionsList.parentNode', connectionsList.parentNode);
 
   const listUsers = Object.values(users);
-  const newList = connectionsList.cloneNode(false);
+  connectionsList.innerHTML = '';
+  console.log('2222newUserList client connectionsList.parentNode', connectionsList.parentNode);
+
   const li = document.createElement('li');
   li.setAttribute(DATA_TEST_ID, ONLINE_USER);
   li.innerText = userh2.innerText;
-  newList.appendChild(li);
+  connectionsList.appendChild(li);
+  console.log('newUserList client newList', connectionsList);
 
   listUsers.forEach((nick) => {
     if (nick !== userh2.innerText) {
       const li2 = document.createElement('li');
       li2.setAttribute(DATA_TEST_ID, ONLINE_USER);
       li2.innerText = nick;
-      newList.appendChild(li2);
+      connectionsList.appendChild(li2);
     }
   });
-  connectionsList.parentNode.replaceChild(newList, connectionsList);
 }
 
 //  ------------------------------------------------------------------------------------------------------
