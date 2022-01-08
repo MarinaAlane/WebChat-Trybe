@@ -27,7 +27,6 @@ io.on('connection', (socket) => {
   users[socket.id] = socket.id.substr(0, 16);
   socket.emit('newUser', users[socket.id]);
   io.emit('userList', users);
-  console.log(`Novo usuário ${users[socket.id]} conectado ao socket.io`);
 
   socket.on('message', (msg) => {
     const { chatMessage, nickname } = msg;
@@ -38,13 +37,15 @@ io.on('connection', (socket) => {
 
   socket.on('setNickname', (newNickname) => {
     users[socket.id] = newNickname;
-    console.table(users);
-    console.log('setNickname salvou a nova lista no server');
     io.emit('userList', users);
   });
 
-  // io.emit('message', `Novo usuário ${users[socket.id]} conectado)`);
-  // const fullDate = getDate();
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+
+    io.emit('nickname', users[socket.id]);
+    io.emit('userList', users);
+  });
 });
 
 server.listen(PORT, () => {
