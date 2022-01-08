@@ -12,27 +12,27 @@ const currentlyTime = () => {
 
 const onlineUsers = [];
 
-const serverReturnAfterLogin = (socket = null, _io = null) => {
-  const onlineUsersReverse = onlineUsers.reverse();
+const serverReturnAfterLogin = (socket = null, _io = null, data = null) => {
+const { nickname } = data;
+  socket.emit('serverReturnAfterLogin', { onlineUsers });
 
-  socket.emit('serverReturnAfterLogin', { onlineUsersReverse });
+  socket.broadcast.emit('otherUserConnected', nickname);
 };
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
     socket.on('login', (nickname) => {
-        onlineUsers.push({ socketId: socket.id, nickname });
-  });
-
+      serverReturnAfterLogin(socket, io, { nickname });
+      onlineUsers.push({ socketId: socket.id, nickname });
     // debug
-    console.log('BACK: array onlineUsres');
+    console.log('BACK: onlineUsers');
     console.log(onlineUsers);
+  });
 
   // socket.on('alterNickname', (newNickName) => { 
   //   nickname = newNickName; 
   // });
   
-  serverReturnAfterLogin(socket, io);
 
     socket.on('message', (clientMsg) => {
       const { chatMessage, nickname } = clientMsg;

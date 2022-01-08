@@ -5,6 +5,7 @@ const messageInput = document.querySelector('#messageInput');
 
 const CLASSNAME__MESSAGE_DIV = 'messages-div';
 const CLASSNAME__ONLINE_USERS_DIV = 'online-users-div';
+const DATATESTID__ONLINE_USER = 'online-user';
 
 const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blog/javascript-generate-random-string
   // Declare all characters
@@ -20,10 +21,9 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
 };
 
 let nickname = randomStringGen(16);
+// const onlineUsers = [];
 
-let allLoggedUsers = [];
-
-socket.emit('nickname', nickname); // estou aqui
+socket.emit('login', nickname);
 
 const createChatList = (text, dataTestid, classNameFather) => {
   const div = document.getElementsByClassName(classNameFather)[0];
@@ -36,9 +36,8 @@ const createChatList = (text, dataTestid, classNameFather) => {
 };
 
 const createUsersList = (users, dataTestid, classNameFather) => {
-  const div = document.getElementsByClassName(classNameFather)[0];
-
   users.forEach((user) => {
+    const div = document.getElementsByClassName(classNameFather)[0];
     const p = document.createElement('p');
     const attr = document.createAttribute('data-testid');
     attr.value = dataTestid;
@@ -48,7 +47,24 @@ const createUsersList = (users, dataTestid, classNameFather) => {
   });
 };
 
-createChatList(nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
+const addUserToList = (userNickname, dataTestid, classNameFather) => {
+  const div = document.getElementsByClassName(classNameFather)[0];
+
+  // debug
+  console.log('FRONT: div');
+  console.log(div);
+
+  const p = document.createElement('p');
+  const attr = document.createAttribute('data-testid');
+  attr.value = dataTestid;
+  p.setAttributeNode(attr);
+  p.innerText = `${userNickname}`;
+  div.appendChild(p);
+};
+
+// addUserToList(nickname, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
+
+// createChatList(nickname, DATATESTID__ONLINE_USER, CLASSNAME__MESSAGE_DIV);
 
 nicknameBtn.addEventListener('click', (e) => {
   nickname = document.getElementById('nicknameInput').value;
@@ -69,20 +85,21 @@ sendMsgBtn.addEventListener('click', (e) => {
   return false;
 });
 
-socket.emit('login', nickname);
-
 socket.on('serverReturnAfterLogin', (data) => {
-  const { onlineUsersReverse } = data;
-  // debug
-  console.log('FRONT: typeof array onlineUsers');
-  console.log(typeof onlineUsersReverse);
+  const { onlineUsers } = data;
+  const newUsersArray = onlineUsers;
+  newUsersArray.unshift({ socketId: socket.id, nickname });
 
-  createUsersList(onlineUsersReverse, 'online-user', CLASSNAME__ONLINE_USERS_DIV);
+  // // debug
+  // console.log('FRONT: Length do Array');
+  // console.log(newUsersArray.length);
+
+  createUsersList(newUsersArray, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
 });
 
-// socket.on('allLoggedUsers', (onlineUsers) => {
-//   // createChatList(data.nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
-// });
+socket.on('otherUserConnected', (userNickname) => {
+  addUserToList(userNickname, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
+});
 
 socket.on('message', (msg) => {
   createChatList(msg, 'message', CLASSNAME__MESSAGE_DIV);
