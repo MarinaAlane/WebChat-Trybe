@@ -3,7 +3,6 @@ const http = require('http');
 const moment = require('moment');
 const path = require('path');
 const { Server } = require('socket.io');
-// Um socket é um mecanismo de comunicação usado normalmente para implementar um sistema de cliente e servidor, sendo o cliente quem requisita um serviço e servidor quem executa esse serviço, assim como as APIs, que permitem a troca de mensagens entre máquinas/aplicações.
 
 const app = express();
 const server = http.createServer(app);
@@ -16,15 +15,14 @@ app.get('/', (_req, res) => {
 });
 
 // cliente -> servidor -> cliente
+let clients = [];
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  // socket.on('onlineUser', (user) => {
-  //   io.emit('onlineUser', user);
-  // });
-
-  socket.on('nickname', (nickname) => {
-    io.emit('nickname', nickname);
+  socket.on('isConnected', (nickname) => {
+    clients = clients.filter((client) => client.id !== socket.id);
+    clients.push({ nickname, id: socket.id });
+    io.emit('getOnlineUsers', clients);
   });
 
   socket.on('message', ({ chatMessage, nickname }) => {
@@ -34,6 +32,9 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`User ${socket.id} disconnected`);
+    // https://stackoverflow.com/questions/6563885/socket-io-how-do-i-get-a-list-of-connected-sockets-clients
+    clients = clients.filter((client) => client.id !== socket.id);
+    io.emit('getOnlineUsers', clients);
   });
 });
 

@@ -7,7 +7,7 @@
   </head>
   
   <body>
-    <p id="online-user" data-testid="online-user"></p>
+    <div id="online-users"></div>
     <form id="formNickname">
       <input id="nickname-box" placeholder="Type your nickname" data-testid="nickname-box">
       <button data-testid="nickname-button">Save</button>
@@ -25,10 +25,10 @@
   
     const formNickname = document.querySelector('#formNickname');
     const inputNickname = document.querySelector('#nickname-box');
-    const newUser = document.querySelector('#online-user')
     const form = document.querySelector('#form');
     const input = document.querySelector('#message-box');
     const messages = document.querySelector('#messages');
+    const onlineUsers = document.querySelector('#online-users')
 
     const generateRandomUser = (size) => {
       const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -40,17 +40,31 @@
     }
     const randomNickname = generateRandomUser(12)
     console.log(randomNickname.length)
-    newUser.innerText = randomNickname;
     window.sessionStorage.setItem('nickname', randomNickname);
-    socket.emit('nickname', randomNickname
-    );
+  
+    socket.emit('isConnected', randomNickname);
+
+    socket.on('getOnlineUsers', (clients) => {
+      console.log('users', clients)
+      onlineUsers.innerHTML = '';
+      const pCurrentUser = document.createElement('p');
+      pCurrentUser.innerText = clients.find((client) => client.id === socket.id).nickname
+      pCurrentUser.setAttribute('data-testid', 'online-user')
+      onlineUsers.appendChild(pCurrentUser)
+      clients.filter((client) => client.id !== socket.id).forEach((user) => {
+        const p = document.createElement('p');
+        p.innerText = user.nickname;
+        p.setAttribute('data-testid', 'online-user')
+        onlineUsers.appendChild(p)
+      })
+    })
     
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputNickname.value) {
         generateRandomUser();
         window.sessionStorage.setItem('nickname', inputNickname.value);
-        socket.emit('nickname', inputNickname.value)
+        socket.emit('isConnected', inputNickname.value)
         inputNickname.value = ''
       }
     })
