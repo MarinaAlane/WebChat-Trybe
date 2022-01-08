@@ -38,15 +38,15 @@
     const userNickname = document.getElementById('user-nickname');
     const userAbout = document.getElementById('user-about');
 
-    const getRandomNickname = (length) => {
-      let result = '';
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-      const charactersLength = characters.length;
-      for (let i = 0; i < length; i += 1) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      }
-      return result;
-    };
+    // const getRandomNickname = (length) => {
+    //   let result = '';
+    //   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    //   const charactersLength = characters.length;
+    //   for (let i = 0; i < length; i += 1) {
+    //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    //   }
+    //   return result;
+    // };
 
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -73,11 +73,21 @@
       }
     });
 
-    socket.on('connect', () => {
-      const createdNickname = getRandomNickname(16);
-      sessionStorage.setItem('nickname', createdNickname);
+    socket.on('connect', (socket) => {
+      sessionStorage.setItem('nickname', socket.createdNickname);
       const nickname = sessionStorage.getItem('nickname');
       userNickname.innerText = nickname;
+    });
+
+    socket.on('onlineUsers', (users) => {
+      console.log(users);
+      users.forEach((name) => {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.innerText = name
+        td.appendChild(tr);
+        tr.appendChild(userAbout);
+      });
     });
 
     socket.on('message', (msg) => {

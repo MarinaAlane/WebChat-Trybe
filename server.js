@@ -14,6 +14,16 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+const getRandomNickname = (length) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
 const getDateAndTime = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -26,7 +36,15 @@ const getDateAndTime = (date) => {
   return `${day}-${month}-${year} ${hour}:${minutes}:${seconds} ${ampm}`;
 };
 
-io.on('connect', (socket) => {
+const users = [];
+
+io.on('connection', (socket) => {
+  users.push(getRandomNickname(16));
+  io.emit('onlineUsers', users);
+  socket.on('nickname', () => {
+    io.emit('nickname', users);
+  });
+
   socket.on('message', (msg) => {
     io.emit('message', `${getDateAndTime(now)} - ${msg.nickname}: ${msg.chatMessage}`);
   });
@@ -35,10 +53,6 @@ io.on('connect', (socket) => {
     io.emit('user', {
       newNickname: nick.newNickname,
       nickUpdateMessage: `${nick.oldNickname} alterou seu usuário para ${nick.newNickname}` });
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} desconectado!`);
   });
 });
 
