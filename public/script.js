@@ -48,6 +48,10 @@ sendButton.addEventListener('click', (event) => {
 socket.on('connectedUser', (user) => renderOnlineUsers(user));
 
 socket.on('currentConnectedUsers', ({ usersConnected, onlineUser }) => {
+  // const crrUser = sessionStorage.getItem('user');
+  // const userList = document.querySelector('.userList');
+  // userList.innerHTML = '';
+  // renderOnlineUsers(crrUser);
   usersConnected.forEach((user) => {
     if (user.userConnected !== onlineUser) {
       renderOnlineUsers(user.userNickName);
