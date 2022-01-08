@@ -8,11 +8,12 @@ function renderMessage(message) {
   UlMessages.append(li);
 }
 
-function renderOnlineUsers(userName) {
+function renderOnlineUsers(userName, id) {
   const userList = document.querySelector('.userList');
   const li = document.createElement('li');
   li.innerText = userName;
   li.setAttribute('data-testid', 'online-user');
+  li.setAttribute('id', id);
   userList.append(li);
 }
 
@@ -45,16 +46,12 @@ sendButton.addEventListener('click', (event) => {
 });
 
 // usuarios
-socket.on('connectedUser', (user) => renderOnlineUsers(user));
+socket.on('connectedUser', (user) => renderOnlineUsers(user, user));
 
 socket.on('currentConnectedUsers', ({ usersConnected, onlineUser }) => {
-  // const crrUser = sessionStorage.getItem('user');
-  // const userList = document.querySelector('.userList');
-  // userList.innerHTML = '';
-  // renderOnlineUsers(crrUser);
   usersConnected.forEach((user) => {
     if (user.userConnected !== onlineUser) {
-      renderOnlineUsers(user.userNickName);
+      renderOnlineUsers(user.userNickName, user.userConnected);
     }
   });
 });
@@ -65,6 +62,7 @@ userButton.addEventListener('click', (event) => {
   event.preventDefault();
   sessionStorage.setItem('user', userInput.value);
   const nickName = userInput.value;
+  console.log(nickName, 'aqui!');
   socket.emit('updatedNickName', nickName);
 });
 
