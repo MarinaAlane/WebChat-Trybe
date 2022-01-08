@@ -17,8 +17,7 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id} `);
-  
+  socket.emit('connected', socket.id.substring(0, 16));
   socket.on('message', ({ nickname, chatMessage }) => {
     const currentDate = moment().format('DD-MM-YYYY HH:MM:ss A');
     const changeNickName = nickname || socket.id;

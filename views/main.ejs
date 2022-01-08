@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO - trybe</title>
+  </head>
+  <body>
+    <h2 id="online-user" data-testid="online-user"></h2>
+    <input name="nickname" id="nickname" data-testid="nickname-box" />
+    <button id="nickname-button" data-testid="nickname-button" type="button">
+      Alterar Nome
+    </button>
+    <input
+      data-testid="message-box"
+      name="chatMessage"
+      id="chatMessage"
+    ></input>
+    <button type="button" id="send-button" data-testid="send-button">
+      enviar
+    </button>
+
+    <div>
+      <ul id="messages"></ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io();
+      //Fields
+      const onlineUser = document.getElementById('online-user');
+      const chatMessage = document.getElementById('chatMessage');
+      const nickname = document.getElementById('nickname');
+      // Buttons
+      const nicknameButton = document.getElementById('nickname-button');
+      const sendMessageButton = document.getElementById('send-button');
+      nicknameButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.setItem('nickname', nickname.value);
+      });
+      socket.on('connected', (id) => {
+        const sessionNickName = sessionStorage.getItem('nickname');
+        onlineUser.innerText = id;
+        if (!sessionNickName) {
+          nickname.value = id;
+        } else {
+          nickname.value = sessionNickName;
+        }
+      });
+      sendMessageButton.addEventListener('click', (e) => {
+        socket.emit('message', {
+          nickname: nickname.value,
+          chatMessage: chatMessage.value,
+        });
+        document.getElementById('chatMessage').value = '';
+        return false;
+      });
+
+      const createMessage = (message) => {
+        const messagesUl = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.innerText = message;
+        li.setAttribute('data-testid', 'message');
+        messagesUl.appendChild(li);
+      };
+      socket.on('message', (message) => createMessage(message));
+    </script>
+  </body>
+</html>
