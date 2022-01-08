@@ -19,11 +19,12 @@ function formatMessage(timestamp, nickname, message){
   return `${timestamp} - ${nickname}: ${message}`;
 }
 
+const allConnectedUsers = [];
+
 module.exports = (io) => io.on('connection', async (socket) => {
-  console.log('user connected!!')
+  console.log(`user ${socket.id} connected!!`);
   const allMessages = await getAllMessages();
   const formatedMessages = allMessages.map((document) => formatMessage(document.timestamp, document.nickname, document.message));
-  console.log('emitindo!!!!', formatedMessages);
   socket.emit('allMessages', formatedMessages);
 
   // todo evento "message" vindo do browser
@@ -40,11 +41,28 @@ module.exports = (io) => io.on('connection', async (socket) => {
     const chatMessage = formatMessage(timestamp, payload.nickname, payload.chatMessage);
     io.emit('message', chatMessage);
   });
-
-  /*
-      // get all messages no banco de dados
-      const messages = await getAllMessages();
-      const messagesFormatadas = messages.map((document) => formatMessage(document.timestamp, document.nickname, document.message))
-      socket.emit('todasMensagens', messagesFormatadas);
-  */
+  socket.on('newUserConnected', (nickname) => {
+    const id = socket.id;
+    let obj = { 
+      id,
+      nickname
+    }
+    allConnectedUsers.push(obj);
+    const allConnectedUsersNickname = allConnectedUsers.map((userObject) => {
+      return userObject.nickname
+    })
+    io.emit('allUsers', allConnectedUsersNickname);
+  });
+  socket.on('disconnect', () => {
+    console.log(`User ${socket.id} disconected.`);
+    let indexToBeDeleted = allConnectedUsers.findIndex((currentItem) => {
+      return currentItem.id === socket.id;
+    });
+    console.log('AQUI TÁ O INDEX', indexToBeDeleted)
+    allConnectedUsers.splice(indexToBeDeleted, 1);
+    const allConnectedUsersNickname = allConnectedUsers.map((userObject) => {
+      return userObject.nickname
+    })
+    io.emit('allUsers', allConnectedUsersNickname);
+  });
 });

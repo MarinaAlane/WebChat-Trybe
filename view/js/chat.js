@@ -17,7 +17,8 @@ let names = ['AJWNRPOITHNMLKJW', 'OWLKMNTKILOIWERN', 'LAOQIRJGMNASJELA'];
 let random = randomNumber(0, names.length - 1);
 let currentNickname = names[random];
 
-currentNicknameSpan.innerHTML = currentNickname;
+//currentNicknameSpan.innerHTML = currentNickname;
+socket.emit('newUserConnected', currentNickname);
 
 const createMessage = (chatMessage) => {
   const messagesUl = document.querySelector('#messages');
@@ -31,12 +32,21 @@ socket.on('message', (chatMessage) => createMessage(chatMessage));
 socket.on('allMessages', (allMessages) => {
   allMessages.forEach((message) => {
     createMessage(message)
-  })
-})
+  });
+});
+socket.on('allUsers', (usersList) => {
+  //debugger;
+  currentNicknameSpan.innerHTML = '';
+  usersList.forEach((user) => {
+    const li = document.createElement('li');
+    li.innerText = user;
+    currentNicknameSpan.appendChild(li);
+  });
+});
 
 btnSaveNickname.addEventListener('click', () => {
   currentNickname = nicknameInp.value;
-  currentNicknameSpan.innerHTML = currentNickname;
+  //currentNicknameSpan.innerHTML = currentNickname;
 });
 
 btnSendMessage.addEventListener('click', () => {
