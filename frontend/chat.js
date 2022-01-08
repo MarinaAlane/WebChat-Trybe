@@ -19,7 +19,7 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
   return str;
 };
 
-const nickname = randomStringGen(16);
+let nickname = randomStringGen(16);
 
 socket.emit('nickname', nickname); // estou aqui
 
@@ -54,6 +54,13 @@ createChatList(nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
 //   messageInput.value = '';
 //   e.preventDefault();
 // });
+
+nicknameBtn.addEventListener('click', (e) => {
+  nickname = document.getElementById('nicknameInput').value;
+  // socket.emit('alterNickname', alteredNickname);
+  messageInput.value = '';
+  e.preventDefault();
+});
 
 sendMsgBtn.addEventListener('click', (e) => {
   e.preventDefault();
