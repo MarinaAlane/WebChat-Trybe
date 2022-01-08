@@ -3,6 +3,9 @@ const nicknameBtn = document.getElementById('nicknameBtn');
 const sendMsgBtn = document.getElementById('sendBtn');
 const messageInput = document.querySelector('#messageInput');
 
+const CLASSNAME__MESSAGE_DIV = 'messages-div';
+const CLASSNAME__ONLINE_USERS_DIV = 'online-users-div';
+
 const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blog/javascript-generate-random-string
   // Declare all characters
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -16,10 +19,12 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
   return str;
 };
 
-let nickname = randomStringGen(16);
+const nickname = randomStringGen(16);
 
-const createListItens = (text, dataTestid) => {
-  const div = document.getElementsByClassName('messages-div')[0];
+socket.emit('nickname', nickname); // estou aqui
+
+const createChatList = (text, dataTestid, classNameFather) => {
+  const div = document.getElementsByClassName(classNameFather)[0];
   const p = document.createElement('p');
   const attr = document.createAttribute('data-testid');
   attr.value = dataTestid;
@@ -28,11 +33,27 @@ const createListItens = (text, dataTestid) => {
   div.appendChild(p);
 };
 
-nicknameBtn.addEventListener('click', (e) => {
-  nickname = document.getElementById('nicknameInput').value;
-  messageInput.value = '';
-  e.preventDefault();
-});
+const createUsersList = (users, dataTestid, classNameFather) => {
+  const div = document.getElementsByClassName(classNameFather)[0];
+  const p = document.createElement('p');
+  const attr = document.createAttribute('data-testid');
+  attr.value = dataTestid;
+  p.setAttributeNode(attr);
+
+  users.forEach((user) => {
+    p.innerText = user.nickName;
+    div.appendChild(p);
+  });
+};
+
+createChatList(nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
+
+// nicknameBtn.addEventListener('click', (e) => {
+//   const alteredNickname = document.getElementById('nicknameInput').value;
+//   socket.emit('alterNickname', alteredNickname);
+//   messageInput.value = '';
+//   e.preventDefault();
+// });
 
 sendMsgBtn.addEventListener('click', (e) => {
   e.preventDefault();
@@ -42,20 +63,25 @@ sendMsgBtn.addEventListener('click', (e) => {
     chatMessage: messageInput.value,
   });
 
-    messageInput.value = '';
-    return false;
+  messageInput.value = '';
+  return false;
 });
 
-socket.on('youLogged', (msg) => {
-  createListItens(msg, 'message');
-});
+// socket.on('youLogged', (msg) => {
+//   createChatList(msg, 'message', CLASSNAME__MESSAGE_DIV);
+// });
 
-socket.emit('userLogged', nickname);
+// socket.on('login', (nickname) => {
+// });
 
-socket.on('userLogged', (nicknameRandom) => {
-  createListItens(nicknameRandom, 'online-user');
+socket.on('LoggedUsers', (onlineUsers) => {
+  // createChatList(data.nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
+  createUsersList(onlineUsers, 'online-user', CLASSNAME__ONLINE_USERS_DIV);
 });
 
 socket.on('message', (msg) => {
-  createListItens(msg, 'message');
+  // debug
+  console.log('typeof msg GHEGANDO (Front)');
+  console.log(typeof msg);
+  createChatList(msg, 'message', CLASSNAME__MESSAGE_DIV);
 });

@@ -10,41 +10,46 @@ const currentlyTime = () => {
   return `${dataAtual} ${horaAtual}`;
 };
 
-// let onlineUsers = [];
+let onlineUsers = [];
 
-const connectionUserLoggedEvent = (socket = null, io = null) => {
-  socket.on('userLogged', (nicknameRandom) => {
-    // onlineUsers.push({ socketId: socket.id, nickName: nicknameRandom });
-
-    // io.emit('userLogged', { 
-    //   nickname: nicknameRandom,
-    //   onlineUsers: onlineUsers.reverse(),
-    // });
-
-    io.emit('userLogged', nicknameRandom);
-  });
+const connectionLoggedUsers = (_socket = null, io = null) => {
+  const onlineUsersReverse = onlineUsers.reverse();
+  io.emit('LoggedUsers', onlineUsersReverse);
 };
+  
+// const connectionYouLoggedUser = (socket = null, _io = null) => {
+//   socket.emit('youLoggedUser', onlineUsersReverse);
+// };
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
-    socket.emit('userID', socket.id);
+  // let randomNickname;
 
-    connectionUserLoggedEvent(socket, io);
+  // socket.on('nickname', (data) => { // estou aqui
+  //   // randomNickname = data;
 
-    // socket.on('userLogged', (nicknameRandom) => {
-    //   // onlineUsers.push({ socketId: socket.id, nickName: nicknameRandom });
+  //   onlineUsers.push({ socketId: socket.id, nickname: data });
+  // });
 
-    //   // io.emit('userLogged', { 
-    //   //   nickname: nicknameRandom,
-    //   //   onlineUsers: onlineUsers.reverse(),
-    //   // });
+  // socket.emit('login', nickname);
 
-    //   io.emit('userLogged', nicknameRandom);
+    // socket.on('alterNickname', (newNickName) => { 
+    //   nickname = newNickName; 
     // });
+
+    // socket.emit('login', );
   
-    socket.on('message', async (clientMsg) => {
-      const { nickname, chatMessage } = clientMsg;
+    connectionLoggedUsers(socket, io);
+
+    socket.on('message', (clientMsg) => {
+      // const { nickname, chatMessage } = clientMsg;
+      const { chatMessage, nickname } = clientMsg;
       const time = currentlyTime();
+
+      // Debug
+      console.log('Nick sendo passado:');
+      console.log(nickname);
+
       io.emit('message', `${time} - ${nickname}: ${chatMessage}`);
     });
   });
