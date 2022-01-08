@@ -30,11 +30,16 @@
     const input = document.querySelector('#message-box');
     const messages = document.querySelector('#messages');
 
-    const generateRandomUser = () => {
-      const randomString = Math.random().toString(36).slice(-12);
-      return `User${randomString}`;
+    const generateRandomUser = (size) => {
+      const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let randomNickname = 'User';
+      for (let index = 0; index < size; index += 1) {
+        randomNickname += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+      }
+      return randomNickname;
     }
-    const randomNickname = generateRandomUser()
+    const randomNickname = generateRandomUser(12)
+    console.log(randomNickname.length)
     newUser.innerText = randomNickname;
     window.sessionStorage.setItem('nickname', randomNickname);
     socket.emit('nickname', randomNickname
@@ -58,11 +63,6 @@
         input.value = ''
       }
     })
-
-    // socket.on('onlineUser', (user) => {
-    //   onlineUser = ''; 
-    //   socket.emit('onlineUser', user)
-    // })
   
     socket.on('message', (message) => {
       const newMessage = document.createElement('li');
