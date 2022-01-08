@@ -13,7 +13,7 @@ app.use(express.static(`${__dirname}/public`));
 const currentDate = moment().format('DD-MM-yyyy hh:mm:ss A'); 
 
 io.on('connection', (socket) => {
-  console.log(`${socket.id}`);
+  io.emit('connection', socket.id);
   socket.on('message', ({ nickname, chatMessage }) => {
     io.emit('message', `${currentDate} - ${nickname} ${chatMessage}`);
   }); 

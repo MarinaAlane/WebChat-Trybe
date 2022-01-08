@@ -1,12 +1,11 @@
 const socket = window.io();
 
 const form = document.querySelector('#form');
-const input = document.querySelector('#message-box');
-const dataTestId = 'data-testid';
-const onlineUser = document.getElementById('online-user');
-const saveBtn = document.getElementById('save-btn');
-
+const buttonNick = document.querySelector('#nickname-button');
+/* const userOnline = [];
+ */
 form.addEventListener('submit', (e) => {
+  const input = document.querySelector('#message-box');
   e.preventDefault();
   if (input.value) {
     socket.emit('message', { nickname: socket.id, chatMessage: input.value });
@@ -14,18 +13,27 @@ form.addEventListener('submit', (e) => {
   }
 });
 
-const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages');
+const createIl = (text, ul, testId) => {
   const li = document.createElement('li');
-  li.innerText = message;
-  li.setAttribute('data-testid', 'message'); messagesUl.appendChild(li);
+  li.innerText = text;
+  li.setAttribute('data-testid', testId);
+  ul.appendChild(li);
 }; 
     
-socket.on('message', (message) => createMessage(message)); 
-
-/* form.addEventListener('submit', (e) => { e.preventDefault(); socket.emit('message', { nickname: socket.id, chatMessage: inputMessage.value }); inputMessage.value = ''; // return false; }); */ 
+socket.on('message', (message) => {
+  const messagesUl = document.querySelector('#messages');
+  createIl(message, messagesUl, 'message');
+}); 
 
 socket.on('connection', (id) => {
   const i = id.slice(0, -4);
-  console.log(i);
+/*   userOnline.push(id);
+ */ const userUl = document.querySelector('#users');
+  createIl(i, userUl, 'online-user');
+  /* userOnline.forEach((e) => ); */
+});
+
+buttonNick.addEventListener('button', () => {
+/*   const nickName = document.querySelector('#nickname-box');
+ */  
 });
