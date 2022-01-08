@@ -1,59 +1,59 @@
-html, body {
-    height: 100%;
-  }
+html , body {
+  height: 100%;
+}
   
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
   
-  #chat {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
-  }
+.chat {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
   
-  input {
-    border: 3px solid rgb(5, 5, 5);
-    font-size: 14px;
-    height: 50px;
-    padding: 0 20px;
-    width: 650px;
-  }
+input {
+  border: 3px solid rgb(5, 5, 5);
+  font-size: 14px;
+  height: 50px;
+  padding: 0 20px;
+  width: 650px;
+}
   
-  button {
-    background: rgb(10, 10, 10);
-    color: #FFF;
-    font-size: 14px;
-    font-weight: bold;
-    height: 50px;
-    line-height: 50px;
-    margin-top: 10px;
-    text-align: center;
-    width: 450px;
-  }
+button {
+  background: rgb(10, 10, 10);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 1px bold;
+  height: 50px;
+  line-height: 50px;
+  margin-top: 10px;
+  text-align: center;
+  width: 450px;
+}
   
-  .container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 650px;
-  }
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 650px;
+}
   
-  .onlineUsers {
-    border: 3px solid rgb(5, 5, 5);
-    height: 800px;
-    margin: 20px 0;
-    padding: 20px;
-    width: 450px;
-  }
+.onlineUsers {
+  border: 3px solid rgb(5, 5, 5);
+  height: 800px;
+  margin: 20px 0;
+  padding: 20px;
+  width: 450px;
+}
   
-  .messages {
-    border: 3px solid rgb(5, 5, 5);
-    height: 800px;
-    margin: 20px 0;
-    padding: 0px;
-    width: 820px;
-  }
+.messages {
+  border: 3px solid rgb(5, 5, 5);
+  height: 800px;
+  margin: 20px 0;
+  padding: 20px;
+  width: 820px;
+}
