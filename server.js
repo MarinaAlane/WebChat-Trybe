@@ -24,8 +24,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (msg) => {
-    // const { chatMessage, nickname } = msg;
     const formattedDate = format(new Date(), 'dd-mm-yyyy hh:mm:ss');
+
+    if (msg.chatMessage) {
+      return io
+        .emit('message', `${formattedDate} - ${msg.nickname}: ${msg.chatMessage}`);
+    }
 
     io.emit('message', `${formattedDate} - ${msg.nickname}: ${msg.message}`);
   });
