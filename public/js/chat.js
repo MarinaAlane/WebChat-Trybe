@@ -10,9 +10,12 @@ const formSendMessage = document.querySelector('#form-chatMessage');
 const inputNickname = document.querySelector('input[name=nickname');
 const inputMsg = document.querySelector('input[name=chatMessage');
 
+const ONLINE_USER = 'online-user';
+const DATA_TEST_ID = 'data-testid';
+
 function reciveMessage(msg) {
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(DATA_TEST_ID, 'message');
   li.innerText = msg;
   console.log('reciveMessage --->', msg);
   webchatList.appendChild(li);
@@ -31,7 +34,7 @@ function sendMessage(event) {
 
 function saveNickname(nickname) {
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute(DATA_TEST_ID, ONLINE_USER);
   li.innerText = `${nickname}`;
 
   userh2.innerText = nickname;
@@ -51,25 +54,24 @@ function setNickname(event) {
 }
 
 function newUserList(users) {
-  console.log(connectionsList.parentNode)
+  console.log(connectionsList.parentNode);
 
   const listUsers = Object.values(users);
   const newList = connectionsList.cloneNode(false);
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute(DATA_TEST_ID, ONLINE_USER);
   li.innerText = userh2.innerText;
   newList.appendChild(li);
 
   listUsers.forEach((nick) => {
     if (nick !== userh2.innerText) {
       const li2 = document.createElement('li');
-      li2.setAttribute('data-testid', 'online-user');
+      li2.setAttribute(DATA_TEST_ID, ONLINE_USER);
       li2.innerText = nick;
       newList.appendChild(li2);
     }
   });
   connectionsList.parentNode.replaceChild(newList, connectionsList);
-
 }
 
 //  ------------------------------------------------------------------------------------------------------
