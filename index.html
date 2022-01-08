@@ -9,15 +9,41 @@
 </head>
 
 <body>
-    <ul id="messages"></ul>
-    <form id="form">
-        <input id="input">
+    <ul id="messagesList"></ul>
+    <form id="inputsForm">
+        <input id="nickname">
+        <input id="msgField">
         <button>Send</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+
+        const messagesList = document.getElementById('messagesList');
+        const inputsForm = document.getElementById('inputsForm');
+        const nickname = document.getElementById('nickname');
+        const msgField = document.getElementById('msgField');
+
+
+        inputsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // console.log(nickname.value);
+            // console.log(msgField.value);
+            if (msgField.value) {
+                socket.emit('message', { nickname: nickname.value, msgField: msgField.value });
+                msgField.value = '';
+                // console.log(msgField.value);
+            }
+        })
+
+        socket.on('message', (msg) => {
+            // console.log(msg);
+            const newMessage = document.createElement('li');
+            newMessage.textContent = `${msg.dateHour} - ${msg.nickname}: ${msg.msgField}`;;
+            messagesList.appendChild(newMessage);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
     </script>
 </body>
 

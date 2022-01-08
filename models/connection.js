@@ -3,9 +3,6 @@ require('dotenv').config();
 
 let schema = null;
 
-// DB_URL = 'mongodb://localhost:27017/webchat/'
-// DB_NAME = webchat
-
 async function connection() {
   if (schema) return Promise.resolve(schema);
   return MongoClient
