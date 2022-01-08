@@ -19,6 +19,10 @@ app.get('/', (_req, res) => {
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
+  // socket.on('onlineUser', (user) => {
+  //   io.emit('onlineUser', user);
+  // });
+
   socket.on('nickname', (nickname) => {
     io.emit('nickname', nickname);
   });
