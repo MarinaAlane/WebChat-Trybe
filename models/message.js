@@ -1,22 +1,18 @@
 const connection = require('./connection');
 
-class Messages {
-  constructor(msg) {
-    this.message = msg;
-    this.collection = 'messages';
-  }
-
-  async getAll() {
+  const getAll = async () => {
     const db = await connection();
-    const msg = await db.collection(this.collection).find().toArray();
+    const msg = await db.collection('messages').find().toArray();
     return msg;
-  }
+  };
   
- async saveHistory() {
+ const saveHistory = async (msg) => {
     const db = await connection();
-    const messages = await db.collection(this.collection).insertOne(this.message);
+    const messages = await db.collection('messages').insertOne(msg);
     return messages;
-  }
-}
+};
 
-module.exports = Messages;
+module.exports = {
+  getAll,
+  saveHistory,
+};

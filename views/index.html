@@ -27,12 +27,9 @@
       </form>
     </div>
   </div>
-<<<<<<< HEAD
-=======
   <script src="/socket.io/socket.io.js"></script>
->>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
     <script type="text/javascript">
-      const socket = io('http://localhost:3000');
+      var socket = io('http://localhost:3000');
       const form = document.querySelector('#form');
       const input = document.querySelector('#input');
       const ul = document.querySelector('#messages');
@@ -57,23 +54,23 @@
       const formUser = document.querySelector('#formUser');
       const salvar = document.querySelector('#salvar');
       
-      // formUser.addEventListener('submit', (e) => {
-      //   e.preventDefault();
-      //   ulUsers.innerHTML = '';
-      //   const inputUser = document.querySelector('#inputUser');
-      //   const nickname = inputUser.value
-      //   console.log(nickname);
-      //   const ulUsers = document.querySelector('#ulUsers');
-      //   const user = document.createElement('li');
-      //   ulUsers.appendChild(user);
-      //   user.innerHTML = nickname;
-      //   const sortedUsers = user.sort((a,b) => {
-      //     if (a.id === socket.id) return -1;
-      //     if (b.id === socket.id) return 1;
-      //     return 0;
-      //   });
-      //   socket.emit('Nickname', nickname);
-      // });
+      formUser.addEventListener('submit', (e) => {
+        e.preventDefault();
+        ulUsers.innerHTML = '';
+        const inputUser = document.querySelector('#inputUser');
+        const nickname = inputUser.value
+        console.log(nickname);
+        const ulUsers = document.querySelector('#ulUsers');
+        const user = document.createElement('li');
+        ulUsers.appendChild(user);
+        user.innerHTML = nickname;
+        const sortedUsers = user.sort((a,b) => {
+          if (a.id === socket.id) return -1;
+          if (b.id === socket.id) return 1;
+          return 0;
+        });
+        socket.emit('Nickname', nickname);
+      });
 
       socket.on('message', (msg) => {
         const { date, nickname, chatMessage } = msg
@@ -86,19 +83,17 @@
       })
 
       socket.on('history', (msg) => {
-        msg.forEach(({nickname, message, timestamp}) => {
+        console.log(msg, '<----msg')
+        msg.forEach(({ nickname, message, timestamp }) => {
+          console.log(message)
           const li = document.createElement('li');
           li.setAttribute("data-testid", "message");
-          li.textContent = msg;
+          li.textContent = `${timestamp} - ${nickname}: ${message}`;
           // console.log(li, 'esse é o li da mensagem')
           ul.appendChild(li);
         });
       });
-<<<<<<< HEAD
 
-=======
-      // Não é mais necessário porque o requisito 4 já cumpre essa lógica
->>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
       socket.on('logIn', (newUser)=>{
         sessionStorage.setItem('nick', newUser)
         const ulUsers = document.querySelector('#ulUsers')   
@@ -106,18 +101,11 @@
         user.innerText = newUser;
         user.setAttribute("data-testid", "online-user");
         ulUsers.appendChild(user);
-        // socket.emit('Nickname', nickname);
       });
 
-<<<<<<< HEAD
-      socket.on('userOnline', (online) => {
-        online.forEach(({ arrayUsers }) => {
-          if (sessionStorage.getItem('nick') !== arrayUsers.id)
-=======
         // Lógica explicada e entendida pelo aluno Marcelo Leite durante o recesso
         socket.on('userOnline', (online) => {
         online.forEach(({ arrayUsers }) => {
->>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
           const ulUsers = document.querySelector('#ulUsers')   
           const user = document.createElement('li');
           user.innerText = arrayUsers;
@@ -127,8 +115,6 @@
         });
       });
 
-<<<<<<< HEAD
-=======
       formUser.addEventListener('submit', (e) => {
         e.preventDefault();
         ulUsers.innerHTML = '';
@@ -144,7 +130,6 @@
         });
         socket.emit('Nickname', nickname);
       });
->>>>>>> 624d1a7442662ff05ef31ae7b8615044ca7fb4fd
       </script>
   </body>
 </html>

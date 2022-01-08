@@ -1,4 +1,4 @@
-const Message = require('../models/message');
+const Message = require('../service/message');
 // a data foi feita através de estudo de como poderia simplificar esse sistema, e encontrei nesse site: https://www.horadecodar.com.br/2021/04/03/como-pegar-a-data-atual-com-javascript/
 const date = new Date();
 const day = String(date.getDate()).padStart(2, '0');
@@ -14,15 +14,13 @@ function message(socket, io) {
     const { nickname, chatMessage } = msg;
     io.emit('message', `${fulldate} - ${nickname}: ${chatMessage}`);
     const text = { message: chatMessage, nickname, timestamp: fulldate };
-    const bodyMsg = new Message(text);
-    bodyMsg.saveHistory();
+    Message.saveHistory(text);
   });
 }
 
-async function history(socket) {
-  const getMsg = new Message();
-  const msg = await getMsg.getAll();
-  socket.emit('history', msg);
+async function getAllhistory(socket) {
+  const getMsg = Message.getAll();
+  socket.emit('history', getMsg);
 }
 
 module.exports = (io) => {
@@ -40,7 +38,7 @@ module.exports = (io) => {
   });
 
   message(socket, io);
-  history(socket);
+  getAllhistory(socket);
 
   io.on('disconnect', () => {
     // console.log(`Usuário ${socket.id} desconectado`);

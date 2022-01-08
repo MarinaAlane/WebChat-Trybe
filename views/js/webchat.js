@@ -12,12 +12,12 @@ const ONLINE = 'online-user';
 
 socket.on('userOnline', (online) => {
   ulUsers.textContent = '';
-  // const sortedUsers = [...online].sort((a, b) => {
-  //   if (a.id === socket.id) return -1;
-  //   if (b.id === socket.id) return 1;
-  //   return 0;
-  // });
-  online.forEach(({ arrayUsers }) => {
+  const sortedUsers = [...online].sort((a, b) => {
+    if (a.id === socket.id) return -1;
+    if (b.id === socket.id) return 1;
+    return 0;
+  });
+  sortedUsers.forEach(({ arrayUsers }) => {
     user.textContent = arrayUsers;
     user.setAttribute(DATA, ONLINE);
     ulUsers.appendChild(user);
