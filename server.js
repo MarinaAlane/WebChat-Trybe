@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 const app = express();
 
@@ -13,5 +14,8 @@ const io = require('socket.io')(http, {
   } });
 
 require('./sockets/messages')(io);
+require('./sockets/users')(io);
 
 http.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));
+
+app.use(express.static(path.join(__dirname, '/public')));
