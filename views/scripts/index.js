@@ -9,7 +9,7 @@ const createMessage = (message) => {
 };
 
 window.onload = () => {
-  socket.emit('nickname', {});
+  socket.emit('newNickname');
   socket.on('allMessages', (messages) => {
     messages.map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`)
       .forEach((message) => createMessage(message));
@@ -35,7 +35,7 @@ sendMessageForm.addEventListener('submit', async (event) => {
 saveNicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const nicknameInput = document.querySelector('#nickname');
-  socket.emit('nickname', { id: socket.id, nickname: nicknameInput.value });
+  socket.emit('updateNickname', nicknameInput.value);
   nicknameInput.value = '';
 });
 
@@ -49,13 +49,9 @@ const createNickname = ({ id = socket.id, nickname }) => {
   actualNickname = nickname;
 };
 
-const updateNickname = ({ id, nickname }) => {
-  const nicknameLi = document.querySelector(
-    `li[data-testid="online-user"][data-id="${id}"]`,
-  );
-  if (!nicknameLi) return createNickname({ id, nickname });
-  nicknameLi.innerText = nickname;
-  if (id === socket.id) actualNickname = nickname;
+const clearNicknamesList = () => {
+  const nicknameUl = document.querySelector('#nicknames');
+  nicknameUl.innerHTML = '';
 };
 
 const saveMessage = async (message) => {
@@ -74,18 +70,23 @@ const saveMessage = async (message) => {
   }
 };
 
+const sortUsers = (users) => {
+  // if (users.length === 0) return users;
+  console.log(users);
+  return users;
+  // const primaryUser = users.find((user) => user.id === socket.id);
+  // const usersWithoutPrimaryUser = users.filter((user) => user.id !== socket.id);
+  // return [primaryUser, ...usersWithoutPrimaryUser];
+};
+
 socket.on('message', async (message) => {
   await saveMessage(message);
   createMessage(message);
 });
-socket.on('nickname', ({ id, nickname }) => updateNickname({ id, nickname }));
-socket.on('getAllUsers', () => socket.emit(
-  'nickname',
-  { id: socket.id, nickname: actualNickname },
-));
-socket.on('disconnectUser', ({ id }) => {
-  const nicknameLi = document.querySelector(
-    `li[data-testid="online-user"][data-id="${id}"]`,
-  );
-  nicknameLi.remove();
+
+socket.on('renderUsersList', (usersList) => {
+  clearNicknamesList();
+  sortUsers(usersList).forEach((user) => {
+    createNickname(user);
+  });
 });

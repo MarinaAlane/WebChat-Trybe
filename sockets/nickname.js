@@ -1,15 +1,40 @@
 const crypto = require('crypto');
 
-module.exports = (io) => io.on('connection', (socket) => {
+let usersList = [];
+
+function newUser(id, io) {
   const randomNickname = crypto.randomBytes(8).toString('hex');
+  usersList = [...usersList, { id, nickname: randomNickname }];
+  console.log(usersList);
+  io.emit('renderUsersList', usersList);
+}
 
-  io.emit('getAllUsers');
+function removeUser(removedUserId, io) {
+  usersList = usersList.filter((user) => user.id !== removedUserId);
+  console.log(usersList);
+  io.emit('renderUsersList', usersList);
+}
 
-  socket.on('nickname', ({ id = socket.id, nickname = randomNickname }) => {
-    io.emit('nickname', { id, nickname });
+function updateUser(updatedUser, io) {
+  usersList = usersList.map((user) => {
+    if (user.id === updatedUser.id) {
+      return updatedUser;
+    }
+    return user;
+  });
+  io.emit('renderUsersList', usersList);
+}
+
+module.exports = (io) => io.on('connection', async (socket) => {
+  socket.on('newNickname', () => {
+    newUser(socket.id, io);
+  });
+  
+  socket.on('updateNickname', (nickname) => {
+    updateUser({ id: socket.id, nickname }, io);
   });
 
   socket.on('disconnect', () => {
-    io.emit('disconnectUser', { id: socket.id });
+    removeUser(socket.id, io);
   });
 });
