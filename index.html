@@ -76,7 +76,7 @@
         padding: 0 1rem;
         margin: 0.25rem;
       }
-      #message {
+      #message, #usersOnline {
         margin: 0;
         padding: 50px 0 10px 0;
       }
@@ -96,7 +96,7 @@
       <section>
         <article>
           <h1>Usuários online</h1>
-          <article id="usersOnline"></article>
+          <ul id="usersOnline" data-testid="online-user"></ul>
         </article>
         <article>
           <h1>Mensagens</h1>
@@ -104,9 +104,10 @@
         </article>
       </section>
       <form id="form" action="">
-        <input type="text" name="nickname" id="nickname" placeholder="apelido" />
-        <input id="enviar" autocomplete="off" />
-        <button>Enviar</button>
+        <button id="salvar" data-testid="nickname-button">Definir</button>
+        <input type="text" data-testid="nickname-box" id="nickname" placeholder="apelido" />
+        <input id="enviar" autocomplete="off" data-testid="message-box" />
+        <button id=""data-testid="send-button">Enviar</button>
       </form>
     </main>
     <script src="/socket.io/socket.io.js"></script>
@@ -116,33 +117,59 @@
       const form = document.getElementById('form');
       const inputEnviar = document.getElementById('enviar');
       const inputNickname = document.getElementById('nickname');
-
-      
+      const usersOnline = document.getElementById('usersOnline');
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+
         if (inputEnviar.value) {
           socket.emit('message', {
             chatMessage: inputEnviar.value,
             nickname: inputNickname.value,
           });
 
-          socket.emit('usuario', {
-            id: socket.id,
-            nickname: inputNickname.value,
-            chatMessage: inputEnviar.value
-          });
           inputEnviar.value = '';
         }
       });
 
       socket.on('message', (message) => {
-        const liMessages = document.createElement('li');
-        liMessages.textContent = message;
+        const liMessages = document.createElement('li')
+        liMessages.setAttribute('data-testid', 'message');
+        liMessages.innerText = message;
         ulMensagens.appendChild(liMessages);
 
         window.scrollTo(0, document.body.scrollHeight);
       });
+
+      socket.on('usuario', (data) => {
+        const liMessages = document.createElement('li')
+        liMessages.setAttribute('class', 'user-online');
+        liMessages.innerText = data;
+        usersOnline.appendChild(liMessages);
+        console.log(data);
+      })
+    
+
+      /** @source https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript */
+      function makeid(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let result = '';
+
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        return result;
+      }
+
+      inputNickname.value = makeid(16);
+      socket.emit('usuario', { nickname: inputNickname.value });
+      
+
+      inputNickname.addEventListener('change', () => {
+        console.log('nick alterado');
+      })
     </script>
   </body>
 </html>

@@ -15,6 +15,13 @@ io.on('connection', (socket) => {
 
     io.emit('message', message);
   });
+  
+  socket.on('usuario', (data) => {
+    const { nickname } = data;
+    io.emit('usuario', nickname);
+
+    // console.log(data);
+  });
 });
 
 server.listen(3000, () => console.log('Servidor online em localhost:3000'));
