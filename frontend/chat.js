@@ -21,6 +21,8 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
 
 let nickname = randomStringGen(16);
 
+let allLoggedUsers = [];
+
 socket.emit('nickname', nickname); // estou aqui
 
 const createChatList = (text, dataTestid, classNameFather) => {
@@ -35,13 +37,13 @@ const createChatList = (text, dataTestid, classNameFather) => {
 
 const createUsersList = (users, dataTestid, classNameFather) => {
   const div = document.getElementsByClassName(classNameFather)[0];
-  const p = document.createElement('p');
-  const attr = document.createAttribute('data-testid');
-  attr.value = dataTestid;
-  p.setAttributeNode(attr);
 
   users.forEach((user) => {
-    p.innerText = user.nickName;
+    const p = document.createElement('p');
+    const attr = document.createAttribute('data-testid');
+    attr.value = dataTestid;
+    p.setAttributeNode(attr);
+    p.innerText = `${user.nickname}`;
     div.appendChild(p);
   });
 };
@@ -67,17 +69,20 @@ sendMsgBtn.addEventListener('click', (e) => {
   return false;
 });
 
-// socket.on('youLogged', (msg) => {
-//   createChatList(msg, 'message', CLASSNAME__MESSAGE_DIV);
-// });
+socket.emit('login', nickname);
 
-// socket.on('login', (nickname) => {
-// });
+socket.on('serverReturnAfterLogin', (data) => {
+  const { onlineUsersReverse } = data;
+  // debug
+  console.log('FRONT: typeof array onlineUsers');
+  console.log(typeof onlineUsersReverse);
 
-socket.on('allLoggedUsers', (onlineUsers) => {
-  // createChatList(data.nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
-  createUsersList(onlineUsers, 'online-user', CLASSNAME__ONLINE_USERS_DIV);
+  createUsersList(onlineUsersReverse, 'online-user', CLASSNAME__ONLINE_USERS_DIV);
 });
+
+// socket.on('allLoggedUsers', (onlineUsers) => {
+//   // createChatList(data.nickname, 'online-user', CLASSNAME__MESSAGE_DIV);
+// });
 
 socket.on('message', (msg) => {
   createChatList(msg, 'message', CLASSNAME__MESSAGE_DIV);
