@@ -14,7 +14,23 @@ const io = require('socket.io')(server, {
     methods: ['GET', 'POST'],
   } });
 
-  let onlineUser = [];
+let onlineUser = [];
+
+const messageFunctions = require('./models/functions');
+
+function sendMessage(socket) {
+  // escuta a msg de quem está enviando (tipo uma msg privada)
+  socket.on('message', (info) => {
+    const saveMessages = { message: info.chatMessage, nickname: info.nickname, timestamp: date };
+    messageFunctions.saveMessage(saveMessages);
+    io.emit('message', `${date} - ${info.nickname}: ${info.chatMessage}`);
+  });
+}
+
+async function getMessage(socket) {
+  const response = await messageFunctions.getAllMessages();
+  socket.emit('messageHistory', response);
+}
 
 // é um escutador, escuta o que está no 'remetente/cliente' - escuta a conexão de forma geral
 io.on('connection', (socket) => {
@@ -37,11 +53,8 @@ io.on('connection', (socket) => {
     io.emit('allLogged', onlineUser);
   });
 
-  // escuta a msg de quem está enviando (tipo uma msg privada)
-  socket.on('message', (info) => {
-    console.log(info);
-    io.emit('message', `${date} - ${info.nickname}: ${info.chatMessage}`);
-  });
+  sendMessage(socket);
+  getMessage(socket);
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

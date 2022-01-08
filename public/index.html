@@ -73,15 +73,12 @@
       $('.render-message').append('<p data-testid="message">' + info + '</p>');
     });
 
+    socket.on('messageHistory', function(response) {
+      response.forEach(({ message, nickname, timestamp }) => {
+        $('.render-message').append(`<p data-testid="message">${timestamp} - ${nickname}: ${message}</p>`);
+      })
+    })
+
   </script>
 </body>
 </html>
-
-<!--
-- Será validado que um _nickname_ aleatório é gerado quando o cliente se conecta;
-
-- Será validado que as mensagens enviadas possuem o _data-test-id_ correto;
-
-- Será validado que as mensagens são exibidas na ordem correta;
-
-- Será validado que é possível enviar mensagens após alterar o _nickname_.-->
