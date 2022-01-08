@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // config das live lectures com o mestre frankkkk
 require('dotenv').config();
 const express = require('express');
@@ -8,19 +9,18 @@ const moment = require('moment');
 
 const { PORT = 3000 } = process.env;
 
-function stringGenerator(size) {
-    let stringGenerated = '';
+let conectedUsers = [];
 
-    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function stringGenerator(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    const charactersLength = characters.length;
+    let generatedString = '';
 
-    for (let i = 0; i < size; i += 1) {
-        stringGenerated += characters.substr(Math.floor((Math.random() * charactersLength) + 1), 1);
+    for (let i = 0; i < length; i += 1) {
+        generatedString += characters[Math.floor(Math.random() * characters.length)];
     }
-
-    return stringGenerated;
-}
+    return generatedString;
+ }
 
 const app = express();
 
@@ -53,13 +53,28 @@ app.get('/', (req, res) => {
 
 io.on('connect', async (socket) => {
     const randomUsername = stringGenerator(16);
-
+    conectedUsers.push({ nickname: randomUsername, socketId: socket.id });
     socket.emit('username', randomUsername);
+
+    io.emit('online', conectedUsers);
 
     socket.on('message', (data) => {
         const { nickname, chatMessage } = data;
         const timeFormated = moment().format('DD-MM-yyyy HH:mm:ss');
         io.emit('message', `${timeFormated} - ${nickname}: ${chatMessage}`);
+    });
+
+    socket.on('updateNickname', (data) => {
+        const index = conectedUsers.findIndex((element) => element.socketId === socket.id);
+        conectedUsers[index] = { nickname: data, socketId: socket.id };
+
+        io.emit('online', conectedUsers);
+    });
+
+    socket.on('disconnect', () => {
+        conectedUsers = conectedUsers.filter((element) => element.socketId !== socket.id);
+        
+        io.emit('online', conectedUsers);
     });
 });
 

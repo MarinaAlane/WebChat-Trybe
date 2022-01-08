@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <span data-testid="online-user" id="username"></span>
+    <span id="username"></span>
     <ul id="online"></ul>
     <ul id="messages"></ul>
     <form>
@@ -28,6 +28,7 @@
         let messageList = document.getElementById('messages');
         let sendButton = document.querySelector('#sendButton');
         let messageInput = document.querySelector('#messageInput');
+        let online = document.querySelector('#online');
 
         sendButton.addEventListener('click', () => {
             event.preventDefault();
@@ -40,6 +41,8 @@
         nicknameButton.addEventListener('click', () => {
             let nickname = nicknameInput.value;
             username.innerHTML = nickname;
+            socket.emit('updateNickname', nickname);
+
             nicknameInput.value = '';
         });
 
@@ -54,6 +57,24 @@
             messageList.appendChild(message);
         });
 
+        socket.on("online", (data) => {
+            online.innerHTML = '';
+
+            const sessionUser = data.find((element) => element.socketId === socket.id);
+            const teste = document.createElement('li');
+            teste.innerHTML = sessionUser.nickname;
+            teste.setAttribute('data-testid', 'online-user');
+            online.appendChild(teste);
+
+            const restUsers = data.filter((element) => element.socketId !== socket.id);
+
+            restUsers.forEach((element) => {
+                const onlineUsers = document.createElement('li');
+                onlineUsers.innerHTML = element.nickname;
+                onlineUsers.setAttribute('data-testid', 'online-user');
+                online.appendChild(onlineUsers);
+            });
+        });
 
     </script>
 </body>
