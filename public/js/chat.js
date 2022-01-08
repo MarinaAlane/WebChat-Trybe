@@ -53,17 +53,13 @@ function setNickname(event) {
 }
 
 function newUserList(users) {
-  console.log('newUserList client connectionsList.parentNode', connectionsList.parentNode);
-
   const listUsers = Object.values(users);
   connectionsList.innerHTML = '';
-  console.log('2222newUserList client connectionsList.parentNode', connectionsList.parentNode);
 
   const li = document.createElement('li');
   li.setAttribute(DATA_TEST_ID, ONLINE_USER);
   li.innerText = userh2.innerText;
   connectionsList.appendChild(li);
-  console.log('newUserList client newList', connectionsList);
 
   listUsers.forEach((nick) => {
     if (nick !== userh2.innerText) {
