@@ -71,9 +71,34 @@
     <button>Enviar</button>
   </form>
 
+  <form id="nameForm">
+    <input id="nameInput">
+    <button>Confirmar</button>
+  </form>
+
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+
+    const form = document.querySelector('#form');
+    const input = document.querySelector('#input');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.textContent = msg;
+      messages.appendChild(newMessage);
+    })
+
+    const formName = document.querySelector('#nameForm');
+    const inputName = document.querySelector('#nameInput')
+
   </script>
 </body>
 

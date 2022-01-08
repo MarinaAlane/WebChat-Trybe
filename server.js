@@ -15,6 +15,17 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`Usuario ${socket.id} conectado`);
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+
+    socket.on('disconnect', () => {
+      console.log(`Usuario ${socket.id} conectado`);
+    });
+
+    socket.on('username', (user) => {
+      console.log(user);
+    });
 });
 
 server.listen(PORT, () => console.log(`estou escutando na porta ${PORT}`));
