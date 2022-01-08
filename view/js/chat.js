@@ -4,13 +4,30 @@ const btnSendMessage = document.querySelector('#sendMessage');
 const inputMessage = document.querySelector('#messageInput');
 const btnSaveNickname = document.querySelector('#saveNickname');
 const nicknameInp = document.querySelector('#nicknameInput');
+const currentNicknameSpan = document.querySelector('#online-user');
 
-let currentNickname = [];
 
-function logRandomName(gender) {
-  generateName(gender).then(currentNickname.push());
-  console.log(currentNickname, 'AQUI')
+function randomNumber(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
+
+let names = ['AJWNRPOITHNMLKJW', 'OWLKMNTKILOIWERN', 'LAOQIRJGMNASJELA'];
+let random = randomNumber(0, names.length - 1);
+let currentNickname = names[random];
+
+currentNicknameSpan.innerHTML = currentNickname;
+
+const createMessage = (chatMessage) => {
+  const messagesUl = document.querySelector('#messages');
+  const li = document.createElement('li');
+  li.dataset.testid="message";
+  li.innerText = chatMessage;
+  messagesUl.appendChild(li);
+};
+
+socket.on('message', (chatMessage) => createMessage(chatMessage));
 
 btnSaveNickname.addEventListener('click', () => {
   currentNickname = nicknameInp.value;
@@ -24,61 +41,4 @@ btnSendMessage.addEventListener('click', () => {
   inputMessage.value = '';
 });
 
-const createMessage = (chatMessage) => {
-  const messagesUl = document.querySelector('#messages');
-  const li = document.createElement('li');
-  li.innerText = chatMessage;
-  messagesUl.appendChild(li);
-};
-
-socket.on('message', (chatMessage) => createMessage(chatMessage));
-
-async function fetchData(url) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  } catch (error) {
-    console.error('Unable to fetch data:', error);
-  }
-}
-
-function fetchNames(nameType) {
-  return fetchData(`https://www.randomlists.com/data/names-${nameType}.json`);
-}
-
-function pickRandom(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-async function generateName(gender) {
-  try {
-    const response = await Promise.all([
-      fetchNames(gender || pickRandom(['male', 'female'])),
-      fetchNames('surnames')
-    ]);
-
-    const [firstNames, lastNames] = response;
-
-    const firstName = pickRandom(firstNames.data);
-    const lastName = pickRandom(lastNames.data);
-
-    return `${firstName} ${lastName}`;
-  } catch (error) {
-    console.error('Unable to generate name:', error);
-  }
-}
-
-// function logRandomName(gender) {
-//   generateName(gender).then(console.log);
-// }
-
-// logRandomName()
-
-// function returnRandomName(){
-//   generateName(gender).then(console.log)
-// }
-
-// generateName(gender).then(console.log);
+generateNickname
