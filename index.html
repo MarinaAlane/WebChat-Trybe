@@ -6,8 +6,10 @@
     <title>Projeto Webchat</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link  rel="stylesheet"  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"  integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"  crossorigin="anonymous">
-</head>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
 <body>
+  <script src="socket.io/socket.io.js"></script>
 
   <form id="formClient">
     <div class="col-auto">
@@ -19,12 +21,10 @@
     </div>
   </form>
 
-  <ul class="list-group" id="client" data-testid="online-user">
-  </ul>
-    <ul class="list-group" id="messagens">
+      <ul class="list-group" id="messagens">
       </ul>
     
-      <form class="row g-3" id="form">
+      <form class="row g-3" id="form" action="post">
         <div class="col-auto">
         </div>
         <div class="col-auto">
@@ -34,8 +34,8 @@
           <button type="submit" id="submit" data-testid="send-button" class="btn btn-primary mb-3">Enviar</button>
         </div>
       </form>
-    
-      <script src="socket.io/socket.io.js"></script>
+      <ul class="list-group" data-testid="online-user" id="online-user">
+      </ul>
     <script>
       // conexão com o socket do servidor
         const socket = io();
@@ -55,10 +55,10 @@
         const form = document.querySelector('#form');
         const input = document.querySelector('#input');
         const messages = document.querySelector('#messagens')
-        const client = document.querySelector('#client')
 
         const formUser = document.querySelector('#formClient')
         const inputUser = document.querySelector('#inputUser');
+        const onlineUser = document.querySelector('#online-user');
 
       // Evento de mensagem (Enviar)
         form.addEventListener('submit', (e) => {
@@ -71,11 +71,11 @@
             socket.emit('message', msg);
         })
 
+        // Evento de trocar nome de usuário
         formUser.addEventListener('submit', (e) => {
             e.preventDefault();
             
             sessionStorage.setItem('nickUser', inputUser.value);
-            console.log(inputUser)
 
             socket.emit('newNickName', inputUser.value);
         })
@@ -87,19 +87,47 @@
             newMessage.textContent = msg;
             messages.appendChild(newMessage);
         })
+
+        socket.on('dbMessages', (msg) => {
+            if (msg) {
+              console.log(msg);
+                msg.map(function (mensagem) {
+                const messagesLi = document.createElement('li');
+                messagesLi.setAttribute('data-testid', 'message');
+                messagesLi.textContent = `${mensagem.timestamp} ${mensagem.nickname}: ${mensagem.message}`
+                messages.appendChild(messagesLi);
+              });
+              }
+        });
+
+        sessionStorage.setItem('nickUser', geraStringAleatoria(16));
+          const userOn = sessionStorage.getItem('nickUser')
+          socket.emit('onlineUserOn', userOn);
+
+        socket.on('onlineUserOn', (msg) => {
+          const { mensagem, socket } = msg;
+
+          const newMessage = document.createElement('li');
+            newMessage.setAttribute('data-testid', 'online-user');
+            newMessage.setAttribute('id', socket);
+            newMessage.textContent = mensagem;
+            onlineUser.appendChild(newMessage);
+        });
+
+        socket.on('disconectou', (socket) => {
+          const li = document.getElementById(socket);
+          onlineUser.removeChild(li);
+        })
+
     </script>
     <script>
      
+      socket.on('newNickName', (msg) => {        
+        const { newNick , socket } = msg;
+        const li = document.getElementById(socket);
+        li.textContent = newNick;
 
-      socket.on('onlineUser', () => {
-        sessionStorage.setItem('nickUser', geraStringAleatoria(16));
-        const nickOnlineUser = sessionStorage.getItem('nickUser')
-        
-        const user = document.createElement('li');
-        user.setAttribute('data-testid', 'online-user');
-        user.textContent = nickOnlineUser;
-        client.appendChild(user);
-       })
+       });
     </script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const { saveChat, findMessages } = require('./models/chatModel');
+const dataConfig = require('./dateConfig');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,25 +13,29 @@ app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/index.html`);
 });
 
-io.on('connection', (socket) => {
-    const data = new Date();
+const { formatDate } = dataConfig;
 
-    const dia = data.getDate();
-    const mes = data.getMonth() + 1;
-    const ano = data.getFullYear();
-    const hora = data.getHours();
-    const min = data.getMinutes();
-    console.log(mes);
-    const amOrPm = hora >= 12 ? 'PM' : 'AM';
-    const formatDate = `${dia}-${mes}-${ano} ${hora}:${min} ${amOrPm}`;
+io.on('connection', async (socket) => {
+    const allMessages = await findMessages();
+    socket.emit('dbMessages', allMessages);
 
-    io.emit('onlineUser', console.log('onlineUser'));
-    console.log(socket.id);
-
-    socket.on('message', (msg) => {
+    socket.on('message', async (msg) => {
         const { nickname, chatMessage } = msg;
-        console.log(msg);
+        const saveMessages = await saveChat(nickname, chatMessage, formatDate);
         io.emit('message', `${formatDate} ${nickname}: ${chatMessage}`);
+        console.log('Mensagens salvas', saveMessages);
+    });
+
+    socket.on('onlineUserOn', (msg) => {
+        io.emit('onlineUserOn', { mensagem: msg, socket: socket.id });
+    });
+
+    socket.on('newNickName', (msg) => {
+        io.emit('newNickName', { newNick: msg, socket: socket.id });
+    });
+
+    socket.on('disconnect', () => {
+        socket.broadcast.emit('disconectou', socket.id);
     });
 });
 
