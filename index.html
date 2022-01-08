@@ -94,7 +94,7 @@
                 msg.map(function (mensagem) {
                 const messagesLi = document.createElement('li');
                 messagesLi.setAttribute('data-testid', 'message');
-                messagesLi.textContent = `${mensagem.timestamp} ${mensagem.nickname}: ${mensagem.message}`
+                messagesLi.textContent = `${mensagem.timestamp} ${mensagem.nickname} ${mensagem.message}`
                 messages.appendChild(messagesLi);
               });
               }
@@ -105,14 +105,24 @@
           socket.emit('onlineUserOn', userOn);
 
         socket.on('onlineUserOn', (msg) => {
-          const { mensagem, socket } = msg;
+          const { mensagem, socket, listUsers } = msg;
 
           const newMessage = document.createElement('li');
             newMessage.setAttribute('data-testid', 'online-user');
             newMessage.setAttribute('id', socket);
             newMessage.textContent = mensagem;
             onlineUser.appendChild(newMessage);
+
+          listUsers.forEach(element => {
+            if(element != mensagem) {
+              const newMessage = document.createElement('li');
+            newMessage.setAttribute('data-testid', 'online-user');
+            newMessage.setAttribute('id', socket);
+            newMessage.textContent = element;
+            onlineUser.appendChild(newMessage);
+          }
         });
+          });
 
         socket.on('disconectou', (socket) => {
           const li = document.getElementById(socket);

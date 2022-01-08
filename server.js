@@ -15,6 +15,8 @@ app.get('/', (req, res) => {
 
 const { formatDate } = dataConfig;
 
+const listUsers = [];
+
 io.on('connection', async (socket) => {
     const allMessages = await findMessages();
     socket.emit('dbMessages', allMessages);
@@ -26,8 +28,10 @@ io.on('connection', async (socket) => {
         console.log('Mensagens salvas', saveMessages);
     });
 
-    socket.on('onlineUserOn', (msg) => {
-        io.emit('onlineUserOn', { mensagem: msg, socket: socket.id });
+    socket.on('onlineUserOn', (msg) => {    
+        listUsers.push(msg);
+        console.log(listUsers);
+        io.emit('onlineUserOn', { mensagem: msg, socket: socket.id, listUsers });
     });
 
     socket.on('newNickName', (msg) => {
