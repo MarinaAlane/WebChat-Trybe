@@ -8,22 +8,70 @@
     Online Users:
     <ul id="online-users"></ul>
   </div>
-  <form>
-    <input data-testid="nickname-box" placeholder="Choose yournickname" type="text"/>
-    <button data-testid="nickname-button" type="submit">
-      Salve Nickname
-    </button>
-  </form>
   <div>
+    Message Board
     <ul id="messages"></ul>
   </div>
-  <form>
-    <input data-testid="message-box" placeholder="Type message" type="text"/>
-    <button data-testid="send-button" type="submit">
+  <form id="message_form">
+    Say something <span id="user-nickname"></span>
+    <input data-testid="message-box" id="messageInput" placeholder="Type message" type="text"/>
+    <button data-testid="send-button" id="sendButton" type="submit">
       Send
     </button>
   </form>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src='./js/chat.js'></script>
-  </body>
+  <form id="nickname_form">
+    Change Nickname
+    <input data-testid="nickname-box" id="nicknameInput" placeholder="Choose your nickname" type="text"/>
+    <button data-testid="nickname-button" type="submit">
+      Save Nickname
+    </button>
+  </form>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src='./js/chat.js'></script>
+<!-- <script>
+  const socket = io();
+
+  const generateNickname = () => {
+    socket.emit('nickname');
+  }
+
+  const messageForm = document.querySelector('#message_form');
+
+  messageForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    console.log('Calling event listener');
+    const chatMessage = document.querySelector('#messageInput').value;
+    const nickname = 'userNick';
+    console.log('Right b4 emit');
+    socket.emit('message', { chatMessage, nickname });
+    console.log('Right after emit');
+    return false;
+  });
+
+  const createMessage = (message) => {
+    console.log('Called createMessage', message);
+    const messagesUl = document.querySelector('#messages');
+    const li = document.createElement('li');
+    li.setAttribute('data-testid', 'message');
+    li.innerText = message;
+    messagesUl.appendChild(li);
+  };
+
+  const createUser = (userNick) => {
+  console.log('Called createUser', userNick);
+  const UserList = document.querySelector('#online-users');
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = userNick;
+  UserList.appendChild(li);
+};
+
+  socket.on('clientMessage', (message) => createMessage(message));
+  socket.on('nickname', (userNick) => createUser(userNick));
+
+  window.onload = () => {
+    generateNickname()
+  };
+</script> -->
 </html>

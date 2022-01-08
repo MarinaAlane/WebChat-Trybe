@@ -10,8 +10,8 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
     socket.on('message', ({ chatMessage, nickname }) => {
       const currentDate = getCurrentDate();
-
-      io.emit('message', `${currentDate} - ${nickname}: ${chatMessage}`);
+      console.log(`to front-end-> ${currentDate} - ${nickname}: ${chatMessage}`);
+      io.emit('clientMessage', `${currentDate} - ${nickname}: ${chatMessage}`);
     });
   });
 };
