@@ -1,3 +1,6 @@
+/* inspirado +- por: */
+/* https://dribbble.com/shots/13869298-Chat-Interface-Web-Application */
+
 /* Box sizing rules */
 *,
 *::before,
@@ -117,7 +120,7 @@ img {
 }
 
 .user-info strong, .user-info p {
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .user-info p::after {
@@ -174,21 +177,29 @@ img {
   outline: none;
 }
 
-.chat-send-img {
+.chat-btn {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  margin: auto 8px auto 0;
   border-radius: 50%;
+  margin: auto 8px auto 0;
   padding: 7px;
   width: 37px;
   height: 37px;
   background: var(--gray-100);
+}
+
+.chat-send-img {
+  margin: auto 0 auto 0;
   transition: ease-in-out .15s;
 }
 
 .chat-send-img:hover {
   padding: 5px;
   background: var(--gray-90);
+}
+
+button {
+  border: none;
 }

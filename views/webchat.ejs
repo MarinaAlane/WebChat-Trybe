@@ -15,18 +15,125 @@
         <img class="logo" src="/icons/yellow_chat.png" alt=""/>
         <strong>Web Chat</strong>
       </section>
+      <input id="nickname-input" data-testid="nickname-box" type="text" placeholder="troque de nickname aqui c:">
+      <button id="nickname-btn" data-testid="nickname-button">change</button>
       <section id="user-card" class="sidebar-users" >
       </section>
     </section>
     <section id="chat" class="col chat">
-      <h2><%= tmp %></h2>
       <div class="chat-input">
-        <input id="input" type="text" placeholder="Digite sua mensagem aqui c:">
-        <img id="button" class="chat-send-img" src="/icons/plane-message.png" alt=""/>
+        <input id="chat-input" data-testid="message-box" type="text" placeholder="Digite sua mensagem aqui c:">
+        <button id="chat-btn" data-testid="send-button" class="chat-btn">
+          <img class="chat-btn chat-send-img" src="/icons/plane-message.png" alt=""/>
+        </button>
       </div>
     </section>
   </div>
-  <script type="module" src="/js/main.js"></script>
-  <script type="module" src="/js/onlineUsersClient.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    class OnlineUsers {
+      // arquitetura observer
+      // nao é necessario nesse caso, mas eu quis implementar na mesmo pra brincar um pouco
+      constructor() {
+        this.observers = [];
+        this.userCard = document.getElementById('user-card');
+      };
+
+      addObs(fnc) {
+        this.observers.push(fnc);
+      };
+
+      notifyAllObs(option) {
+        this.observers.forEach((fnc) => fnc(option));
+      };
+      //--
+
+      delUser(id) {
+        const user = document.getElementById(id);
+        user.remove();
+      };
+
+      render(list) {
+        list.forEach(({ userId, nickname }) => {
+          const existingCard = document.getElementById(userId);
+          if (!existingCard) {
+            const userSection = document.createElement('section');
+            const userImg = document.createElement('img');
+            const userInfo = document.createElement('div');
+            const userName = document.createElement('strong');
+            const onlineTag = document.createElement('p');
+            
+            userSection.setAttribute('id', userId);
+            userSection.setAttribute('class', 'user');
+            userImg.setAttribute('class', 'user-img');
+            userImg.setAttribute('src', '/icons/user.png');
+            userInfo.setAttribute('class', 'user-info');
+            userName.setAttribute('id', `nickname-id-${userId}`);
+            userName.setAttribute('data-testid', 'online-user');
+            userName.innerHTML = nickname.slice(0, 16);
+            onlineTag.innerHTML = 'online';
+            
+            this.userCard.appendChild(userSection);
+            userSection.appendChild(userImg);
+            userSection.appendChild(userInfo);
+            userInfo.appendChild(userName);
+            userInfo.appendChild(onlineTag);
+          };
+          if (userId !== nickname) {
+            const userName = document.getElementById(`nickname-id-${userId}`);
+            userName.innerHTML = nickname;
+          }
+        });
+      };
+    };
+
+  const socket = io();
+  const onlineUsers = new OnlineUsers();
+  let currentNickname = socket.id
+
+  onlineUsers.addObs((list) => {
+    onlineUsers.render(list);
+  });
+
+  const nicknameButton = document.getElementById('nickname-btn');
+  nicknameButton.addEventListener('click', () => {
+    const nicknameInput = document.getElementById('nickname-input').value;
+    if (!nicknameInput) return;
+    currentNickname = nicknameInput;
+    socket.emit('change-nickname', { nickname: nicknameInput, userId: socket.id });
+  });
+
+  const chatButton = document.getElementById('chat-btn');
+  chatButton.addEventListener('click', () => {
+    const chatInput = document.getElementById('chat-input').value;
+    if (!chatInput) return;
+    socket.emit('message', { chatMessage: chatInput, nickname: currentNickname });
+  });
+
+  socket.on('connect', () => {
+    console.log('new user', socket.id);
+  });
+
+  socket.on('render-online-users', (list) => {
+    onlineUsers.notifyAllObs(list);
+  });
+
+  socket.on('del-user', (id) => {
+    console.log('del user', id);
+    onlineUsers.delUser(id);
+  });
+
+  socket.on('message', (message) => {
+    const chat = document.getElementById('chat');
+    const messageP = document.createElement('p');
+    messageP.setAttribute('data-testid', 'message');
+
+    messageP.innerText = message;
+    chat.appendChild(messageP);
+    window.scrollTo(0, document.body.scrollHeight);
+    const input = document.getElementById('input');
+    input.value = null;
+  });
+  </script>
 </body>
 </html>
