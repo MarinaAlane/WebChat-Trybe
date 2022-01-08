@@ -5,32 +5,22 @@ const inputMessage = document.getElementById('messageInput');
 const inputNickname = document.getElementById('input-nickname');
 const formNickname = document.getElementById('form-user');
 const spanNickname = document.querySelector('span');
-
+const listOnlineUsers = document.getElementById('list-online-users');
 const setNickname = (nickname) => sessionStorage.setItem('nickname', nickname);
 const getNickname = () => sessionStorage.nickname;
 
-// source: https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-const generateRandomNickname = (length) => {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i += 1) {
-      result += characters.charAt(Math.floor(Math.random() 
- * charactersLength));
-   }
-   return result;
-};
-
-const setRandomNickname = () => {
-  setNickname(generateRandomNickname(16));
-  document.querySelector('span').innerHTML = getNickname();
+const setRandomNickname = (name) => {
+  setNickname(name);
+  document.querySelector('span').innerHTML = name.substr(0, 16);
 };
 
 formNickname.addEventListener('submit', (e) => {
   e.preventDefault();
-  setNickname(inputNickname.value);
-  spanNickname.innerText = inputNickname.value;
-  socket.emit('user', inputNickname.value);
+  const oldUsername = getNickname();
+  const newUsername = inputNickname.value;
+  setNickname(newUsername);
+  spanNickname.innerText = newUsername;
+  socket.emit('updateUsername', { oldUsername, newUsername });
   inputNickname.value = ''; 
 });
 
@@ -60,13 +50,57 @@ const loadMessages = (history) => {
 };
 
 const loadHistoryMessagesFromDB = () => {
+  const messagesUl = document.getElementById('chat');
+  messagesUl.innerHTML = '';
   socket.emit('load');
   socket.on('loadHistory', (history) => loadMessages(history));
 };
 
+const createUser = (user) => {
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = user;
+  listOnlineUsers.appendChild(li);
+};
+
+const verifyLoadUser = (user) => {
+  const usersList = listOnlineUsers.children;
+  for (let index = 0; index < usersList.length; index += 1) {
+    if (usersList[index].innerText === user) return true;
+  }
+  return false;
+};
+
 socket.on('message', (message) => createMessage(message));
+socket.on('generateName', (name) => setRandomNickname(name));
+socket.on('login', (newUserLogged) => {
+  createUser(newUserLogged);
+  const user = getNickname();
+  socket.emit('login', user);
+});
+socket.on('attListUsers', (user) => {
+  if (!verifyLoadUser(user)) createUser(user);
+});
+
+socket.on('dc', (user) => {
+  const usersList = listOnlineUsers.children;
+  for (let index = 0; index < usersList.length; index += 1) {
+    if (usersList[index].innerText === user) {
+      usersList[index].remove();
+    }
+  }
+});
+
+socket.on('updateListUsernames', ({ oldUsername, newUsername }) => {
+  const usersList = listOnlineUsers.children;
+  for (let index = 0; index < usersList.length; index += 1) {
+    if (usersList[index].innerText === oldUsername) {
+      usersList[index].innerHTML = newUsername;
+      break;
+    }
+  }
+});
 
 window.onload = () => {
-  setRandomNickname();
   loadHistoryMessagesFromDB();
 };

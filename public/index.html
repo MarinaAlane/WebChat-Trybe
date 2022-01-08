@@ -101,6 +101,11 @@
       border: 3px solid rgb(65 , 25 , 127);
     }
 
+    #list-online-users {
+      list-style-type: none;
+      overflow-y: auto;
+    }
+
     .button-send {
       background-color: rgb(47 , 193 , 140);
       border: none;
@@ -162,8 +167,8 @@
       </form>
 
       <div class="users-list">
-        <h2>Você: <span data-testid="online-user"></span></h2>
-        <h2> Usuários</h2>
+        <span data-testid="online-user"></span>
+        <ul id="list-online-users"></ul>
       </div>
 
     </section>
