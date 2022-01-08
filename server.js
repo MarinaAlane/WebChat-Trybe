@@ -13,7 +13,7 @@ const io = require('socket.io')(http, {
   cors: {
     origin: `http://localhost:${PORT}`,
     methods: ['GET', 'POST'],
-  },  
+  },
 });
 
 const { getMessage, postMessage } = require('./models/webChatModel');
@@ -22,6 +22,7 @@ app.use(express.static('views'));
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
+// função executada quando usuário se conecta
 io.on('connection', async (socket) => {
   usersOn[socket.id] = socket.id.slice(0, 16);
   socket.on('disconnect', () => {
@@ -51,5 +52,5 @@ app.get('/', (_req, res) => {
 });
 
 http.listen(PORT, () => {
-  console.log(`Listening in the port ${PORT}`);
+  console.log(`listening in the port ${PORT}`);
 });

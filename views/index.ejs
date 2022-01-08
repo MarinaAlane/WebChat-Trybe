@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt">
-
-<head>
-  <meta charset="UTF-8">
+  
+  <head>
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
@@ -59,37 +59,38 @@
   #messages>li {
     padding: 0.5rem 1rem;
   }
-
+  
   #messages>li:nth-child(odd) {
     background: #efefef;
   }
-</style>
-
+  </style>
+ 
 </head>
 
 <body>
- 
- <section>
+  
+<section>
   <h2>Usuários Online</h2>
   <ul id="usersOn"></ul>
 </section>
-
- <section>
+  
+<section>
+  <h2>Mensagens</h2>
   <ul id="messagesUsers"></ul>
- </section> 
+</section> 
 
- <form id="nickname_form" action="">
+<form id="nickname_form" action="">
   <input type="text" id="nickname_input" data-testid="nickname-box" placeholder="Mudar nickname">
-  <button id="nickname_btn" data-testid="nickname-button">Salvar</button>
- </form>
+  <button id="nickname_btn" data-testid="nickname-button" ">Salvar</button>
+</form>
 
 <form id="message_form">
   <input type="text" id="messages_input" data-testid="message-box" placeholder="Digite sua mensagem">
   <button id="messages_btn"data-testid="send-button">Enviar</button>
 </form>
 
-<script>src="./script.js"</script>  
-
+<script src="./scripts.js"></script>
+ 
 </body>
-
+ 
 </html>

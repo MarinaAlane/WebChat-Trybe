@@ -17,4 +17,4 @@ const postMessage = async ({ dateNow, nickname, chatMessage }) => {
 module.exports = {
   getMessage,
   postMessage,
-}; 
+};
