@@ -61,7 +61,7 @@ describe('3 - Elabore o histórico do chat para que as mensagens persistam', () 
     done();
   });
 
-  it('Será validado que todo o histórico de mensagens irá aparecer quando o cliente se conectar', async () => {
+  it.only('Será validado que todo o histórico de mensagens irá aparecer quando o cliente se conectar', async () => {
     const firstMessageToSend = { chatMessage: chatMessage, nickname: nickname };
     const secondMessageToSend = { chatMessage: anotherChatMessage, nickname: nickname };
     const thirdMessageToSend = { chatMessage: yetAnotherChatMessage, nickname: nickname };
@@ -74,10 +74,10 @@ describe('3 - Elabore o histórico do chat para que as mensagens persistam', () 
     //typing...
     wait(500)
     client1.emit('message', thirdMessageToSend);
-
     // connects via front-end
     await page.goto(BASE_URL);
     await page.waitForSelector('[data-testid=message]');
+    console.log(client1)
     await page.waitForTimeout(1000);
 
     // peek the messages we sent
@@ -124,7 +124,7 @@ describe('3 - Elabore o histórico do chat para que as mensagens persistam', () 
     //another client sends a message
     const messageToSend = { chatMessage: yetAnotherChatMessage, nickname: nickname };
     //typing...
-    wait(500)
+    wait(500);
     client1.emit('message', messageToSend);
 
     //take a breath until front-end receives the messages
