@@ -5,13 +5,19 @@
     <link rel="stylesheet" href="./css/chat.css">
   </head>
   <body>
-    <p>Bem Vindo <span id="randomNickname" data-testid="online-user"></span></p>
+    <p>Bem Vindo <span data-testid='online-user' id="randomNickname" ></span></p>
+    <div style="align-content: flex-end;">
+    <aside>
+      <ul id="onlineUsers"  style=" list-style-type: none; margin: 0; padding: 0;"></ul>
+    </aside>
+  </div>
     <ul id="messages"  style="list-style-type: none; margin: 0; padding: 0;"></ul>
-    <form action="">
+     <form action="">
       <input id="nickNameInput" style="margin-bottom: 3px;" data-testid="nickname-box" autocomplete="off" placeholder="nickName" /><button data-testid="nickname-button" type="button" id="saveButton" >Salvar</button>
       <input id="messageInput" placeholder="Message" autocomplete="off" data-testid="message-box"/><button  data-testid="send-button">Send</button>
     </form>
+ 
     <script src="/socket.io/socket.io.js"></script>
-    <script src='./js/chat.js'></script>
+    <script src='../js/chat.js'></script>
   </body>
 </html>

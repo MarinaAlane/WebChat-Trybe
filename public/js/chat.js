@@ -17,7 +17,8 @@ const generateRandomString = (num) => {
 
 let savedNick = generateRandomString(16);
 
-randomNickname.innerText = savedNick;
+randomNickname.innerText = savedNick; 
+socket.emit('userOnline', { nickname: savedNick });
 
 nicknameButton.addEventListener('click', (e) => {
   e.preventDefault();
@@ -26,6 +27,8 @@ nicknameButton.addEventListener('click', (e) => {
   }
   savedNick = nicknameInput.value;
   randomNickname.innerText = savedNick;
+  console.log(savedNick);
+  socket.emit('editUser', { nickname: savedNick, socketId: socket.id });
 });
 
 form.addEventListener('submit', (e) => {
@@ -46,4 +49,27 @@ form.addEventListener('submit', (e) => {
     messagesUl.appendChild(li);
   };
   
+  const onlineUl = document.querySelector('#onlineUsers');
+  const createOnlineUser = (nickname, socketId) => {
+    const li = document.createElement('li');
+    if (socket.id === socketId) return;
+    li.setAttribute('data-testid', 'online-user');
+    li.setAttribute('id', socketId);
+    li.setAttribute('style', 'padding: 5px 10px;');
+    li.innerText = nickname;
+    onlineUl.appendChild(li); 
+  };
   socket.on('message', (chatMessage) => createMessage(chatMessage)); 
+  socket.on('userOnline', (allUsers) => { 
+    onlineUl.innerHTML = '';
+    allUsers.map((nickname) => createOnlineUser(nickname.nickname, nickname.socketId)); 
+});
+
+  window.onbeforeunload = function () {
+    socket.disconnect();
+  };
+
+  socket.on('disconnectUser', (socketId) => {
+    const user = document.getElementById(socketId);
+    user.remove();
+  });
