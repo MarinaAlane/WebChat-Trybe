@@ -28,7 +28,7 @@
     </div>
 
     <div>
-      <ul class="onlineUsers"></ul>
+      <ul class="userList"></ul>
       <ul class="messages">
         <% allMsg.forEach(({nickname, timestamp, message}) => { %>
           <li data-testid='message'><%=timestamp%> - <%=nickname%>: <%=message%></li>

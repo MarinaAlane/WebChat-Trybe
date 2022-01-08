@@ -8,13 +8,12 @@ function renderMessage(message) {
   UlMessages.append(li);
 }
 
-function renderOnlineUsers(userName, id) {
-  const onlineUsers = document.querySelector('.onlineUsers');
+function renderOnlineUsers(userName) {
+  const userList = document.querySelector('.userList');
   const li = document.createElement('li');
   li.innerText = userName;
   li.setAttribute('data-testid', 'online-user');
-  li.setAttribute('id', id);
-  onlineUsers.append(li);
+  userList.append(li);
 }
 
 function deleteUser(id) {
@@ -46,12 +45,12 @@ sendButton.addEventListener('click', (event) => {
 });
 
 // usuarios
-socket.on('connectedUser', (user) => renderOnlineUsers(user, user));
+socket.on('connectedUser', (user) => renderOnlineUsers(user));
 
 socket.on('currentConnectedUsers', ({ usersConnected, onlineUser }) => {
   usersConnected.forEach((user) => {
     if (user.userConnected !== onlineUser) {
-      renderOnlineUsers(user.userNickName, user.userConnected);
+      renderOnlineUsers(user.userNickName);
     }
   });
 });
@@ -67,7 +66,6 @@ userButton.addEventListener('click', (event) => {
 
 socket.on('currentNickName', ({ nickName, onlineUser }) => {
   const userLi = document.getElementById(onlineUser);
-  console.log(nickName);
   userLi.innerText = nickName;
 });
 
