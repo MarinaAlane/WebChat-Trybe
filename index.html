@@ -31,16 +31,16 @@
             // console.log(nickname.value);
             // console.log(msgField.value);
             if (msgField.value) {
-                socket.emit('message', { nickname: nickname.value, msgField: msgField.value });
+                socket.emit('message', { nickname: nickname.value, chatMessage: msgField.value });
                 msgField.value = '';
                 // console.log(msgField.value);
             }
         })
 
         socket.on('message', (msg) => {
-            // console.log(msg);
+            console.log(msg);
             const newMessage = document.createElement('li');
-            newMessage.textContent = `${msg.dateHour} - ${msg.nickname}: ${msg.msgField}`;;
+            newMessage.innerText = msg;
             messagesList.appendChild(newMessage);
             window.scrollTo(0, document.body.scrollHeight);
         });

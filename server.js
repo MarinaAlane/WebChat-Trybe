@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
         // console.log('message: ', msg);
         const dateHour = moment().format('DD-MM-YYYY HH:mm:ss');
         // console.log(dateHour);
-        const chatLine = { dateHour, nickname: msg.nickname, msgField: msg.msgField };
+        const chatLine = `${dateHour} - ${msg.nickname}: ${msg.chatMessage}`;
         console.log(chatLine);
         io.emit('message', chatLine);
     });
