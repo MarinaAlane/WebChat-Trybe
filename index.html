@@ -8,13 +8,13 @@
   
   <body>
     <form id="formNickname">
-      <input id="inputNickname" placeholder="Type your nickname">
-      <button>Send</button>
+      <input placeholder="Type your nickname" data-testid="nickname-box">
+      <button data-testid="nickname-button">Send</button>
     </form>
     <ul id="messages"></ul>
     <form id="form">
-      <input id="input">
-      <button>Send</button>
+      <input data-testid="message-box">
+      <button data-testid="send-button">Send</button>
     </form>
   </body>
 
@@ -23,15 +23,14 @@
     const socket = io();
   
     const formNickname = document.querySelector('#formNickname');
-    const inputNickname = document.querySelector('#inputNickname');
+    const inputNickname = document.getElementById('nickname-box');
 
     const form = document.querySelector('#form');
-    const input = document.querySelector('#input');
+    const input = document.getElementById('message-box');
     const messages = document.querySelector('#messages');
     
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
-      console.log('clicked formNickname')
       if (inputNickname.value) {
         nickname = inputNickname.value
         socket.emit('nickname', inputNickname.value)
@@ -41,9 +40,7 @@
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      console.log('clicked')
       if (input.value) {
-        console.log({ chatMessage: input.value, nickname })
         socket.emit('message', { chatMessage: input.value, nickname })
         input.value = ''
       }
@@ -52,6 +49,7 @@
     socket.on('message', (message) => {
       const newMessage = document.createElement('li');
       newMessage.innerText = message;
+      newMessage.setAttribute('data-testid', 'message');
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })

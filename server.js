@@ -20,7 +20,6 @@ io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
   socket.on('nickname', (nickname) => {
-    console.log(nickname);
     io.emit('nickname', nickname);
   });
 
