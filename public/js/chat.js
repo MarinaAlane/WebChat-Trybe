@@ -1,12 +1,13 @@
-//  Estou tendo varias conexoes sockets que n quero. Pesquisei e achei essa materia falando sobre o modo de pesquisa thhp padãro do socket
+//  Estou tendo varias conexoes sockets que n quero. Pesquisei e achei essa materia falando sobre o modo de pesquisa thhp padrão do socket
 //  https://www.ti-enxame.com/pt/javascript/pagina-node.js-socket.io-atualiza-varias-conexoes/830171781/
 const socket = window.io({ transports: ['websocket'], upgrade: false });
 
 const connectionsList = document.querySelector('#connections-list');
 const webchatList = document.querySelector('#webchat');
 const formNickname = document.querySelector('#form-nickname');
-
+const userh2 = document.querySelector('#user');
 const formSendMessage = document.querySelector('#form-chatMessage');
+const inputNickname = document.querySelector('input[name=nickname');
 const inputMsg = document.querySelector('input[name=chatMessage');
 
 function reciveMessage(msg) {
@@ -33,50 +34,48 @@ function saveNickname(nickname) {
   li.setAttribute('data-testid', 'online-user');
   li.innerText = `${nickname}`;
 
+  userh2.innerText = nickname;
+  console.log(document.querySelector('#connections-list'));
   connectionsList.appendChild(li);
 }
 
 function setNickname(event) {
   event.preventDefault();
-  const newNickname = document.querySelector('input[name=nickname').value;
+  const newNickname = inputNickname.value;
 
   connectionsList.firstChild.innerText = newNickname;
+  userh2.innerText = newNickname;
 
+  inputNickname.value = '';
   socket.emit('setNickname', newNickname);
-  newNickname.value = '';
 }
 
-//  Buscar deletar essa função - Não deve ser necessario apagar tudo para depois renderizar novamente
-// function removeAllNicknames() {
-//   // Para remover todos os childrens da lista de usuarios usei a seguinte referencia:
-//   // https://www.geeksforgeeks.org/remove-all-the-child-elements-of-a-dom-node-in-javascript/
-//   let child = connectionsList.lastElementChild;
-//   while (child) {
-//     connectionsList.removeChild(child);
-//     child = connectionsList.lastElementChild;
-//   }
-// }
+function newUserList(users) {
+  console.log(connectionsList.parentNode)
 
-// function setNickname(event) {
-//   event.preventDefault();
+  const listUsers = Object.values(users);
+  const newList = connectionsList.cloneNode(false);
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.innerText = userh2.innerText;
+  newList.appendChild(li);
 
-//   const newNickname = document.querySelector('input[name=nickname');
-//   socket.emit('setNickname', newNickname.value);
-//   newNickname.value = '';
-// }
+  listUsers.forEach((nick) => {
+    if (nick !== userh2.innerText) {
+      const li2 = document.createElement('li');
+      li2.setAttribute('data-testid', 'online-user');
+      li2.innerText = nick;
+      newList.appendChild(li2);
+    }
+  });
+  connectionsList.parentNode.replaceChild(newList, connectionsList);
+
+}
 
 //  ------------------------------------------------------------------------------------------------------
-socket.on('message', (msg) => reciveMessage(msg));
 socket.on('newUser', (newUser) => saveNickname(newUser));
-
-// socket.on('nickname', (nickname) => {
-//   // removeAllNicknames(); // Mudar essa logica para nõ deletar todos os nomes e depois reescrevee
-//   const oldNickname = document.querySelector(
-//     `li[name=${socket.id.substr(0, 16)}]`,
-//   );
-//   if (oldNickname) connectionsList.removeChild(oldNickname);
-//   saveNickname(nickname);
-// });
+socket.on('message', (msg) => reciveMessage(msg));
+socket.on('userList', (userList) => newUserList(userList));
 
 //  -----------------------------------------------------------------------------------------------------------
 formSendMessage.addEventListener('submit', sendMessage);

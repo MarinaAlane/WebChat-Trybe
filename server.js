@@ -25,7 +25,8 @@ const getDate = require('./helpers/getDate');
 
 io.on('connection', (socket) => {
   users[socket.id] = socket.id.substr(0, 16);
-  io.emit('newUser', users[socket.id]);
+  socket.emit('newUser', users[socket.id]);
+  io.emit('userList', users);
   console.log(`Novo usuário ${users[socket.id]} conectado ao socket.io`);
 
   socket.on('message', (msg) => {
@@ -37,6 +38,9 @@ io.on('connection', (socket) => {
 
   socket.on('setNickname', (newNickname) => {
     users[socket.id] = newNickname;
+    console.table(users);
+    console.log('setNickname salvou a nova lista no server');
+    io.emit('userList', users);
   });
 
   // io.emit('message', `Novo usuário ${users[socket.id]} conectado)`);
