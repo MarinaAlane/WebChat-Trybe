@@ -34,14 +34,17 @@
       const randomString = Math.random().toString(36).slice(-12);
       return `User${randomString}`;
     }
-
-    newUser.innerText = generateRandomUser();
+    const randomNickname = generateRandomUser()
+    newUser.innerText = randomNickname;
+    window.sessionStorage.setItem('nickname', randomNickname);
+    socket.emit('nickname', randomNickname
+    );
     
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputNickname.value) {
         generateRandomUser();
-        nickname = inputNickname.value
+        window.sessionStorage.setItem('nickname', inputNickname.value);
         socket.emit('nickname', inputNickname.value)
         inputNickname.value = ''
       }
@@ -49,9 +52,9 @@
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const newNickame = inputNickname.value ? nickname : newUser.innerText;
+      const nickname = window.sessionStorage.getItem('nickname');
       if (input.value) {
-        socket.emit('message', { chatMessage: input.value, nickname: newNickame})
+        socket.emit('message', { chatMessage: input.value, nickname })
         input.value = ''
       }
     })
