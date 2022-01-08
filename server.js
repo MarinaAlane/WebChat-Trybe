@@ -3,6 +3,7 @@ const http = require('http');
 const moment = require('moment');
 const path = require('path');
 const { Server } = require('socket.io');
+const messageModel = require('./models/messageModel');
 
 const app = express();
 const server = http.createServer(app);
@@ -26,8 +27,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    const formatedDate = moment().format('DD-MM-YYYY HH:mm:ss');
-    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
+    const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
+    messageModel.create({ message: chatMessage, nickname, timestamp });
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
   });
 
   socket.on('disconnect', () => {
@@ -36,6 +38,11 @@ io.on('connection', (socket) => {
     clients = clients.filter((client) => client.id !== socket.id);
     io.emit('getOnlineUsers', clients);
   });
+});
+
+app.get('/', async (req, res) => {
+  const messages = await messageModel.getAll();
+  res.status(200).send(messages);
 });
 
 server.listen(PORT, () => console.log(`Listening ${PORT}`));
