@@ -86,7 +86,8 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (input.value) {
-        socket.emit('nick', input.value);
+        const recoveredNick = sessionStorage.getItem('nick')
+        socket.emit('message', { nickname: recoveredNick, message: input.value});
         input.value = '';
       }
     });
@@ -95,6 +96,7 @@
       e.preventDefault();
       if (nickInput.value) {
         socket.emit('nick', nickInput.value);
+        sessionStorage.setItem('nick', nickInput.value)
         nickInput.value = '';
       }
     });
@@ -110,15 +112,16 @@
       newUserLi.setAttribute("data-testid", "online-user");
       newUserLi.textContent = data;
       messages.appendChild(newUserLi);
-      const nicks = JSON.parse(localStorage.getItem('nicknames'));
+      // const nicks = JSON.parse(localStorage.getItem('nicknames'));
       
-      if (!nicks) {
-        console.log('nicks [*]:', nicks);
-        localStorage.setItem('nicknames', JSON.stringify([data]));
-      } else {
-        console.log('nicks [else]:', nicks);
-        localStorage.setItem('nicknames', JSON.stringify([...nicks, data]));
-      }
+      // if (!nicks) {
+      //   console.log('nicks [*]:', nicks);
+      //   localStorage.setItem('nicknames', JSON.stringify([data]));
+      // } else {
+      //   console.log('nicks [else]:', nicks);
+      //   localStorage.setItem('nicknames', JSON.stringify([...nicks, data]));
+      // }
+      window.scrollTo(0, document.body.scrollHeight);
     });
 
     socket.on('message', (msg) => {
