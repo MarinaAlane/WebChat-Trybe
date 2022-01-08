@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <span data-testid="online-user" id="username"></span>
+    <ul id="online"></ul>
+    <ul id="messages"></ul>
+    <form>
+        <input type="text" id="nicknameInput" data-testid="nickname-box">
+        <button type="button" id="nicknameButton" data-testid="nickname-button">New</button>
+        <input type="text" id="messageInput" data-testid="message-box" type="text">
+        <button type="button" id="sendButton" data-testid="send-button">Send Message</button>
+    </form>
+
+    <script>
+        let socket = io("http://localhost:3000");
+
+        let nicknameInput = document.querySelector('#nicknameInput');
+        let nicknameButton = document.querySelector('#nicknameButton');
+        let username = document.querySelector('#username');
+        let messageList = document.getElementById('messages');
+        let sendButton = document.querySelector('#sendButton');
+        let messageInput = document.querySelector('#messageInput');
+
+        sendButton.addEventListener('click', () => {
+            event.preventDefault();
+            let message = messageInput.value;
+            let chatUsername = username.innerHTML;
+            socket.emit('message', { chatMessage: message, nickname: chatUsername });
+            messageInput.value = '';
+        });
+
+        nicknameButton.addEventListener('click', () => {
+            let nickname = nicknameInput.value;
+            username.innerHTML = nickname;
+            nicknameInput.value = '';
+        });
+
+        socket.on("username", (data) => {
+            username.innerHTML = data;
+        });
+
+        socket.on("message", (data) => {
+            let message = document.createElement('li');
+            message.innerText = data;
+            message.setAttribute('data-testid', 'message');
+            messageList.appendChild(message);
+        });
+
+
+    </script>
+</body>
+
+</html>
