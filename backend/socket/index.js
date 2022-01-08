@@ -29,11 +29,17 @@ module.exports = (io) => {
     console.log(onlineUsers);
   });
 
+    socket.on('disconnect', () => {
+
+      //debug
+      console.log('Desconectou alguém');
+      socket.broadcast.emit('otherUserDisconnected', 'yes');
+    });
+
   // socket.on('alterNickname', (newNickName) => { 
   //   nickname = newNickName; 
   // });
   
-
     socket.on('message', (clientMsg) => {
       const { chatMessage, nickname } = clientMsg;
       const time = currentlyTime();

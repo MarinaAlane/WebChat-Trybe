@@ -47,6 +47,18 @@ const createUsersList = (users, dataTestid, classNameFather) => {
   });
 };
 
+const updateUsersList = (_text = null, _dataTestid, classNameFather) => {
+  const div = document.getElementsByClassName(classNameFather)[0];
+  div.innerHTML = ''; 
+  // users.forEach((user) => {
+  //   const p = document.createElement('p');
+  //   const attr = document.createAttribute('data-testid');
+  //   attr.value = dataTestid;
+  //   p.setAttributeNode(attr);
+  //   div.appendChild(p);
+  // });
+};
+
 const addUserToList = (userNickname, dataTestid, classNameFather) => {
   const div = document.getElementsByClassName(classNameFather)[0];
 
@@ -90,15 +102,15 @@ socket.on('serverReturnAfterLogin', (data) => {
   const newUsersArray = onlineUsers;
   newUsersArray.unshift({ socketId: socket.id, nickname });
 
-  // // debug
-  // console.log('FRONT: Length do Array');
-  // console.log(newUsersArray.length);
-
   createUsersList(newUsersArray, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
 });
 
 socket.on('otherUserConnected', (userNickname) => {
   addUserToList(userNickname, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
+});
+
+socket.on('otherUserDisconnected', (_data) => {
+  updateUsersList(null, null, CLASSNAME__ONLINE_USERS_DIV);
 });
 
 socket.on('message', (msg) => {
