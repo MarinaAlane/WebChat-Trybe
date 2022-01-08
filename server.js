@@ -16,18 +16,20 @@ app.get('/', (_req, res) => {
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
 
+    socket.on('disconnect', () => {
+        console.log(`User ${socket.id} disconnected`);
+    });
+
+    // Req 1: Back-end (server) receives information from the front-end (client), stores, organizes, generates a concatenated string and returns it to the front-end (client):
     socket.on('message', (msg) => {
         // console.log('message: ', msg);
         const dateHour = moment().format('DD-MM-YYYY HH:mm:ss');
         // console.log(dateHour);
         const chatLine = `${dateHour} - ${msg.nickname}: ${msg.chatMessage}`;
-        console.log(chatLine);
+        // console.log(chatLine);
         io.emit('message', chatLine);
     });
-
-    socket.on('disconnect', () => {
-        console.log(`User ${socket.id} disconnected`);
-    });
+    socket.emit('user', socket.id.slice(0, 16));
 });
 
 server.listen(PORT, () => console.log(`Server conected on port ${PORT}!`));

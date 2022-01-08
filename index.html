@@ -9,41 +9,77 @@
 </head>
 
 <body>
+    <div id="onlineUsers">
+
+    </div>
+    <form id="usersForm">
+        <input id="nickname" data-testid="nickname-box">
+        <button data-testid="nickname-button">Login</button>
+    </form>
+
     <ul id="messagesList"></ul>
     <form id="inputsForm">
-        <input id="nickname">
-        <input id="msgField">
-        <button>Send</button>
+        <input id="msgField" data-testid="message-box">
+        <button data-testid="send-button">Send</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io('http://localhost:3000');
+        let userNickName
 
-        const messagesList = document.getElementById('messagesList');
-        const inputsForm = document.getElementById('inputsForm');
+        const usersForm = document.getElementById('usersForm');
         const nickname = document.getElementById('nickname');
+        const onlineUsers = document.getElementById('onlineUsers');
+
+        const inputsForm = document.getElementById('inputsForm');
         const msgField = document.getElementById('msgField');
+        const messagesList = document.getElementById('messagesList');
 
 
+        // Req. 02
+        usersForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (nickname.value) {
+                userNickName = nickname.value
+                nickname.value = '';
+            }
+        })
+
+        // Req. 02
+        socket.on('user', (userId) => {
+            // console.log(userId);
+            userNickName = userId
+            const newUser = document.createElement('p');
+            newUser.textContent = userId;
+            newUser.setAttribute('data-testid', 'online-user');
+            onlineUsers.appendChild(newUser);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+
+        // Req 1: Front-end (Client) receives input information and send it to the back-end (Server):
         inputsForm.addEventListener('submit', (e) => {
             e.preventDefault();
             // console.log(nickname.value);
             // console.log(msgField.value);
             if (msgField.value) {
-                socket.emit('message', { nickname: nickname.value, chatMessage: msgField.value });
+                socket.emit('message', { nickname: userNickName, chatMessage: msgField.value });
                 msgField.value = '';
                 // console.log(msgField.value);
             }
         })
 
+        // Req 1: Front-end (Client) receives the return from the back-end (Server) and displays in a list on the screen:
         socket.on('message', (msg) => {
-            console.log(msg);
+            // console.log(msg);
             const newMessage = document.createElement('li');
             newMessage.innerText = msg;
+            newMessage.setAttribute('data-testid', 'message');
             messagesList.appendChild(newMessage);
             window.scrollTo(0, document.body.scrollHeight);
-        });
+        })
+
     </script>
 </body>
 
