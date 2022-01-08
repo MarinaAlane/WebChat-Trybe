@@ -18,10 +18,17 @@ messageForm.addEventListener('submit', (e) => {
   return false;
 });
 
-const createMessage = (message) => {
+const createMessage = (msg) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
-  li.innerText = message;
+
+  if (typeof msg === 'object') {
+    const { message, nickname, date } = msg;
+    li.innerText = `${date} - ${nickname}: ${message}`;
+  } else {
+    li.innerText = msg;
+  }
+
   li.setAttribute(dataTestId, 'message');
   messagesUl.appendChild(li);
 };
@@ -32,7 +39,6 @@ userForm.addEventListener('submit', (e) => {
   socket.emit('newNickname', userNickname);
   sessionStorage.nickname = userNickname;
   inputNick.value = '';
-  console.log(userNickname);
   return false;
 });
 
@@ -63,12 +69,17 @@ const connectUser = () => {
   }
 };
 
-socket.on('getNick', ((nick) => {
-  userNickname = nick;
-}));
+const connectMessages = (msgs) => {
+  msgs.forEach((msg) => {
+    const { message, nickname, date } = msg;
+    createMessage({ message, nickname, date });
+  });
+};
 
+socket.on('getNick', ((nick) => { userNickname = nick; }));
 socket.on('usersOnline', (users) => usersOnline(users));
 socket.on('message', (message) => createMessage(message));
+socket.on('loadMessages', (message) => connectMessages(message));
 
 window.onload = () => {
   connectUser();

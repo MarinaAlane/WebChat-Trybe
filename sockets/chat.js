@@ -1,12 +1,23 @@
 const moment = require('moment');
 
-module.exports = (io) => io.on('connection', (socket) => {
-  console.log(`Usuário ${socket.id} acabou de se conectar`);
+const { saveMessage, getAllMessages } = require('../models/chat');
 
-  socket.on('message', ({ nickname, chatMessage }) => {
-    console.log(`Mensagem ${chatMessage}`);
+const date = moment().format('DD-MM-yyyy HH:mm:ss A');
+
+const connect = async (socket) => {
+  const messages = await getAllMessages();
+  socket.emit('loadMessages', messages);
+};
+
+module.exports = (io) => io.on('connection', (socket) => {
+  connect(socket);
+  
+  socket.on('message', async ({ nickname, chatMessage }) => {
+    const message = chatMessage;
+    await saveMessage({ message, nickname, date });
+
     io.emit('message', 
-      `${moment().format('DD-MM-yyyy HH:mm:ss A')} - ${nickname}: ${chatMessage}`);
+    `${date} - ${nickname}: ${chatMessage}`);    
   });
 
   socket.on('disconnect', () => {
