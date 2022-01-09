@@ -43,6 +43,15 @@ function handleNewUser(io, socket, nickname) {
 function handleDisconnection(io, socket) {
   const indexToBeDeleted = allConnectedUsers
     .findIndex((currentItem) => currentItem.id === socket.id);
+
+  console.log('removing index:', indexToBeDeleted);
+
+  if (indexToBeDeleted === -1){
+    console.log('Socket did not start yet!');
+    sendAllUsers(io);
+    return;
+  }
+
   allConnectedUsers.splice(indexToBeDeleted, 1);
   sendAllUsers(io);
 }
@@ -50,30 +59,50 @@ function handleDisconnection(io, socket) {
 function handleNewNickname(io, socket, newNickname) {
   const indexToBeEdited = allConnectedUsers
     .findIndex((currentItem) => currentItem.id === socket.id);
+  
+  console.log('updating index:', indexToBeEdited);
+  if(indexToBeEdited === -1){
+    console.log('ERROR!!!!');
+    return;
+  }
+
+
+  const currentNickname = allConnectedUsers[indexToBeEdited].nickname;
+  console.log('trocando nick de', currentNickname, 'para', newNickname);
+  
   allConnectedUsers[indexToBeEdited].nickname = newNickname;
   sendAllUsers(io);
+};
+
+function log(message, socket){
+  console.log(`socket ${socket.id} - ${message}`);
 }
 
 const startingConnection = (io) => {
     io.on('connection', async (socket) => {
+      log('connection', socket);
       const allMessages = await getAllMessages();
       const formatedMessages = allMessages
         .map((document) => formatMessage(document.timestamp, document.nickname, document.message));
       socket.emit('allMessages', formatedMessages);
 
       socket.on('message', async (payload) => {
+        log('message', socket);
         handleMessage(io, payload);
       });
 
       socket.on('newUserConnected', (nickname) => {
+        log('newUserConnected', socket);
         handleNewUser(io, socket, nickname);
       });
 
       socket.on('disconnect', () => {
+        log('disconnect', socket);
         handleDisconnection(io, socket);
       });
 
       socket.on('newNickname', (newNickname) => {
+        log('newNickname', socket);
         handleNewNickname(io, socket, newNickname);
       });
     });
