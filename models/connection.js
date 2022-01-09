@@ -2,7 +2,6 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 let schema = null;
-
 async function connection() {
   if (schema) return Promise.resolve(schema);
   return MongoClient

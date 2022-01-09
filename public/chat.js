@@ -1,41 +1,118 @@
 const socket = window.io();
 
-const form = document.querySelector('#form');
-const buttonNick = document.querySelector('#nickname-button');
+const dataTestId = 'data-testid';
+const onlineUser = document.getElementById('online-user');
 
-form.addEventListener('submit', (e) => {
-  const input = document.querySelector('#message-box');
-  e.preventDefault();
-  if (input.value) {
-    socket.emit('message', { nickname: socket.id, chatMessage: input.value });
-    input.value = '';
+const saveBtn = document.getElementById('save-btn');
+saveBtn.addEventListener('click', () => {
+  const usernameInput = document.getElementById('username-input');
+  const username = usernameInput.value;
+
+  onlineUser.innerText = username;
+
+  sessionStorage.setItem('username', username);
+  socket.emit('updateUsername', username);
+
+  usernameInput.value = '';
+});
+
+const sendBtn = document.getElementById('send-btn');
+sendBtn.addEventListener('click', () => {
+  const username = sessionStorage.getItem('username') || onlineUser;
+  const messageInput = document.getElementById('message-input');
+
+  const newMessage = {
+    chatMessage: messageInput.value,
+    nickname: username,   
+  };
+  socket.emit('message', newMessage);
+
+  messageInput.value = '';
+});
+
+const getUsers = () => {
+  const usersList = document.getElementById('users-list');
+  return usersList.children;
+};
+
+const addUser = (username) => {
+  const usersList = document.getElementById('users-list');
+  const li = document.createElement('li');
+  li.setAttribute(dataTestId, 'online-user');
+  li.innerText = username;
+
+  usersList.appendChild(li);
+};
+
+const userIsListed = (username) => {
+  const users = getUsers();
+
+  for (let index = 0; index < users.length; index += 1) {
+    if (users[index].innerText === username) return true;
+  }
+  return false;
+};
+
+socket.on('username', (data) => {
+  onlineUser.innerText = data;
+  sessionStorage.setItem('username', data);
+
+  addUser(data);
+});
+
+socket.on('updateUsername', ({ oldUsername, newUsername }) => {
+  const users = getUsers();
+
+  for (let index = 0; index < users.length; index += 1) {
+    if (users[index].innerText === oldUsername) {
+      users[index].innerText = newUsername;
+      break;
+    }
   }
 });
 
-const createIl = (text, ul, testId) => {
-  const li = document.createElement('li');
-  li.innerText = text;
-  li.setAttribute('data-testid', testId);
-  ul.appendChild(li);
-}; 
-    
-socket.on('message', (message) => {
-  const messagesUl = document.querySelector('#messages');
-  createIl(message, messagesUl, 'message');
-}); 
+socket.on('loggedUser', (data) => {
+  addUser(data);
 
-socket.on('userName', (id, users) => {
-  const userUl = document.querySelector('#users');
-  userUl.innerHTML = '';
-  createIl(id, userUl, 'online-user');
+  const username = onlineUser.innerText;
 
-  const newUsers = Object.values(users);
-  newUsers.forEach((element) => {
-     if (element !== id) createIl(element, userUl, 'online-user');
-    });
+  socket.emit('loggedUser', username);
 });
 
-buttonNick.addEventListener('click', () => {
-  const inputNickName = document.querySelector('#nickname-box');
-  socket.emit('newNick', inputNickName.value);
+socket.on('addLoggedUsers', (username) => {
+  if (!userIsListed(username)) addUser(username);
+});
+
+socket.on('removeUser', (username) => {
+  const users = getUsers();
+
+  for (let index = 0; index < users.length; index += 1) {
+    if (users[index].innerText === username) {
+      users[index].remove();
+      break;
+    }
+  }
+});
+
+socket.on('message', (data) => {
+  const messagesList = document.getElementById('messages-list');
+  const li = document.createElement('li');
+  li.setAttribute(dataTestId, 'message');
+  li.innerText = data;
+
+  messagesList.appendChild(li);
+});
+
+socket.on('messageHistory', (messages) => {
+  const messagesList = document.getElementById('messages-list');
+
+  messages.forEach((m) => {
+    const { message, nickname, timestamp } = m;
+
+    const li = document.createElement('li');
+    li.setAttribute(dataTestId, 'message');
+    li.innerText = `${timestamp} - ${nickname}: ${message}`;
+
+    messagesList.appendChild(li);
+  });
 });
