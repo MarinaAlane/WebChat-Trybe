@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
-// Responsável por renderizar tudo
+// Render WebChat
 app.get('/', (_req, res) => {
   res.render('index');
 });
@@ -30,3 +30,4 @@ app.get('/', (_req, res) => {
 server.listen(PORT, () => console.log(`Tá on na porta ${PORT} !!`)); 
 
 // Ref: meu antigo projeto: https://github.com/tryber/sd-010-a-project-webchat/pull/89/files
+// Tirei os sockets do arquivo, mais organizado

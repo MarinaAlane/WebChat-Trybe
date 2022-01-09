@@ -58,8 +58,8 @@ client.on('allUsers', (data) => {
 client.on('allMessages', (data) => {
   data.forEach((dataMessage) => {
     const { message, nickname: nick, timestamp } = dataMessage;
-    const msgFormatted = `${timestamp} - ${nick}: ${message}`;
-    listMessages.appendChild(createMessages(msgFormatted));
+    const formattedMsg = `${timestamp} - ${nick}: ${message}`;
+    listMessages.appendChild(createMessages(formattedMsg));
   });
 });
 
