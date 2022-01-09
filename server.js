@@ -15,9 +15,9 @@ let conectedUsers = [];
 
 function stringGenerator(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
+    
     let generatedString = '';
-
+    
     for (let i = 0; i < length; i += 1) {
         generatedString += characters[Math.floor(Math.random() * characters.length)];
     }
@@ -61,6 +61,7 @@ io.on('connect', async (socket) => {
     conectedUsers.push({ nickname: randomUsername, socketId: socket.id });
     io.emit('online', conectedUsers);
     socket.on('message', async (data) => {
+        const {chatMessage, nickname, timestamp} = data;
         const date = moment().format('DD-MM-yyyy HH:mm:ss');
         await history.send({ message: data.chatMessage, nickname: data.nickname, timestamp: date });
         io.emit('message', `${date} - ${data.nickname}: ${data.chatMessage}`);
