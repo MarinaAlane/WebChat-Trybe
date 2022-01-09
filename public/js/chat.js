@@ -87,7 +87,6 @@ if (username) {
 }
 };
 
-
 socket.on('message', (chatMessage) => createMessage(chatMessage));
 
 socket.on('username', (users) => {
