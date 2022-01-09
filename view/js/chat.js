@@ -54,7 +54,6 @@ function handleAllUsers(usersList) {
 }
 
 socket.on('connect', () => {
-  socket.emit('newUserConnected', currentNickname);
   socket.on('message', (chatMessage) => createMessage(chatMessage));
   socket.on('allMessages', (allMessages) => handleAllMessages(allMessages));
   socket.on('allUsers', (usersList) => {
@@ -71,4 +70,10 @@ socket.on('connect', () => {
     });
     inputMessage.value = '';
   });
+
+  setTimeout(() => socket.emit('newUserConnected', currentNickname), 100);
+});
+
+socket.on('connect_error', (err) => {
+  console.log(`connect_error due to ${err.message}`);
 });
