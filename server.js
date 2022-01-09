@@ -14,7 +14,7 @@ const io = require('socket.io')(server, {
 });
 
 const { saveHistory } = require('./models/history');
-// const { getHistory } = require('./controllers/historys');
+const { getHistory } = require('./controllers/historys');
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -27,9 +27,14 @@ app.get('/', (_req, res) => {
 const users = {};
 const getDate = require('./helpers/getDate');
 
+const allMessages = async (socket) => {
+  const msg = await getHistory();
+  socket.emit('getHistory', msg);
+};
+
 io.on('connection', (socket) => {
   users[socket.id] = socket.id.substr(0, 16);
-  // socket.emit('historyMessage', { allmessages: getHistory() });
+  allMessages(socket);
   socket.emit('newUser', users[socket.id]);
   io.emit('userList', users);
 

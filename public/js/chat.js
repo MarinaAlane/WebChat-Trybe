@@ -17,7 +17,6 @@ function reciveMessage(msg) {
   const li = document.createElement('li');
   li.setAttribute(DATA_TEST_ID, 'message');
   li.innerText = msg;
-  console.log('reciveMessage --->', msg);
   webchatList.appendChild(li);
 }
 
@@ -71,17 +70,18 @@ function newUserList(users) {
   });
 }
 
-// function renderMessages(allmessages) {
-//   const msg = allmessages();
-//   console.log(allmessages);
-//   console.log(msg)
-// }
+async function renderMessages(allMessages) {
+  allMessages.forEach(({ timestamp, nickname, message }) => {
+    const theMsgIs = `${timestamp} - ${nickname}: ${message}`;
+    reciveMessage(theMsgIs);
+  });
+}
 
 //  ------------------------------------------------------------------------------------------------------
 socket.on('newUser', (newUser) => saveNickname(newUser));
 socket.on('message', (msg) => reciveMessage(msg));
 socket.on('userList', (userList) => newUserList(userList));
-// socket.on('historyMessage', (allmessages) => renderMessages(allmessages));
+socket.on('getHistory', (msg) => renderMessages(msg));
 
 //  -----------------------------------------------------------------------------------------------------------
 formSendMessage.addEventListener('submit', sendMessage);
