@@ -18,7 +18,7 @@
       <ul class="messages">
         <% returnedMessages.forEach(({ nickname, timestamp, message }) => { %>
           <li data-testid='message'><%=timestamp%> - <%=nickname%>: <%=message%></li>
-        })%>
+        <%})%>
       </ul>
     </div>
     <input type="text" name="message" data-testid="message-box" placeholder="Digite sua mensagem">
