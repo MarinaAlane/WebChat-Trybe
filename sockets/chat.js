@@ -4,13 +4,12 @@ const userMessageFormatter = require('../utils/userMessageFormatter');
 const ModelMessage = require('../models/messageHistory');
 
 let usersOnline = [];
-let userNickname = '';
 
-const generateUserId = (socket) => {
-  const userId = socket.id.slice(0, 16);
-  usersOnline.push(userId);
-  return userId;
-};
+// const generateUserId = (socket) => {
+//   const userId = socket.id.slice(0, 16);
+//   usersOnline.push(userId);
+//   return userId;
+// };
 
 const renderMessageHistory = async (socket) => {
   // [x] - Criar no model o evento das messages;
@@ -21,18 +20,20 @@ const renderMessageHistory = async (socket) => {
     .map(({ message, nickname, timestamp }) => `${timestamp} - ${nickname}: ${message}`));
 };
 
-const onConnect = async (io, socket) => {
-  userNickname = generateUserId(socket);
+const onConnect = async (io, socket, userId) => {
+  // userNickname = generateUserId(socket);
   // [X] 1º - Remover o envio do nickName e fazer um evento próprio;
   io.emit('userConnected', usersOnline);
-  socket.emit('setUserId', { userNickname, usersOnline });
+  socket.emit('setUserId', { userId, usersOnline });
+  console.log('connect', userId, usersOnline);
   await renderMessageHistory(socket);
-  return userNickname;
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
   // [X] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
-  onConnect(io, socket);
+  let userId = socket.id.slice(0, 16);
+  usersOnline.push(userId);
+  onConnect(io, socket, userId);
 
   // [X] - Após emitir a mensagem é preciso salvar ela no DB com formato específico;  
   socket.on('message', async ({ nickname, chatMessage }) => {
@@ -41,15 +42,13 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('changeNickname', (name) => {
-    usersOnline = usersOnline.map((user) => (user === userNickname ? name : user));
-    userNickname = name;
-    io.emit('changeUsersName', usersOnline);
-    socket.emit('setUserId', { userNickname, usersOnline });
+    usersOnline = usersOnline.map((user) => (user === userId ? name : user));
+    userId = name; io.emit('changeUsersName', usersOnline);
+    socket.emit('setUserId', { userId, usersOnline });
   });
 
   socket.on('disconnect', () => {
-    const userIndex = usersOnline.indexOf(userNickname);
-    usersOnline = usersOnline.filter((_, index) => index !== userIndex);
+    usersOnline = usersOnline.filter((user) => userId !== user);
     io.emit('userDisconnected', usersOnline);
   }); 
 });
