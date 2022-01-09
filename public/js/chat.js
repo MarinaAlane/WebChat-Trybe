@@ -1,40 +1,59 @@
 const socket = window.io();
 
 const form = document.querySelector('#form');
-const inputName = document.querySelector('#nickname-box');
-const inputMsg = document.querySelector('#message-box');
-const btnSave = document.querySelector('#nickname-button');
-const ulMsg = document.querySelector('#zoeiras');
-const ulUsers = document.querySelector('#zoeiros');
+const zoeiro = document.querySelector('#zoeiros');
+const zoeira = document.querySelector('#zoeiras');
+const messageBox = document.querySelector('#message-box');
+const nicknameBox = document.querySelector('#nickname-box');
+const nicknameButton = document.querySelector('#nickname-button');
 
 let nickname = '';
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+
+  socket.emit('message', {
+    nickname,
+    chatMessage: messageBox.value,
+  });
   
-  socket.emit('message', { nickname, chatMessage: inputMsg.value });
-  inputMsg.value = '';
+  messageBox.value = '';
 });
 
-function createUser(user) {
-  const li = document.createElement('li');
-  li.innerText = user;
+nicknameButton.addEventListener('click', () => {
+  nickname = nicknameBox.value;
+  nicknameBox.value = '';
 
-  li.setAttribute('data-testid', 'online-user');
-  ulUsers.appendChild(li);
-}
-
-btnSave.addEventListener('click', () => {
-  nickname = inputName.value;
+  socket.emit('saveZoeiro', nickname);
 });
 
-function createMessage(msg) {
+const createMessage = (message) => {
   const li = document.createElement('li');
-  li.innerText = msg;
+  li.innerText = message;
 
   li.setAttribute('data-testid', 'message');
-  ulMsg.appendChild(li);
-}
+  zoeira.appendChild(li);
+};
+
+const createUser = (newZoeiro) => {
+  nickname = newZoeiro;
+
+  socket.emit('usersOnline');
+};
+
+const setUserList = (zoeiroList) => {
+  zoeiro.innerHTML = '';
+
+  const clientUser = zoeiroList.find((zoador) => zoador.id === socket.id);
+
+  const li = document.createElement('li');
+  li.innerText = clientUser.nickname;
+
+  li.setAttribute('data-testid', 'online-user');
+  
+  zoeiro.appendChild(li);
+};
 
 socket.on('message', createMessage);
-socket.on('user', createUser);
+socket.on('newUser', createUser);
+socket.on('usersOnline', setUserList);
