@@ -1,36 +1,19 @@
 const moment = require('moment');
-const db = require('../models/messagesModels');
 
 const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
 
-const insertMsg = async (message, nickname) => {
-  const data = {
-    message,
-    nickname,
-    timestamp: date,
-  };
-  await db.messagesModel(data);
-  return data;
-};
+const message = ({ chatMessage, nickname }) => `${date} - ${nickname}: ${chatMessage}`;
 
 let users = [];
 
-module.exports = (io) => io.on('connection', async (socket) => {
+module.exports = (io) => io.on('connection', (socket) => {
   console.log(`Usuário ${socket.handshake.query.nick} conectou`);
 
   users.push({ id: socket.id, nick: socket.handshake.query.nick });
-
-  io.emit('msg', await db.getAll());
   io.emit('users', users);
-
-  // socket.on('msg', async ({ chatMessage, nickname }) => {
-  //   const data = await insertMsg(chatMessage, nickname);
-  //   io.emit('msg', `${data.timestamp} ${data.nickname}: ${data.msg}`);
-  // });
-
-  socket.on('msg', async ({ chatMessage, nickname }) => {
-    insertMsg(chatMessage, nickname);
-    io.emit('msg', await db.getAll());
+  
+  socket.on('message', (data) => {
+    io.emit('message', message(data));
   });
 
   socket.on('users', (name) => {
