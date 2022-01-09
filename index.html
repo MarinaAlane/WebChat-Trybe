@@ -18,13 +18,22 @@
     const socket = io();
 
     const form = document.querySelector('#form');
+    const messages = document.querySelector('#message');
     const input = document.querySelector('#input');
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       if (input.value) {
-        socket.emit('message', input.value);
+        const nickname = socket.id.slice(0, 16);
+        socket.emit('message', { chatMessage: input.value, nickname });
         input.value = '';
       } 
+    });
+
+    socket.on('message', (msg) => {
+      const newMessage = document.createElement('li');
+      newMessage.innerText = msg;
+      messages.appendChild(newMessage);
     });
   </script>
 </body>

@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
+const moment = require('moment');
 
 const app = express();
 const server = http.createServer(app);
@@ -14,8 +15,9 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  socket.on('message', (msg) => {
-    io.emit('message', msg);
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const timeStamp = moment().format('DD-MM-yyyy HH:mm:ss');
+    io.emit('message', `${timeStamp} ${nickname}: ${chatMessage}`);
   });
 });
 
