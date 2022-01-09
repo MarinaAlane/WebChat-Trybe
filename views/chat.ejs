@@ -8,6 +8,11 @@
 </head>
 <body>
   <ul id="message-list">
+    <% chat.forEach((item) => { %>
+      <li data-testid="message">
+        <%= item.timestamp %> - <%= item.nickname %>: <%= item.message %>
+      </li>
+    <% }) %>
   </ul>
   <form id="messages">
     <input id="message-input" data-testid="message-box"/>
@@ -19,6 +24,6 @@
     <button data-testid="nickname-button">Entrar com esse nome</button>
   </form>
   <script src="/socket.io/socket.io.js"></script>
-  <script src='./chat.js'></script>
+  <script src='../public/chat.js'></script>
 </body>
 </html>
