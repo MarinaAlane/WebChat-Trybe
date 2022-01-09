@@ -32,6 +32,7 @@ formButtonNickname.addEventListener('click', (e) => {
 
   sessionStorage.setItem('username', nickname);
   socket.emit('updateUsername', nickname);
+  return false;
 });
 
 formButtonMessages.addEventListener('click', (e) => {
@@ -47,6 +48,7 @@ formButtonMessages.addEventListener('click', (e) => {
   };
 
   socket.emit('message', data);
+  return false;
 }); 
 
 const createMessage = (chatMessage) => {
@@ -85,12 +87,6 @@ if (username) {
   list.filter((user) => user !== currentUser).forEach((nick) => createUser(nick));
 }
 };
-
-/* socket.on('updateUsername', ((nickname) => {
-  // console.log({ nickname });
-  randomNickname.innerText = nickname;
-  // console.log({ randomNickname });
-})); */
 
 socket.on('message', (chatMessage) => createMessage(chatMessage));
 
