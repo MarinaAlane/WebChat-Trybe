@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
-const { randomNameGenerate, dataMessageGenerate } = require('./utils');
+const utils = require('./utils');
 
 const app = express();
 const PORT = 3000;
@@ -13,22 +13,30 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-io.on('connection', (socket) => {
-  // console.log(`Usuário ${socket.id} conectado`);
-  const randomName = randomNameGenerate();
-  console.log(`Usuário ${randomName} conectado`);
+let arrayUsers = [];
 
+io.on('connection', (socket) => {
+  const randomName = utils.randomNameGenerate();
   socket.on('message', (msg) => {
-    const dataMessage = dataMessageGenerate();
+    const dataMessage = utils.dataMessageGenerate();
 
     io.emit('message',
     `${dataMessage.date} ${dataMessage.time} - ${msg.nickname}: ${msg.chatMessage}`);
   });
 
-  io.emit('nickname', randomName);
+  const objUser = { nickname: randomName, id: socket.id };
+  utils.createArrayUsers(arrayUsers, objUser);
+  socket.emit('nickname', arrayUsers);
+  socket.broadcast.emit('updateOnlineUsers', arrayUsers);
+
+  socket.on('uptadeNickname', (obj) => {
+    arrayUsers = utils.updateNickname(arrayUsers, obj);
+    io.emit('updateOnlineUsers', arrayUsers);
+  });
 
   socket.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} desconectou`);
+    arrayUsers = utils.removeUser(arrayUsers, objUser);
+    io.emit('nickname', arrayUsers);
   });
 });
 

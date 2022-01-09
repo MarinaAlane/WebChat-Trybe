@@ -32,6 +32,7 @@
       background-color: #759608;
       border-style: solid;
       border-width: 1px;
+      overflow: auto;
       width: 68%;
     }
     .painel{
@@ -121,23 +122,20 @@
     const messages = document.querySelector('#messages');
 
     const formNickname = document.querySelector('#nickname-form');
-    const inputTest = document.querySelector('#teste');
+    const inputNickname = document.querySelector('#teste');
 
     formNickname.addEventListener('submit', (event) => {
       event.preventDefault();
-
-      sessionStorage.setItem('nickname', inputTest.value);
-      console.log(inputTest.value);
-      inputTest.value = '';
+      const oldNickname = sessionStorage.getItem('nickname');
+      sessionStorage.setItem('nickname', inputNickname.value);
+      console.log(inputNickname.value);
+      socket.emit('uptadeNickname', { newNickname: inputNickname.value, oldNickname });
+      inputNickname.value = '';
     })
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-/*
-      const chatStorage = sessionStorage();
-      sessionStorage.setItem('nickname', nickname.value);
-      console.log('nickname' + sessionStorage.nickname);
-      const dataMessage = Date(); */
+
       if (message.value) {
         const objMessage = {
           nickname: sessionStorage.getItem('nickname'),
@@ -151,12 +149,37 @@
 
     const usersOnline = document.querySelector('#users');
 
-    socket.on('nickname', (randomNickname) => {
-      const nickname = document.createElement('li');
-      nickname.textContent = randomNickname;
-      nickname.setAttribute('data-testid', 'online-user')
-      usersOnline.appendChild(nickname);
+    socket.on('nickname', (arrayNickname) => {
+      usersOnline.innerHTML = '';
+      const lastUser = arrayNickname[arrayNickname.length -1];
+      sessionStorage.setItem('nickname', lastUser.nickname);
+      arrayNickname.forEach((user) => {
+        const nickname = document.createElement('li');
+        nickname.textContent = user.nickname;
+        nickname.setAttribute('data-testid', 'online-user')
+        if (user.nickname === lastUser.nickname) {
+          usersOnline.prepend(nickname);
+        } else {
+          usersOnline.appendChild(nickname);
+        }
+      })
     })
+
+    socket.on('updateOnlineUsers', (arrNewUsers) => {
+      usersOnline.innerHTML = '';
+      const currentUser = sessionStorage.getItem('nickname');
+      console.log(arrNewUsers);
+      arrNewUsers.forEach((user) => {
+        const nickname = document.createElement('li');
+        nickname.textContent = user.nickname;
+        nickname.setAttribute('data-testid', 'online-user')
+        if (user.nickname === currentUser) {
+          usersOnline.prepend(nickname);
+        } else {
+          usersOnline.appendChild(nickname);
+        }
+      })
+    });
 
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
@@ -164,6 +187,12 @@
       newMessage.setAttribute('data-testid', 'message');
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
+    })
+
+    socket.on('userlogoff', () => {
+      const user = document.querySelector('#online-user');
+      user.innerHTML = '';
+      io.emit('disconnect')
     })
   </script>
 </body>

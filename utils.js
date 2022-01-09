@@ -36,7 +36,32 @@ const dataMessageGenerate = () => {
   return { date, time };
 };
 
+const createArrayUsers = (arr, obj) => {
+  const result = arr.find((user) => user.id === obj.id);
+  if (result === undefined) {
+    arr.push(obj);
+  }
+};
+
+const removeUser = (arr, obj) => {
+  const result = arr.filter((user) => user.id !== obj.id);
+  return result;
+};
+
+const updateNickname = (arr, obj) => (
+  arr.map((user) => {
+    const updatedUser = { ...user };
+    if (user.nickname === obj.oldNickname) {
+      updatedUser.nickname = obj.newNickname;
+    }
+    return updatedUser;
+  })
+);
+
 module.exports = {
   randomNameGenerate,
   dataMessageGenerate,
+  createArrayUsers,
+  removeUser,
+  updateNickname,
 };
