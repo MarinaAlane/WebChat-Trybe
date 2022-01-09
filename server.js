@@ -12,7 +12,7 @@ const io = require('socket.io')(http, {
 require('./sockets/socket')(io);
 const chatController = require('./controllers/chatController');
 
-app.use(express.static(`${__dirname}/views`));
+app.use(express.static(`${__dirname}/view`));
 app.set('view engine', 'ejs');
 app.set('views', './view');
 app.get('/', chatController.getMessage);

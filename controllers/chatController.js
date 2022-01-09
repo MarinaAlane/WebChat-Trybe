@@ -1,12 +1,16 @@
 const chatModel = require('../models/chatModel');
 
-const getMessage = async (_req, res) => {
-  const messages = await chatModel.getMessages();
-  if (!messages) {
-    return res.status(400)
-      .render('chat', { messages: 'Mensagens não encontradas' });
+const getMessage = async (req, res) => {
+  try {
+    const messages = await chatModel.getMessages();
+    if (!messages) {
+      return res.status(400)
+        .render('chat', { messages: 'Mensagens não encontradas' });
+    }
+    res.status(200).render('chat', { messages });
+  } catch (error) {
+    console.log(error);
   }
-  res.status(200).render('chat', { messages });
 };
 
 const create = async (req, res) => {
