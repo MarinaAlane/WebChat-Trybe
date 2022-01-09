@@ -1,11 +1,11 @@
 const moment = require('moment');
 
-const usrsOnline = [];
+const usersOnline = [];
 
 const createUser = (socket) => {
   const { id } = socket;
   const newId = id.substr(0, 16);
-  usrsOnline.push({ id, nickname: newId });
+  usersOnline.push({ id, nickname: newId });
   socket.emit('newUser', newId);
 };
 
@@ -18,15 +18,15 @@ const newMsg = (socket, io) => {
 
 const newNickname = (socket, io) => {
   socket.on('saveNickname', (newNick) => {
-    const userIndex = usrsOnline.findIndex((user) => user.id === socket.id);
-    usrsOnline[userIndex].nickname = newNick;
-    io.emit('usrsOnline', usrsOnline);
+    const userIndex = usersOnline.findIndex((user) => user.id === socket.id);
+    usersOnline[userIndex].nickname = newNick;
+    io.emit('usersOnline', usersOnline);
   });
 };
 
 const updateUsersOnline = (socket, io) => {
-  socket.on('usrsOnline', () => {
-    io.emit('usrsOnline', usrsOnline);
+  socket.on('usersOnline', () => {
+    io.emit('usersOnline', usersOnline);
   });
 };
 
