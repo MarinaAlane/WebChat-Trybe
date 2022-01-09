@@ -28,7 +28,6 @@ input {
 button {
   background: rgb(10, 10, 10);
   color: white;
-  display: inline; 
   font-size: 14px;
   font-weight: 900;
   height: 50px;
