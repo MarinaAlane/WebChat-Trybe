@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment');
 
 const app = express();
 const http = require('http').createServer(app); // servidor HTTP
@@ -11,6 +12,12 @@ const io = require('socket.io')(http, {
 });
 // Sempre que um cliente se conectar ao servidor executa essa função
 io.on('connection', (socket) => {
+  const data = moment().format('DD-MM-yyyy HH:mm:ss A');
+  // Escuta o evento de message
+  socket.on('message', ({ chatMessage, nickname }) => {
+  // vai enviar a mensagem para todos os clientes que tiverem a conexão socket aberta
+    io.emit('message', `${data} - ${nickname} - ${chatMessage}`);
+  });
   console.log(`Usuário conectado. ID: ${socket.id} `);
 });
 
