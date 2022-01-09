@@ -1,6 +1,6 @@
 const socket = window.io();
-
 let nickname = '';
+let userId;
 
 // message area
 const sendBtn = document.querySelector('#sendBtn');
@@ -30,15 +30,26 @@ const createUsers = (users) => {
     usersList.removeChild(usersList.lastElementChild);
   }
 
-  users.forEach((username) => {
+  users.forEach(({ username, socketId }) => {
+    console.log(socketId, userId);
     const userLi = document.createElement('li');
     userLi.innerText = username;
-    usersList.appendChild(userLi);
+    userLi.setAttribute('data-testid', 'online-user');
+    if (socketId === userId) {
+      userLi.className = 'red';
+      usersList.insertAdjacentElement('afterbegin', userLi);
+    } else {
+      usersList.appendChild(userLi);
+    }
   });
 };
 
-socket.on('userConnected', ({ userList, username }) => {
+socket.on('userConnected', ({ username, socketId }) => {
   nickname = username;
+  userId = socketId;
+});
+
+socket.on('createUsers', (userList) => {
   createUsers(userList);
 });
 
@@ -57,3 +68,6 @@ nickBtn.addEventListener('click', () => {
 });
 
 socket.on('nickChanged', (users) => createUsers(users));
+
+// disconnect area
+socket.on('userDisconnected', (users) => createUsers(users));

@@ -1,8 +1,18 @@
 const userList = [];
+const findIndex = (socketId) => {
+  let i;
+  userList.forEach((user, index) => {
+    if (user.socketId === socketId) {
+      i = index;
+    }
+  });
+  return i;
+};
 
 module.exports = (io) => io.on('connection', (socket) => {
-  let username = socket.id.slice(0, 16); userList.push(username);
-  io.emit('userConnected', { userList, username });
+  let username = socket.id.slice(0, 16); userList.push({ username, socketId: socket.id });
+  socket.emit('userConnected', { username, socketId: socket.id });
+  io.emit('createUsers', userList);
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const date = new Date().toLocaleString('pt-BR');
@@ -11,13 +21,13 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('changeNick', (newNick) => {
-    const index = userList.indexOf(username); username = newNick;
-    userList[index] = username;
+    const index = findIndex(socket.id); username = newNick;
+    userList[index].username = username;
     io.emit('nickChanged', userList);
   });
 
   socket.on('disconnect', () => {
-    const index = userList.indexOf(username);
+    const index = userList.indexOf({ username, socketId: socket.id });
     userList.splice(index, 1);
     io.emit('userDisconnected', userList);
   });
