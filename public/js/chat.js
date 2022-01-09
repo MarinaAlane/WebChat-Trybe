@@ -5,7 +5,7 @@ const formButtonNickname = document.querySelector('#nicknameButton');
 const messageInput = document.querySelector('#messageInput');
 const nicknameInput = document.querySelector('#nicknameInput');
 const messagesUl = document.querySelector('#messages');
-let randomNickname = document.querySelector('#randomNickname');
+const randomNickname = document.querySelector('#randomNickname');
 const usersList = document.querySelector('#usersList');
 const dataTestId = 'data-testid'; 
 
@@ -20,7 +20,8 @@ function getRandomChars() {
 }
 
 randomNickname.innerText = getRandomChars(); // adiciona random no HTML
-
+// console.log('rand', randomNickname.innerText)
+sessionStorage.setItem('username', randomNickname.innerText);
 formButtonNickname.addEventListener('click', (e) => {
   e.preventDefault();
   const nickname = nicknameInput.value;
@@ -29,14 +30,14 @@ formButtonNickname.addEventListener('click', (e) => {
   randomNickname.innerText = nickname;
   nicknameInput.value = '';
 
-  sessionStorage.setItem('username', JSON.stringify(nickname));
+  sessionStorage.setItem('username', nickname);
   socket.emit('updateUsername', nickname);
 });
 
 formButtonMessages.addEventListener('click', (e) => {
   e.preventDefault(); // cancela a atualizacado da pãgina
   console.log('enviou a msg');
-  const nickname = JSON.parse(sessionStorage.getItem('username')) || randomNickname;
+  const nickname = sessionStorage.getItem('username');
   const message = messageInput.value;
   messageInput.value = '';
 
@@ -56,26 +57,38 @@ const createMessage = (chatMessage) => {
 };
 
 const createUser = (user) => {
+  console.log({ user });
   const li = document.createElement('li');
   li.innerText = user;
   li.setAttribute(dataTestId, 'online-user');
+  // const username = sessionStorage.getItem('username'); 
   usersList.appendChild(li);
 };
 
 const usersOn = (users) => {
-  // console.log({users});
+  console.log({ users });
   const list = Object.values(users);
-  console.log('object:', list);
+  const username = sessionStorage.getItem('username'); 
+  // console.log(socket.id);
+
+  const currentUser = users.find((user) => 
+    user === username);
+  console.log({ currentUser });
+  console.log('random', randomNickname.innerText);
 
   usersList.innerHTML = '';
   
-  // console.log({usersList});
-  list.filter((user) => user !== list).forEach((nickname) => createUser(nickname));
+  // list.unshift(currentUser);
+  // console.log(list)
+  createUser(currentUser);
+if (username) {
+  list.filter((user) => user !== currentUser).forEach((nick) => createUser(nick));
+}
 };
 
 socket.on('updateUsername', ((nickname) => {
   // console.log({ nickname });
-  randomNickname = nickname;
+  randomNickname.innerText = nickname;
   // console.log({ randomNickname });
 }));
 
