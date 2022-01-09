@@ -5,8 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>webchat</title>
+  <link rel="stylesheet" href="./css/chat.css">
 </head>
   <body>
+    <section>
+      <ul id="users">Usuarios</ul>
+      <ul id="messages">Mensagens: </ul>
+    </section>
+    <form id="form">
+      <input type="text" placeholder="Defina o seu username" data-testid="nickname-box" id="nickname" />
+      <button type="button" data-testid="nickname-button" id="nicknameBtn">Salvar</button>
+      
+      <input type="text" placeholder="Digite sua mensagem" data-testid="message-box" id="messageBox" />
+      <button type="button" data-testid="send-button" id="sendBtn">Enviar</button>
+    </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/chat.js"></script>
   </body>
