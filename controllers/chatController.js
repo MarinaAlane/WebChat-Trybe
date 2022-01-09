@@ -4,9 +4,9 @@ const getMessage = async (_req, res) => {
   const chat = await chatModel.getMessages();
   if (!chat) {
     return res.status(400)
-      .render('socket', { messages: 'Mensagens não encontradas' });
+      .render('chat', { messages: 'Mensagens não encontradas' });
   }
-  res.status(200).render('socket', { chat });
+  res.status(200).render('chat', { chat });
 };
 
 const create = async (req, res) => {
