@@ -8,7 +8,7 @@
 </head>
 <body>
   <ul id="message-list">
-    <% chat.forEach((item) => { %>
+    <% messages.forEach((item) => { %>
       <li data-testid="message">
         <%= item.timestamp %> - <%= item.nickname %>: <%= item.message %>
       </li>
