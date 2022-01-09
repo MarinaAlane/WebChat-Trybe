@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!-- req2 - apenas configuro o html + css gerados dinamicamente -->
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto Webchat</title>
+</head>
+<body>
+  <!-- <section>
+    <ul id="listUsers"></ul>
+  </section> -->
+  <form>
+    <label htmlfor="nickname">
+      <input type="text" name="nickname" placeholder="Digite seu nick" data-testid="nickname-box" id="inputnickName" />
+    </label>
+    <button type="button" data-testid="nickname-button" id="nickname-button">Salvar</button>
+    <ul id="messages">Mensagens: </ul>
+    <label htmlfor="message-input">
+      <input type="text" name="message-input" placeholder="Digite a sua mensagem" data-testid="message-box" id="message-input" />
+    </label>
+    <button type="button" data-testid="send-button" id="send-button">Enviar Mensagem</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js">
+  </script>
+</body>
+</html> 
