@@ -7,17 +7,17 @@
 body {
   background: #e0e2de; /* fallback for old browsers */
   display: flex;
-  justify-content: center;
   font-family: Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  justify-content: center;
   position: relative;
 }
 
 main {
+  background-color: brown;
   display: flex;
   flex-direction: column;
-  background-color: brown;
   position: relative;
   width: 50%;
 }
@@ -30,7 +30,7 @@ main .first-submain {
 main .second-submain {
   background-color: rgb(24, 155, 20);
   display: flex;
-justify-content: space-between;
+  justify-content: space-between;
 }
 
 /* Online Users */
