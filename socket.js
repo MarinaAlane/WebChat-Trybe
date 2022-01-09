@@ -13,8 +13,8 @@ module.exports = (io) => io.on('connection', (socket) => {
     
     const currentDate = moment().format('DD-MM-yyyy hh:mm:ss A');
 
-    socket.on('message', ({ nickname, chatMessage }) => {
-        io.emit('message', ` ${currentDate} - ${onLineUsers[nickname]}: ${chatMessage}`); 
+    socket.on('message', ({ chatMessage, nickname }) => {
+        io.emit('message', ` ${currentDate} - ${nickname}: ${chatMessage}`); 
     }); 
 
     socket.on('sendNickName', (nick) => {

@@ -5,6 +5,7 @@
   </head>
 
   <body>
+    <p id="firstNick"></p>
     <ul id="nick"></ul>
         <form action="" id="nickForm">
         <input id="nickInput" autocomplete="off" data-testid="nickname-box"/>
@@ -27,7 +28,8 @@
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        socket.emit('message', { nickname: socket.id, chatMessage: inputMessage.value });
+        const nickFirst = document.querySelector('#firstNick').innerText;
+        socket.emit('message', { nickname: nickFirst, chatMessage: inputMessage.value });
         inputMessage.value = ''; 
       });
 
@@ -54,8 +56,8 @@
       btnNick.addEventListener('click', (e) => {
         e.preventDefault();
         const nick = nickInput.value;
+        document.querySelector('#firstNick').innerText = nick;
         socket.emit('sendNickName', nick);
-        nickInput.value = '';
       });
 
       socket.on('newNickName', (onLineUsers) => {
