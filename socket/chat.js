@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const moment = require('moment');
 const model = require('../models/messagesModels');
 
@@ -16,21 +15,17 @@ const insertMessage = async (message, nickname) => {
 };
 
 module.exports = (io) => io.on('connection', async (socket) => {
-  console.log(`Usuário ${socket.handshake.query.nick} conectou`);
-
   users.push({ id: socket.id, nick: socket.handshake.query.nick });
   io.emit('users', users);
   
   socket.on('message', async ({ chatMessage, nickname }) => {
     await insertMessage({ chatMessage, nickname });
-    const history = await model.getAll();
-    io.emit('message', history);
+    const history = await model.getAll(); io.emit('message', history);
   });
 
   socket.on('users', (name) => {
     const index = users.findIndex(({ id }) => id === socket.id);
-    users[index].nick = name;
-    socket.broadcast.emit('users', users);
+    users[index].nick = name; socket.broadcast.emit('users', users);
   });
 
   socket.on('getMessages', async () => {
