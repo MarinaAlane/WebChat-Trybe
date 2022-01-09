@@ -17,9 +17,10 @@ const renderMessageHistory = () => {
 
 module.exports = (io) => io.on('connection', (socket) => {
   let userNickname = generateUserId(socket);
-  // [ ] - Criar um evento para renderizar o histórico de mensagens;
+
+  // [ ] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
   renderMessageHistory(io, socket);
-  
+
   // [X] 1º - Remover o envio do nickName e fazer um evento próprio;
   io.emit('userConnected', usersOnline);
   socket.emit('setUserId', { userNickname, usersOnline });
