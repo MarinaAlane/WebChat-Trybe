@@ -1,5 +1,7 @@
 /* eslint-disable max-lines-per-function */
 // config das live lectures com o mestre frankkkk
+// https://momentjs.com/docs/ moment.format
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -20,7 +22,7 @@ function stringGenerator(length) {
         generatedString += characters[Math.floor(Math.random() * characters.length)];
     }
     return generatedString;
- }
+}
 
 const app = express();
 
@@ -32,6 +34,7 @@ const io = require('socket.io')(socketIoServer, {
         methods: ['GET', 'POST'],
     },
 });
+const modelHistory = require('./models/history');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -47,20 +50,24 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-    res.render('home');
+app.get('/', async (req, res) => {
+    const history = await modelHistory.historyMessages();
+    res.render('home.ejs', { history });
 });
 
 io.on('connect', async (socket) => {
     const randomUsername = stringGenerator(16);
-    conectedUsers.push({ nickname: randomUsername, socketId: socket.id });
     socket.emit('username', randomUsername);
+    conectedUsers.push({ nickname: randomUsername, socketId: socket.id });
 
     io.emit('online', conectedUsers);
 
-    socket.on('message', (data) => {
+    socket.on('message', async (data) => {
         const { nickname, chatMessage } = data;
+
         const timeFormated = moment().format('DD-MM-yyyy HH:mm:ss');
+        await modelHistory.send({ message: chatMessage, nickname, timestamp: timeFormated });
+
         io.emit('message', `${timeFormated} - ${nickname}: ${chatMessage}`);
     });
 
@@ -73,7 +80,7 @@ io.on('connect', async (socket) => {
 
     socket.on('disconnect', () => {
         conectedUsers = conectedUsers.filter((element) => element.socketId !== socket.id);
-        
+
         io.emit('online', conectedUsers);
     });
 });
