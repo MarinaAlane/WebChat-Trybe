@@ -7,12 +7,14 @@
   <body>
     <div class="container">
       <div class="users-container">
-        <div>box</div>
+        <input id="nickInput" type="text" data-testid="nickname-box">
+        <button id="nickBtn" data-testid="nickname-button">Mudar Nick</button>
+        <ul id="usersList" data-testid="online-user"></ul>
       </div>
       <div class="chat-container">
         <ul id="messages"></ul>
         <form action="">
-          <input id="messageInput" autocomplete="off" data-testid="message-box" /><button>Send</button>
+          <input id="messageInput" autocomplete="off" data-testid="message-box" /><button id="sendBtn" data-testid="send-button">Send</button>
         </form>
       </div>
     </div>
