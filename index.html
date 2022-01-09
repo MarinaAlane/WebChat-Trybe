@@ -107,8 +107,8 @@
       });
 
       socket.on('allMessages', (messages) => {
-        messages.forEach({ message: chatMessage, nickname, timeStamp } => {
-          createMessage(`${timeStamp} - ${nickname}: ${chatMessage}`)  
+        messages.forEach(({ message: chatMessage, nickname, timeStamp }) => {
+          createMessage(`${timeStamp} - ${nickname}: ${chatMessage}`)
         });
       });
       

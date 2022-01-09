@@ -8,7 +8,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 
   onLineUsers[socket.id] = socket.id.substring(0, 16);
-  io.emit('newNickname', onLineUsers); 
+  io.emit('newNickName', onLineUsers); 
 
   const allMessages = await chatModel.messagesList();
   io.emit('allMessages', allMessages);
@@ -21,7 +21,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.on('disconnect', () => {
     delete onLineUsers[socket.id];
-    io.emit('newNickname', onLineUsers);
+    io.emit('newNickName', onLineUsers);
   }); 
 
   socket.on('sendNickName', (nick) => {
