@@ -19,6 +19,13 @@ const { nickname } = data;
   socket.broadcast.emit('otherUserConnected', nickname);
 };
 
+const updateNickname = (socket = null, io = null, nickname = null) => {
+    const userIndex = onlineUsers.findIndex((item) => item.socketId === socket.id);
+
+    onlineUsers[userIndex] = { ...onlineUsers[userIndex], nickname };
+    io.emit('alterNickname', onlineUsers);
+  };
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     socket.on('login', (nickname) => {
@@ -32,9 +39,9 @@ module.exports = (io) => {
             socket.broadcast.emit('otherUserDisconnected', { onlineUsers });
     });
 
-  // socket.on('alterNickname', (newNickName) => { 
-  //   nickname = newNickName; 
-  // });
+    socket.on('alterNickname', (newNickName) => {
+      updateNickname(socket, io, newNickName);
+    });
   
     socket.on('message', (clientMsg) => {
       const { chatMessage, nickname } = clientMsg;

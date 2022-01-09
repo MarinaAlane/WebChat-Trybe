@@ -2,6 +2,7 @@ const socket = window.io();
 const nicknameBtn = document.getElementById('nicknameBtn');
 const sendMsgBtn = document.getElementById('sendBtn');
 const messageInput = document.querySelector('#messageInput');
+const nicknameInput = document.querySelector('#nicknameBtn');
 
 const CLASSNAME__MESSAGE_DIV = 'messages-div';
 const CLASSNAME__ONLINE_USERS_DIV = 'online-users-div';
@@ -92,9 +93,15 @@ const addUserToList = (userNickname, dataTestid, classNameFather) => {
 
 nicknameBtn.addEventListener('click', (e) => {
   nickname = document.getElementById('nicknameInput').value;
-  // socket.emit('alterNickname', alteredNickname);
-  messageInput.value = '';
+  socket.emit('alterNickname', nickname);
+  nicknameInput.value = '';
   e.preventDefault();
+});
+
+socket.on('alterNickname', (onlineUsers) => {
+  newUsersArray = [];
+  newUsersArray = [...onlineUsers];
+  updateUsersList(newUsersArray, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
 });
 
 sendMsgBtn.addEventListener('click', (e) => {

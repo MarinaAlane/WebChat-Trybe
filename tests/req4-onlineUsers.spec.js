@@ -255,7 +255,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     )
   });
 
-  it.skip('Será validado que quando um cliente atualiza seu nickname, o nickname é atualizado no front-end de todos os clientes', async () => {
+  it('Será validado que quando um cliente atualiza seu nickname, o nickname é atualizado no front-end de todos os clientes', async () => {
     // a client connects
     await page.goto(BASE_URL);
     await page.waitForSelector(dataTestid('online-user'));
@@ -383,7 +383,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     )
   });
 
-  it.skip('Será validado que os nicknames são mostrados na ordem correta', async () => {
+  it('Será validado que os nicknames são mostrados na ordem correta', async () => {
     // a client connects
     await page.goto(BASE_URL);
     await page.waitForSelector(dataTestid('online-user'));
