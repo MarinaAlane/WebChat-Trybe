@@ -106,7 +106,7 @@ socket.on('history', (messages) => {
 });
 
 window.onload = () => {
-  socket.emit('updateUsername', randomNickname.innerText);
+  socket.broadcast.emit('updateUsername', randomNickname.innerText);
 };
 
 // slack
