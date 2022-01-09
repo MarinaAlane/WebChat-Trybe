@@ -1,4 +1,5 @@
 const socket = window.io();
+socket.emit('newNickname');
 
 const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
@@ -8,23 +9,13 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-window.onload = () => {
-  socket.emit('newNickname');
-  socket.on('allMessages', (messages) => {
-    messages.map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`)
-      .forEach((message) => createMessage(message));
-  });
-};
-
 const sendMessageForm = document.querySelector('#send-message-form');
 const saveNicknameForm = document.querySelector('#save-nickname-form');
 let actualNickname;
-let actualMessage;
 
 sendMessageForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const messageInput = document.querySelector('#client-message');
-  actualMessage = messageInput.value;
   socket.emit('message', { 
     chatMessage: messageInput.value,
     nickname: actualNickname,
@@ -54,22 +45,6 @@ const clearNicknamesList = () => {
   nicknameUl.innerHTML = '';
 };
 
-const saveMessage = async (message) => {
-  if (message.includes(actualNickname) && message.includes(actualMessage)) {
-    await fetch('http://localhost:3000/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: actualMessage,
-        nickname: actualNickname,
-        id: socket.id,
-      }),
-    });
-  }
-};
-
 const sortUsers = (users) => {
   if (users.length === 1) return users;
   const primaryUser = users.find((user) => user.id === socket.id);
@@ -78,7 +53,6 @@ const sortUsers = (users) => {
 };
 
 socket.on('message', async (message) => {
-  await saveMessage(message);
   createMessage(message);
 });
 
@@ -87,4 +61,9 @@ socket.on('renderUsersList', (usersList) => {
   sortUsers(usersList).forEach((user) => {
     createNickname(user);
   });
+});
+
+socket.on('allMessages', (messages) => {
+  messages.map(({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`)
+    .forEach((message) => createMessage(message));
 });
