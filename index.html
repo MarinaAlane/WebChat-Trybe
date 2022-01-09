@@ -61,7 +61,7 @@
                     return 0;
                 });
 
-                orderedUsers.forEach(({ userNickName }) => {
+            orderedUsers.forEach(({ userNickName }) => {
                 const newUserOn = document.createElement('p');
                 newUserOn.innerHTML = userNickName;
                 // console.log(newUserOn.innerHTML);
@@ -102,6 +102,16 @@
             messagesList.appendChild(newMessage);
             window.scrollTo(0, document.body.scrollHeight);
         })
+
+        // Req. 03
+        socket.on('history', function (dataInfo) {
+            const { timestamp, nickname, message } = dataInfo;
+            const rescueMsg = document.createElement('li');
+            rescueMsg.textContent = (`${timestamp} - ${nickname}: ${message}`);
+            rescueMsg.setAttribute('data-testid', 'message');
+            messagesList.appendChild(rescueMsg);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
 
     </script>
 </body>
