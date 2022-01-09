@@ -16,11 +16,15 @@ const insertMessage = async (message, nickname) => {
 
 let users = [];
 
-module.exports = (io) => io.on('connection', (socket) => {
+module.exports = (io) => io.on('connection', async (socket) => {
   console.log(`Usuário ${socket.handshake.query.nick} conectou`);
 
   users.push({ id: socket.id, nick: socket.handshake.query.nick });
   io.emit('users', users);
+
+  const loadMsg = await model.getAll();
+
+  socket.emit('loadMsg', loadMsg);
   
   socket.on('message', (data) => {
     insertMessage(data.chatMessage, data.nickname);

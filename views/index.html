@@ -34,7 +34,7 @@
     </ul>
   </div>
 
-  <ul id="ulMessages" data-testid="message"></ul>
+  <ul id="ulMessages" data-testid="messages"></ul>
 
   <form  action="" id="sendButton" >
     <label for="">Message</label>
@@ -110,6 +110,11 @@
     };
 
     socket.on('message', (chatMessage) => createMessage(chatMessage));
+    socket.on('loadMsg',(data) => {
+      data.forEach(({ message, nickname, timestamp }) => {
+        createMessage(`${timestamp} - ${nickname}: ${message}`)
+      });
+    });
 
     const createUser = (data) => {
       const li = document.createElement('li');
