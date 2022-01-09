@@ -1,9 +1,9 @@
 const moment = require('moment');
 const model = require('../models/messagesModels');
 
-let users = [];
-
 const date = moment(new Date()).format('DD-MM-YYYY, h:mm:ss');
+
+const messageAux = ({ chatMessage, nickname }) => `${date} - ${nickname}: ${chatMessage}`;
 
 const insertMessage = async (message, nickname) => {
   const data = {
@@ -14,23 +14,23 @@ const insertMessage = async (message, nickname) => {
   await model.messagesModel(data);
 };
 
-module.exports = (io) => io.on('connection', async (socket) => {
+let users = [];
+
+module.exports = (io) => io.on('connection', (socket) => {
+  console.log(`Usuário ${socket.handshake.query.nick} conectou`);
+
   users.push({ id: socket.id, nick: socket.handshake.query.nick });
   io.emit('users', users);
   
-  socket.on('message', async ({ chatMessage, nickname }) => {
-    await insertMessage({ chatMessage, nickname });
-    const history = await model.getAll(); io.emit('message', history);
+  socket.on('message', (data) => {
+    insertMessage(data.chatMessage, data.nickname);
+    io.emit('message', messageAux(data));
   });
 
   socket.on('users', (name) => {
     const index = users.findIndex(({ id }) => id === socket.id);
-    users[index].nick = name; socket.broadcast.emit('users', users);
-  });
-
-  socket.on('getMessages', async () => {
-    const data = await model.getAll();
-    io.emit('showHistory', data);
+    users[index].nick = name;
+    socket.broadcast.emit('users', users);
   });
 
   socket.on('disconnect', () => {

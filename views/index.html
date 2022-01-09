@@ -34,9 +34,7 @@
     </ul>
   </div>
 
-  <div>
-    <ul id="ulMessages" data-testid="messages"></ul>
-  </div>
+  <ul id="ulMessages" data-testid="message"></ul>
 
   <form  action="" id="sendButton" >
     <label for="">Message</label>
@@ -87,27 +85,31 @@
       e.preventDefault();
       const name = userName.value;
       socket.emit('users', name);
-      // userName.value = '';
       setNicknameSessionStorage(name);
+      userName.value = '';
     });
 
     sendButton.addEventListener('submit', (e) => {
       e.preventDefault();
-      const message = input.value;    
+
+      const message = input.value;
+      
       socket.emit('message', {
         chatMessage: message,
         nickname: nick.innerText,
       });
+
       input.value = '';
-      return false;
     });
 
     const createMessage = (chatMessage) => {
       const li = document.createElement('li');
-      li.innerText = chatMessage;
       li.setAttribute('data-testid', 'message');
+      li.innerText = chatMessage;
       ulMessages.appendChild(li);
     };
+
+    socket.on('message', (chatMessage) => createMessage(chatMessage));
 
     const createUser = (data) => {
       const li = document.createElement('li');
@@ -115,38 +117,12 @@
       li.innerText = data;
       usersList.appendChild(li);
     };
-    
+
     const filterUser = (users) => {
       users.forEach(({ id, nick: name }) => {
         if (id !== socket.id) createUser(name);
       });
     };
-    
-    // const filterMsg = (messages) => {
-    //   messages.forEach(({ message, nickname, timestamp }) => {
-    //     const msg = `${timestamp} ${nickname}: ${message}`;
-    //     createMessage(msg);
-    //   });
-    // };
-    
-    // socket.on('message', (chatMessage) => createMessage(chatMessage));
-
-    socket.on('message', (messages) => {
-       while (ulMessages.firstElementChild) {
-        ulMessages.removeChild(ulMessages.firstElementChild);
-      }
-
-      messages.forEach(({ message, timestamp}) => {
-        const { chatMessage, nickname } = message;
-        const finalMessage = `${timestamp}-${nickname}: ${chatMessage}`
-        createMessage(finalMessage);
-      })
-
-      // while (ulMessages.firstElementChild) {
-      //   ulMessages.removeChild(ulMessages.firstElementChild);
-      // }
-      // filterMsg(messages);
-    });
 
     socket.on('users', (users) => {
       while (usersList.firstElementChild.nextElementSibling) {
@@ -155,16 +131,8 @@
       filterUser(users);
     });
 
-    window.onload = () => {
-      socket.emit('getMessages');
-      socket.on('showHistory', (data) => {
-        data.forEach(({ message, timestamp}) => {
-          const { chatMessage, nickname } = message;
-          const finalMessage = `${timestamp} ${nickname}: ${chatMessage}`
-          // console.log(message)
-          createMessage(finalMessage);
-        })
-      });
+    window.onbeforeunload = (_event) => {
+      socket.disconnect();
     }
 
   </script>
