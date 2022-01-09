@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
   socket.on('message', (message) => {
     console.log(message);
-    io.emit('message', `${formatDate} ${message.nickname}: ${message.chatMessage}`);
+    io.emit('message', `${formatDate()} ${message.nickname}: ${message.chatMessage}`);
   });
 });
 
