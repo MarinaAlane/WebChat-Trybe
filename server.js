@@ -14,6 +14,6 @@ const chatController = require('./controllers/chatController');
 
 app.use(express.static(`${__dirname}/views`));
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', './view');
 app.get('/', chatController.getMessage);
 http.listen(3000, () => console.log('App started on port 3000'));

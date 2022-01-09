@@ -9,8 +9,8 @@ const create = async ({ message, nickname, timestamp }) => {
 
 const getMessages = async () => {
   const db = await connection();
-  const chat = await db.collection('messages').find().toArray();
-  return chat;
+  const messages = await db.collection('messages').find().toArray();
+  return messages;
 };
 
 module.exports = {
