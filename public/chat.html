@@ -5,14 +5,20 @@
 </head>
 <body>
   <form id="client-form">
-    <input id="clientInput" data-testid="nickname-box" /><button id="button-nickname" data-testid="nickname-button">Save</button>
-    <div id="clientName" data-testid="nickname-box">
+    <input
+      id="clientInput"
+      data-testid="nickname-box"
+    /><button id="button-nickname" data-testid="nickname-button">Save</button>
+    <div id="clientName" data-testid="message-box">
       <ul id="client"></ul>
     </div>
   </form>
   <form id="form-messages">
-  <ul id="messages"></ul>
-    <input id="messageInput" data-testid="message-box" /><button data-testid="send-button">Send</button>
+    <ul id="messages"></ul>
+    <input
+      id="messageInput"
+      data-testid="message-box"
+    /><button data-testid="send-button">Send</button>
   </form>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/chat.js"></script>
