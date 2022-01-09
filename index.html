@@ -72,8 +72,8 @@
     socket.on('online', (users) => {
       sessionStorage.setItem('users', JSON.stringify(users));
       const savedUsers = JSON.parse(sessionStorage.getItem('users'));
-      userAbout.innerHTML = '';
       const nickname = sessionStorage.getItem('nickname');
+      userAbout.innerHTML = '';
 
       const li = document.createElement('li');
       li.setAttribute('data-testid', 'online-user');
@@ -96,16 +96,6 @@
       newMessage.innerText = msg;
       messages.appendChild(newMessage);
     });
-
-    // socket.on('user', (nick) => {
-      // sessionStorage.setItem('nickname', nick.newNickname);
-      // const newNickname = sessionStorage.getItem('nickname');
-      // userNickname.innerText = newNickname;
-
-    //   const p = document.createElement('p');
-    //   p.innerText = nick.nickUpdateMessage;
-    //   document.querySelector('body').appendChild(p);
-    // });
   </script>
 </body>
 </html>
