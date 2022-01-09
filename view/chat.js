@@ -17,13 +17,18 @@ messageForm.addEventListener('submit', (e) => {
 nicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   name.innerText = nicknameInput.value;
+  sessionStorage.setItem('user', nicknameInput.value);
+  socket.emit('user', { nickname: nicknameInput.value, action: 'updateUser' });
   nicknameInput.value = '';
 });
 
 const userName = () => {
   socket.emit('nickname');
   socket.on('nickname', (id) => {
-    name.innerText = id.slice(-16);
+    const user = id.slice(-16);
+    name.innerText = user;
+    sessionStorage.setItem('user', user);
+    socket.emit('user', { user, action: 'newUser' });
   });
 };
 
@@ -35,4 +40,18 @@ socket.on('message', (message) => {
   li.setAttribute('data-testid', 'message');
   li.innerText = message;
   chat.appendChild(li);
+});
+
+socket.on('online', (nicknames) => {
+  const onlineUsers = document.querySelector('#online');
+  onlineUsers.innerText = '';
+
+  nicknames.forEach(({ nickname }) => {
+    if (nickname !== sessionStorage.getItem('user')) {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'online-user');
+      li.innerText = nickname;
+      onlineUsers.appendChild(li);
+    }
+  });
 });
