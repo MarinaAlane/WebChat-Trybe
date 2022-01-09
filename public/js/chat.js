@@ -106,7 +106,8 @@ socket.on('history', (messages) => {
 });
 
 window.onload = () => {
-  socket.emit('updateUsername', randomNickname.innerText);
+  const username = sessionStorage.getItem('username');
+  socket.emit('updateUsername', username);
 };
 
 // slack
