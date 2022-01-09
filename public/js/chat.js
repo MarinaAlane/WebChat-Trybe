@@ -3,9 +3,9 @@ const socket = window.io();
 const form = document.querySelector('#form');
 const inputName = document.querySelector('#nickname-box');
 const inputMsg = document.querySelector('#message-box');
-const btnSalvar = document.querySelector('#nickname-button');
-const ulMsg = document.querySelector('#message');
-const ulUsers = document.querySelector('#users');
+const btnSave = document.querySelector('#nickname-button');
+const ulMsg = document.querySelector('#zoeiras');
+const ulUsers = document.querySelector('#zoeiros');
 
 let nickname = '';
 
@@ -13,6 +13,7 @@ form.addEventListener('submit', (event) => {
   event.preventDefault();
   
   socket.emit('message', { nickname, chatMessage: inputMsg.value });
+  inputMsg.value = '';
 });
 
 function createUser(user) {
@@ -23,7 +24,7 @@ function createUser(user) {
   ulUsers.appendChild(li);
 }
 
-btnSalvar.addEventListener('click', () => {
+btnSave.addEventListener('click', () => {
   nickname = inputName.value;
 });
 

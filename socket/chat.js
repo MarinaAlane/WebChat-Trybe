@@ -9,7 +9,7 @@ const socketIo = (io) => {
 
     socket.emit('user', newId);
 
-    // socket.on('salvarName');
+    // socket.on('saveName');
 
     socket.on('message', ({ nickname, chatMessage }) => {
       const timestamp = moment().format('DD-MM-YYYY h:mm:ss A');
