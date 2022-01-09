@@ -8,6 +8,44 @@
 </head>
 <body>
   <h1>Chat</h1>
+  <main>
+    <h2>Usuários conectados</h2>
+    <ul id="users"></ul>
+    <h2>Mensagens</h2>
+    <ul id="message"></ul>
+  </main>
+  <form id="form" action="">
+    <input 
+      id="nickname-box"
+      placeholder="escreva seu nome"
+      type="text" 
+      name="nickname-box"
+      data-testid="nickname-box"
+    />
+    <button
+      type="button"
+      id="nickname-button"
+      data-testid="nickname-button"
+    >
+      SALVAR
+    </button>
+    <input 
+      type="text"
+      placeholder="escreva sua mensagem"
+      name="message-box" 
+      id="message-box"
+      data-testid="message-box"
+    >
+    <button 
+      type="submit"
+      name="send-button" 
+      id="send-button"
+      data-testid="send-button"
+    >
+      ENVIAR
+    </button>
+  </form>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/chat.js"></script>
 </body>
