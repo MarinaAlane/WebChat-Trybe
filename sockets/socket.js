@@ -6,4 +6,8 @@ module.exports = (io) => io.on('connection', (socket) => {
     console.log(`${date} - ${nickname}: ${chatMessage}`);
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
+
+  socket.on('nickname', () => {
+    socket.emit('nickname', socket.id);
+  });
 });
