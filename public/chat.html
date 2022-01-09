@@ -29,49 +29,4 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script type="module" src='./js/chat.js'></script>
-<!-- <script>
-  const socket = io();
-
-  const generateNickname = () => {
-    socket.emit('nickname');
-  }
-
-  const messageForm = document.querySelector('#message_form');
-
-  messageForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    console.log('Calling event listener');
-    const chatMessage = document.querySelector('#messageInput').value;
-    const nickname = 'userNick';
-    console.log('Right b4 emit');
-    socket.emit('message', { chatMessage, nickname });
-    console.log('Right after emit');
-    return false;
-  });
-
-  const createMessage = (message) => {
-    console.log('Called createMessage', message);
-    const messagesUl = document.querySelector('#messages');
-    const li = document.createElement('li');
-    li.setAttribute('data-testid', 'message');
-    li.innerText = message;
-    messagesUl.appendChild(li);
-  };
-
-  const createUser = (userNick) => {
-  console.log('Called createUser', userNick);
-  const UserList = document.querySelector('#online-users');
-  const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
-  li.innerText = userNick;
-  UserList.appendChild(li);
-};
-
-  socket.on('clientMessage', (message) => createMessage(message));
-  socket.on('nickname', (userNick) => createUser(userNick));
-
-  window.onload = () => {
-    generateNickname()
-  };
-</script> -->
 </html>

@@ -11,7 +11,7 @@ module.exports = (io) => {
     socket.on('message', ({ chatMessage, nickname }) => {
       const currentDate = getCurrentDate();
       console.log(`to front-end-> ${currentDate} - ${nickname}: ${chatMessage}`);
-      io.emit('clientMessage', `${currentDate} - ${nickname}: ${chatMessage}`);
+      io.emit('message', `${currentDate} - ${nickname}: ${chatMessage}`);
     });
   });
 };
