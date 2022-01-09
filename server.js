@@ -12,6 +12,7 @@ const io = require('socket.io')(http, {
 });
 
 const model = require('./models/messages');
+const controller = require('./controller/message');
 
 const user = {};
 // Sempre que um cliente se conectar ao servidor executa essa função
@@ -27,11 +28,15 @@ io.on('connection', async (socket) => {
     user[socket.id] = nickname;
     io.emit('loadUsers', Object.values(user));
   });
+  const historyc = await controller.getAll();
+    historyc.forEach((msg) => {
+      socket.emit('messageLoad', `${data} - ${msg.nickname}: ${msg.chatMessage}`);
+    });
   // console.log(`Usuário conectado. ID: ${socket.id} `);
 });
 
 app.use(express.static(`${__dirname}/public`));
-  
+
 app.get('/', (_req, res) => {
   res.sendFile(`${__dirname}/public/index.html`);
 });
