@@ -48,7 +48,3 @@ const setUserList = (userList) => {
 socket.on('message', createnewMessage);
 socket.on('newUser', createUser);
 socket.on('usersOnline', setUserList);
-
-socket.on('message', (msg) => {
-   console.log(msg);
-});

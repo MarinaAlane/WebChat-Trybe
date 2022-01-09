@@ -16,7 +16,7 @@ const newMsg = (socket, io) => {
   });
 };
 
-const newNickname = (socket, io) => {
+const setNewNickname = (socket, io) => {
   socket.on('saveNickname', (newNick) => {
     const userIndex = usersOnline.findIndex((user) => user.id === socket.id);
     usersOnline[userIndex].nickname = newNick;
@@ -34,7 +34,7 @@ module.exports = (io) => {
   io.on('connection', (socket) => {
     newMsg(socket, io);
     createUser(socket);
-    newNickname(socket, io);
+    setNewNickname(socket, io);
     updateUsersOnline(socket, io);
   });
 };
