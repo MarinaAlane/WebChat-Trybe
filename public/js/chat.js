@@ -110,6 +110,13 @@ socket.on('removeUser', (nickname) => {
   });
 });
 
+socket.on('messageHistory', (history) => {
+  history.forEach((item) => {
+    const message = `${item.timestamp} - ${item.nickname}: ${item.message}`;
+    createMessage(message);
+  });
+});
+
 window.onload = () => {
   generateNickname();
 };
