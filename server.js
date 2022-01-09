@@ -7,6 +7,8 @@ const path = require('path');
 const app = express();
 const http = require('http').createServer(app);
 
+let users = [];
+
 app.use(express.json());
 
 app.set('view engine', 'ejs');
@@ -19,13 +21,33 @@ const io = require('socket.io')(http, {
   },
 });
 
+io.on('connection', (socket) => {
+  const randomNickname = randomString.generate(16);
+  users.push({ socketId: socket.id, nickname: randomNickname });
+  io.emit('users', users);
+
+  socket.on('disconnect', () => {
+    users = users.filter((user) => user.socketId !== socket.id);
+    io.emit('users', users);
+  });
+
+  socket.on('updateUser', (message) => {
+    users = users.map((user) => {
+      if (user.socketId === socket.id) {
+        return { socketId: user.socketId, nickname: message };
+      }
+      return user;
+    });
+    io.emit('users', users);
+  });
+});
+
 require('./sockets/chat')(io);
 
 app.use(express.static(`${__dirname}/public`));
 
 app.get('/', (req, res) => {
-  const randomNickname = randomString.generate(16);
-  res.status(200).render('chat.ejs', { randomNickname });
+  res.status(200).render('chat.ejs');
 });
 
 http.listen(3000, () => {
