@@ -1,6 +1,6 @@
 const moment = require('moment');
 const Model = require('../models/chatModel');
-// Funções gerais
+// Funções gerais 
 
 const allUsers = {};
 
