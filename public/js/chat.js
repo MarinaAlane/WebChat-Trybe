@@ -64,3 +64,4 @@ socket.on('loadUsers', () => {
 });
 
 socket.on('message', (newMessage) => createMessage(newMessage));
+socket.on('messageLoad', (newMessage) => createMessage(newMessage)); 
