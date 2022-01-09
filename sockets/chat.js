@@ -1,4 +1,5 @@
 const onlineList = [];
+const modelChat = require('../models/modelChat');
 
 const newUser = (socket, io) => {
   socket.on('new-user', (user) => {
@@ -27,25 +28,34 @@ const offlineUser = (socket, io) => {
   });
 };
 
-const chat = (io) => {
+const messageVal = (socket, io) => {
+  socket.on('message', async (message) => {
+    const dateMessage = new Date();
+    const timeMessage = dateMessage.toLocaleTimeString();
+    const formattedDateMessage = dateMessage.toLocaleDateString().replaceAll('/', '-');
+    const formattedMessage = `${formattedDateMessage} ${timeMessage}
+    -${message.nickname}: ${message.chatMessage}`;
+
+    await modelChat.insertMessage(
+      { nickname: message.nickname,
+        message: message.chatMessage,
+        timestamp: `${formattedDateMessage} ${timeMessage}` },
+    );
+    io.emit('message', formattedMessage);
+    console.log(dateMessage, timeMessage, formattedDateMessage, formattedMessage);
+  });
+};
+
+const chat = async (io) => {
   io.on('connection', (socket) => {
     newUser(socket, io);
     editUser(socket, io);
 
     console.log(`Um usuário conectou em ${socket.id}`); 
-    
+
     offlineUser(socket, io);
 
-    socket.on('message', (message) => {
-      const dateMessage = new Date();
-      const timeMessage = dateMessage.toLocaleTimeString();
-      const formattedDateMessage = dateMessage.toLocaleDateString().replaceAll('/', '-');
-      const formattedMessage = `${formattedDateMessage} ${timeMessage}
-      -${message.nickname}: ${message.chatMessage}`;
-
-      io.emit('message', formattedMessage);
-      console.log(dateMessage, timeMessage, formattedDateMessage, formattedMessage);
-    });
+    messageVal(socket, io);
   });
 };
 

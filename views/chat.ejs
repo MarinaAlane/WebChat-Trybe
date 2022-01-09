@@ -17,7 +17,11 @@
 
   <div>
     <h3>Mensagens</h3>
-    <ul id="messages"></ul>
+    <ul id="messages">
+      <% messages.forEach(({nickname, message, timestamp}) => { %>
+        <li data-testid="message"><%= `${timestamp} - ${nickname}: ${message}` %></li>
+      <%})%>
+    </ul>
   </div>
 
   <form id="nickname-container">
@@ -70,7 +74,7 @@
       const messages = document.getElementById('messages');
       const li = document.createElement('li');
       li.setAttribute('data-testid', 'message');
-      li.textContent = message;
+      li.innerText = message;
       messages.appendChild(li);
     });
 
