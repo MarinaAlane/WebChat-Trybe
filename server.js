@@ -1,60 +1,32 @@
-// Faça seu código aqui
 const express = require('express');
-const moment = require('moment');
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-
-const http = require('http').createServer(app);
-
-moment.locale();
-const port = 3000;
-app.set('view engine', 'ejs');
-app.set('views', './views');
-
-app.use(express.static(`${__dirname}/public`));
-
-const clients = [];
-
-const idFormater = (id) => id.slice(0, 16);
-
-const io = require('socket.io')(http, {
+const PORT = process.env.PORT || 3000;
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
   cors: {
-    origi: 'http://localhost:3000',
+    origin: `http://localhost:${PORT}`,
     methods: ['GET', 'POST'],
   },
 });
 
-const createMessage = (chatMessage, nickname) => {
-  const data = moment().format('DD-MM-YYYY hh:mm:ss A');
-  return `${data} - ${nickname}: ${chatMessage}`;
-};
+const webchat = require('./sockets/chat');
 
-io.on('connection', (socket) => {
-  const id = idFormater(socket.id);
-  const client = { id, nickname: '' };
-  io.emit('user', id);
+webchat(io);
 
-  clients.push(client);
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const idFormated = idFormater(nickname);
-    const message = createMessage(chatMessage, idFormated);
+app.use(cors());
+app.use(express.static(path.join(__dirname, '/public')));
+app.set('views', './views');
+app.set('view engine', 'ejs');
 
-    io.emit('message', message);
-  });
-
-  socket.on('nickname', ({ nickname, id: clientId }) => {
-    const idFormated = idFormater(clientId);
-    const clientIndex = clients.findIndex((c) => c.id === idFormated);
-
-    clients.splice(clientIndex, 1);
-
-    clients.push({ id: idFormated, nickname });
-    io.emit('nickname', { id: idFormated, nickname });
-  });
+// Responsável por renderizar tudo
+app.get('/', (_req, res) => {
+  res.render('index');
 });
 
-app.get('/', (_req, res) => res.render('index', { clients }));
-
-http.listen(port, () => console.log(`Tá on na porta ${port} !!`));  
+server.listen(PORT, () => console.log(`Tá on na porta ${PORT} !!`)); 
 
 // Ref: meu antigo projeto: https://github.com/tryber/sd-010-a-project-webchat/pull/89/files

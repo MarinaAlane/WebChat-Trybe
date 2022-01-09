@@ -1,49 +1,66 @@
-const socket = window.io();
+const client = window.io();
 
-const sendBtn = document.querySelector('#send-button');
-const nicknameBtn = document.querySelector('#nickname-button');
-let nick;
+// Eventos JS
+const inputNick = document.querySelector('#nickname');
+const btnNickName = document.querySelector('#nickname-button');
+const listUsers = document.querySelector('#content-list');
+const listMessages = document.querySelector('#content-messages');
+const inputMessage = document.querySelector('#message');
+const btnSend = document.querySelector('#send-button');
 
-socket.on('connect', () => {
-  nick = socket.id;
-});
-
-sendBtn.addEventListener('click', () => {
-  const input = document.querySelector('#message-input');
-  socket.emit('message', { chatMessage: input.value, nickname: nick });
-  input.value = '';
-  return false;
-});
-
-nicknameBtn.addEventListener('click', () => {
-  const input = document.querySelector('#nickname-input');
-  socket.emit('nickname', { nickname: input.value, id: socket.id });
-  input.value = '';
-  return false;
-});
-const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages');
+const createUsers = (user) => {
   const li = document.createElement('li');
-  li.innerText = message;
-  li.setAttribute('data-testid', 'message');
-  messagesUl.appendChild(li);
+  li.setAttribute('data-testid', 'online-user');
+  li.innerHTML = user;
+  return li;
 };
 
-socket.on('message', (message) => createMessage(message));
+const createMessages = (message) => {
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
+  li.innerHTML = message;
+  return li;
+};
 
-socket.on('nickname', ({ id, nickname }) => {
-  const updateNickname = document.querySelector(`#${id}`);
-  updateNickname.innerText = nickname;
-  nick = nickname;
+let nickname = '';
+
+btnSend.addEventListener('click', (ev) => {
+  ev.preventDefault();
+  if (inputMessage.value) {
+    const nick = nickname || client.id.substring(0, 16);
+    client.emit('message', { chatMessage: inputMessage.value, nickname: nick });
+    inputMessage.value = '';
+  }
 });
 
-socket.on('user', (id) => {
-  const users = document.querySelector('#online-users');
-  const li = document.createElement('li');
-  li.innerText = id;
-  li.setAttribute('data-testid', 'online-user');
-  li.setAttribute('id', id);
-  users.appendChild(li);
-});  
+btnNickName.addEventListener('click', (ev) => {
+  ev.preventDefault();
+  if (inputNick.value) {
+    nickname = inputNick.value;
+    client.emit('nickname', nickname);
+    inputNick.value = '';
+  }
+});
 
-// Ref: meu antigo projeto: https://github.com/tryber/sd-010-a-project-webchat/pull/89/files
+client.on('message', (data) => {
+  listMessages.append(createMessages(data));
+});
+
+client.on('allUsers', (data) => {
+  listUsers.innerHTML = '';
+  if (!nickname) nickname = data[data.length - 1];
+
+  listUsers.appendChild(createUsers(nickname));
+  const users = data.filter((user) => user !== nickname);
+  users.forEach((user) => listUsers.appendChild(createUsers(user)));
+});
+
+client.on('allMessages', (data) => {
+  data.forEach((dataMessage) => {
+    const { message, nickname: nick, timestamp } = dataMessage;
+    const msgFormatted = `${timestamp} - ${nick}: ${message}`;
+    listMessages.appendChild(createMessages(msgFormatted));
+  });
+});
+
+// Ref: meu antigo projeto: https://github.com/tryber/sd-010-a-project-webchat/pull/89/files e do colega Adelino Jr

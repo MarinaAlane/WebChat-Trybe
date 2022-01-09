@@ -1,28 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>webchat</title>
-  <script src="/socket.io/socket.io.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="socket.io/socket.io.js"></script>
+  <title>Trybe - Webchat</title>
 </head>
 <body>
-  <section>Usuários online:
-    <ul id="online-users">
-      <% clients.forEach(({ id, nickname }) => { %>
-        <li id="<%= id %>" data-testid="online-user"><%= nickname || id %></li>
-      <% }) %>
-    </ul>
-    <input type="text" id="nickname-input" data-testid="nickname-box">
-    <button id='nickname-button' data-testid="nickname-button">Mudar</button>
-  </section>
-  <section>Mensagens
-    <ul id='messages'></ul>
-    <input type="text" id="message-input" data-testid="message-box" >
-    <button id='send-button' data-testid="send-button">Enviar</button>
-  </section>
+    <header>
+      <h1>Trybe - Webchat</h1>
+    </header>
+          <input
+            type="text"
+            data-testid="nickname-box"
+            id="nickname"
+            placeholder="Seu nome"
+          />
+          <button data-testid="nickname-button" id="nickname-button">
+            Salvar
+          </button>
+
+        <h2>Usuários conectados</h2>
+        <ul id="content-list"></ul>
+
+        <h2>Mensagens</h2>
+        <ul id="content-messages"></ul>
+      
+      <input
+        type="text"
+        data-testid="message-box"
+        id="message"
+        placeholder="Messagem"
+      />
+      <button
+        data-testid="send-button"
+        id="send-button"
+      >
+        Enviar
+      </button>
+
+
   <script src="/script.js"></script>
 </body>
-</html> 
+</html>
 
 <!-- Ref: meu antigo projeto: https://github.com/tryber/sd-010-a-project-webchat/pull/89/files -->
-<!-- https://www.treinaweb.com.br/blog/utilizando-template-engine-ejs-com-node-js -->  
+<!-- https://www.treinaweb.com.br/blog/utilizando-template-engine-ejs-com-node-js -->
+<!-- só html é MUITO mais legível -->
