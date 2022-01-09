@@ -11,24 +11,31 @@ const generateUserId = (socket) => {
   return userId;
 };
 
-const renderMessageHistory = () => {
+const renderMessageHistory = async (socket) => {
+  // [x] - Criar no model o evento das messages;
+  const historyMessages = await ModelMessage.getAllMessages();
 
+  // [x] - Receber esse evento no front;
+  socket.emit('renderMessageHistory', historyMessages
+    .map(({ message, nickname, timestamp }) => `${timestamp} - ${nickname}: ${message}`));
 };
 
-module.exports = (io) => io.on('connection', (socket) => {
-  let userNickname = generateUserId(socket);
-
-  // [ ] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
-  renderMessageHistory(io, socket);
-
+const onConnect = async (io, socket) => {
+  const userNickname = generateUserId(socket);
   // [X] 1º - Remover o envio do nickName e fazer um evento próprio;
   io.emit('userConnected', usersOnline);
   socket.emit('setUserId', { userNickname, usersOnline });
+  renderMessageHistory(socket);
+};
 
-  // [ ] - Após emitir a mensagem é preciso salvar ela no DB com formato específico;  
+module.exports = (io) => io.on('connection', (socket) => {
+  // [X] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
+  onConnect(io, socket);
+
+  // [X] - Após emitir a mensagem é preciso salvar ela no DB com formato específico;  
   socket.on('message', async ({ nickname, chatMessage }) => {
     io.emit('message', userMessageFormatter(nickname, chatMessage));
-    await ModelMessage.createMessage({ message: chatMessage, nickname, now  });
+    await ModelMessage.createMessage({ message: chatMessage, nickname, timestamp: now });
   });
 
   socket.on('changeNickname', (name) => {
