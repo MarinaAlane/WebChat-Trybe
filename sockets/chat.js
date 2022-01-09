@@ -26,5 +26,4 @@ module.exports = (io) =>
 
   io.emit('history', history
     .map(({ messages, ...prev }) => message({ chatMessage: messages, ...prev })));
-
 });
