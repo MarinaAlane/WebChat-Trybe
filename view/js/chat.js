@@ -18,57 +18,52 @@ const names = [
   'EEEEEEEEEEEEEEEE',
   'FFFFFFFFFFFFFFFF',
   'GGGGGGGGGGGGGGGG',
-  'HHHHHHHHHHHHHHHH'
+  'HHHHHHHHHHHHHHHH',
 ];
 
 const random = randomNumber(0, names.length - 1);
 let currentNickname = names[random];
 
-socket.on("connect", () => {
-  console.log('connect', socket.id); 
-  console.log('currentNickname: ', socket.id, currentNickname);
-  
-  // emitindo novo usuario
-  socket.emit('newUserConnected', currentNickname);
+const createMessage = (chatMessage) => {
+  const messagesUl = document.querySelector('#messages');
+  const li = document.createElement('li');
+  li.dataset.testid = 'message';
+  li.innerText = chatMessage;
+  messagesUl.appendChild(li);
+};
 
-  const createMessage = (chatMessage) => {
-    const messagesUl = document.querySelector('#messages');
+function handleAllMessages(allMessages) {
+  allMessages.forEach((message) => {
+    createMessage(message);
+  });
+}
+
+function handleAllUsers(usersList) {
+  onlineUserUl.innerHTML = '';
+  const lastUser = usersList[usersList.length - 1];
+  if (lastUser === currentNickname) {
+    usersList.pop();
+    usersList.unshift(currentNickname);
+  }
+  usersList.forEach((user) => {
     const li = document.createElement('li');
-    li.dataset.testid = 'message';
-    li.innerText = chatMessage;
-    messagesUl.appendChild(li);
-  };
+    li.dataset.testid = 'online-user';
+    li.innerText = user;
+    onlineUserUl.appendChild(li);
+  });
+}
 
+socket.on('connect', () => {
+  socket.emit('newUserConnected', currentNickname);
   socket.on('message', (chatMessage) => createMessage(chatMessage));
-
-  socket.on('allMessages', (allMessages) => {
-    allMessages.forEach((message) => {
-      createMessage(message);
-    });
-  });
-
+  socket.on('allMessages', (allMessages) => handleAllMessages(allMessages));
   socket.on('allUsers', (usersList) => {
-    // limpa elemento parent
-    onlineUserUl.innerHTML = '';
-    const lastUser = usersList[usersList.length - 1];
-    if (lastUser === currentNickname) {
-      usersList.pop();
-      usersList.unshift(currentNickname);
-    }
-    // adiciona todos childs (li)
-    usersList.forEach((user) => {
-      const li = document.createElement('li');
-      li.dataset.testid = 'online-user';
-      li.innerText = user;
-      onlineUserUl.appendChild(li);
-    });
+    handleAllUsers(usersList);
   });
-
   btnSaveNickname.addEventListener('click', () => {
     currentNickname = nicknameInp.value;
     socket.emit('newNickname', currentNickname);
   });
-
   btnSendMessage.addEventListener('click', () => {
     socket.emit('message', {
       chatMessage: inputMessage.value,
@@ -77,4 +72,3 @@ socket.on("connect", () => {
     inputMessage.value = '';
   });
 });
-
