@@ -1,8 +1,9 @@
 const moment = require('moment');
+const dbModel = require('./models/dbModel');
 
 const online = {};
 
-module.exports = (io) => io.on('connection', (socket) => {
+module.exports = (io) => io.on('connection', async (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 
   const { id } = socket;
@@ -11,10 +12,13 @@ module.exports = (io) => io.on('connection', (socket) => {
   online[socket.id] = nicks;
   io.emit('sendNickname', online[socket.id]);
 
-  const dateFormat = moment().format('DD-MM-yyyy hh:mm:ss A');
+  const allMessages = await dbModel.listMessage();
+  io.emit('allMessages', allMessages);
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    io.emit('message', `${dateFormat} - ${nickname}: ${chatMessage}`);
+    const timeStamp = moment().format('DD-MM-yyyy hh:mm:ss A');
+    dbModel.createMessage({ message: chatMessage, nickname, timeStamp });
+    io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
   });
   
   socket.on('sendNickname', (nick) => {
