@@ -41,12 +41,16 @@
           messagesUl.appendChild(li);
         };
 
-        socket.on('sendNick', (nickname) => {
+        const createNick = (nickname) => {
           const nickUl = document.querySelector('#nick');
           const li = document.createElement('li');
-          li.textContent = nickname;
+          li.innerText = nickname;
           li.setAttribute('data-testid', 'online-user');
           nickUl.appendChild(li);
+        };
+
+        socket.on('sendNickName', (nickname) => {
+          createNick(nickname);
         });
         
         // ajuda do Lima, Gabi e Ana
@@ -61,17 +65,27 @@
       });
 
       socket.on('newNickName', (onLineUsers) => {
+        document.querySelector('#firstNick').innerText = onLineUsers[socket.id];
         const usersUl = document.getElementById('nick');
         while (usersUl.firstChild) {
           usersUl.removeChild(usersUl.firstChild);
         }
+        createNick(onLineUsers[socket.id]);
+
         for (let newUser in onLineUsers) {
-          console.log(onLineUsers);
-          const li = document.createElement('li');
+          if (newUser !== socket.id) {
+            const li = document.createElement('li');
           li.innerText = onLineUsers[newUser];
           li.setAttribute('data-testid', 'online-user');
           usersUl.appendChild(li);
+          }
         }
+      });
+        
+      socket.on('allMessages', (messages) => {
+        messages.forEach(({ message: chatMessage, nickname, timeStamp }) => {
+          createMessage(`${timeStamp} - ${nickname}: ${chatMessage}`)
+        });
       });
 
         socket.on('message', (message) => createMessage(message));

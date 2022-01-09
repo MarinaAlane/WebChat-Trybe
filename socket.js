@@ -1,21 +1,27 @@
 const moment = require('moment');
+const chatModel = require('./models/chat');
 
 const onLineUsers = {};
 
-module.exports = (io) => io.on('connection', (socket) => {
+module.exports = (io) => io.on('connection', async (socket) => {
     console.log(`Usuário conectado. ID: ${socket.id} `);
 
-    const { id } = socket;
-    const nickId = id.substring(0, 16);
+    onLineUsers[socket.id] = socket.id.substring(0, 16);
+    io.emit('newNickName', onLineUsers);
 
-    onLineUsers[socket.id] = nickId;
-    io.emit('sendNick', onLineUsers[socket.id]);
+    const allMessages = await chatModel.getAllMessages();
+    io.emit('allMessages', allMessages);
     
-    const currentDate = moment().format('DD-MM-yyyy hh:mm:ss A');
-
     socket.on('message', ({ chatMessage, nickname }) => {
-        io.emit('message', ` ${currentDate} - ${nickname}: ${chatMessage}`); 
+        const timeStamp = moment().format('DD-MM-yyyy hh:mm:ss A');
+        chatModel.createMessage({ message: chatMessage, nickname, timeStamp });
+        io.emit('message', ` ${timeStamp} - ${nickname}: ${chatMessage}`); 
     }); 
+
+    socket.on('disconnect', () => {
+        delete onLineUsers[socket.id];
+        io.emit('newNickName', onLineUsers);
+    });
 
     socket.on('sendNickName', (nick) => {
         onLineUsers[socket.id] = nick;
