@@ -8,13 +8,13 @@ body {
 }
 
 .messages {
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid rgb black;
   display: flex;
   width: 70%;
 }
 
 .users {
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid rgb black;
   display: flex;
   flex-direction: column;
   width: 30%;
