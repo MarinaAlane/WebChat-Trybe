@@ -4,6 +4,7 @@
     <title>Socket.IO - trybe</title>
   </head>
   <body>
+    <p id="meuNick"></p>
 
     <ul id="nickname"></ul>
     <form 
@@ -37,11 +38,12 @@
     <script>const socket = window.io();
 
       const form = document.querySelector('#form-message');
-      const inputMessage = document.querySelector('#messageInput');
+      const inputMessage = document.querySelector('#messageInput');      
       
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        socket.emit('message', { nickname: socket.id, chatMessage: inputMessage.value });
+        const meuNick = document.querySelector('#meuNick').innerText;
+        socket.emit('message', { nickname: meuNick, chatMessage: inputMessage.value });
         inputMessage.value = '';
       });
       
@@ -67,6 +69,7 @@
         btnNick.addEventListener('click', (e) => {
           e.preventDefault();
           const nick = formNick.value
+          document.querySelector('#meuNick').innerText = nick;
           socket.emit('sendNickname', nick);
         });
 

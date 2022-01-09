@@ -14,11 +14,12 @@ module.exports = (io) => io.on('connection', (socket) => {
   const dateFormat = moment().format('DD-MM-yyyy hh:mm:ss A');
 
   socket.on('message', ({ chatMessage, nickname }) => {
-    io.emit('message', `${dateFormat} - ${online[nickname]}:${chatMessage}`);
+    io.emit('message', `${dateFormat} - ${nickname}: ${chatMessage}`);
   });
   
   socket.on('sendNickname', (nick) => {
     online[socket.id] = nick;
+    console.log(nick);
     io.emit('newNickname', online);
   });
 });
