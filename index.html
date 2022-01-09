@@ -105,9 +105,7 @@
           socket.emit('onlineUserOn', userOn);
 
         socket.on('onlineUserOn', (msg) => {
-          const { listUsers } = msg;
 
-            const { user } = listUsers;
             while(onlineUser.hasChildNodes()){
 
             onlineUser.removeChild(onlineUser.firstChild);
@@ -117,17 +115,17 @@
 
           const newMessageLi = document.createElement('li');
             newMessageLi.setAttribute('data-testid', 'online-user');
-            newMessageLi.setAttribute('id', user);
+            newMessageLi.setAttribute('id', userOn);
             newMessageLi.textContent = userOnLi;
             onlineUser.appendChild(newMessageLi);
             
-          listUsers.forEach(element => {
-            if(element.user != userOnLi) {
+          msg.forEach(element => {
+            if(element != userOnLi) {
             const newMessage = document.createElement('li');
-            console.log('Elemento do array', element.user);
+            console.log('Elemento do array', element);
             newMessage.setAttribute('data-testid', 'online-user');
-            newMessage.setAttribute('id', element.user);
-            newMessage.textContent = element.user;
+            newMessage.setAttribute('id', element);
+            newMessage.textContent = element;
             onlineUser.appendChild(newMessage);
           }
         });

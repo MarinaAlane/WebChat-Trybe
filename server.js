@@ -13,15 +13,14 @@ app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/index.html`);
 });
 
-const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
-
-const listUsers = [];
+let listUsers = [];
 
 io.on('connection', async (socket) => {
     const allMessages = await findMessages();
     socket.emit('dbMessages', allMessages);
 
     socket.on('message', async (msg) => {
+        const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
         const { nickname, chatMessage } = msg;
         const saveMessages = await saveChat(nickname, chatMessage, timestamp);
         io.emit('message', `${timestamp} ${nickname}: ${chatMessage}`);
@@ -29,7 +28,7 @@ io.on('connection', async (socket) => {
     });
     socket.on('onlineUserOn', (msg) => {
         listUsers.push(msg);
-        io.emit('onlineUserOn', { listUsers });
+        io.emit('onlineUserOn', listUsers);
     });
 });
 
@@ -42,15 +41,13 @@ io.on('connection', async (socket) => {
     });
 
     socket.on('disconnect', () => {
+            listUsers = [];
             socket.broadcast.emit('disconectou');
     });
 
     socket.on('desconectado', (msg) => {
-        // const indice = listUsers.indexOf(msg);
-        // console.log(indice);
-        // listUsers.splice(indice, 1);
-        // console.log('modificado');
-        console.log('USUÁRIO QUE DESCONECTOU', msg);
+        listUsers.push(msg);
+        io.emit('onlineUserOn', listUsers);
     });
 });
 
