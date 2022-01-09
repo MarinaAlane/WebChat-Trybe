@@ -12,7 +12,7 @@ const screen = document.querySelector('#screenMessage');
 
 const changeUserName = (newUserName) => {
   nickname = newUserName;
-  userNameElement.innerText = newUserName;
+  userNameElement.innerText = nickname;
 };
 
 nicknameForm.addEventListener('submit', (event) => {
@@ -44,7 +44,6 @@ const createMessage = (message) => {
 
 const renderOnlineUsers = (users) => {
   onlineUsersScreen.innerHTML = '';
-  console.log('USERS', users);
   users.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user;
@@ -56,8 +55,6 @@ const renderOnlineUsers = (users) => {
 const orderOnlineUsersList = (usersOnline) => {
   const onlineUsers = [];
   const lastUserInArray = usersOnline[usersOnline.length - 1];
-  console.log('usersOnline', usersOnline, lastUserInArray);
-
   // [X] 4º - Para o cliente que acabou de se conectar, seu nickname deve ser colocado no começo da lista;
   onlineUsers.push(lastUserInArray);
 
@@ -73,12 +70,13 @@ socket.on('userConnected', (usersOnline) => {
   renderOnlineUsers(usersOnline);
 });
 
-socket.on('setUserId', ({ userNickname, usersOnline }) => {
+socket.on('setUserId', ({ userId, usersOnline }) => {
   /*
     [X] 3º - No changeUserName re-renderizar os users na ordem:
   */
-//  nickname = userNickname;
-changeUserName(userNickname);
+ console.log(userId, usersOnline);
+  //  nickname = userNickname;
+changeUserName(userId);
 orderOnlineUsersList(usersOnline);
 });
 
@@ -93,6 +91,6 @@ socket.on('renderMessageHistory', (messageHistory) => {
 socket.on('userDisconnected', (usersOnline) => renderOnlineUsers(usersOnline));
 
   // Essa eu n lembrava:
-  window.onbeforeunload = (_e) => {
+  window.onbeforeunload = (_event) => {
     socket.disconnect();
   };

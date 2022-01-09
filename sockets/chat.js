@@ -20,16 +20,16 @@ const renderMessageHistory = async (socket) => {
     .map(({ message, nickname, timestamp }) => `${timestamp} - ${nickname}: ${message}`));
 };
 
-const onConnect = async (io, socket, userId) => {
+const onConnect = (io, socket, userId) => {
   // userNickname = generateUserId(socket);
   // [X] 1º - Remover o envio do nickName e fazer um evento próprio;
   io.emit('userConnected', usersOnline);
+  console.log('userId', userId);
   socket.emit('setUserId', { userId, usersOnline });
   console.log('connect', userId, usersOnline);
-  await renderMessageHistory(socket);
 };
 
-module.exports = (io) => io.on('connection', (socket) => {
+module.exports = (io) => io.on('connection', async (socket) => {
   // [X] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
   let userId = socket.id.slice(0, 16);
   usersOnline.push(userId);
@@ -46,6 +46,8 @@ module.exports = (io) => io.on('connection', (socket) => {
     userId = name; io.emit('changeUsersName', usersOnline);
     socket.emit('setUserId', { userId, usersOnline });
   });
+
+  await renderMessageHistory(socket);
 
   socket.on('disconnect', () => {
     usersOnline = usersOnline.filter((user) => userId !== user);
