@@ -84,7 +84,7 @@
   
   <script>
     const socket = io();
-
+    const dtId = "data-testid";
     const form = document.querySelector('#form');
     const input = document.querySelector('#input');
     const nickForm = document.querySelector('#form-2');
@@ -126,7 +126,7 @@
 
       (nickList).forEach(item => {
         const newUserLi = document.createElement('li');
-        newUserLi.setAttribute("data-testid", "online-user");
+        newUserLi.setAttribute(dtId, "online-user");
         newUserLi.textContent = item;
         
         if (item === newNick) {
@@ -139,13 +139,25 @@
       window.scrollTo(0, document.body.scrollHeight);
     });
 
+    
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
-      newMessage.setAttribute("data-testid", "message");
+      newMessage.setAttribute(dtId, "message");
       newMessage.textContent = msg;
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
+
+    const msgsDb = (msgs) => {
+      msgs.forEach(({ timestamp, nickname, chatMessage }) => {
+        const li = document.createElement('li');
+        li.innerText = `${timestamp} - ${nickname}: ${chatMessage}`;
+        li.setAttribute(dtId, "message");
+        messages.appendChild(li);
+      });
+    };
+
+    socket.on('dbMsgs', (msgs) => msgsDb(msgs));
   </script>
 </body>
 </html>

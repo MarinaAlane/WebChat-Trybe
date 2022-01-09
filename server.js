@@ -3,6 +3,7 @@ const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
 const { format } = require('date-fns');
+const { sendMsgDb, getMsgDb } = require('./models/Webchat');
 
 const app = express();
 const server = http.createServer(app);
@@ -14,37 +15,31 @@ app.get('/', (req, res) => {
 });
 
 const users = {};
-// eslint-disable-next-line max-lines-per-function
-io.on('connection', (socket) => {
+
+io.on('connection', async (socket) => {
   const nick = socket.id.slice(1, 17);
-  console.log(`User ${nick} connected.`);
-  
   users[nick] = nick;
-  socket.emit('firstNick', nick);
-  io.emit('connection', users);
+  socket.emit('firstNick', nick); io.emit('connection', users);
 
   socket.on('nick', (newNick) => {
-    users[nick] = newNick;
-    console.log('{users}:', users);
-    io.emit('connection', users);
+    users[nick] = newNick; io.emit('connection', users);
   });
   
   socket.on('disconnect', () => {
-    console.log(`User ${nick} disconnected.`);
-    delete users[nick];
-    io.emit('connection', users);
+    delete users[nick]; io.emit('connection', users);
   });
 
-  socket.on('message', (msg) => {
-    const formattedDate = format(new Date(), 'dd-mm-yyyy hh:mm:ss');
-
-    if (msg.chatMessage) {
-      io
-        .emit('message', `${formattedDate} - ${msg.nickname}: ${msg.chatMessage}`);
-    } else {
-      io.emit('message', `${formattedDate} - ${msg.nickname}: ${msg.message}`);
-    }
+  socket.on('message', async (msg) => {
+    const { nickname } = msg;
+    const timestamp = format(new Date(), 'dd-mm-yyyy hh:mm:ss');
+    
+    io.emit('message', `${timestamp} - ${nickname}: ${msg.message || msg.chatMessage}`);
+    await sendMsgDb({ timestamp, nickname, chatMessage: msg.chatMessage || msg.message });
   });
+
+  const getMsgs = async () => {
+    const mensagens = await getMsgDb(); return mensagens; 
+  }; io.emit('dbMsgs', await getMsgs());
 });
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
