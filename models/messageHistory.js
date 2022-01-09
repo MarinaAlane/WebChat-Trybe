@@ -5,4 +5,8 @@ module.exports = {
     const db = await conn();
     return db.collection('messages').insertOne(msg);
   },
+  getAllMessages: async () => {
+    const db = await conn();
+    return db.collection('messages').find().toArray();
+  },
 };

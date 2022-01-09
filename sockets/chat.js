@@ -26,11 +26,12 @@ const onConnect = async (io, socket) => {
   io.emit('userConnected', usersOnline);
   socket.emit('setUserId', { userNickname, usersOnline });
   renderMessageHistory(socket);
+  return userNickname;
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
   // [X] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
-  onConnect(io, socket);
+  let userNickname = onConnect(io, socket);
 
   // [X] - Após emitir a mensagem é preciso salvar ela no DB com formato específico;  
   socket.on('message', async ({ nickname, chatMessage }) => {
