@@ -41,6 +41,17 @@
       usersOnline.appendChild(newUser);
     });
 
+    socket.on('historyMsg', (msgs) => {
+      msgs.map((msg) => {
+        const msgHistory = document.createElement('li');
+        let dataTestId = document.createAttribute('data-testid');
+        dataTestId.value = 'message';
+        msgHistory.setAttributeNode(dataTestId);
+        msgHistory.textContent = `${msg.timeStamp} - ${msg.nickname}: ${msg.chatMessage}`
+        messages.appendChild(msgHistory);
+      })
+    });
+
     formUser.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputUser.value) {
