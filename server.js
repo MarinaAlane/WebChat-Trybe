@@ -13,11 +13,21 @@ app.get('/', (_req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-io.on('connection', (socket) => {
-    console.log(`User ${socket.id} connected`);
+let onlineUsers = [];
 
-    socket.on('disconnect', () => {
-        console.log(`User ${socket.id} disconnected`);
+// Req. 04
+io.on('connection', (socket) => {
+    // console.log(`User ${socket.id} connected`);
+    socket.emit('userOnline', socket.id.slice(0, 16));
+    // console.log(onlineUsers);
+
+    // Req. 04
+    socket.on('nick', (userNickName) => {
+        onlineUsers = onlineUsers.filter((user) => user.id !== socket.id);
+        onlineUsers.push({ userNickName, id: socket.id });
+        // console.log(userNickName);
+        // console.log(onlineUsers);
+        io.emit('usersOnline', onlineUsers);
     });
 
     // Req 1: Back-end (server) receives information from the front-end (client), stores, organizes, generates a concatenated string and returns it to the front-end (client):
@@ -29,7 +39,17 @@ io.on('connection', (socket) => {
         // console.log(chatLine);
         io.emit('message', chatLine);
     });
-    socket.emit('user', socket.id.slice(0, 16));
+
+    // Req. 04
+    socket.on('disconnect', () => {
+        console.log(`User ${socket.id} disconnected`);
+        onlineUsers = onlineUsers.filter((user) => user.id !== socket.id);
+        // console.log(onlineUsers);
+        io.emit('usersOnline', onlineUsers);
+    });
 });
 
-server.listen(PORT, () => console.log(`Server conected on port ${PORT}!`));
+server.listen(PORT, () => {
+    console.log(`Server conected on port ${PORT}!`);
+    console.log(onlineUsers);
+});

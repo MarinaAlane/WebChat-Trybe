@@ -25,38 +25,61 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io('http://localhost:3000');
-        let userNickName
+        let socket = io('http://localhost:3000');
+        let userNickName = '';
 
-        const usersForm = document.getElementById('usersForm');
-        const nickname = document.getElementById('nickname');
-        const onlineUsers = document.getElementById('onlineUsers');
+        let usersForm = document.getElementById('usersForm');
+        let nickname = document.getElementById('nickname');
+        let onlineUsers = document.getElementById('onlineUsers');
 
-        const inputsForm = document.getElementById('inputsForm');
-        const msgField = document.getElementById('msgField');
-        const messagesList = document.getElementById('messagesList');
+        let inputsForm = document.getElementById('inputsForm');
+        let msgField = document.getElementById('msgField');
+        let messagesList = document.getElementById('messagesList');
 
+        // Req. 04
+        socket.on('userOnline', (userNick) => {
+            userNickName = userNick;
+            console.log(userNickName);
+            socket.emit('nick', userNick);
+        });
+
+        // Req. 02 e 04
+        socket.on('usersOnline', (usersOn) => {
+            // console.log(userId);
+            // userNickName = userId
+            // const newUserOn = document.createElement('p');
+            // newUserOn.textContent = userId;
+            // newUserOn.setAttribute('data-testid', 'online-user');
+            // onlineUsers.appendChild(newUserOn);
+            // window.scrollTo(0, document.body.scrollHeight);
+            // console.log(usersOn);
+            onlineUsers.innerHTML = '';
+            const
+                orderedUsers = usersOn.sort((a, b) => {
+                    if (a.id === socket.id) return -1;
+                    if (b.id === socket.id) return 1;
+                    return 0;
+                });
+
+                orderedUsers.forEach(({ userNickName }) => {
+                const newUserOn = document.createElement('p');
+                newUserOn.innerHTML = userNickName;
+                // console.log(newUserOn.innerHTML);
+                newUserOn.setAttribute('data-testid', 'online-user');
+                onlineUsers.appendChild(newUserOn);
+                window.scrollTo(0, document.body.scrollHeight);
+            })
+        });
 
         // Req. 02
         usersForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (nickname.value) {
-                userNickName = nickname.value
+                userNickName = nickname.value;
+                socket.emit('nick', userNickName);
                 nickname.value = '';
             }
         })
-
-        // Req. 02
-        socket.on('user', (userId) => {
-            // console.log(userId);
-            userNickName = userId
-            const newUser = document.createElement('p');
-            newUser.textContent = userId;
-            newUser.setAttribute('data-testid', 'online-user');
-            onlineUsers.appendChild(newUser);
-            window.scrollTo(0, document.body.scrollHeight);
-        });
-
 
         // Req 1: Front-end (Client) receives input information and send it to the back-end (Server):
         inputsForm.addEventListener('submit', (e) => {
