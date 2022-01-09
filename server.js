@@ -2,9 +2,6 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
-// const { chatRender } = require('./controller/chatControlle');
-// const moment = require('moment');
-// const { userInfo } = require('os');
 
 const app = express();
 const server = http.createServer(app);
