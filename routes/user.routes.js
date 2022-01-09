@@ -3,9 +3,5 @@ const userController = require('../controllers/userController');
 
 const router = express.Router();
 
-router.post('/', userController.newMessage);
-
-router.get('/', (req, res) => {
-  res.render('main');
-});
+router.get('/', userController.getHistory);
 module.exports = router;

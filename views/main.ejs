@@ -4,7 +4,8 @@
     <title>Socket.IO - trybe</title>
   </head>
   <body>
-    <h2 id="online-user" data-testid="online-user"></h2>
+    <ul id="users">
+    </ul>
     <input name="nickname" id="nickname" data-testid="nickname-box" />
     <button id="nickname-button" data-testid="nickname-button" type="button">
       Alterar Nome
@@ -19,7 +20,15 @@
     </button>
 
     <div>
-      <ul id="messages"></ul>
+      <ul id="messages">
+        <% if(messages) { %>
+          <% messages.forEach((message) => { %> 
+          <li data-testid="message">
+            <%= `${message.timeStamps} - ${message.nickname}: ${message.message}`%>
+          </li>
+        <%})%>
+        <% } %> 
+      </ul>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -27,32 +36,41 @@
     <script>
       const socket = io();
       //Fields
-      const onlineUser = document.getElementById('online-user');
+      const users = document.getElementById('users');
+      // const onlineUser = document.getElementById('online-user');
       const chatMessage = document.getElementById('chatMessage');
       const nickname = document.getElementById('nickname');
       // Buttons
       const nicknameButton = document.getElementById('nickname-button');
       const sendMessageButton = document.getElementById('send-button');
+
+      
       nicknameButton.addEventListener('click', (e) => {
         e.preventDefault();
         sessionStorage.setItem('nickname', nickname.value);
+        socket.emit('updateNickname', nickname.value);
       });
+      
       socket.on('connected', (id) => {
-        const sessionNickName = sessionStorage.getItem('nickname');
-        onlineUser.innerText = id;
-        if (!sessionNickName) {
-          nickname.value = id;
-        } else {
-          nickname.value = sessionNickName;
-        }
+        const sessionNickname = sessionStorage.getItem('nickname') || id;
+        // onlineUser.innerText = id;
+        socket.emit('updateNickname', sessionNickname)
       });
+
+      socket.on('updateUsersList', (userList) => {
+        users.textContent = '';
+        const userIndex = userList.findIndex(user => user.id === socket.id);
+        generateUserList(userList[userIndex].nickname);
+        userList.forEach((user, index) => index !== userIndex && generateUserList(user.nickname));
+      })
+      
+      
       sendMessageButton.addEventListener('click', (e) => {
         socket.emit('message', {
           nickname: nickname.value,
           chatMessage: chatMessage.value,
         });
         document.getElementById('chatMessage').value = '';
-        return false;
       });
 
       const createMessage = (message) => {
@@ -63,6 +81,13 @@
         messagesUl.appendChild(li);
       };
       socket.on('message', (message) => createMessage(message));
+
+      const generateUserList = (userData) => {
+        const user = document.createElement('li')
+        user.innerHTML = userData;
+        user.setAttribute('data-testid', 'online-user');
+        users.appendChild(user)
+      }
     </script>
   </body>
 </html>
