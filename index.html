@@ -47,7 +47,7 @@
       // req 01
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const newNick = document.querySelector('#newNick').innerText;
+        const newNick = document.getElementById('newNick').innerText;
         socket.emit('message', {
           nickname: newNick,
           chatMessage: inputMessage.value,
