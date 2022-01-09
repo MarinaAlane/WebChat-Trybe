@@ -16,7 +16,7 @@ socket.on('message', ({ nickname, chatMessage }) => {
 
 const settleNickName = (socket, io) => {
   socket.on('saveNick', (newNickName) => {
-      users.find((usr) => usr.id === socket.id).nickname = newNickName;
+      users.find((user) => user.id === socket.id).nickname = newNickName;
       io.emit('onlineUsers', users);
   });
 };
