@@ -28,7 +28,7 @@ const userName = () => {
     const user = id.slice(-16);
     name.innerText = user;
     sessionStorage.setItem('user', user);
-    socket.emit('user', { user, action: 'newUser' });
+    socket.emit('user', { nickname: user, action: 'newUser' });
   });
 };
 

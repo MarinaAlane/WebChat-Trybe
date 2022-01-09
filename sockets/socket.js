@@ -35,6 +35,6 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('nickname', () => {
-    socket.emit('nickname', socket.id);
+    socket.emit('nickname', id);
   });
 });
