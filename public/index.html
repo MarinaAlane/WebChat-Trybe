@@ -1,14 +1,44 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-  <head> 
-    <meta charset="UTF-8" /> 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
-    <title>Web Chat</title> 
-  </head> 
-  <body> 
-    <h1>Projeto Web Chat</h1> 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projeto Web Chat</title>
+  </head>
+  <body>
+    <section>
+      <h1>Usuários: </h1>
+      <ul id="users"></ul>
+    </section>
+    <div>
+      <form>
+        <input
+          type="text"
+          name="nickname-box"
+          id="nickname-box"
+          data-testid="nickname-box"
+        />
+        <button
+          type="button"
+          id="nickname-button"
+          data-testid="nickname-button"
+        >
+          Salvar
+        </button>
+      <h1>Mensagens: </h1>
+      <ul id="messages"></ul>
+        <input
+          type="text"
+          name="message-box"
+          id="message-box"
+          data-testid="message-box"
+          placeholder="Digite aqui sua mensagem"
+        />
+        <button type="button" data-testid="send-button">Enviar</button>
+      </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/chat.js"></script>
-  </body> 
-  </html> 
+  </body>
+</html>
