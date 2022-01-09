@@ -1,5 +1,4 @@
-const moment = require('moment');
-const messagesModels = require('../models/messages');
+const messagesModel = require('../models/messages');
 
 const online = [];
 
@@ -11,15 +10,17 @@ const createUser = (socket) => {
 };
 
 const newMessage = (socket, io) => {
-  const timestamp = moment().format('DD-MM-yyyy hh:mm a');
+  const { id } = socket;
+  const timestamp = new Date()
+        .toLocaleString('pt-BR').replaceAll('/', '-').replaceAll(',', '');
   socket.on('message', async ({ nickname, chatMessage }) => {
-    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
-    await messagesModels.createMessages(nickname, chatMessage, timestamp);
+    io.emit('message', `${timestamp} - ${!nickname ? id : nickname}: ${chatMessage}`);
+    await messagesModel.createMessages(nickname, chatMessage, timestamp);
   });
 };
 
 const getMessages = async (socket) => {
-  const messages = await messagesModels.getAllMessages();
+  const messages = await messagesModel.getAllMessages();
   socket.emit('allMessages', messages);
 };
 
