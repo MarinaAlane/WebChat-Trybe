@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <ul id="users"></ul>
+
+  <form action="" id="formNickname">
+    <input type="text" id="nicknameInput" data-testid="nickname-box" />
+    <button data-testid="nickname-button">Salvar NickName</button>
+  </form>
+
+  <ul id="messages"></ul>
+
+  <form action="" id="formMessages">
+    <input type="text" id="messageInput" data-testid="message-box" />
+    <button id="sendButton" data-testid="send-button">Enviar</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const form = document.querySelector('#formMessages');
+    const input = document.querySelector('#messageInput');
+    const messages = document.querySelector('#messages');
+    const inputName = document.querySelector('#nicknameInput');
+    const formName = document.querySelector('#formNickname');
+    const listUsers = document.querySelector('#users');
+
+    socket.on('logged', (user) => {
+
+      sessionStorage.setItem('nickname', user);
+      sessionStorage.setItem('id', user);
+
+      const newUser = document.createElement('li');
+      newUser.textContent = user;
+      newUser.setAttribute('data-testid', 'online-user');
+      listUsers.appendChild(newUser);
+    });
+
+    socket.on('clientLogged', (clients) => {
+      listUsers.innerHTML = '';
+
+      clients.forEach((client) => {
+        if (sessionStorage.getItem('nickname') === client.name) {
+          const newUser = document.createElement('li');
+          newUser.textContent = client.name;
+          newUser.setAttribute('data-testid', 'online-user');
+          listUsers.appendChild(newUser);
+        }
+      });
+
+      clients.forEach((client) => {
+        if(sessionStorage.getItem('nickname') !== client.name){
+          const newUser = document.createElement('li');
+          newUser.textContent = client.name;
+          newUser.setAttribute('data-testid', 'online-user');
+          listUsers.appendChild(newUser);
+        }
+      });
+    });
+
+
+    socket.on('messagesDB', (listMessages) => {
+      listMessages.forEach((message) => {
+        const newMessage = document.createElement('li');
+        newMessage.innerText = `${message.time} ${message.nickname}: ${message.chatMessage}`;
+        newMessage.setAttribute('data-testid', 'message');
+        messages.appendChild(newMessage);
+      });
+    });
+
+    formName.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (inputName.value) {
+        socket.emit('nickname', inputName.value);
+        sessionStorage.setItem('nickname', inputName.value);
+        inputName.value = '';
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('message', {
+          chatMessage: input.value,
+          nickname: sessionStorage.getItem('nickname'),
+        });
+        input.value = '';
+      }
+    });
+
+    socket.on('message', (message) => {
+      const newMessage = document.createElement('li');
+      newMessage.innerText = message;
+      newMessage.setAttribute('data-testid', 'message');
+      messages.appendChild(newMessage);
+    });
+  </script>
+</body>
+</html>
