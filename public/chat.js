@@ -6,7 +6,7 @@ const input = document.querySelector('#message-input');
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   console.log(input.value);
-  socket.emit('message', { message: input.value, nickname: 'henrique' });
+  socket.emit('message', { chatMessage: input.value, nickname: 'henrique' });
   input.value = '';
   return false;
 });
