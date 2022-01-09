@@ -14,7 +14,6 @@ const onlineUsers = [];
 
 const serverReturnAfterLogin = (socket = null, _io = null, data = null) => {
 const { nickname } = data;
-  // socket.emit('serverReturnAfterLogin', { onlineUsers });
   socket.emit('login', { onlineUsers });
   onlineUsers.push({ socketId: socket.id, nickname });
   socket.broadcast.emit('otherUserConnected', nickname);
@@ -30,11 +29,7 @@ module.exports = (io) => {
       const userIndex = onlineUsers.findIndex((item) => item.socketId === socket.id);
 
       onlineUsers.splice(userIndex, 1);
-            // debug
-            console.log('BACK: onlineUsers DEPOIS do splice');
-            console.log(onlineUsers);
-            // socket.broadcast.emit('otherUserDisconnected', { onlineUsers });
-            io.emit('otherUserDisconnected', { onlineUsers });
+            socket.broadcast.emit('otherUserDisconnected', { onlineUsers });
     });
 
   // socket.on('alterNickname', (newNickName) => { 

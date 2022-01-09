@@ -34,7 +34,8 @@ justify-content: space-between;
 }
 
 /* Online Users */
-.online-users-div {
+
+/* .online-users-div {
   background-color: white;
   bottom: 0;
   display: flex;
@@ -45,9 +46,9 @@ justify-content: space-between;
   position: relative;
   width: 300px;
   z-index: 1;
-}
+} */
 
-/* .online-users-div {
+.online-users-div {
   background-color: white;
   bottom: 0;
   display: flex;
@@ -59,7 +60,7 @@ justify-content: space-between;
   position: relative;
   width: 300px;
   z-index: 1;
-} */
+}
 
 /* Chat */
 .messages-div {
