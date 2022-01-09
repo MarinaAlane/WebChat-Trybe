@@ -1,8 +1,8 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const moment = require('moment');
 const { saveChat, findMessages } = require('./models/chatModel');
-const dataConfig = require('./dateConfig');
 
 const app = express();
 const server = http.createServer(app);
@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/index.html`);
 });
 
-const { formatDate } = dataConfig;
+const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
 
 const listUsers = [];
 
@@ -23,21 +23,34 @@ io.on('connection', async (socket) => {
 
     socket.on('message', async (msg) => {
         const { nickname, chatMessage } = msg;
-        const saveMessages = await saveChat(nickname, chatMessage, formatDate);
-        io.emit('message', `${formatDate} ${nickname}: ${chatMessage}`);
+        const saveMessages = await saveChat(nickname, chatMessage, timestamp);
+        io.emit('message', `${timestamp} ${nickname}: ${chatMessage}`);
         console.log('Mensagens salvas', saveMessages);
     });
-    socket.on('onlineUserOn', (msg) => {    
+    socket.on('onlineUserOn', (msg) => {
         listUsers.push(msg);
-        io.emit('onlineUserOn', { mensagem: msg, socket: socket.id, listUsers });
+        io.emit('onlineUserOn', { listUsers });
     });
+});
 
+io.on('connection', async (socket) => {
     socket.on('newNickName', (msg) => {
-        io.emit('newNickName', { newNick: msg, socket: socket.id });
+        const { userModify, userActual } = msg;
+        const indice = listUsers.indexOf(userActual);
+        listUsers.splice(indice, 1, userModify);
+        io.emit('newNickName', { userActual, userModify });
     });
 
     socket.on('disconnect', () => {
-        socket.broadcast.emit('disconectou', socket.id);
+            socket.broadcast.emit('disconectou');
+    });
+
+    socket.on('desconectado', (msg) => {
+        // const indice = listUsers.indexOf(msg);
+        // console.log(indice);
+        // listUsers.splice(indice, 1);
+        // console.log('modificado');
+        console.log('USUÁRIO QUE DESCONECTOU', msg);
     });
 });
 

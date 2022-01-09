@@ -1,14 +1,12 @@
-const data = new Date();
+const saveChat = require('./models/chatModel');
 
-const dia = data.getDate();
-const mes = data.getMonth() + 1;
-const ano = data.getFullYear();
-const hora = data.getHours();
-const min = data.getMinutes();
-
-const amOrPm = hora >= 12 ? 'PM' : 'AM';
-const formatDate = `${dia}-${mes}-${ano} ${hora}:${min} ${amOrPm}`;
+async function serverIo(timestamp, msg, io) {
+    const { nickname, chatMessage } = msg;
+    const saveMessages = await saveChat(nickname, chatMessage, timestamp);
+    io.emit('message', `${timestamp} ${nickname}: ${chatMessage}`);
+    console.log('Mensagens salvas', saveMessages);
+}
 
 module.exports = {
-    formatDate,
+    serverIo,
 };

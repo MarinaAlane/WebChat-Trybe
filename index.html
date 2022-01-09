@@ -34,7 +34,7 @@
           <button type="submit" id="submit" data-testid="send-button" class="btn btn-primary mb-3">Enviar</button>
         </div>
       </form>
-      <ul class="list-group" data-testid="online-user" id="online-user">
+      <ul class="list-group" id="list-user-ul">
       </ul>
     <script>
       // conexão com o socket do servidor
@@ -58,7 +58,7 @@
 
         const formUser = document.querySelector('#formClient')
         const inputUser = document.querySelector('#inputUser');
-        const onlineUser = document.querySelector('#online-user');
+        const onlineUser = document.querySelector('#list-user-ul');
 
       // Evento de mensagem (Enviar)
         form.addEventListener('submit', (e) => {
@@ -75,10 +75,10 @@
         formUser.addEventListener('submit', (e) => {
             e.preventDefault();
             
+            const userActual = sessionStorage.getItem('nickUser');
             sessionStorage.setItem('nickUser', inputUser.value);
-
-            socket.emit('newNickName', inputUser.value);
-        })
+            socket.emit('newNickName', { userModify: inputUser.value, userActual  });
+        });
 
         // Evento de receber mensagem e distribuir
         socket.on('message', (msg) => {
@@ -86,7 +86,7 @@
             newMessage.setAttribute('data-testid', 'message');
             newMessage.textContent = msg;
             messages.appendChild(newMessage);
-        })
+        });
 
         socket.on('dbMessages', (msg) => {
             if (msg) {
@@ -105,37 +105,48 @@
           socket.emit('onlineUserOn', userOn);
 
         socket.on('onlineUserOn', (msg) => {
-          const { mensagem, socket, listUsers } = msg;
+          const { listUsers } = msg;
 
-          const newMessage = document.createElement('li');
-            newMessage.setAttribute('data-testid', 'online-user');
-            newMessage.setAttribute('id', socket);
-            newMessage.textContent = mensagem;
-            onlineUser.appendChild(newMessage);
+            const { user } = listUsers;
+            while(onlineUser.hasChildNodes()){
 
+            onlineUser.removeChild(onlineUser.firstChild);
+          }   
+
+          const userOnLi = sessionStorage.getItem('nickUser')
+
+          const newMessageLi = document.createElement('li');
+            newMessageLi.setAttribute('data-testid', 'online-user');
+            newMessageLi.setAttribute('id', user);
+            newMessageLi.textContent = userOnLi;
+            onlineUser.appendChild(newMessageLi);
+            
           listUsers.forEach(element => {
-            if(element != mensagem) {
-              const newMessage = document.createElement('li');
+            if(element.user != userOnLi) {
+            const newMessage = document.createElement('li');
+            console.log('Elemento do array', element.user);
             newMessage.setAttribute('data-testid', 'online-user');
-            newMessage.setAttribute('id', socket);
-            newMessage.textContent = element;
+            newMessage.setAttribute('id', element.user);
+            newMessage.textContent = element.user;
             onlineUser.appendChild(newMessage);
           }
         });
           });
 
-        socket.on('disconectou', (socket) => {
-          const li = document.getElementById(socket);
-          onlineUser.removeChild(li);
+        socket.on('disconectou', () => {
+          const myNick = sessionStorage.getItem('nickUser');
+          socket.emit('desconectado', myNick);
         })
 
     </script>
     <script>
      
-      socket.on('newNickName', (msg) => {        
-        const { newNick , socket } = msg;
-        const li = document.getElementById(socket);
-        li.textContent = newNick;
+      socket.on('newNickName', (msg) => {
+        const { userActual, userModify } = msg;
+        nickAtual = sessionStorage.getItem('nickUser');
+        const li = document.getElementById(userActual);
+        li.textContent = userModify;
+        li.setAttribute('id', nickAtual);
 
        });
     </script>
