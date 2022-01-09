@@ -24,9 +24,14 @@ io.on('connection', async (socket) => {
     io.emit('message', `${data} - ${nickname} - ${chatMessage}`);
     await model.create(data, nickname, chatMessage);
   });
+  socket.on('newUser', (nickname) => {
+    user[socket.id] = nickname; io.emit('loadUsers', Object.values(user));
+  });
   socket.on('nickname', (nickname) => {
-    user[socket.id] = nickname;
-    io.emit('loadUsers', Object.values(user));
+    user[socket.id] = nickname; io.emit('loadUsers', Object.values(user));
+  });
+  socket.on('disconnect', () => {
+    delete user[socket.id]; io.emit('loadUsers', Object.values(user)); 
   });
   const historyc = await controller.getAll();
     historyc.forEach((msg) => {
