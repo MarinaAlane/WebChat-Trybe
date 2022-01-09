@@ -17,27 +17,27 @@ app.get('/', (_req, res) => {
 
 // cliente -> servidor -> cliente
 let clients = [];
-io.on('connection', async (socket) => {
+io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  socket.on('isConnected', (nickname) => {
+  socket.on('set-nickname', (nickname) => {
     clients = clients.filter((client) => client.id !== socket.id);
     clients.push({ nickname, id: socket.id });
-    io.emit('getOnlineUsers', clients);
+    io.emit('online-clients', clients);
   });
-
-  const messages = await messageModel.getAll();
-  socket.emit('message-history', messages);
 
   socket.on('disconnect', () => {
     console.log(`User ${socket.id} disconnected`);
     // https://stackoverflow.com/questions/6563885/socket-io-how-do-i-get-a-list-of-connected-sockets-clients
     clients = clients.filter((client) => client.id !== socket.id);
-    io.emit('getOnlineUsers', clients);
+    io.emit('online-clients', clients);
   });
 });
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+  const messages = await messageModel.getAll();
+  socket.emit('message-history', messages);
+
   socket.on('message', ({ chatMessage, nickname }) => {
     const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
     messageModel.create({ message: chatMessage, nickname, timestamp });

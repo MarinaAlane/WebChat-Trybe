@@ -8,7 +8,7 @@
   
   <body>
     <div id="online-users"></div>
-    <form id="formNickname">
+    <form id="form-nickname">
       <input id="nickname-box" placeholder="Type your nickname" data-testid="nickname-box">
       <button data-testid="nickname-button">Save</button>
     </form>
@@ -25,40 +25,39 @@
   
     const generateRandomUser = (size) => {
       const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let randomNickname = 'User';
+      let nickname = 'User';
       for (let index = 0; index < size; index += 1) {
-        randomNickname += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        nickname += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
       }
-      return randomNickname;
+      return nickname;
     }
     const randomNickname = generateRandomUser(12)
     window.sessionStorage.setItem('nickname', randomNickname);
     
-    socket.emit('isConnected', randomNickname);
+    socket.emit('set-nickname', randomNickname);
     
     const onlineUsers = document.querySelector('#online-users')
-    socket.on('getOnlineUsers', (clients) => {
+    socket.on('online-clients', (clients) => {
+      console.log(clients)
       onlineUsers.innerHTML = '';
-      const pCurrentUser = document.createElement('p');
-      pCurrentUser.innerText = clients.find((client) => client.id === socket.id).nickname
-      pCurrentUser.setAttribute('data-testid', 'online-user')
-      onlineUsers.appendChild(pCurrentUser)
-      clients.filter((client) => client.id !== socket.id).forEach((user) => {
-        const p = document.createElement('p');
-        p.innerText = user.nickname;
-        p.setAttribute('data-testid', 'online-user')
-        onlineUsers.appendChild(p)
+      currentClient = clients.find((client) => client.id === socket.id)
+      clients = clients.filter((client) => client.id !== socket.id);
+      clients.unshift(currentClient);
+      clients.forEach((user) => {
+        const element = document.createElement('p');
+        element.innerText = user.nickname;
+        element.setAttribute('data-testid', 'online-user')
+        onlineUsers.appendChild(element)
       })
     })
 
-    const formNickname = document.querySelector('#formNickname');
+    const formNickname = document.querySelector('#form-nickname');
     const inputNickname = document.querySelector('#nickname-box');
     formNickname.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputNickname.value) {
-        generateRandomUser();
         window.sessionStorage.setItem('nickname', inputNickname.value);
-        socket.emit('isConnected', inputNickname.value)
+        socket.emit('set-nickname', inputNickname.value)
         inputNickname.value = ''
       }
     })
@@ -76,10 +75,10 @@
     
     const messages = document.querySelector('#messages');
     const addMessage = (message) => {
-      const newMessage = document.createElement('li');
-      newMessage.innerText = message;
-      newMessage.setAttribute('data-testid', 'message');
-      messages.appendChild(newMessage);
+      const element = document.createElement('li');
+      element.innerText = message;
+      element.setAttribute('data-testid', 'message');
+      messages.appendChild(element);
       window.scrollTo(0, document.body.scrollHeight);
     }
 
