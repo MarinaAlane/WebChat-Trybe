@@ -51,7 +51,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
     const historyMessage = await history.historyMessages();
-    res.render('home.ejs', { history : historyMessage });
+    res.render('home.ejs', { history: historyMessage });
 });
 
 io.on('connect', async (socket) => {
