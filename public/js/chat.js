@@ -9,6 +9,7 @@ const randomNickname = document.querySelector('#randomNickname');
 const usersList = document.querySelector('#usersList');
 const dataTestId = 'data-testid'; 
 
+// requisito 4 criado com o auixilio de Lima e Matheus Monteiro
 // https://www.codegrepper.com/code-examples/javascript/find+random+name+javascript - 
 function getRandomChars() {
   const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -86,6 +87,7 @@ if (username) {
 }
 };
 
+
 socket.on('message', (chatMessage) => createMessage(chatMessage));
 
 socket.on('username', (users) => {
@@ -105,5 +107,5 @@ socket.on('history', (messages) => {
 });
 
 window.onload = () => {
-  socket.broadcast.emit('updateUsername', randomNickname.innerText);
+  socket.emit('updateUsername', randomNickname.innerText);
 }; 
