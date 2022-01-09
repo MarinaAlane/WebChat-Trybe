@@ -6,6 +6,11 @@ const messageInput = document.querySelector('#messageInput');
 const CLASSNAME__MESSAGE_DIV = 'messages-div';
 const CLASSNAME__ONLINE_USERS_DIV = 'online-users-div';
 const DATATESTID__ONLINE_USER = 'online-user';
+const DATA_TESTID = 'data-testid';
+
+window.onbeforeunload = (_event) => {
+  socket.disconnect();
+};
 
 const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blog/javascript-generate-random-string
   // Declare all characters
@@ -23,12 +28,14 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
 let nickname = randomStringGen(16);
 // const onlineUsers = [];
 
+let newUsersArray = [];
+
 socket.emit('login', nickname);
 
 const createChatList = (text, dataTestid, classNameFather) => {
-  const div = document.getElementsByClassName(classNameFather)[0];
   const p = document.createElement('p');
-  const attr = document.createAttribute('data-testid');
+  const div = document.getElementsByClassName(classNameFather)[0];
+  const attr = document.createAttribute(DATA_TESTID);
   attr.value = dataTestid;
   p.setAttributeNode(attr);
   p.innerText = text;
@@ -36,10 +43,10 @@ const createChatList = (text, dataTestid, classNameFather) => {
 };
 
 const createUsersList = (users, dataTestid, classNameFather) => {
+  const div = document.getElementsByClassName(classNameFather)[0];
   users.forEach((user) => {
-    const div = document.getElementsByClassName(classNameFather)[0];
     const p = document.createElement('p');
-    const attr = document.createAttribute('data-testid');
+    const attr = document.createAttribute(DATA_TESTID);
     attr.value = dataTestid;
     p.setAttributeNode(attr);
     p.innerText = `${user.nickname}`;
@@ -47,16 +54,40 @@ const createUsersList = (users, dataTestid, classNameFather) => {
   });
 };
 
-const updateUsersList = (_text = null, _dataTestid, classNameFather) => {
-  const div = document.getElementsByClassName(classNameFather)[0];
-  div.innerHTML = ''; 
-  // users.forEach((user) => {
-  //   const p = document.createElement('p');
-  //   const attr = document.createAttribute('data-testid');
-  //   attr.value = dataTestid;
-  //   p.setAttributeNode(attr);
-  //   div.appendChild(p);
-  // });
+const updateUsersList = (updatedUsersList, dataTestid, classNameFather) => {
+  let div = document.getElementsByClassName(classNameFather)[0];
+  // let ul = document.querySelector(`.${classNameFather}`);
+  // div.innerHTML = '';
+  // div.innerHTML = '';
+
+  // if (div.length !== 0) {
+    while (div.firstChild) {
+      div.removeChild(div.firstChild);
+    }
+
+    // while (ul.hasChildNodes()) {  
+    //   ul.removeChild(ul.firstChild);
+
+    //   console.log('Entrou no while');
+    // }
+
+  // }
+
+  console.log('FRONT: array que chega p atualizar');
+  console.log(updatedUsersList);
+
+  updatedUsersList.forEach((user) => {
+      console.log('entrou no forEach');
+      const p = document.createElement('p');
+      // const li = document.createElement('li');
+      const attr = document.createAttribute(DATA_TESTID);
+      attr.value = dataTestid;
+      // p.innerText = `${user.nickname}`;
+      // li.textContent = `${user.nickname}`;
+      // ul.appendChild(li);
+      p.textContent = `${user.nickname}`;
+      div.appendChild(p);
+    });
 };
 
 const addUserToList = (userNickname, dataTestid, classNameFather) => {
@@ -67,7 +98,7 @@ const addUserToList = (userNickname, dataTestid, classNameFather) => {
   console.log(div);
 
   const p = document.createElement('p');
-  const attr = document.createAttribute('data-testid');
+  const attr = document.createAttribute(DATA_TESTID);
   attr.value = dataTestid;
   p.setAttributeNode(attr);
   p.innerText = `${userNickname}`;
@@ -97,9 +128,10 @@ sendMsgBtn.addEventListener('click', (e) => {
   return false;
 });
 
-socket.on('serverReturnAfterLogin', (data) => {
+// socket.on('serverReturnAfterLogin', (data) => {
+  socket.on('login', (data) => {
   const { onlineUsers } = data;
-  const newUsersArray = onlineUsers;
+  newUsersArray = onlineUsers;
   newUsersArray.unshift({ socketId: socket.id, nickname });
 
   createUsersList(newUsersArray, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
@@ -109,8 +141,17 @@ socket.on('otherUserConnected', (userNickname) => {
   addUserToList(userNickname, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
 });
 
-socket.on('otherUserDisconnected', (_data) => {
-  updateUsersList(null, null, CLASSNAME__ONLINE_USERS_DIV);
+socket.on('otherUserDisconnected', (data) => {
+  const { onlineUsers } = data;
+  newUsersArray = [];
+  newUsersArray = [...onlineUsers];
+        // debug
+        console.log('FRONT: onlineUsers ANTES do splice');
+        console.log(newUsersArray);
+  updateUsersList(newUsersArray, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
+      // debug
+      console.log('FRONT: newUsersArray DEPOIS do splice');
+      console.log(newUsersArray);
 });
 
 socket.on('message', (msg) => {

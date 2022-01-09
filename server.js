@@ -1,6 +1,8 @@
 // Faça seu código aqui
 
 const express = require('express');
+const cors = require('cors');
+const path = require('path'); //
 
 const app = express();
 
@@ -14,7 +16,7 @@ const http = require('http').createServer(app);
 
 const PORT = 3000;
 
-// app.use(cors());
+app.use(cors());
 
 const io = require('socket.io')(http, {
   cors: {
@@ -27,6 +29,7 @@ require('./backend/socket')(io);
 
 app.get('/', (_req, res) => {
   res.render('chat');
+  // res.sendFile(path.join(__dirname, '/views/chat.html'));
 });
 
 app.get('/ping', (_req, res) => res.send('PONG!'));
