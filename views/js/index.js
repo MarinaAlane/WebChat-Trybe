@@ -31,7 +31,7 @@ window.onload = () => {
   } else {
     users.appendChild(user);
   }
-  socket.emit('createUser', { currentNickname });
+  socket.emit('createUser', { nickname });
 };
 
 userForm.addEventListener('submit', (e) => {

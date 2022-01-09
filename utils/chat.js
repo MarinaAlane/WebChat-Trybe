@@ -9,10 +9,10 @@ const removeUser = (socket) => {
   return users;
 };
 
-const changeNickname = (socket, nickname, newNickname) => {
+const changeNickname = (socket, currentNickname, nickname) => {
   socketsUsers[socket.id] = nickname;
-  const index = users.indexOf(nickname);
-  users[index] = newNickname;
+  const index = users.indexOf(currentNickname);
+  users[index] = nickname;
   return users;
 };
 

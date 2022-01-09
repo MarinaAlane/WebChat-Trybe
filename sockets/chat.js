@@ -11,12 +11,12 @@ module.exports = (io) => {
       io.emit('message', `${getDateTime()} - ${nickname}: ${chatMessage}`);
     });
 
-    socket.on('createUser', ({ currentName }) => {
-      io.emit('changeNickname', createUser(socket, currentName));
+    socket.on('createUser', ({ nickname }) => {
+      io.emit('changeNickname', createUser(socket, nickname));
     });
 
-    socket.on('changeNickname', ({ originalNickname, nickname }) => {
-      io.emit('changeNickname', changeNickname(socket, originalNickname, nickname));
+    socket.on('changeNickname', ({ currentNickname, nickname }) => {
+      io.emit('changeNickname', changeNickname(socket, currentNickname, nickname));
     });
 
     socket.on('disconnect', () => {
