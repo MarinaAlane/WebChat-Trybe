@@ -15,10 +15,13 @@ app.get('/', (_req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`usuário ${socket.id} conectado`);
+
   const dateFormat = moment().format('DD-MM-yyyy hh:mm:ss A');
   socket.on('message', ({ nickname, chatMessage }) => {
     io.emit('message', `${dateFormat} - ${nickname}:${chatMessage}`);
   });
+
+  socket.emit('user', socket.id.slice(0, 16));
 
   socket.on('disconnect', () => {
     console.log(`usuário ${socket.id} desconectou`);

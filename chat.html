@@ -65,32 +65,59 @@
 </head>
 
 <body>
+  <div id="usersOnline"></div>
+  <form id="formNickName" action="">
+    <input id="inputNickName" data-testid="nickname-box">
+    <button id="buttonNickName" data-testid="nickname-button">Send</button>
+  </form>
+
   <ul id="messages"></ul>
-  <form id="form">
-    <input id="input">
-    <button>Enviar</button>
+  <form id="formMessages">
+    <input id="input-message" data-testid='message-box'>
+    <button data-testid="send-button">Enviar</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
+    const socket = io('http://localhost:3000');
 
-    const form = document.querySelector('#form');
-    const input = document.querySelector('#input');
-    const messages = document.querySelector('#messages');
+    let formNickName = document.getElementById('formNickName');
+    let inputNickName = document.getElementById('inputNickName');
+    let usersOnline = document.getElementById('usersOnline')
+
+    let userName;
+    socket.on('user', (userId) => {
+      userName = userId;
+      const name = document.createElement('p');
+      name.textContent = userId;
+      name.setAttribute('data-testid', 'online-user');
+      usersOnline.appendChild(name);
+    });
+
+    formNickName.addEventListener('submit', (e) => {
+      e.preventDefault();
+      userName = inputNickName.value
+      inputNickName.value = '';
+    });
+
+    let form = document.querySelector('#formMessages');
+    let inputMessages = document.querySelector('#input-message');
+    let Ulmessages = document.querySelector('#messages');
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (input.value) {
-        socket.emit('message', { nickname: socket.id, chatMessage: input.value });
-        input.value = '';
+      console.log(userName);
+      if (inputMessages.value) {
+        socket.emit('message', { nickname: userName, chatMessage: inputMessages.value });
+        inputMessages.value = '';
       }
     });
 
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
       newMessage.textContent = msg;
-      messages.appendChild(newMessage);
+      newMessage.setAttribute('data-testid', 'message');
+      Ulmessages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
   </script>
