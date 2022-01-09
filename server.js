@@ -11,14 +11,17 @@ const io = require('socket.io')(http, {
   },
 });
 
+const model = require('./models/messages');
+
 const user = {};
 // Sempre que um cliente se conectar ao servidor executa essa função
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   const data = moment().format('DD-MM-yyyy HH:mm:ss A');
   // Escuta o evento de message
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
   // vai enviar a mensagem para todos os clientes que tiverem a conexão socket aberta
     io.emit('message', `${data} - ${nickname} - ${chatMessage}`);
+    await model.create(data, nickname, chatMessage);
   });
   socket.on('nickname', (nickname) => {
     user[socket.id] = nickname;
