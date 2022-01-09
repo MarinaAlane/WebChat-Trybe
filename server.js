@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // config das live lectures com o mestre frankkkk
 // https://momentjs.com/docs/ moment.format
 
