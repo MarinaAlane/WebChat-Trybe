@@ -5,7 +5,6 @@ const model = require('../models/chat');
 
 const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss a');
 // console.log({ date });
-const users = {};
 
 const message = ({ chatMessage, nickname }) =>
   `${date} - ${nickname}: ${chatMessage}`;
@@ -28,17 +27,4 @@ module.exports = (io) =>
   io.emit('history', history
     .map(({ messages, ...prev }) => message({ chatMessage: messages, ...prev })));
 
-  socket.on('updateUsername', (nickName) => {
-    io.emit('updateUsername', nickName);
-    // console.log({nickName});
-    users[socket.id] = nickName;
-    // console.log({ users });
-    io.emit('username', users);
-  });
-  
-  socket.on('disconnect', () => {
-    // console.log(`Usuário ${socket.id} saiuuu!`);
-    delete users[socket.id];
-    io.emit('username', users);
-  });
 });

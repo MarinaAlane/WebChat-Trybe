@@ -107,4 +107,9 @@ socket.on('history', (messages) => {
 
 window.onload = () => {
   socket.emit('updateUsername', randomNickname.innerText);
+};
+
+// slack
+window.onbeforeunload = () => {
+  socket.disconnect();
 }; 
