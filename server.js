@@ -21,7 +21,15 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const getRandomNickname = () => `User${Math.round(Math.random() * 100000000000000)}`;
+const getRandomNickname = (length) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
 
 const getDateAndTime = (date) => {
   const day = String(date.getDate()).padStart(2, '0');
@@ -38,7 +46,7 @@ const getDateAndTime = (date) => {
 let users = [];
 
 io.on('connection', (socket) => {
-  const newUser = getRandomNickname();
+  const newUser = getRandomNickname(16);
   socket.emit('nickname', newUser);
 
   users.push({ id: socket.id, nickname: newUser });
