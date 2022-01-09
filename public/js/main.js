@@ -4,6 +4,8 @@ const form = document.querySelector('#form');
 const inputNickname = document.querySelector('#input-nickname');
 const inputChat = document.querySelector('#input-chat');
 
+console.log('auau');
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (inputChat.value) {
