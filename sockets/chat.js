@@ -4,6 +4,7 @@ const userMessageFormatter = require('../utils/userMessageFormatter');
 const ModelMessage = require('../models/messageHistory');
 
 let usersOnline = [];
+let userNickname = '';
 
 const generateUserId = (socket) => {
   const userId = socket.id.slice(0, 16);
@@ -21,17 +22,17 @@ const renderMessageHistory = async (socket) => {
 };
 
 const onConnect = async (io, socket) => {
-  const userNickname = generateUserId(socket);
+  userNickname = generateUserId(socket);
   // [X] 1º - Remover o envio do nickName e fazer um evento próprio;
   io.emit('userConnected', usersOnline);
   socket.emit('setUserId', { userNickname, usersOnline });
-  renderMessageHistory(socket);
+  await renderMessageHistory(socket);
   return userNickname;
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
   // [X] - JOGAR PARA FORA TODA A INICIALIZAÇÃO DO SOCKET 
-  let userNickname = onConnect(io, socket);
+  onConnect(io, socket);
 
   // [X] - Após emitir a mensagem é preciso salvar ela no DB com formato específico;  
   socket.on('message', async ({ nickname, chatMessage }) => {

@@ -8,8 +8,10 @@ const TEST_ID = 'data-testid';
 const userNameElement = document.querySelector('#username');
 const onlineUsersScreen = document.querySelector('#onlineUsers');
 const nicknameForm = document.querySelector('#formUserNickname');
+const screen = document.querySelector('#screenMessage');
 
 const changeUserName = (newUserName) => {
+  nickname = newUserName;
   userNameElement.innerText = newUserName;
 };
 
@@ -35,7 +37,6 @@ messageForm.addEventListener('submit', (event) => {
 
 const createMessage = (message) => {
   const li = document.createElement('li');
-  const screen = document.querySelector('#screenMessage');
   li.setAttribute(TEST_ID, 'message');
   li.innerText = message;
   screen.appendChild(li);
@@ -43,7 +44,6 @@ const createMessage = (message) => {
 
 const renderOnlineUsers = (users) => {
   onlineUsersScreen.innerHTML = '';
-
   console.log('USERS', users);
   users.forEach((user) => {
     const li = document.createElement('li');
@@ -55,8 +55,8 @@ const renderOnlineUsers = (users) => {
 
 const orderOnlineUsersList = (usersOnline) => {
   const onlineUsers = [];
- const lastUserInArray = usersOnline[usersOnline.length - 1];
- console.log('usersOnline', usersOnline, lastUserInArray);
+  const lastUserInArray = usersOnline[usersOnline.length - 1];
+  console.log('usersOnline', usersOnline, lastUserInArray);
 
   // [X] 4º - Para o cliente que acabou de se conectar, seu nickname deve ser colocado no começo da lista;
   onlineUsers.push(lastUserInArray);
@@ -84,6 +84,10 @@ orderOnlineUsersList(usersOnline);
 
 socket.on('changeUsersName', (usersOnline) => {
   orderOnlineUsersList(usersOnline);
+});
+
+socket.on('renderMessageHistory', (messageHistory) => {
+    messageHistory.forEach((message) => createMessage(message));
 });
 
 socket.on('userDisconnected', (usersOnline) => renderOnlineUsers(usersOnline));
