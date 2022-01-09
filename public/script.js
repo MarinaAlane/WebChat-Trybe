@@ -1,14 +1,14 @@
 const socket = window.io();
 
 function renderMessage(message) {
-  const divMessages = document.querySelector('.messages');
+  const listMessages = document.querySelector('.messages');
 
   const listItem = document.createElement('li');
   listItem.innerText = message;
 
   listItem.setAttribute('data-testid', 'message');
 
-  divMessages.append(listItem);
+  listMessages.append(listItem);
 }
 
 function renderOnlineUsers(userName, id) {
