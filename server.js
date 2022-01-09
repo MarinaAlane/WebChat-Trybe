@@ -61,10 +61,9 @@ io.on('connect', async (socket) => {
     conectedUsers.push({ nickname: randomUsername, socketId: socket.id });
     io.emit('online', conectedUsers);
     socket.on('message', async (data) => {
-        const {chatMessage, nickname, timestamp} = data;
-        const date = moment().format('DD-MM-yyyy HH:mm:ss');
-        await history.send({ message: data.chatMessage, nickname: data.nickname, timestamp: date });
-        io.emit('message', `${date} - ${data.nickname}: ${data.chatMessage}`);
+        const formatedDate = moment().format('DD-MM-yyyy HH:mm:ss');
+        await history.send({ message: data.chatMessage, nickname: data.nickname, timestamp: formatedDate });
+        io.emit('message', `${formatedDate} - ${data.nickname}: ${data.chatMessage}`);
     });
     socket.on('updateNickname', (data) => {
         const index = conectedUsers.findIndex((element) => element.socketId === socket.id);
