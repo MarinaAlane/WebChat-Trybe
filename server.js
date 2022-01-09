@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 // config das live lectures com o mestre frankkkk
 // https://momentjs.com/docs/ moment.format
 
@@ -34,7 +33,7 @@ const io = require('socket.io')(socketIoServer, {
         methods: ['GET', 'POST'],
     },
 });
-const modelHistory = require('./models/history');
+const history = require('./models/history');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -51,36 +50,27 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', async (req, res) => {
-    const history = await modelHistory.historyMessages();
-    res.render('home.ejs', { history });
+    const historyMessage = await history.historyMessages();
+    res.render('home.ejs', { history : historyMessage });
 });
 
 io.on('connect', async (socket) => {
     const randomUsername = stringGenerator(16);
     socket.emit('username', randomUsername);
     conectedUsers.push({ nickname: randomUsername, socketId: socket.id });
-
     io.emit('online', conectedUsers);
-
     socket.on('message', async (data) => {
-        const { nickname, chatMessage } = data;
-
-        const timeFormated = moment().format('DD-MM-yyyy HH:mm:ss');
-        await modelHistory.send({ message: chatMessage, nickname, timestamp: timeFormated });
-
-        io.emit('message', `${timeFormated} - ${nickname}: ${chatMessage}`);
+        const date = moment().format('DD-MM-yyyy HH:mm:ss');
+        await history.send({ message: data.chatMessage, nickname: data.nickname, timestamp: date });
+        io.emit('message', `${date} - ${data.nickname}: ${data.chatMessage}`);
     });
-
     socket.on('updateNickname', (data) => {
         const index = conectedUsers.findIndex((element) => element.socketId === socket.id);
         conectedUsers[index] = { nickname: data, socketId: socket.id };
-
         io.emit('online', conectedUsers);
     });
-
     socket.on('disconnect', () => {
         conectedUsers = conectedUsers.filter((element) => element.socketId !== socket.id);
-
         io.emit('online', conectedUsers);
     });
 });
