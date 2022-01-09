@@ -12,8 +12,9 @@
       <ul id="users"></ul>
     </section>
     <div>
-      <form>
+      <form id="form">
         <input
+          placeholder="Digite aqui seu nick"
           type="text"
           name="nickname-box"
           id="nickname-box"
@@ -23,6 +24,7 @@
           type="button"
           id="nickname-button"
           data-testid="nickname-button"
+          name="nickname-button"
         >
           Salvar
         </button>
@@ -35,7 +37,7 @@
           data-testid="message-box"
           placeholder="Digite aqui sua mensagem"
         />
-        <button type="button" data-testid="send-button">Enviar</button>
+        <button type="submit" data-testid="send-button">Enviar</button>
       </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>
