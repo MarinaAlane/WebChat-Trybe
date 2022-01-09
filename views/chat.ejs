@@ -7,35 +7,82 @@
   <title>WEBCHAT</title>
 </head>
 <body>
-  <h1>WEBCHAT</h1>
-  <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="nickname" autocomplete="on" /><input id="input" autocomplete="off" /><button>Send</button>
+  <h1>WEBCHAT T11</h1>
+  <div>
+    <h3>Usuários Online</h3>
+    <ul id="online-list" data-testid="online-user"></ul>
+  </div>
+
+  <!-- <ul id="messages" data-testid="message-box"></ul> -->
+
+  <div>
+    <h3>Mensagens</h3>
+    <ul id="messages"></ul>
+  </div>
+
+  <form id="nickname-container">
+    <input id="nickname" autocomplete="on" data-testid="nickname-box"/>
+    <button data-testid="nickname-button">Alterar nome</button>
+  </form>
+  
+    <form id="message-container" action="">
+      <input id="input" autocomplete="off" data-testid="message-box"/>
+      <button data-testid="send-button">Enviar mensagem</button>
     </form>
+  
   <script src="/socket.io/socket.io.js"></script>
+
   <script>
     const socket = io();
+    let user = ''
     window.onload = () => {
-    const user = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    user = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0, 16);
+    // https://gist.github.com/6174/6062387
     document.getElementById('nickname').value = user;
+    socket.emit('new-user', user); 
+    //envia o novo usuario conectado para o servidor
     }
     
-    const form = document.getElementById('form');
+    // const form = document.getElementById('form');
+    const messageContainer = document.getElementById('message-container');
     const input = document.getElementById('input');
     const nickname = document.getElementById('nickname');
-    form.addEventListener('submit', (e) => {
+    const buttonNickname = document.getElementById('nickname-button');
+    const containerNickname = document.getElementById('nickname-container');
+
+    containerNickname.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (input.value && nickname.value) {
-        // como pedido no requisito 1
-        socket.emit('message', {chatMessage: input.value, nickname: nickname.value}); 
+      user = nickname.value;
+      console.log(user)
+      socket.emit('edit-user', user);
+    });
+
+    messageContainer.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value && user) {
+        // de acordo com o requisito 1
+        socket.emit('message', {chatMessage: input.value, nickname: user}); 
         input.value = '';
       }
     });
+
     socket.on('message', (message) => {
       const messages = document.getElementById('messages');
       const li = document.createElement('li');
+      li.setAttribute('data-testid', 'message');
       li.textContent = message;
       messages.appendChild(li);
+    });
+
+    socket.on('online', (onlineList) => {
+      const ul = document.getElementById('online-list');
+      ul.innerHTML= '';
+      onlineList.forEach((user) => {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user');
+        li.textContent = user.nickname;
+        ul.appendChild(li);
+      })
     });
   </script>
 </body>
