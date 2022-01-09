@@ -15,6 +15,8 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  const user = socket.id.slice(0, 16);
+  io.emit('online', user);
   socket.on('message', ({ chatMessage, nickname }) => {
     const timeStamp = moment().format('DD-MM-yyyy HH:mm:ss');
     io.emit('message', `${timeStamp} ${nickname}: ${chatMessage}`);
