@@ -8,6 +8,37 @@
 </head>
 <body>
     <h1>Web Chat</h1>
+    <main>
+        <h2>Users:</h2>
+        <u id="users"></u>
+        <h2>Message:</h2>
+        <ul id="Message"></ul>
+    </main>
+    <div>
+        <form>
+            <input
+              type="text"
+              name="nickname-box"
+              id="nickname-box"
+              data-testid="nickname-box"
+            />
+            <button
+              type="button"
+              id="nickname-button"
+              data-testid="nickname-button"
+            >
+              Save
+            </button>
+            <input
+              type="text"
+              name="message-box"
+              id="message-box"
+              placeholder="message"
+              data-testid="message-box"
+            />
+            <button data-testid="send-button">Enviar</button>
+          </form>
+    </div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/chat.js"></script>
 </body>
