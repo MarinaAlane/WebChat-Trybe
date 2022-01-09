@@ -42,6 +42,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     //he sees his name on screen
     let client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
     await page.waitForTimeout(500);
+    console.log('client1 sees his name on screen',client1Nicknames);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
@@ -57,6 +58,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
 
     //he sees his name and the other on screen
     let client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    console.log('client2 sees his name and the other on screen',client2Nicknames);
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([

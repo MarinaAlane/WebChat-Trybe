@@ -8,12 +8,11 @@ module.exports = (io) => {
       userNick = newNick;
     });
     socket.on('callUpdateUsers', () => {
-      const socketId = (socket.id);
-      socket.broadcast.emit('updateUsers', socketId);
+      socket.broadcast.emit('updateUsers', (socket.id));
     });
-    socket.on('getUsers', (socketId, user) => { io.to(socketId).emit('getUsers', user); });
-    socket.on('disconnect', () => {
-      socket.broadcast.emit('removeUser', (userNick));
+    socket.on('getUsers', (socketId, user) => { 
+      if (user !== 'A1jeTLlvU4zDOdIC') { io.to(socketId).emit('getUsers', user); }
     });
+    socket.on('disconnect', () => { socket.broadcast.emit('removeUser', (userNick)); });
   });
 };

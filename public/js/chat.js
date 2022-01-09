@@ -58,6 +58,7 @@ socket.on('nickname', (userNick) => {
 });
 
 socket.on('signIn', (userNick) => {
+  console.log('Usuario logou: ', userNick);
   addUserToList(userNick);
   socket.emit('callUpdateUsers');
 });
