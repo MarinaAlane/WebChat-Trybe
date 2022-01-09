@@ -74,6 +74,7 @@
         // Evento de trocar nome de usuário
         formUser.addEventListener('submit', (e) => {
             e.preventDefault();
+          
             
             const userActual = sessionStorage.getItem('nickUser');
             sessionStorage.setItem('nickUser', inputUser.value);
@@ -88,6 +89,7 @@
             messages.appendChild(newMessage);
         });
 
+    // Evento de listar mensagens
         socket.on('dbMessages', (msg) => {
             if (msg) {
               console.log(msg);
@@ -100,10 +102,12 @@
               }
         });
 
+        // Criando usuário e adicionando no storage
         sessionStorage.setItem('nickUser', geraStringAleatoria(16));
           const userOn = sessionStorage.getItem('nickUser')
           socket.emit('onlineUserOn', userOn);
 
+          // Pega os usuários do back e lista todos
         socket.on('onlineUserOn', (msg) => {
 
             while(onlineUser.hasChildNodes()){

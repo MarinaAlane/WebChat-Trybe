@@ -40,6 +40,7 @@ io.on('connection', async (socket) => {
         io.emit('newNickName', { userActual, userModify });
     });
 
+    // Desconecta usuário ativo
     socket.on('disconnect', () => {
             listUsers = [];
             socket.broadcast.emit('disconectou');
