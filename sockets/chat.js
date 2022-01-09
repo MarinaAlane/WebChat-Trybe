@@ -11,6 +11,7 @@ const connect = async (socket) => {
 
 module.exports = (io) => io.on('connection', (socket) => {
   connect(socket);
+  console.log(`Usuário ${socket.id} acabou de se conectar`);
   
   socket.on('message', async ({ nickname, chatMessage }) => {
     const message = chatMessage;
