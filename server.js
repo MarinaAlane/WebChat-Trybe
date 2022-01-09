@@ -10,6 +10,8 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
+
+const user = {};
 // Sempre que um cliente se conectar ao servidor executa essa função
 io.on('connection', (socket) => {
   const data = moment().format('DD-MM-yyyy HH:mm:ss A');
@@ -18,7 +20,11 @@ io.on('connection', (socket) => {
   // vai enviar a mensagem para todos os clientes que tiverem a conexão socket aberta
     io.emit('message', `${data} - ${nickname} - ${chatMessage}`);
   });
-  console.log(`Usuário conectado. ID: ${socket.id} `);
+  socket.on('nickname', (nickname) => {
+    user[socket.id] = nickname;
+    io.emit('loadUsers', Object.values(user));
+  });
+  // console.log(`Usuário conectado. ID: ${socket.id} `);
 });
 
 app.use(express.static(`${__dirname}/public`));
