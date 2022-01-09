@@ -4,6 +4,7 @@
     <title>WebChat Projet</title>
   </head>
   <body>
+    <p id="newNick"></p>
     <ul id="users"></ul>
     <form id="nickname-form" action="">
       <input
@@ -46,8 +47,9 @@
       // req 01
       form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const newNick = document.querySelector('#newNick').innerText;
         socket.emit('message', {
-          nickname: socket.id,
+          nickname: newNick,
           chatMessage: inputMessage.value,
         });
         inputMessage.value = '';
@@ -76,8 +78,9 @@
       btnSaveNick.addEventListener('click', (e) => {
         e.preventDefault();
         const nick = nickNameInput.value;
+        document.getElementById('newNick').innerText = nick;
         socket.emit('sendNickName', nick);
-        nickNameInput.value = '';
+        // nickNameInput.value = '';
       });
 
       socket.on('newNickName', (onLineUsers) => {
