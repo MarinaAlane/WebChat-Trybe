@@ -7,6 +7,8 @@ const PORT = 3000;
 
 const server = require('http').createServer(app);
 
+const { formatDate } = require('./services');
+
 const io = new Server(server);
 
 app.get('/', (_req, res) => {
@@ -15,6 +17,10 @@ app.get('/', (_req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
+  socket.on('message', (message) => {
+    console.log(message);
+    io.emit('message', `${formatDate} ${message.nickname}: ${message.chatMessage}`);
+  });
 });
 
 server.listen(PORT, () => console.log(`Escutando a porta ${PORT}`));
