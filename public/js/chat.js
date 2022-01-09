@@ -80,17 +80,17 @@ const usersOn = (users) => {
   
   // list.unshift(currentUser);
   // console.log(list)
-  createUser(currentUser);
+  createUser(currentUser); // crio o usuario e filtro posteriormente para conseguir listar todos
 if (username) {
   list.filter((user) => user !== currentUser).forEach((nick) => createUser(nick));
 }
 };
 
-socket.on('updateUsername', ((nickname) => {
+/* socket.on('updateUsername', ((nickname) => {
   // console.log({ nickname });
   randomNickname.innerText = nickname;
   // console.log({ randomNickname });
-}));
+})); */
 
 socket.on('message', (chatMessage) => createMessage(chatMessage));
 
