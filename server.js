@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || '3000';
@@ -12,26 +13,30 @@ const io = require('socket.io')(server, {
   },
 });
 
+const { saveHistory } = require('./models/history');
+// const { getHistory } = require('./controllers/historys');
+
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'chat.html'));
-}); // envia formulario quando cliente conecta com a rota
+}); 
 
 const users = {};
 const getDate = require('./helpers/getDate');
 
 io.on('connection', (socket) => {
   users[socket.id] = socket.id.substr(0, 16);
+  // socket.emit('historyMessage', { allmessages: getHistory() });
   socket.emit('newUser', users[socket.id]);
   io.emit('userList', users);
 
-  socket.on('message', (msg) => {
+  socket.on('message', async (msg) => {
     const { chatMessage, nickname } = msg;
-    const fullDate = getDate();
-    console.log('--------->', nickname, socket.id);
-    io.emit('message', `${fullDate} - ${nickname}: ${chatMessage}`);
+    await saveHistory(chatMessage, nickname, getDate());
+    io.emit('message', `${getDate()} - ${nickname}: ${chatMessage}`);
   });
 
   socket.on('setNickname', (newNickname) => {

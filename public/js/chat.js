@@ -71,10 +71,17 @@ function newUserList(users) {
   });
 }
 
+// function renderMessages(allmessages) {
+//   const msg = allmessages();
+//   console.log(allmessages);
+//   console.log(msg)
+// }
+
 //  ------------------------------------------------------------------------------------------------------
 socket.on('newUser', (newUser) => saveNickname(newUser));
 socket.on('message', (msg) => reciveMessage(msg));
 socket.on('userList', (userList) => newUserList(userList));
+// socket.on('historyMessage', (allmessages) => renderMessages(allmessages));
 
 //  -----------------------------------------------------------------------------------------------------------
 formSendMessage.addEventListener('submit', sendMessage);
