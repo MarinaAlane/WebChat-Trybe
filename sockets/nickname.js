@@ -5,13 +5,11 @@ let usersList = [];
 function newUser(id, io) {
   const randomNickname = crypto.randomBytes(8).toString('hex');
   usersList = [...usersList, { id, nickname: randomNickname }];
-  console.log(usersList);
   io.emit('renderUsersList', usersList);
 }
 
 function removeUser(removedUserId, io) {
   usersList = usersList.filter((user) => user.id !== removedUserId);
-  console.log(usersList);
   io.emit('renderUsersList', usersList);
 }
 

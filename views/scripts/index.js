@@ -71,12 +71,10 @@ const saveMessage = async (message) => {
 };
 
 const sortUsers = (users) => {
-  // if (users.length === 0) return users;
-  console.log(users);
-  return users;
-  // const primaryUser = users.find((user) => user.id === socket.id);
-  // const usersWithoutPrimaryUser = users.filter((user) => user.id !== socket.id);
-  // return [primaryUser, ...usersWithoutPrimaryUser];
+  if (users.length === 1) return users;
+  const primaryUser = users.find((user) => user.id === socket.id);
+  const usersWithoutPrimaryUser = users.filter((user) => user.id !== socket.id);
+  return [primaryUser, ...usersWithoutPrimaryUser];
 };
 
 socket.on('message', async (message) => {
