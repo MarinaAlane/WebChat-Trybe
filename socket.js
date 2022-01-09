@@ -6,12 +6,9 @@ const online = {};
 module.exports = (io) => io.on('connection', async (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 
-  const { id } = socket;
-  const nicks = id.substring(0, 16);
-
-  online[socket.id] = nicks;
-  io.emit('sendNickname', online[socket.id]);
-
+  online[socket.id] = socket.id.substring(0, 16);
+  io.emit('newNickname', online);
+  
   const allMessages = await dbModel.listMessage();
   io.emit('allMessages', allMessages);
 
@@ -20,10 +17,14 @@ module.exports = (io) => io.on('connection', async (socket) => {
     dbModel.createMessage({ message: chatMessage, nickname, timeStamp });
     io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
   });
+
+  socket.on('disconnect', () => {
+    delete online[socket.id];
+    io.emit('newNickname', online);
+  });  
   
   socket.on('sendNickname', (nick) => {
     online[socket.id] = nick;
-    console.log(nick);
     io.emit('newNickname', online);
   });
 });
