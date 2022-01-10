@@ -20,24 +20,19 @@
     const buttonSend = document.querySelector('#buttonSend');
     const inputMessage = document.querySelector('#inputMessage');
     const usersList = document.querySelector('#users-list');
+
     function getNickname(id) {
       const nickName = sessionStorage.getItem('nickname');
       if(!nickName) {
         // how to return a part of string: https://www.w3schools.com/jsref/jsref_substr.asp
         return id.substr(0, 16);
       };
-      nickName
+      return nickName
     };
 
-    const removeUser = (array, removedUser) => array.filter((user) => user !== removedUser);
-
-    const addNewUser = (username) => {
-      const li = document.createElement('li');
-      li.innerText = username;
-      li.dataset.testid = onlineUserID;
-      usersList.appendChild(li);
-    }
-    const removeUser = (array, removedUser) => array.filter((user) => user !== removedUser);
+    function removeUser(array, removedUser) {
+      return array.filter((user) => user !== removedUser);
+    };
 
     function addNewUser(username) {
       const li = document.createElement('li');

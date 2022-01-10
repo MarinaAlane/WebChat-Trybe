@@ -1,24 +1,26 @@
-let allUsers = [];
-const users = {};
+let usersList = [];
+const userClient = {};
 
-const newUser = (user, io) => {
-  allUsers.push(user);
-  io.emit('renderList', allUsers);
-  users[user] = user;
-};
+function newUser(user, io) {
+  usersList.push(user);
+  io.emit('renderList', usersList);
+  console.log(usersList);
+  userClient[user] = user;
+}
 
-const removeUser = (removedUser, io) => {
-  allUsers = allUsers.filter((user) => user !== removedUser);
-  io.emit('renderList', allUsers);
-};
+function removeUser(removedUser, io) {
+  usersList = usersList.filter((user) => user !== removedUser);
+  io.emit('renderList', usersList);
+  console.log(usersList);
+}
 
-const changeUserName = (lastedName, changedName, io) => {
-  const position = allUsers.indexOf(lastedName);
-  allUsers[position] = changedName;
-  io.emit('renderList', allUsers);
+function changenameUser(lastedName, changedName, io) {
+  const position = usersList.indexOf(lastedName);
+  usersList[position] = changedName;
+  io.emit('renderList', usersList);
 
-  console.log(allUsers);
-};
+  console.log(usersList);
+}
 
 module.exports = (io) => io.on('connection', async (socket) => {
   newUser(socket.id.substr(0, 16), io);
@@ -27,12 +29,12 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('changeName', (lastName, newName) => {
-    changeUserName(lastName, newName, io);
-    users[socket.id.substr(0, 16)] = newName;
+    changenameUser(lastName, newName, io);
+    userClient[socket.id.substr(0, 16)] = newName;
   });
 
   socket.on('disconnect', async () => {
     console.log(`usuario disconectado ${socket.id.substr(0, 16)}`);
-    removeUser(users[socket.id.substr(0, 16)], io);
+    removeUser(userClient[socket.id.substr(0, 16)], io);
   });
 });
