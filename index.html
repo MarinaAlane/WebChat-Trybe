@@ -4,12 +4,72 @@
     <title>WebChat - Socket</title>
   </head>
   <body>
+    <p id="mynick"></p>
+    <ul id="nicknames"></ul>
+    <form id="form-nickname">
+      <input data-testid="nickname-box" id="nickinput" autocomplete="off"/>
+      <button id="buttonnick" type="submit" data-testid="nickname-button">Save
+    </button>
+    </form>
     <ul id="messages"></ul>
-    <form action="">
+    <form id="form-message">
       <input data-testid="message-box" id="messageInput" autocomplete="off" />
       <button type="submit" data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
-    <script src='./index.js'></script>
+    <script>const socket = window.io();
+      const form = document.querySelector('#form-message');
+      const newMessage = document.querySelector('#messageInput');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const myNickName = document.querySelector('#mynick').innerText;
+        socket.emit('message', { nickname: myNickName, chatMessage: newMessage.value });
+        newMessage.value = '';
+      });
+
+      const createMessage = (message) => {
+        const chatMessage = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.innerText = message;
+        li.setAttribute('data-testid', 'message'); 
+        chatMessage.appendChild(li);
+      };
+
+      socket.on('sendNickname', (nickname) => {
+        const nicknameUl = document.querySelector('#nicknames');
+        const li = document.createElement('li');
+        li.innerText = nickname;
+        li.setAttribute('data-testid', 'online-user'); 
+        nicknameUl.appendChild(li);
+      });
+
+      const formNick = document.querySelector('#nickinput');
+      const btnNick = document.querySelector('#buttonnick');
+
+      btnNick.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nick = formNick.value;
+        document.querySelector('#mynick').innerText = nick;
+        socket.emit('sendNickname', nick);
+      });
+
+      socket.on('newNickname', (online) => {
+        const nicknameUli = document.querySelector('#nicknames');
+
+        while (nicknameUli.firstChild) {
+          nicknameUli.removeChild(nicknameUli.firstChild);
+        }
+
+        for (let newU in online) {
+          const li = document.createElement('li');
+          li.innerText = online[newU];
+          li.setAttribute('data-testid', 'online-user'); 
+          nicknameUli.appendChild(li);
+        }
+      });
+
+      socket.on('message', (message) => createMessage(message));
+    </script>
   </body>
 </html>
