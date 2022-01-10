@@ -17,7 +17,6 @@ const onLineUser = (users) => {
 };
 
 socket.on('user', (users) => onLineUser(users));
-socket.on('saveNick', (nick) => sessionStorage.setItem('nickname', nick));
 
 const formClient = document.querySelector('#client-form');
 const inputNickname = document.querySelector('#clientInput');
@@ -53,3 +52,10 @@ const createMessage = (message) => {
 };
 
 socket.on('message', (message) => createMessage(message));
+
+socket.on('setup', ({ userName, allMessages }) => {
+  sessionStorage.setItem('nickname', userName);
+  allMessages.forEach(({ message, nickname, timestamp }) => {
+    createMessage(`${timestamp} - ${nickname}: ${message}`);
+  });
+});

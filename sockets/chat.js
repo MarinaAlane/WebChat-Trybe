@@ -1,3 +1,5 @@
+const { createMessage, getAllMessages } = require('../models/messagesModel');
+
 const allUsers = [];
 
 // https://stackoverflow.com/questions/10632346/how-to-format-a-date-in-mm-dd-yyyy-hhmmss-format-in-javascript
@@ -7,14 +9,15 @@ const formatTimestamp = () => {
   const dateFormat = [date.getDate(), date.getMonth() + 1, date.getFullYear()].join('-');
   const hourFormat = [date.getHours(), date.getMinutes(), date.getSeconds()].join(':');
 
-  return { dateFormat, hourFormat };
+  return `${dateFormat} ${hourFormat}`;
 };
 
-module.exports = (io) => io.on('connection', (socket) => {
+module.exports = (io) => io.on('connection', async (socket) => {
   let userName = socket.id.substring(0, 16);
   allUsers.push(userName);
+  const allMessages = await getAllMessages();
 
-  socket.emit('saveNick', userName);
+  socket.emit('setup', { userName, allMessages });
   io.emit('user', allUsers);
 
   socket.on('userNick', (user) => {
@@ -28,8 +31,8 @@ module.exports = (io) => io.on('connection', (socket) => {
     io.emit('user', allUsers);
   });
 
-  socket.on('message', (message) => {
-    const { dateFormat, hourFormat } = formatTimestamp();
-    io.emit('message', `${dateFormat} ${hourFormat} - ${userName}: ${message.chatMessage}`);
+  socket.on('message', ({ chatMessage }) => {
+    io.emit('message', `${formatTimestamp()} - ${userName}: ${chatMessage}`);
+    createMessage({ message: chatMessage, nickname: userName, timestamp: formatTimestamp() });
   });
 });
