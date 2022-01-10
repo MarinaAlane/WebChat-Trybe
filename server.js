@@ -40,7 +40,8 @@ io.on('connection', (socket) => {
         socket.emit('dbMessages', allMessages);
         const indice = listUsers.indexOf(userActual);
         listUsers.splice(indice, 1, userModify);
-        io.emit('newNickName', { userActual, userModify });
+        io.emit('onlineUserOn', listUsers);
+        // io.emit('newNickName', { userActual, userModify });
     });
 
     // Quando o usuário ativo desconecta...
