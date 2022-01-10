@@ -5,7 +5,6 @@ const inputNickname = document.querySelector('#input-nickname');
 const inputChat = document.querySelector('#input-chat');
 const buttonChangeNickName = document.querySelector('#button-change-nickname');
 const nickname = document.querySelector('#nickname');
-const randomNickNameLength = 16;
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -17,9 +16,10 @@ form.addEventListener('submit', (e) => {
     inputChat.value = '';
   }
 });
-/* eslint no-bitwise: [2, { allow: ["~"] }] */
-nickname.innerText = [...Array(randomNickNameLength)]
-  .map((_i) => (~~(Math.random() * 36)).toString(36)).join('');
+
+nickname.innerText = ([...Array(2)]
+.map((_i) => ((Math.random() * 36)).toString(36)).join('').slice(2, 10) + [...Array(2)]
+.map((_i) => ((Math.random() * 36)).toString(36)).join('').slice(2, 10));
 
 buttonChangeNickName.addEventListener('click', () => {
   nickname.innerText = inputNickname.value;
