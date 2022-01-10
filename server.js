@@ -6,6 +6,7 @@ const CORS = require('cors');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const msgRoutes = require('./routes');
 
 const PORT = process.env.PORT || 3000;
 
@@ -18,9 +19,7 @@ app.engine('html', require('ejs').renderFile);
 
 app.set('view engine', 'ejs');
 
-app.use('/', (req, res) => {
-  res.render('index.ejs');
-});
+app.use('/', msgRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

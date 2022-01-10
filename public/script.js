@@ -1,11 +1,11 @@
 const socket = window.io();
 
 function Message(message) {
-  const divMessages = document.querySelector('.messages');
+  const listMessages = document.querySelector('.messages');
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
-  divMessages.append(li);
+  listMessages.append(li);
 }
 
 function usersOnline(userName, id) {

@@ -16,7 +16,11 @@
     </div>
     <div class="container">
       <ul class="onlineUsers"></ul>
-      <ul class="messages"></ul>
+      <ul class="messages">
+        <% getMessages.forEach(({nickname, timestamp, message}) => { %>
+          <li data-testid='message'><%=timestamp%> - <%=nickname%>: <%=message%></li>
+        <%})%>
+      </ul>
     </div>
     <input type="text" data-testid="message-box" name="message" placeholder="Digite sua mensagem">
     <button class="sendButton" data-testid="send-button">Enviar</button>
