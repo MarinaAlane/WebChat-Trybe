@@ -21,17 +21,18 @@ function getRandomChars() {
 }
 
 randomNickname.innerText = getRandomChars(); // adiciona random no HTML
-// console.log('rand', randomNickname.innerText)
-sessionStorage.setItem('username', randomNickname.innerText);
+console.log('rand', randomNickname.innerText);
+// sessionStorage.setItem('username', randomNickname.innerText);
 formButtonNickname.addEventListener('click', (e) => {
   e.preventDefault();
   const nickname = nicknameInput.value;
-  console.log(`salvou o nome ${nickname}`);
+  // console.log(`salvou o nome ${nickname}`);
 
   randomNickname.innerText = nickname;
   nicknameInput.value = '';
 
-  sessionStorage.setItem('username', nickname);
+  // sessionStorage.setItem('username', nickname);
+  console.log({nickname})
   socket.emit('updateUsername', nickname);
 });
 
@@ -69,11 +70,11 @@ const createUser = (user) => {
 const usersOn = (users) => {
   console.log({ users });
   const list = Object.values(users);
-  const username = sessionStorage.getItem('username'); 
+  // const username = sessionStorage.getItem('username'); 
   // console.log(socket.id);
 
   const currentUser = users.find((user) => 
-    user === username);
+    user === randomNickname.innerText);
   console.log({ currentUser });
   console.log('random', randomNickname.innerText);
 
@@ -82,7 +83,7 @@ const usersOn = (users) => {
   // list.unshift(currentUser);
   // console.log(list)
   createUser(currentUser); // crio o usuario e filtro posteriormente para conseguir listar todos
-if (username) {
+if (currentUser) {
   list.filter((user) => user !== currentUser).forEach((nick) => createUser(nick));
 }
 };
@@ -106,8 +107,8 @@ socket.on('history', (messages) => {
 });
 
 window.onload = () => {
-  const username = sessionStorage.getItem('username');
-  socket.emit('updateUsername', username);
+  // const username = sessionStorage.getItem('username');
+  socket.emit('updateUsername', randomNickname.innerText);
 };
 
 // slack

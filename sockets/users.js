@@ -2,7 +2,7 @@ const users = {};
 
 module.exports = (io) =>
   io.on('connection', async (socket) => {
-  console.log(`Usuário ${socket.id} conectado`);
+  // console.log(`Usuário ${socket.id} conectado`);
 
 // socket.emit('welcomeMessage', ('Olá, bem vindos!'));
 
@@ -15,7 +15,7 @@ module.exports = (io) =>
   });
   
   socket.on('disconnect', () => {
-    console.log(`Usuário ${socket.id} saiuuu!`);
+    // console.log(`Usuário ${socket.id} saiuuu!`);
     delete users[socket.id];
     io.emit('username', users);
   });
