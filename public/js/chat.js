@@ -89,11 +89,11 @@ if (username) {
 
 socket.on('message', (chatMessage) => createMessage(chatMessage));
 
-socket.on('username', (users) => {
+socket.on('usersOnline', (users) => {
   const list = Object.values(users);
   // console.log({ list });
   usersOn(list);
-  socket.emit('username', list);
+  // socket.emit('username', list);
 });
 
 socket.on('history', (messages) => {

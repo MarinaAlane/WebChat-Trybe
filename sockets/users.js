@@ -11,12 +11,12 @@ module.exports = (io) =>
     // console.log({nickName});
     users[socket.id] = nickName;
     // console.log({ users });
-    io.emit('username', users);
+    io.emit('usersOnline', users);
   });
   
   socket.on('disconnect', () => {
     // console.log(`Usuário ${socket.id} saiuuu!`);
     delete users[socket.id];
-    io.emit('username', users);
+    io.emit('usersOnline', users);
   });
 });
