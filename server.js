@@ -22,4 +22,6 @@ app.get('/', (_req, res) => {
 
 require('./socket/chat')(io);
 
+require('./socket/users.js')(io);
+
 server.listen(PORT, () => console.log(`Escutando a porta ${PORT}`));

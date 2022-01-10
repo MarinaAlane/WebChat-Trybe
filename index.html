@@ -7,6 +7,7 @@
   <title>Socket.IO - trybe</title>
 </head>
 <body>
+  <ol id="users-list"></ol>
   <input id="nickname" type="text" placeholder="Type your nickname" data-testid="nickname-box"/>
   <button type="button" id="nicknameButton" data-testid="nickname-button">Submit</button>
   <ul id="messages"></ul>
@@ -18,14 +19,25 @@
     const socket = io()
     const buttonSend = document.querySelector('#buttonSend');
     const inputMessage = document.querySelector('#inputMessage');
-    function getNickname(id) {
+    const usersList = document.querySelector('#users-list');
+    const getNickname = (id) => {
       const nickName = sessionStorage.getItem('nickname');
       if(!nickName) {
         // how to return a part of string: https://www.w3schools.com/jsref/jsref_substr.asp
         return id.substr(0, 16);
       };
-      return nickName
+      nickName
+    };
+
+    const removeUser = (array, removedUser) => array.filter((user) => user !== removedUser);
+
+    const addNewUser = (username) => {
+      const li = document.createElement('li');
+      li.innerText = username;
+      li.dataset.testid = onlineUserID;
+      usersList.appendChild(li);
     }
+
     buttonSend.addEventListener('click', (e) => {
     e.preventDefault();
     const id = getNickname(socket.id)
@@ -53,9 +65,11 @@
     socket.on('message', (message) => createMessage(message));
     const nicknameButton = document.querySelector('#nicknameButton')
     const nickname = document.querySelector('#nickname')
+
     nicknameButton.addEventListener('click', (e) => {
       e.preventDefault();
-      sessionStorage.setItem('nickname', nickname.value)
+      sessionStorage.setItem('nickname', nickname.value);
+      socket.emit('changeName', lastName, nickInput.value);
       nickname.value = ''
     })
 
@@ -68,6 +82,17 @@
             messagesUl.appendChild(li);
           });
         });
+
+    socket.on('renderList', (array) => {
+      usersList.innerHTML = '';
+      const username = getNickname(socket.id);
+      const newArray = removeUser(array, username);
+      console.log(socket.id.substr(0, 16), username, newArray);
+      addNewUser(username);
+      newArray.forEach((user) => {
+        addNewUser(user);
+      });
+    });
     </script>
 </body>
 </html>
