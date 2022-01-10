@@ -25,7 +25,17 @@ const findMessages = async () => {
     }
 };
 
+const alterName = async (nameAnt, nameAtu) => {
+    const alteraNameDb = await connection();
+    const alter = await alteraNameDb.collection('messages')
+    .update({ nickname: nameAnt }, { $set: { nickname: nameAtu } }, 
+    { returnOriginal: false });
+
+    return alter;
+};
+
 module.exports = {
     saveChat,
     findMessages,
+    alterName,
 };

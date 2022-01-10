@@ -91,6 +91,9 @@
 
     // Evento de listar mensagens
         socket.on('dbMessages', (msg) => {
+          while(messages.hasChildNodes()){
+          messages.removeChild(messages.firstChild);
+        }  
             if (msg) {
               console.log(msg);
                 msg.map(function (mensagem) {

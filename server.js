@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const moment = require('moment');
-const { saveChat, findMessages } = require('./models/chatModel');
+const { saveChat, findMessages, alterName } = require('./models/chatModel');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,9 +22,8 @@ io.on('connection', async (socket) => {
     socket.on('message', async (msg) => {
         const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
         const { nickname, chatMessage } = msg;
-        const saveMessages = await saveChat(nickname, chatMessage, timestamp);
+        await saveChat(nickname, chatMessage, timestamp);
         io.emit('message', `${timestamp} ${nickname}: ${chatMessage}`);
-        console.log('Mensagens salvas', saveMessages);
     });
     socket.on('onlineUserOn', (msg) => {
         listUsers.push(msg);
@@ -32,9 +31,13 @@ io.on('connection', async (socket) => {
     });
 });
 
-io.on('connection', async (socket) => {
-    socket.on('newNickName', (msg) => {
+io.on('connection', (socket) => {
+    socket.on('newNickName', async (msg) => {
         const { userModify, userActual } = msg;
+        const newMessage = await alterName(userActual, userModify);
+        console.log(newMessage);
+        const allMessages = await findMessages();
+        socket.emit('dbMessages', allMessages);
         const indice = listUsers.indexOf(userActual);
         listUsers.splice(indice, 1, userModify);
         io.emit('newNickName', { userActual, userModify });
