@@ -13,6 +13,8 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
 
+const model = require('./models/chat');
+
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/chat.html`);
 });
@@ -27,13 +29,19 @@ io.on('connection', (socket) => {
     io.emit('updateNickname', nickname);
   });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const formatedDate = moment().format('DD-MM-YYYY HH:mm:ss');
-    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
-  });
-
   socket.on('disconnect', () => {
     console.log(`User ${socket.id} disconnected`);
+  });
+});
+
+io.on('connection', async (socket) => {
+  const messages = await model.getAll();
+  socket.emit('history', messages);
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
+    model.saveMessage({ message: chatMessage, nickname, timestamp });
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
   });
 });
 

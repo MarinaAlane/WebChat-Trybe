@@ -85,5 +85,18 @@
     };
 
     socket.on('message', (chatMessage) => createMessage(chatMessage));
+/*     socket.on('message', (messages) => {
+      messages.forEach((message) => {
+        const li = document.createElement('li');
+        li.setAttribute('data-testid', 'message');
+        li.innerText = message;
+        messagesUl.appendChild(li);
+      });
+}); */
+socket.on('history', (messages) => {
+      messages.forEach(({ message: chatMessage, nickname, timestamp }) => {
+        createMessage(`${timestamp} - ${nickname}: ${chatMessage}`)
+      })
+    })
   </script>
 </html>
