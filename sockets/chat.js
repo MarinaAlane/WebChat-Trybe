@@ -41,6 +41,14 @@ const getMessages = async (socket) => {
   socket.emit('getMessages', messages);
 };
 
+const disconnectUser = (socket, io) => {
+  socket.on('disconnect', () => {
+    const userIndex = usersOnline.findIndex((user) => user.id === socket.id);
+    usersOnline.splice(userIndex, 1);
+    io.emit('usersOnline', usersOnline);
+  });
+};
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     newMsg(socket, io);
@@ -48,5 +56,6 @@ module.exports = (io) => {
     setNewNickname(socket, io);
     updateUsersOnline(socket, io);
     getMessages(socket);
+    disconnectUser(socket, io);
   });
 };
