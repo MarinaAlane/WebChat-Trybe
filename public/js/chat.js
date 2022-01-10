@@ -45,6 +45,15 @@ const setUserList = (userList) => {
   users.appendChild(li);
 };
 
+const getMessageList = (messageList) => {
+  messageList.forEach((message) => {
+    createnewMessage(
+      `${message.timestamp} - ${message.nickname}: ${message.message}`,
+    );
+  });
+};
+
 socket.on('message', createnewMessage);
 socket.on('newUser', createUser);
 socket.on('usersOnline', setUserList);
+socket.on('getMessages', getMessageList);

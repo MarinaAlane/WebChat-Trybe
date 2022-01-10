@@ -1,4 +1,5 @@
 const moment = require('moment');
+const chatModel = require('../models/chatModel');
 
 const usersOnline = [];
 
@@ -11,8 +12,13 @@ const createUser = (socket) => {
 
 const newMsg = (socket, io) => {
   const timestamp = moment().format('DD-MM-YYYY h:mm:ss A');
-  socket.on('message', ({ nickname, chatMessage }) => {
+  socket.on('message', async ({ nickname, chatMessage }) => {
     io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+    await chatModel.createMessage({
+      message: chatMessage,
+      nickname,
+      timestamp,
+    });
   });
 };
 
@@ -30,11 +36,17 @@ const updateUsersOnline = (socket, io) => {
   });
 };
 
+const getMessages = async (socket) => {
+  const messages = await chatModel.getAllMessages();
+  socket.emit('getMessages', messages);
+};
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     newMsg(socket, io);
     createUser(socket);
     setNewNickname(socket, io);
     updateUsersOnline(socket, io);
+    getMessages(socket);
   });
 };
