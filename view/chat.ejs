@@ -8,7 +8,6 @@
   <title>WebChat</title>
 </head>
 <body>
-  <h1 data-testid="online-user" class="userNickname"></h1>
   <main class="chatbox">
     <div class="chat-data">
       <form class="nicknameForm">
@@ -20,7 +19,11 @@
         >
         <button data-testid="nickname-button">Salvar</button>
       </form>
-      <ul class="online-users"></ul>
+      <ul class="onlineUsers-list">
+        <li data-testid="online-user" class="onlineUser">
+          <%=userNick%>
+        </li>
+      </ul>
     </div>
     <div class="chat-messages">
       <ul class="messages"></ul>

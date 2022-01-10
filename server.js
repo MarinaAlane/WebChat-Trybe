@@ -3,29 +3,32 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
-const moment = require('moment');
 
 const app = express();
 
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 
-app.use(express.static(path.join(__dirname, '/view/chat')));
-
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, '/view/chat/'));
-});
-
-const formatedDate = moment().format('MM-DD-YYYY h:mm:ss A');
+const UsersIO = require('./sockets/users');
+const MessagesIO = require('./sockets/messages');
 
 io.on('connection', (socket) => {
-  const { id } = socket;
+  UsersIO(io, socket);
+  MessagesIO(io, socket);
+});
 
-  socket.emit('generateNickname', id.slice(4));
+// https://stackoverflow.com/questions/10726909/random-alpha-numeric-string-in-javascript
+const randomNick = () => (
+  Array.from(Array(16), () => Math.floor(Math.random() * 36).toString(36)).join('')
+);
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    io.emit('message', `${formatedDate} - ${nickname}: ${chatMessage}`);
-  });
+app.use(express.static(path.join(__dirname, '/view')));
+
+app.set('views', path.join(__dirname, 'view'));
+app.set('view engine', 'ejs');
+
+app.get('/', (_req, res) => {
+  res.render('chat.ejs', { userNick: randomNick() });
 });
 
 const PORT = 3000;

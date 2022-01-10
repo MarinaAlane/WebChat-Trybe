@@ -26,10 +26,14 @@ body {
   padding: 10px;
 }
 
-.online-users {
+.onlineUsers-list {
   background-color: royalblue;
   height: 50vh;
   margin-top: 15px;
+}
+
+.onlinUsers-list li {
+  list-style: none;
 }
 
 .chat-messages {
