@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const { Server } = require('socket.io');
 const formatMsg = require('./utils/formatMessage');
+const messagesController = require('./controllers/messagesController');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,25 +12,25 @@ const PORT = 3000;
 
 const users = {};
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   users[socket.id] = socket.id.slice(0, 16);
   console.log(`${users[socket.id]} está online`);
+  const messagesHistory = await messagesController.showMsg();
 
   io.emit('users', users);
+  io.emit('messageHistory', messagesHistory);
 
-  socket.on('message', ({ chatMessage, nickname = users[socket.id] }) => {
+  socket.on('message', async ({ chatMessage, nickname = users[socket.id] }) => {
     io.emit('message', formatMsg(nickname, chatMessage));
+    await messagesController.saveMsg({ message: chatMessage, nickname });
   });
 
   socket.on('changeNick', (newNick) => {
-    const oldNick = users[socket.id];
-    users[socket.id] = newNick;
-    console.log(`${oldNick} mudou o nick para ${users[socket.id]}`);
+    users[socket.id] = newNick; io.emit('users', users);
   });
 
-  socket.on('disconnet', () => {
-    delete users[socket.id];
-    console.log(`usuário ${socket.id} desconectou`);
+  socket.on('disconnect', () => {
+    delete users[socket.id]; io.emit('users', users);
   });
 });
 

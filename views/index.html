@@ -124,20 +124,34 @@
     })
 
     socket.on('users', (users) => {
+      document.querySelector('#online-users').innerHTML = '';
+      const currentUser = users[socket.id];
+
       Object.values(users).forEach((user) => {
         const userName = document.createElement('li');
         userName.setAttribute('data-testid', 'online-user');
         userName.textContent = user;
-        onlineUsers.appendChild(userName);
+        return currentUser === user
+          ? onlineUsers.prepend(userName)
+          : onlineUsers.appendChild(userName);
       });
     });
 
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
       newMessage.setAttribute('data-testid', 'message');
-      newMessage.textContent = msg;
+      newMessage.innerText = msg;
       messages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    socket.on('messageHistory', (msgs) => {
+      msgs.forEach(({ message, timestamps, nickname }) => {
+        const msgList = document.createElement('li');
+        msgList.setAttribute('data-testid', 'message');
+        msgList.innerText = `${timestamps} ${nickname}: ${message}`;
+        messages.appendChild(msgList);
+      });
     });
   </script>
 </body>
