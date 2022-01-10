@@ -36,7 +36,7 @@ const formMessages = document.querySelector('#form-messages');
 const inputMessage = document.querySelector('#messageInput');
 
 formMessages.addEventListener('submit', (e) => {
-  const nickname = socket.id.substring(0, 16);
+  const nickname = sessionStorage.getItem('nickname');
   e.preventDefault();
   socket.emit('message', {
     chatMessage: inputMessage.value,
