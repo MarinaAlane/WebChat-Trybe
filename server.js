@@ -25,7 +25,7 @@ let listOnlineUsers = [];
 io.on('connection', async (socket) => {
   socket.emit('usersOnline', socket.id.slice(0, 16));
 
-  await getAllMessage(socket);
+  getAllMessage(socket);
 
   socket.on('name', (userName) => {
     listOnlineUsers = listOnlineUsers.filter((userOnline) => userOnline.id !== socket.id);
