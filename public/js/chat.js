@@ -32,7 +32,7 @@ formButtonNickname.addEventListener('click', (e) => {
   nicknameInput.value = '';
 
   // sessionStorage.setItem('username', nickname);
-  console.log({nickname})
+  console.log({ nickname });
   socket.emit('updateUsername', nickname);
 });
 
