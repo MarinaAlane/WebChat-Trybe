@@ -7,14 +7,16 @@
   <title>Document</title>
 </head>
 <body>
-  <ul id="messages"></ul>
   <div id="form">
-    <h3 id="nickname" data-testid="online-user"></h3>
+    <ul id=users>
+      <li id="nickname" data-testid="online-user"></li>
+    </ul>
     <form action="" id="form">
       <input type="text" id="input-nickname" placeholder="nickname" data-testid="nickname-box"/>
       <button type="button" id="button-change-nickname" data-testid="nickname-button">Salvar nickname</button>
       <input id="input-chat" placeholder="message" data-testid="message-box"></input>
       <button data-testid="send-button">Enviar</button>
+      <ul id="messages"></ul>
     </form>
   </div>
 

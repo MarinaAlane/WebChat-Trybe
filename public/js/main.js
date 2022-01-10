@@ -23,12 +23,40 @@ nickname.innerText = ([...Array(2)]
 
 buttonChangeNickName.addEventListener('click', () => {
   nickname.innerText = inputNickname.value;
+  socket.emit('changeNickname', nickname.innerText);
 });
 
-  socket.on('message', (msg) => {
-  const newMessage = document
-    .createElement('li');
-    newMessage.setAttribute('data-testid', 'message');
-  newMessage.innerText = msg;
-  messages.appendChild(newMessage);
+socket.on('message', (msg) => {
+const newMessage = document
+  .createElement('li');
+  newMessage.setAttribute('data-testid', 'message');
+newMessage.innerText = msg;
+messages.appendChild(newMessage);
 });
+
+socket.on('conectedUsers', (users) => {
+  const conUsers = document.getElementById('users');
+  conUsers.innerHTML = '';
+  const conectedUsers = [];
+  const liUser = document.createElement('li');
+  liUser.setAttribute('data-testid', 'online-user');
+  liUser.innerText = nickname.innerText;
+  conectedUsers.push(liUser);
+
+  users.forEach((user) => {
+    if (user !== nickname.innerText) {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'online-user');
+      li.innerText = user;
+      conectedUsers.push(li);
+    }
+  });
+
+  conectedUsers.forEach((user) => {
+    conUsers.appendChild(user);
+  });
+});
+
+window.onload = () => {
+  socket.emit('newUser', nickname.innerText);
+};
