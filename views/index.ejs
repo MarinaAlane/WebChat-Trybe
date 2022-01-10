@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/socket.io/socket.io.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <form action="submit">
+    <input id="messageTyped" data-testid="message-box"/>
+    <button type="submit" data-testid="send-button">Enviar</button>
+  </form>
+  <ul id="messages"></ul>
+  <script>
+    const socket = io();
+    const formMessages = document.querySelector('form');
+    const messageTyped = document.querySelector('#messageTyped');
+
+    const generateMessage = (message) => {
+      const li = document.createElement('li');
+      const ul = document.querySelector('#messages');
+      li.innerText = message;
+      li.setAttribute('data-testid', 'message');
+      ul.appendChild(li);
+      console.log(message);
+    };
+
+    formMessages.addEventListener('submit', (e) => {
+      e.preventDefault();
+      console.log(messageTyped.value);
+      socket.emit('message', { 
+        chatMessage: messageTyped.value,
+        nickname: socket.id.substr(0, 16)
+      });
+      return false;
+    });
+
+    socket.on('message', (message) => generateMessage(message));
+
+  </script>
+</body>
+</html>
