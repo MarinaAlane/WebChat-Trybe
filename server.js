@@ -1,45 +1,23 @@
-// Faça seu código aqui
 const express = require('express');
-const http = require('http');
-const path = require('path');
-const { Server } = require('socket.io');
-const { getAll } = require('./models/mensagens');
-const createMessage = require('./mensagens');
+const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
-const server = http.createServer(app);
-const io = new Server(server);
-
-app.use(express.static(path.join(__dirname, '/public')));
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    method: ['GET', 'POST'],
+  },
 });
 
-const users = {};
+app.use(cors());
+app.use(express.static(`${__dirname}/public`));
 
-io.on('connection', async (socket) => {
-  const todaInfo = await getAll().then((e) =>
-    e.map(({ timestamp, nickname, message }) => `${timestamp} ${nickname} ${message}`));
+require('./sockets/chat')(io);
 
-  users[socket.id] = socket.id.slice(0, 16);
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
-  io.emit('newConnection', { user: users[socket.id], todaInfo });
+app.get('/', (_req, res) => res.render('webchat'));
 
-  socket.on('nickname', (nickname) => {
-    users[socket.id] = nickname;
-    io.emit('users', Object.values(users));
-  });
-
-  socket.on('message', async ({ messageValue, nickName }) => {
-    const response = await createMessage(messageValue, nickName);
-    io.emit('message', response);
-  });
-
-  socket.on('disconnect', () => {
-    delete users[socket.id];
-    io.emit('users', Object.values(users));
-  });
-});
-
-server.listen(PORT, () => console.log(`estou escutando na porta ${PORT}`));
+server.listen(3000, () => console.log('Servidor na porta: 3000'));

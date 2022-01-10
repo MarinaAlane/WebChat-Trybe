@@ -1,17 +1,18 @@
 const socket = window.io();
 
-let nickName = '';
+const ulMessages = document.querySelector('#list-message');
+const ulUsers = document.querySelector('#list-nickname');
 
-const buttonNick = document.querySelector('#btn-nickname');
-const buttonChat = document.querySelector('#btn-message');
-const ulChat = document.querySelector('#list-message');
-const ulNick = document.querySelector('#list-nickname');
+const btnNickName = document.querySelector('#btn-nickname');
+const btnMessage = document.querySelector('#btn-message');
 
-const createFirstMessage = (message) => {
+let nickname = '';
+
+const createMessage = (message) => {
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = message;
-  ulChat.appendChild(li);
+  ulMessages.appendChild(li);
 };
 
 const createUser = (user) => {
@@ -19,45 +20,45 @@ const createUser = (user) => {
   li.setAttribute('data-testid', 'online-user');
   li.className = 'users';
   li.innerText = user;
-  ulNick.appendChild(li);
+  ulUsers.appendChild(li);
 };
 
-socket.on('newConnection', ({ user, todaInfo }) => {
-  todaInfo.forEach((e) => createFirstMessage(e));
-  nickName = user;
-  socket.emit('nickname', user);
-});
-
-socket.on('users', (users) => {
-  document.querySelectorAll('.users').forEach((e) => {
-    ulNick.removeChild(e);
-  });
-
-  createUser(nickName);
-  users.forEach((user) => {
-    if (user !== nickName) {
-      createUser(user);
-    }
-  });
-});
-
-buttonNick.addEventListener('click', (e) => {
+btnNickName.addEventListener('click', (e) => {
   e.preventDefault();
-  const nick = document.querySelector('#input-nickname');
-  nickName = nick.value;
-  socket.emit('nickname', nickName);
-  nick.value = '';
+  const client = document.querySelector('#input-nickname');
+  nickname = client.value;
+  socket.emit('nickname', client.value);
+  client.value = '';
   return false;
 });
 
-buttonChat.addEventListener('click', (e) => {
+btnMessage.addEventListener('click', (e) => {
   e.preventDefault();
   const message = document.querySelector('#input-message');
-  socket.emit('message', { messageValue: message.value, nickName });
+  socket.emit('message', { chatMessage: message.value, nickname });
   message.value = '';
   return false;
 });
 
-socket.on('message', (response) => {
-  createFirstMessage(response);
+socket.on('newConnection', ({ user, historic }) => {
+  historic.forEach((e) => createMessage(e));
+  nickname = user;
+  socket.emit('nickname', user);
+});
+
+socket.on('message', (message) => {
+  createMessage(message);
+});
+
+socket.on('users', (users) => {
+  document.querySelectorAll('.users').forEach((e) => {
+    ulUsers.removeChild(e);
+  });
+
+  createUser(nickname);
+  users.forEach((user) => {
+    if (user !== nickname) {
+      createUser(user);
+    }
+  });
 });
