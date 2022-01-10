@@ -7,23 +7,25 @@
   <title>Socket.IO - trybe</title>
 </head>
 <body>
-  <input id="nickname" type="text" placeholder="Type your nickname" />
-  <button type="button" id="nicknameButton">Submit</button>
+  <input id="nickname" type="text" placeholder="Type your nickname" data-testid="nickname-box"/>
+  <button type="button" id="nicknameButton" data-testid="nickname-button">Submit</button>
   <ul id="messages"></ul>
-  <input type="text" id="inputMessage" />
-  <button type="button" id="buttonSend"></button>
+  <input type="text" id="inputMessage" data-testid="message-box"/>
+  <button type="button" id="buttonSend" data-testid="send-button">Send</button>
   <script src="/socket.io/socket.io.js"></script>
 
   <script>
     const socket = io()
-    const sendbutton = document.querySelector('#buttonSend');
+    const buttonSend = document.querySelector('#buttonSend');
     const inputMessage = document.querySelector('#inputMessage');
     function getNickname(id) {
       const nickName = sessionStorage.getItem('nickname');
-      if(!nickName) return id;
+      if(!nickName) {
+        return id.substr(0, 16);
+      };
       return nickName
     }
-    sendbutton.addEventListener('click', (e) => {
+    buttonSend.addEventListener('click', (e) => {
     e.preventDefault();
     const id = getNickname(socket.id)
     socket.emit('message', {chatMessage: inputMessage.value, nickname:id});
@@ -33,9 +35,19 @@
     const createMessage = (message) => {
     const messagesUl = document.querySelector('#messages');
     const li = document.createElement('li');
+    li.dataset.testid="message";
     li.innerText = message;
     messagesUl.appendChild(li);
     };
+
+    socket.on('newUser', (message) => {
+      const messagesUl = document.querySelector('#messages');
+      const li = document.createElement('li');
+      li.dataset.testid="online-user";
+      const id = getNickname(socket.id)
+      li.innerText = id;
+      messagesUl.appendChild(li);
+      })
 
     socket.on('message', (message) => createMessage(message));
     const nicknameButton = document.querySelector('#nicknameButton')
