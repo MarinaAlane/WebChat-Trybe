@@ -36,13 +36,18 @@ const createUser = (newNickname) => {
   socket.emit('usersOnline');
 };
 
+const listUsers = (user) => {
+  const li = document.createElement('li');
+  li.innerText = user.nickname;
+  li.setAttribute('data-testid', 'online-user');
+  users.appendChild(li);
+};
+
 const setUserList = (userList) => {
   users.innerHTML = '';
   const clientUser = userList.find((user) => user.id === socket.id);
-  const li = document.createElement('li');
-  li.innerText = clientUser.nickname;
-  li.setAttribute('data-testid', 'online-user');
-  users.appendChild(li);
+  listUsers(clientUser);
+  userList.forEach((user) => user.id !== socket.id && listUsers(user));
 };
 
 const getMessageList = (messageList) => {
