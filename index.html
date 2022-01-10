@@ -53,6 +53,7 @@
       if (nicknameInput.value) {
         nickName = nicknameInput.value;
         socket.emit('nickNameChange', nickName);
+        nicknameInput.value = '';
       }
     });
 
@@ -72,11 +73,18 @@
       });
     });
 
-    socket.on('online', (user) =>{
-      const newUser = document.createElement('li');
-      newUser.setAttribute('data-testid', 'online-user')
-      newUser.innerText = user;
-      online.appendChild(newUser);
+    socket.on('online', (users) =>{
+      console.log(users)
+      const defaultNickName = socket.id.slice(0, 16);
+      users.forEach((user) =>{
+        const newUser = document.createElement('li');
+        newUser.setAttribute('data-testid', 'online-user');
+        newUser.innerText = user;
+        if (user === nickName || user === defaultNickName) {
+          online.prepend(newUser);
+        }
+        online.appendChild(newUser);
+      });
     });
   </script>
 </body>

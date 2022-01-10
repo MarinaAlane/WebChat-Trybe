@@ -15,16 +15,27 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+const users = {};
+
 io.on('connection', async (socket) => {
-  const user = socket.id.slice(0, 16);
+  users[socket.id] = socket.id.slice(0, 16);
   const messageHistory = await webChatController.getMessagesHistory();
-  io.emit('online', user);
-  io.emit('messageLog', messageHistory);
+
   socket.on('message', async ({ chatMessage, nickname }) => {
     const timeStamp = moment().format('DD-MM-yyyy HH:mm:ss');
     io.emit('message', `${timeStamp} ${nickname}: ${chatMessage}`);
     await webChatController.saveMessages({ timeStamp, nickname, chatMessage });
   });
+
+  socket.on('nickNameChange', (nickName) => {
+    users[socket.id] = nickName;
+    io.emit('online', Object.values(users));
+  });
+
+  io.emit('online', Object.values(users));
+  console.log(users);
+
+  io.emit('messageLog', messageHistory);
 });
 
 server.listen(PORT, () => console.log(`Escutando na porta ${PORT}`));
