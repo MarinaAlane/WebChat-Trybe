@@ -81,7 +81,7 @@
     }
   </style>
 </head>
-<body>
+<body data-testid="body">
   <h1>Projeto WebChat</h1>
   <div class="container">
     <div class="painel">
@@ -149,6 +149,9 @@
 
     const usersOnline = document.querySelector('#users');
 
+    socket.emit('chatHistory');
+    socket.emit('newNickname');
+
     socket.on('nickname', (arrayNickname) => {
       usersOnline.innerHTML = '';
       const lastUser = arrayNickname[arrayNickname.length -1];
@@ -165,10 +168,9 @@
       })
     })
 
-    socket.on('updateOnlineUsers', (arrNewUsers) => {
+/*     socket.on('updateOnlineUsers', (arrNewUsers) => {
       usersOnline.innerHTML = '';
       const currentUser = sessionStorage.getItem('nickname');
-      console.log(arrNewUsers);
       arrNewUsers.forEach((user) => {
         const nickname = document.createElement('li');
         nickname.textContent = user.nickname;
@@ -179,21 +181,26 @@
           usersOnline.appendChild(nickname);
         }
       })
-    });
+    }); */
+
+    socket.on('chatHistory', (history) => {
+      messages.innerHTML = '';
+      history.forEach((item) => {
+        const { message, timestamp, nickname } = item;
+        const msg = document.createElement('li');
+        const contentMessage = `${timestamp} - ${nickname}: ${message}`;
+        msg.textContent = contentMessage;
+        messages.appendChild(msg);
+      })
+    })
 
     socket.on('message', (msg) => {
       const newMessage = document.createElement('li');
       newMessage.textContent = msg;
       newMessage.setAttribute('data-testid', 'message');
       messages.appendChild(newMessage);
-      window.scrollTo(0, document.body.scrollHeight);
-    })
+     })
 
-    socket.on('userlogoff', () => {
-      const user = document.querySelector('#online-user');
-      user.innerHTML = '';
-      io.emit('disconnect')
-    })
   </script>
 </body>
 </html>
