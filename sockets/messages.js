@@ -20,6 +20,6 @@ module.exports = (io, socket, onlineUser) => {
       timestamp: time,
     };
 
-    await msgModel.createMessage(dbMsg);
+    await msgModel.insertMessage(dbMsg);
   });
 };
