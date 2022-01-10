@@ -1,11 +1,11 @@
 const socket = window.io();
 
-function renderMessage(message) {
-  const divMsg = document.querySelector('.messages');
+function Message(message) {
+  const divMessages = document.querySelector('.messages');
   const li = document.createElement('li');
   li.innerText = message;
   li.setAttribute('data-testid', 'message');
-  divMsg.append(li);
+  divMessages.append(li);
 }
 
 function usersOnline(userName, id) {
@@ -23,49 +23,51 @@ function deleteUser(id) {
 }
 
 socket.on('message', (message) => {
-  renderMessage(message);
+  Message(message);
 });
 
-const sendBtn = document.querySelector('.sendButton');
+const sendButton = document.querySelector('.sendButton');
 
-sendBtn.addEventListener('click', (event) => {
+sendButton.addEventListener('click', (event) => {
   event.preventDefault();
 
-  const user = document.querySelector('input[name="username"]').value;
-
+  const author = document.querySelector('input[name="username"]').value;
   const message = document.querySelector('input[name="message"]').value;
+
+  const updatedUser = sessionStorage.getItem('user');
 
   const messageObject = {
     chatMessage: message,
-    nickname: user,
+    nickname: updatedUser || author,
   };
 
     socket.emit('message', messageObject);
 });
 
 socket.on('connectUser', (user) => usersOnline(user, user));
-
-socket.on('currConnUsers', ({ usersConnection, onlineUser }) => {
+socket.on('currUsers', ({ usersConnection, onlineUser }) => {
   usersConnection.forEach((user) => {
     if (user.userConnected !== onlineUser) {
-      usersOnline(user.userConnected, user.userNickName);
+      usersOnline(user.userNickName, user.userConnected);
     }
   });
 });
 
-const userBtn = document.querySelector('.nickButton');
+const userButton = document.querySelector('.nickButton');
 const userInput = document.querySelector('.nickInput');
-userBtn.addEventListener('click', (event) => {
+userButton.addEventListener('click', (event) => {
   event.preventDefault();
+  sessionStorage.setItem('user', userInput.value);
   const nickName = userInput.value;
   socket.emit('updatedNickName', nickName);
 });
 
-socket.on('currNickName', ({ nickName, onlineUser }) => {
+socket.on('currentNickName', ({ nickName, onlineUser }) => {
   const userLi = document.getElementById(onlineUser);
+  console.log(nickName);
   userLi.innerText = nickName;
 });
 
 socket.on('removedUser', ({ onlineUser }) => {
   deleteUser(onlineUser);
-}); 
+});

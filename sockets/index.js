@@ -15,15 +15,14 @@ module.exports = (io) => {
     usersConnection.push({ userConnected: onlineUser, userNickName: onlineUser });
     io.emit('connectUser', onlineUser);
 
-    socket.emit('currConnUsers', { usersConnection, onlineUser });
+    socket.emit('currUsers', { usersConnection, onlineUser });
 
-    messages(io, socket);
+    messages(io, socket, onlineUser);
 
     socket.on('updatedNickName', (nickName) => {
       usersConnection = updateUsers(usersConnection, onlineUser, nickName);
-      io.emit('currNickName', ({ nickName, onlineUser }));
+      io.emit('currentNickName', ({ nickName, onlineUser }));
     });
-
     socket.on('disconnect', () => {
       usersConnection = usersConnection.filter((user) => user.userConnected !== onlineUser);
       io.emit('removedUser', { onlineUser });
