@@ -21,6 +21,7 @@
     function getNickname(id) {
       const nickName = sessionStorage.getItem('nickname');
       if(!nickName) {
+        // how to return a part of string: https://www.w3schools.com/jsref/jsref_substr.asp
         return id.substr(0, 16);
       };
       return nickName
@@ -57,6 +58,16 @@
       sessionStorage.setItem('nickname', nickname.value)
       nickname.value = ''
     })
+
+    socket.on('history', (message) => {
+          message.forEach((mess) => {
+            const messagesUl = document.querySelector('#messages');
+            const li = document.createElement('li');
+            li.dataset.testid = 'message';
+            li.innerText = `${mess.timestamp} ${mess.nickname} ${mess.message}`;
+            messagesUl.appendChild(li);
+          });
+        });
     </script>
 </body>
 </html>
