@@ -29,15 +29,21 @@ const updateNickname = (socket = null, io = null, nickname = null) => {
   };
 
   const messagesHandler = async (_socket = null, io = null, data = null) => {
-    const time = currentlyTime();
-    const { nickname, chatMessage: message } = data;
+    // const messagesHandler = async (_socket = null, io = null, data = null) => {
+    const timestamp = currentlyTime();
+    // const { nickname, chatMessage: message } = data;
+    const { nickname, chatMessage } = data;
+    // const message = chatMessage;
     // try {
-    //   await messagesModel.create({ time, nickname, message });
-    //   console.log('Insertion successfully');
+      await messagesModel.create({ timestamp, nickname, chatMessage });
+      // messagesModel.create({ nickname, message });
+      // await messagesModel.create({ nickname, message });
+      // console.log('Insertion successfully');
+      io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+      // io.emit('message', `${time} - ${nickname}: ${message}`);
     // } catch (error) {
-    //   console.log(error);
+      // console.log(error);
     // }
-    io.emit('message', `${time} - ${nickname}: ${message}`);
   };
 
   const disconnectHandler = (socket = null, _io = null, _data = null) => {
@@ -62,11 +68,13 @@ module.exports = (io) => {
     });
   
     socket.on('message', async (data) => {
-      try {
-        await messagesHandler(socket, io, data);
-      } catch (error) {
-        console.log(error);
-      }
+      // socket.on('message', async (data) => {
+      // try {
+       await messagesHandler(socket, io, data);
+        // await messagesHandler(socket, io, data);
+      // } catch (error) {
+        // console.log(error);
+      // }
     });
   });
 };

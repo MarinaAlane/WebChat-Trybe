@@ -26,7 +26,8 @@ const randomStringGen = (length = 8) => { // Source: https://attacomsian.com/blo
   return str;
 };
 
-let nickname = randomStringGen(16);
+// let nickname = randomStringGen(16);
+const nickname = randomStringGen(16);
 
 let newUsersArray = [];
 
@@ -87,13 +88,12 @@ const addUserToList = (userNickname, dataTestid, classNameFather) => {
   ul.appendChild(li);
 };
 
-// addUserToList(nickname, DATATESTID__ONLINE_USER, CLASSNAME__ONLINE_USERS_DIV);
-
-// createChatList(nickname, DATATESTID__ONLINE_USER, CLASSNAME__MESSAGE_DIV);
-
 nicknameBtn.addEventListener('click', (e) => {
-  nickname = document.getElementById('nicknameInput').value;
-  socket.emit('alterNickname', nickname);
+  // nickname = document.getElementById('nicknameInput').value;
+  // socket.emit('alterNickname', nickname);
+
+  const newNickname = document.getElementById('nicknameInput').value;
+  socket.emit('alterNickname', newNickname);
   nicknameInput.value = '';
   e.preventDefault();
 });

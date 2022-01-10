@@ -23,8 +23,9 @@
       <div id="chat-container">
         <h3> Chat Messages: </h3>
         <div class="messages-div">
-          <% messages.forEach((msg) => { %>
-            <p data-testid="messages"><%= msg.nickname %>: <%= msg.message %></p>
+          <% messages && messages.forEach((msg) => { %>
+            <!-- <p data-testid="messages"><%= msg.nickname %>: <%= msg.message %></p> -->
+            <p data-testid="messages"><%= msg.timestamp %> - <%= msg.nickname %>: <%= msg.chatMessage %></p>
           <% }) %>
         </div>
         <form action="">

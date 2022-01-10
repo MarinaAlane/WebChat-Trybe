@@ -42,10 +42,10 @@ app.get('/', async (_req, res) => {
 });
 
 app.post('/', async (req, res) => {
-  const { nickname, message } = req.body;
+  const { time, nickname, message } = req.body;
 
   try {
-    await messagesModel.create({ nickname, message });
+    await messagesModel.create({ time, nickname, message });
     res.status(201).send('Insertion successfully');
   } catch (error) {
     res.status(500).send(error);

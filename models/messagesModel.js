@@ -1,12 +1,14 @@
 const connection = require('./connection');
 
 async function create(data) {
-  const { nickname, message } = data;
+  const { timestamp, nickname, chatMessage } = data;
+  // const { nickname, message } = data;
 
   return connection()
   .then(async (db) => {
     const { insertedId } = await db.collection('messages')
-    .insertOne({ nickname, message });
+    .insertOne({ timestamp, nickname, chatMessage });
+    // .insertOne({ nickname, message });
 
     return insertedId;
   });

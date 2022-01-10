@@ -69,6 +69,7 @@ main .second-submain {
   display: flex;
   flex-direction: column;
   height: 400px;
+  overflow-y : scroll;
   padding: 3px;
   position: relative;
   width: 300px;
