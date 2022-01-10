@@ -1,59 +1,68 @@
 const socket = window.io();
 
 const form = document.querySelector('#form');
-const zoeiro = document.querySelector('#zoeiros');
-const zoeira = document.querySelector('#zoeiras');
-const messageBox = document.querySelector('#message-box');
-const nicknameBox = document.querySelector('#nickname-box');
-const nicknameButton = document.querySelector('#nickname-button');
+const ulZoeiro = document.querySelector('#zoeiros');
+const ulZoeira = document.querySelector('#zoeiras');
+const inputZoeiro = document.querySelector('#nickname-box');
+const inputZoeira = document.querySelector('#message-box');
+const zoeiroBtn = document.querySelector('#nickname-button');
 
-let nickname = '';
+let zoeiro = '';
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  socket.emit('message', {
-    nickname,
-    chatMessage: messageBox.value,
+  socket.emit('zoeira', {
+    zoeiro,
+    zoeira: inputZoeira.value,
   });
   
-  messageBox.value = '';
+  inputZoeira.value = '';
 });
 
-nicknameButton.addEventListener('click', () => {
-  nickname = nicknameBox.value;
-  nicknameBox.value = '';
+zoeiroBtn.addEventListener('click', () => {
+  zoeiro = inputZoeiro.value;
+  inputZoeiro.value = '';
 
-  socket.emit('saveZoeiro', nickname);
+  socket.emit('saveZoeiro', zoeiro);
 });
 
-const createMessage = (message) => {
+const createZoeira = (zoeira) => {
   const li = document.createElement('li');
-  li.innerText = message;
+  li.innerText = zoeira;
 
   li.setAttribute('data-testid', 'message');
-  zoeira.appendChild(li);
+  ulZoeira.appendChild(li);
 };
 
-const createUser = (newZoeiro) => {
-  nickname = newZoeiro;
+const createZoeiro = (newZoeiro) => {
+  zoeiro = newZoeiro;
 
-  socket.emit('usersOnline');
+  socket.emit('zoeirosOnline');
 };
 
-const setUserList = (zoeiroList) => {
-  zoeiro.innerHTML = '';
+const setZoeirosList = (zoeiroList) => {
+  ulZoeiro.innerHTML = '';
 
-  const clientUser = zoeiroList.find((zoador) => zoador.id === socket.id);
+  const clientZoeiro = zoeiroList.find((zoador) => zoador.id === socket.id);
 
   const li = document.createElement('li');
-  li.innerText = clientUser.nickname;
+  li.innerText = clientZoeiro.zoeiro;
 
   li.setAttribute('data-testid', 'online-user');
   
-  zoeiro.appendChild(li);
+  ulZoeiro.appendChild(li);
 };
 
-socket.on('message', createMessage);
-socket.on('newUser', createUser);
-socket.on('usersOnline', setUserList);
+const getAllZoeiras = (zoeiras) => {
+  zoeiras.forEach((zoeira) => {
+    createZoeira(
+      `${zoeira.timestamp} - ${zoeira.nickname}: ${zoeira.message}`,
+    );
+  });
+};
+
+socket.on('zoeira', createZoeira);
+socket.on('newZoeiro', createZoeiro);
+socket.on('zoeirosOnline', setZoeirosList);
+socket.on('getZoeiras', getAllZoeiras);
