@@ -1,34 +1,24 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+const cors = require('cors'); 
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-// const pug = require('pug');
+const http = require('http').createServer(app);
+const path = require('path');
 
-app.set('view engine', 'pug');
-
-app.get('/', (req, res) => {
-  res.render('index', { title: 'Hey' });
+const PORT = 3000;
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST'],
+  },
 });
 
-// app.get('/', (req, res) => res.sendFile(`${__dirname}/index.html`));
+require('./socket/chat')(io); 
 
-io.on('connection', (socket) => {
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const date = new Date().toLocaleString().replaceAll('/', '-');
-    const message = `${date} - ${(nickname === '') ? 'sem nome' : nickname}: ${chatMessage}`;
-
-    io.emit('message', message);
-  });
-
-  socket.on('usuario', (data) => {
-    const { nickname } = data;
-    io.emit('usuario', nickname);
-
-    // console.log(data);
-  });
+app.use(cors()); 
+app.get('/', (_req, res) => {
+ res.sendFile(path.join(__dirname, './views/index.html'));
+ }); 
+http.listen(PORT, () => {
+  console.log(`Servidor ouvindo na porta ${PORT}`);
 });
-
-server.listen(3000, () => console.log('Servidor online em localhost:3000'));
