@@ -26,7 +26,16 @@
         // how to return a part of string: https://www.w3schools.com/jsref/jsref_substr.asp
         return id.substr(0, 16);
       };
-      return nickName
+      nickName
+    };
+
+    const removeUser = (array, removedUser) => array.filter((user) => user !== removedUser);
+
+    const addNewUser = (username) => {
+      const li = document.createElement('li');
+      li.innerText = username;
+      li.dataset.testid = onlineUserID;
+      usersList.appendChild(li);
     }
     const removeUser = (array, removedUser) => array.filter((user) => user !== removedUser);
 

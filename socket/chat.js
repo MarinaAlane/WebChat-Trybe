@@ -8,7 +8,6 @@ module.exports = (io) => io.on('connection', async (socket) => {
   socket.emit('history', await getAllMessages());
 
   socket.on('message', async (message) => {
-    console.log(message);
     await storeMessage(message.chatMessage, message.nickname, formatDate());
     io.emit('message', `${formatDate()} ${message.nickname}: ${message.chatMessage}`);
   });
