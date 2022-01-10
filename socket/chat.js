@@ -1,14 +1,23 @@
-const { formatDate } = require('../services');
+const moment = require('moment');
+const { getAllMessages, storeMessage } = require('../models/socketModel');
 
-const { storeMessage, getAllMessages } = require('../models/socketModel');
-
+const online = {};
 module.exports = (io) => io.on('connection', async (socket) => {
-  console.log(`a user ${socket.id} connected`);
-
-  socket.emit('history', await getAllMessages());
-
-  socket.on('message', async (message) => {
-    await storeMessage(message.chatMessage, message.nickname, formatDate());
-    io.emit('message', `${formatDate()} ${message.nickname}: ${message.chatMessage}`);
+  online[socket.id] = socket.id.substring(0, 16);
+  io.emit('newNickname', online);
+  const allMessages = await getAllMessages();
+  io.emit('allMessages', allMessages);
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const timeStamp = moment().format('DD-MM-yyyy hh:mm:ss A');
+    storeMessage({ message: chatMessage, nickname, timeStamp });
+    io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
+  });
+  socket.on('disconnect', () => {
+    delete online[socket.id];
+    io.emit('newNickname', online);
+  });  
+  socket.on('sendNickname', (nick) => {
+    online[socket.id] = nick;
+    io.emit('newNickname', online);
   });
 });
