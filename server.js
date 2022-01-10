@@ -11,6 +11,7 @@ const PORT = 3000;
 const server = http.createServer(app);
 const io = new Server(server);
 
+app.use(express.static(path.join(__dirname, '/public')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -24,7 +25,7 @@ io.on('connection', async (socket) => {
   users[socket.id] = socket.id.slice(0, 16);
 
   io.emit('newConnection', { user: users[socket.id], todaInfo });
-  
+
   socket.on('nickname', (nickname) => {
     users[socket.id] = nickname;
     io.emit('users', Object.values(users));
