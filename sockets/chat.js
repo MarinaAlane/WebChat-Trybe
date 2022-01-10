@@ -12,6 +12,8 @@ const formatTimestamp = () => {
   return `${dateFormat} ${hourFormat}`;
 };
 
+// Lógica construída com a ajuda do aluno Luiz Wendel - Turma 11
+
 module.exports = (io) => io.on('connection', async (socket) => {
   let userName = socket.id.substring(0, 16);
   allUsers.push(userName);

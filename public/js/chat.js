@@ -1,5 +1,8 @@
 const socket = window.io();
 
+// Lógica construída com a ajuda do aluno Luiz Wendel - Turma 11
+// e do aluno (Lima-Lima)- João Lima - Turma 11.
+
 const onLineUser = (users) => {
   const userOnLineUl = document.querySelector('#client');
   userOnLineUl.innerHTML = '';

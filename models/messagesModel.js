@@ -1,6 +1,6 @@
 const connection = require('./connection');
 
-// Função construída com a ajuda do aluno Luiz Wendel - Turma 11
+// Lógica construída com a ajuda do aluno Luiz Wendel - Turma 11
 const createMessage = async ({ message, nickname, timestamp }) => {
   const db = await connection();
     await db.collection('messages').insertOne({ message, nickname, timestamp });
