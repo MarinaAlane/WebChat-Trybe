@@ -35,13 +35,17 @@
         li.setAttribute('data-testid', 'message'); 
         chatMessage.appendChild(li);
       };
-
-      socket.on('sendNickname', (nickname) => {
+      
+      const createNick = (nickname) => {
         const nicknameUl = document.querySelector('#nicknames');
         const li = document.createElement('li');
         li.innerText = nickname;
         li.setAttribute('data-testid', 'online-user'); 
         nicknameUl.appendChild(li);
+      }
+
+      socket.on('sendNickname', (nickname) => {
+        createNick(nickname);
       });
 
       const formNick = document.querySelector('#nickinput');
@@ -55,17 +59,22 @@
       });
 
       socket.on('newNickname', (online) => {
+        document.querySelector('#mynick').innerText = online[socket.id];
         const nicknameUli = document.querySelector('#nicknames');
-
         while (nicknameUli.firstChild) {
-          nicknameUli.removeChild(nicknameUli.firstChild);
+          nicknameUli.removeChild(nicknameUli.firstChild)
         }
+        
+        createNick(online[socket.id]);
 
         for (let newU in online) {
-          const li = document.createElement('li');
-          li.innerText = online[newU];
-          li.setAttribute('data-testid', 'online-user'); 
-          nicknameUli.appendChild(li);
+          if (newU != socket.id)
+          {
+            const li = document.createElement('li');
+            li.innerText = online[newU] 
+            li.setAttribute('data-testid', 'online-user'); 
+            nicknameUli.appendChild(li);
+          }
         }
       });
 
