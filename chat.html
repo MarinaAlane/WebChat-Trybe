@@ -85,26 +85,44 @@
     let inputNickName = document.getElementById('inputNickName');
     let usersOnline = document.getElementById('usersOnline')
 
+    let formMessages = document.querySelector('#formMessages');
+    let inputMessages = document.querySelector('#input-message');
+    let Ulmessages = document.querySelector('#messages');
+
     let userName;
-    socket.on('user', (userId) => {
+    socket.on('usersOnline', (userId) => {
       userName = userId;
-      const name = document.createElement('p');
-      name.textContent = userId;
-      name.setAttribute('data-testid', 'online-user');
-      usersOnline.appendChild(name);
+      socket.emit('name', userName);
+    });
+  
+    socket.on('user', (userId) => {
+      usersOnline.innerHTML = '';
+      const userIdSort = userId.sort((a, b) => {
+        if (a.id === socket.id) return -1;
+        if (b.id === socket.id) return 1;
+        return 0;
+      });
+
+      userIdSort.forEach(({ nickname }) => {
+        const name = document.createElement('p');
+        name.innerHTML = nickname;
+        name.setAttribute('data-testid', 'online-user');
+        usersOnline.appendChild(name);
+      });
     });
 
     formNickName.addEventListener('submit', (e) => {
       e.preventDefault();
-      userName = inputNickName.value
-      inputNickName.value = '';
+      console.log(inputNickName.value);
+      if (inputNickName.value) {
+        userName = inputNickName.value
+        socket.emit('name', userName);
+        inputNickName.value = '';
+      }
     });
 
-    let form = document.querySelector('#formMessages');
-    let inputMessages = document.querySelector('#input-message');
-    let Ulmessages = document.querySelector('#messages');
 
-    form.addEventListener('submit', (e) => {
+    formMessages.addEventListener('submit', (e) => {
       e.preventDefault();
       console.log(userName);
       if (inputMessages.value) {
@@ -120,6 +138,14 @@
       Ulmessages.appendChild(newMessage);
       window.scrollTo(0, document.body.scrollHeight);
     })
+
+    socket.on('history', (msg) => {
+      const { timestamp, nickname, message } = msg;
+      const li = document.createElement('li');
+      li.textContent = (`${ timestamp } - ${ nickname }: ${ message }`);
+      li.setAttribute('data-testid', 'message');
+      Ulmessages.appendChild(li);
+    });
   </script>
 </body>
 
