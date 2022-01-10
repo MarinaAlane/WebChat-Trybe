@@ -21,11 +21,6 @@ app.get('/', (req, res) => {
 
 const PORT = 3000;
 // adiciona lógica socket direto no server
-const date = moment(new Date()).format('DD-MM-yyyy h:mm:ss a');
-// console.log({ date });
-
-const message = ({ chatMessage, nickname }) =>
-  `${date} - ${nickname}: ${chatMessage}`;
 let users = [];
 
 io.on('connection', (socket) => {
@@ -50,11 +45,12 @@ io.on('connection', (socket) => {
 io.on('connection', async (socket) => {
   const messages = await model.getAll();
   socket.emit('history', messages);
-  
-  socket.on('message', (data) => {
-    model.saveMessage(data);
-    io.emit('message', message(data));
-  }); 
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
+    model.saveMessage({ message: chatMessage, nickname, timestamp });
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+  });
 });
 
 http.listen(PORT, () => console.log(`Servidor ouvindo na porta ${PORT}`)); 
