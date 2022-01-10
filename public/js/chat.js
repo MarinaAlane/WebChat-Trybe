@@ -1,5 +1,6 @@
 const socket = window.io();
 
+const DATA_TEST_ID = 'data-testid';
 const Allusers = document.querySelector('#users');
 const form = document.querySelector('#form');
 const nickNameInput = document.querySelector('#nickname-box');
@@ -26,22 +27,27 @@ nicknameBtn.addEventListener('click', () => {
 const createnewMessage = (message) => { 
   const li = document.createElement('li'); 
   li.innerText = message; 
-  li.setAttribute('data-testid', 'message'); 
+  li.setAttribute(DATA_TEST_ID, 'message'); 
   allMessages.appendChild(li); 
-}; 
+};
 
 const createNewUser = (newNick) => {
   nickname = newNick;
   socket.emit('onlineUsers');
 };
 
+const listingUsers = (user) => {
+  const li = document.createElement('li');
+  li.innerText = user.nickname;
+  li.setAttribute(DATA_TEST_ID, 'online-user');
+  Allusers.appendChild(li);
+};
+
 const settleListUsers = (listUsers) => {
   Allusers.innerText = '';
   const user = listUsers.find((useR) => useR.id === socket.id);
-  const li = document.createElement('li'); 
-  li.innerText = user.nickname;
-  li.setAttribute('data-testid', 'online-user');
-  Allusers.appendChild(li);
+  listingUsers(user);
+  listUsers.forEach((u) => u.id !== socket.id && listingUsers(u));
 };
 
 const getAllMessages = (listMsgs) => {

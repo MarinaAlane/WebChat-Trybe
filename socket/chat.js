@@ -4,8 +4,9 @@ const { createMsg, getAllMessages } = require('../models/chat');
 const users = [];
 
 const newUser = (socket) => {
-  users.push({ id: socket.id, nickname: socket.id.substr(0, 16) });
-  socket.emit('newUser', socket.id.substr(0, 16));
+  const newNickName = socket.id.substr(0, 16);
+  users.push({ id: socket.id, nickname: newNickName });
+  socket.emit('newUser', newNickName);
 };
 
 const messageNew = (socket, io) => {
@@ -23,7 +24,8 @@ const messageNew = (socket, io) => {
 
 const settleNickName = (socket, io) => {
   socket.on('saveNick', (newNickName) => {
-      users.find((user) => user.id === socket.id).nickname = newNickName;
+      const indexUser = users.findIndex((user) => user.id === socket.id);
+      users[indexUser].nickname = newNickName;
       io.emit('onlineUsers', users);
   });
 };
@@ -39,6 +41,14 @@ const getAllMsgs = async (socket) => {
     socket.emit('getAllMessages', allMessages);
 };
 
+const disconnect = (socket, io) => {
+  socket.on('disconnect', () => {
+    const indexOfUser = users.findIndex((u) => u.id === socket.id);
+    users.splice(indexOfUser, 1);
+    io.emit('onlineUsers', users);
+  });
+};
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     // console.log('servidor conectado');
@@ -47,5 +57,6 @@ module.exports = (io) => {
       settleNickName(socket, io);
       onlineUsersupdated(socket, io);
       getAllMsgs(socket);
+      disconnect(socket, io);
     });
 };
