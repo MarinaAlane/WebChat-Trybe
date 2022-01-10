@@ -22,6 +22,8 @@ const randomNick = () => (
   Array.from(Array(16), () => Math.floor(Math.random() * 36).toString(36)).join('')
 );
 
+app.use(express.static('./view'));
+
 app.set('view engine', 'ejs');
 app.set('views', './view');
 
