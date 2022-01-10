@@ -11,6 +11,7 @@ const io = new Server(httpServer);
 
 const UsersIO = require('./sockets/users');
 const MessagesIO = require('./sockets/messages');
+const { getAllMessages } = require('./models/messages');
 
 io.on('connection', (socket) => {
   UsersIO(io, socket);
@@ -27,8 +28,13 @@ app.use(express.static(path.join(__dirname, '/view')));
 app.set('views', path.join(__dirname, 'view'));
 app.set('view engine', 'ejs');
 
-app.get('/', (_req, res) => {
-  res.render('chat.ejs', { userNick: randomNick() });
+app.get('/', async (_req, res) => {
+  const Messages = await getAllMessages();
+
+  res.render('chat.ejs', {
+    userNick: randomNick(),
+    storageMessages: Messages,
+  });
 });
 
 const PORT = 3000;
