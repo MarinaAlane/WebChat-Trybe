@@ -168,7 +168,7 @@
       })
     })
 
-/*     socket.on('updateOnlineUsers', (arrNewUsers) => {
+    socket.on('updateOnlineUsers', (arrNewUsers) => {
       usersOnline.innerHTML = '';
       const currentUser = sessionStorage.getItem('nickname');
       arrNewUsers.forEach((user) => {
@@ -181,7 +181,7 @@
           usersOnline.appendChild(nickname);
         }
       })
-    }); */
+    });
 
     socket.on('chatHistory', (history) => {
       messages.innerHTML = '';
@@ -190,6 +190,7 @@
         const msg = document.createElement('li');
         const contentMessage = `${timestamp} - ${nickname}: ${message}`;
         msg.textContent = contentMessage;
+        msg.setAttribute('data-testid', 'message');
         messages.appendChild(msg);
       })
     })

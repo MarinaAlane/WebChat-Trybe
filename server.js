@@ -27,10 +27,10 @@ io.on('connection', (socket) => {
   const randomName = utils.randomNameGenerate();
 
   const objUser = { nickname: randomName, id: socket.id };
-  utils.createArrayUsers(arrayUsers, objUser);
   socket.on('newNickname', () => {
+    utils.createArrayUsers(arrayUsers, objUser);
     socket.emit('nickname', arrayUsers);
-    //socket.broadcast.emit('updateOnlineUsers', arrayUsers);
+    socket.broadcast.emit('updateOnlineUsers', arrayUsers);
   });
 
   socket.on('uptadeNickname', (obj) => {
