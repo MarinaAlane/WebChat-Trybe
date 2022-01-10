@@ -44,6 +44,13 @@ const settleListUsers = (listUsers) => {
   Allusers.appendChild(li);
 };
 
+const getAllMessages = (listMsgs) => {
+  listMsgs.forEach((message) => {
+    createnewMessage(`${message.timestamp} - ${message.nickname}: ${message.chatMessage}`);
+  });
+};
+
 socket.on('message', createnewMessage);
 socket.on('newUser', createNewUser);
 socket.on('onlineUsers', settleListUsers);
+socket.on('getAllMessages', getAllMessages);
