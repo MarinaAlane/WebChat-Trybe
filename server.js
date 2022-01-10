@@ -32,11 +32,20 @@ io.on('connection', (socket) => {
 
   socket.emit('firstUser', listUsers[socket.id]);
 
+  io.emit('listUsers', listUsers);
+
   socket.on('message', async ({ chatMessage, nickname }) => {
     io.emit('message', `${date} ${nickname}: ${chatMessage}`);
   });
 
   socket.on('rename', (renamed) => {
     listUsers[socket.id] = renamed;
+    io.emit('listUsers', listUsers);
+  });
+
+  socket.on('disconnect', () => {
+    delete listUsers[socket.id];
+
+    io.emit('listUsers', listUsers);
   });
 });

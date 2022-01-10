@@ -10,7 +10,7 @@
 <body>
   <form action="submit">
     <p id="firstUser" data-testid="online-user"></p>
-    <ul id="listUsers"></ul>
+    <ul id="ulUsers"></ul>
     <input id="inputAttName" data-testid="nickname-box"/>
     <button type="button" id="attName" data-testid="nickname-button">Salvar nome</button>
     <input id="messageTyped" data-testid="message-box"/>
@@ -24,6 +24,7 @@
     const firstUser = document.querySelector('#firstUser');
     const inputAttName = document.querySelector('#inputAttName');
     const attName = document.querySelector('#attName');
+    const ulUsers = document.querySelector('#ulUsers');
 
     const generateMessage = (message) => {
       const li = document.createElement('li');
@@ -51,6 +52,20 @@
     });
 
     socket.on('message', (message) => generateMessage(message));
+
+    socket.on('listUsers', (users) => {
+      const list = Object.values(users);
+      console.log(list)
+      ulUsers.innerText = '';
+      list.forEach((name) => {
+        if(name !== firstUser.innerText) {
+          const parag = document.createElement('p');
+          parag.setAttribute('data-testid', 'online-user');
+          parag.innerText = name;
+          ulUsers.appendChild(parag);
+        };
+      });
+    })
 
     socket.on('firstUser', (user) => {
       const nickname = user;
