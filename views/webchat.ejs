@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>webchat</title>
+</head>
+<body>
+  <h1 id="nickname"></h1>
+  <ul id="messages">
+    <% allMessages.forEach({ nickname, message, date }) => { %>
+    <li data-testid="message"><%= `${date} = ${nickname} : {message}`%></li>
+    <% }) %>
+  </ul>
+  <form action="" id="form-message">
+    <input id="input-chat" data-testid="message-box" />
+    <button data-testid="send-button">Enviar</button>
+  </form>
+  <form action="" id="form-nickname">
+    <input id="input-nickname" data-testid="nickname-box" />
+    <button data-testid="nickname-button">Alterar nickname</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../index.html"></script>
+</body>
+</html>
