@@ -22,7 +22,11 @@
     <div class="second-submain">
       <div id="chat-container">
         <h3> Chat Messages: </h3>
-        <div class="messages-div"></div>
+        <div class="messages-div">
+          <% messages.forEach((msg) => { %>
+            <p data-testid="messages"><%= msg.nickname %>: <%= msg.message %></p>
+          <% }) %>
+        </div>
         <form action="">
           <input data-testid="message-box" id="messageInput" autocomplete="off" /><button data-testid="send-button" id="sendBtn">Send</button>
           <p id="warningNickname"></p>
@@ -30,11 +34,7 @@
       </div>
       <div class="online-users-container">
         <h3> Online Users: </h3>
-        <ul class="online-users-div">
-          <% messages.forEach((msg) => { %>
-            <li><%= msg.nickname %>: <%= msg.message %></li>
-          <% }) %>
-        </ul>
+        <ul class="online-users-div"></ul>
       </div>
     </div>
   </main>

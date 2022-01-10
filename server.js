@@ -25,15 +25,27 @@ app.use(cors());
 
 require('./backend/socket')(io);
 
-app.get('/', (_req, res) => {
-  res.render('chat');
-});
-
-app.get('/messages', async (_req, res) => { 
+app.get('/', async (_req, res) => {
   const messages = await messagesModel.getAll();
 
-  res.status(200).render('chat', { messages });
+  // const messages = [
+  //   {
+  //     message: 'Cheguei, galera',
+  //     nickname: 'xablau',
+  //   },
+  //   {
+  //     message: 'Fala aew, blz ?',
+  //     nickname: 'becauro',
+  //   }];
+
+  res.render('chat', { messages });
 });
+
+// app.get('/messages', async (_req, res) => { 
+//   const messages = await messagesModel.getAll();
+
+//   res.status(200).render('chat', { messages });
+// });
 
 app.get('/ping', (_req, res) => res.send('PONG!'));
 
