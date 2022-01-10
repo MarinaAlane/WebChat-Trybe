@@ -21,4 +21,17 @@
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script src='./js/chat.js'></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- <script>
+    const getMessages = async () => {
+      const messages = await axios.get('http://localhost:3000/messages')
+        .then((response) => response.data);
+        console.log(messages);
+    };
+
+    window.onload = () => {
+      getMessages();
+      messages.forEach((message) => createMessage(messsage));
+    };
+  </script> -->
 </html>

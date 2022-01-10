@@ -11,6 +11,8 @@ const io = require('socket.io')(http, {
   },
 });
 
+const messagesController = require('./controllers/messages');
+
 app.use(express.static(path.join(__dirname, '/public')));
 
 require('./sockets/chat')(io);
@@ -18,6 +20,9 @@ require('./sockets/chat')(io);
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/chat.html'));
 });
+
+app.get('/messages', messagesController.getAllMessages);
+app.post('/messsages', messagesController.insertMessage);
 
 http.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');

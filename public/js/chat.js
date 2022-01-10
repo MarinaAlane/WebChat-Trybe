@@ -31,7 +31,6 @@ const createUsers = (users) => {
   }
 
   users.forEach(({ username, socketId }) => {
-    console.log(socketId, userId);
     const userLi = document.createElement('li');
     userLi.innerText = username;
     userLi.setAttribute('data-testid', 'online-user');
@@ -71,3 +70,22 @@ socket.on('nickChanged', (users) => createUsers(users));
 
 // disconnect area
 socket.on('userDisconnected', (users) => createUsers(users));
+
+// load messages
+const headers = new Headers();
+const myInit = {
+  method: 'GET',
+  headers,
+  mode: 'cors',
+  cache: 'default',
+};
+
+const getMessages = async () => {
+  const messages = await fetch('http://localhost:3000/messages', myInit)
+    .then((response) => response.json());
+  messages.forEach(({ message }) => createMessage(message));
+};
+
+window.onload = () => {
+  getMessages();
+};
