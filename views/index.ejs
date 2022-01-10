@@ -15,6 +15,13 @@
     <button type="button" id="attName" data-testid="nickname-button">Salvar nome</button>
     <input id="messageTyped" data-testid="message-box"/>
     <button type="submit" data-testid="send-button">Enviar</button>
+    <div>
+      <% message.forEach((message) => { %>
+        <div data-testid="message">
+          <%= `${message.timestamp} - ${message.nickname}: ${message.message}` %>
+        </div>
+      <% }) %>
+    </div>
   </form>
   <ul id="messages"></ul>
   <script>

@@ -16,18 +16,18 @@ const io = require('socket.io')(http, {
 });
 
 const { generateDate } = require('./utility/date');
+const { getFullChat } = require('./controllers/chatMessages');
+const { createMessages } = require('./models/chat');
 
 app.use(cors());
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.get('/', (req, res) => {
-  res.status(200).render('index');
-});
+app.get('/', getFullChat);
 
 const listUsers = {};
 
 io.on('connection', (socket) => {
-  const date = generateDate();
+  const currentDate = generateDate();
   listUsers[socket.id] = socket.id.substr(0, 16);
 
   socket.emit('firstUser', listUsers[socket.id]);
@@ -35,7 +35,8 @@ io.on('connection', (socket) => {
   io.emit('listUsers', listUsers);
 
   socket.on('message', async ({ chatMessage, nickname }) => {
-    io.emit('message', `${date} ${nickname}: ${chatMessage}`);
+    await createMessages(chatMessage, nickname, currentDate);
+    io.emit('message', `${currentDate} ${nickname}: ${chatMessage}`);
   });
 
   socket.on('rename', (renamed) => {
