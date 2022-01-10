@@ -9,7 +9,7 @@ const PORT = 3000;
 const server = http.createServer(app);
 const io = new Server(server);
 
-const { setMessage, getMessages } = require('./model/molelChat');
+const { setMessage, getMessages } = require('./models/molelChat');
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'chat.html'));
@@ -30,6 +30,7 @@ io.on('connection', async (socket) => {
   socket.on('name', (userName) => {
     listOnlineUsers = listOnlineUsers.filter((userOnline) => userOnline.id !== socket.id);
     listOnlineUsers.push({ nickname: userName, id: socket.id });
+    console.log(listOnlineUsers);
     io.emit('user', listOnlineUsers);
   });
 

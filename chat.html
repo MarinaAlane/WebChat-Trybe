@@ -136,7 +136,6 @@
       newMessage.textContent = msg;
       newMessage.setAttribute('data-testid', 'message');
       Ulmessages.appendChild(newMessage);
-      window.scrollTo(0, document.body.scrollHeight);
     })
 
     socket.on('history', (msg) => {
