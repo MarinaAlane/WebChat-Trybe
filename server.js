@@ -20,6 +20,11 @@ const users = {};
 io.on('connection', async (socket) => {
   users[socket.id] = socket.id.slice(0, 16);
   const messageHistory = await webChatController.getMessagesHistory();
+  
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+    io.emit('online', Object.values(users)); 
+  });
 
   socket.on('message', async ({ chatMessage, nickname }) => {
     const timeStamp = moment().format('DD-MM-yyyy HH:mm:ss');
@@ -33,7 +38,6 @@ io.on('connection', async (socket) => {
   });
 
   io.emit('online', Object.values(users));
-  console.log(users);
 
   io.emit('messageLog', messageHistory);
 });
