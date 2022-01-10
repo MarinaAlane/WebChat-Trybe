@@ -33,8 +33,8 @@ module.exports = (io) => io.on('connection', async (socket) => {
     io.emit('user', allUsers);
   });
 
-  socket.on('message', ({ chatMessage }) => {
-    io.emit('message', `${formatTimestamp()} - ${userName}: ${chatMessage}`);
-    createMessage({ message: chatMessage, nickname: userName, timestamp: formatTimestamp() });
+  socket.on('message', ({ chatMessage, nickname }) => {
+    io.emit('message', `${formatTimestamp()} - ${nickname}: ${chatMessage}`);
+    createMessage({ message: chatMessage, nickname, timestamp: formatTimestamp() });
   });
 }); 
