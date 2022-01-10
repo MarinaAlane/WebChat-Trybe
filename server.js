@@ -3,6 +3,8 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
+const { getAll } = require('./models/mensagens');
+const createMessage = require('./mensagens');
 
 const app = express();
 const PORT = 3000;
@@ -13,19 +15,30 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-io.on('connection', (socket) => {
-  console.log(`Usuario ${socket.id} conectado`);
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+const users = {};
+
+io.on('connection', async (socket) => {
+  const todaInfo = await getAll().then((e) =>
+    e.map(({ timestamp, nickname, message }) => `${timestamp} ${nickname} ${message}`));
+
+  users[socket.id] = socket.id.slice(0, 16);
+
+  io.emit('newConnection', { user: users[socket.id], todaInfo });
+  
+  socket.on('nickname', (nickname) => {
+    users[socket.id] = nickname;
+    io.emit('users', Object.values(users));
   });
 
-    socket.on('disconnect', () => {
-      console.log(`Usuario ${socket.id} conectado`);
-    });
+  socket.on('message', async ({ messageValue, nickName }) => {
+    const response = await createMessage(messageValue, nickName);
+    io.emit('message', response);
+  });
 
-    socket.on('username', (user) => {
-      console.log(user);
-    });
+  socket.on('disconnect', () => {
+    delete users[socket.id];
+    io.emit('users', Object.values(users));
+  });
 });
 
 server.listen(PORT, () => console.log(`estou escutando na porta ${PORT}`));
