@@ -41,11 +41,16 @@ app.get('/', async (_req, res) => {
   res.render('chat', { messages });
 });
 
-// app.get('/messages', async (_req, res) => { 
-//   const messages = await messagesModel.getAll();
+app.post('/', async (req, res) => {
+  const { nickname, message } = req.body;
 
-//   res.status(200).render('chat', { messages });
-// });
+  try {
+    await messagesModel.create({ nickname, message });
+    res.status(201).send('Insertion successfully');
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 app.get('/ping', (_req, res) => res.send('PONG!'));
 

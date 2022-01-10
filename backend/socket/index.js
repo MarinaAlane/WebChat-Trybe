@@ -1,3 +1,5 @@
+const messagesModel = require('../../models/messagesModel');
+
 const currentlyTime = () => {
   const data = new Date();
   const dia = String(data.getDate()).padStart(2, '0');
@@ -26,6 +28,25 @@ const updateNickname = (socket = null, io = null, nickname = null) => {
     io.emit('alterNickname', onlineUsers);
   };
 
+  const messagesHandler = async (_socket = null, io = null, data = null) => {
+    const time = currentlyTime();
+    const { nickname, chatMessage: message } = data;
+    // try {
+    //   await messagesModel.create({ time, nickname, message });
+    //   console.log('Insertion successfully');
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    io.emit('message', `${time} - ${nickname}: ${message}`);
+  };
+
+  const disconnectHandler = (socket = null, _io = null, _data = null) => {
+    const userIndex = onlineUsers.findIndex((item) => item.socketId === socket.id);
+
+    onlineUsers.splice(userIndex, 1);
+    socket.broadcast.emit('otherUserDisconnected', { onlineUsers });
+  };
+
 module.exports = (io) => {
   io.on('connection', (socket) => {
     socket.on('login', (nickname) => {
@@ -33,21 +54,19 @@ module.exports = (io) => {
     });
 
     socket.on('disconnect', () => {
-      const userIndex = onlineUsers.findIndex((item) => item.socketId === socket.id);
-
-      onlineUsers.splice(userIndex, 1);
-            socket.broadcast.emit('otherUserDisconnected', { onlineUsers });
+      disconnectHandler(socket, io);
     });
 
     socket.on('alterNickname', (newNickName) => {
       updateNickname(socket, io, newNickName);
     });
   
-    socket.on('message', (clientMsg) => {
-      const { chatMessage, nickname } = clientMsg;
-      const time = currentlyTime();
-
-      io.emit('message', `${time} - ${nickname}: ${chatMessage}`);
+    socket.on('message', async (data) => {
+      try {
+        await messagesHandler(socket, io, data);
+      } catch (error) {
+        console.log(error);
+      }
     });
   });
 };
