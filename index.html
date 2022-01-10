@@ -135,7 +135,7 @@
         });
           });
 
-        // Usuário desconectando....
+        // Usuário desconectando...
         socket.on('disconectou', () => {
           const myNick = sessionStorage.getItem('nickUser');
           socket.emit('desconectado', myNick);
