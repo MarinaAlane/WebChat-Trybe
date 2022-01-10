@@ -1,36 +1,28 @@
-const { newDate } = require('../structures/structures');
-const { postNewMessagesController } = require('../controllers/messages');
+const moment = require('moment');
+const { getAllModels, postNewMessagesModel } = require('../models/messages');
 
-const parseMessage = ({ chatMessage, nickname, timestamp }) => {
-  const message = `${timestamp} - ${nickname}: ${chatMessage}`;
-  return message;
-};
+const online = {};
 
-const postNew = ({ chatMessage, nickname, io }) => {
-  const now = newDate();
-  postNewMessagesController({ chatMessage, nickname, timestamp: now });
-  const object = parseMessage({ chatMessage, nickname, timestamp: now });
-  io.emit('message', object);
-};
+module.exports = (io) => io.on('connection', async (socket) => {
+  online[socket.id] = socket.id.substring(0, 16);
+  io.emit('newNickname', online);
 
-const chat = (io) => {
-    io.on('connection', (socket) => {
-      // console.log(`usuário ${socket.id} conectou`);
-    
-      socket.on('message', (event) => postNew({ ...event, io }));
-  
-      socket.on('new-client', (generateNickName) => {
-        const { nickname } = generateNickName;
-        io.emit('new-login', { nickname });
-      });
-    
-      socket.on('disconnect', () => {
-        // console.log(`usuário ${socket.id} desconectou`);
-      });
-    });
-};
+  const allMessages = await getAllModels();
+  io.emit('allMessages', allMessages);
 
-module.exports = {
-  parseMessage,
-  chat,
-};
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const timeStamp = moment().format('DD-MM-yyyy hh:mm:ss A');
+    postNewMessagesModel({ message: chatMessage, nickname, timeStamp });
+    io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
+  });
+
+  socket.on('disconnect', () => {
+    delete online[socket.id];
+    io.emit('newNickname', online);
+  });  
+
+  socket.on('sendNickname', (nick) => {
+    online[socket.id] = nick;
+    io.emit('newNickname', online);
+  });
+});

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO - trybe</title>
+  </head>
+  <body>
+    <p id="userNick"></p>
+
+    <ul id="nickname"></ul>
+    <form 
+    id="form-nickname">
+      <input 
+      data-testid="nickname-box" 
+      id="nicknameinput" 
+      autocomplete="off" />
+      <button 
+      id="buttonNickname" 
+      type="submit" 
+      data-testid="nickname-button">Save
+    </button>
+    </form>
+
+    <ul id="messages"></ul>
+    <form 
+    id="form-message">
+      <input 
+      data-testid="message-box" 
+      id="messageInput" 
+      autocomplete="off" />
+      <button 
+      id="btnsend" 
+      type="submit" 
+      data-testid="send-button">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io();
+      const form = document.querySelector('#form-message');
+
+      const inputMessage = document.querySelector('#messageInput');      
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userNick = document.querySelector('#userNick').innerText;
+        socket.emit('message', { nickname: userNick, chatMessage: inputMessage.value });
+        inputMessage.value = '';
+      });
+
+      const newMessage = (message) => {
+        const messagesUl = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.innerText = message;
+        li.setAttribute('data-testid', 'message'); 
+        messagesUl.appendChild(li);
+      };
+
+      const newNick = (nickname) => {
+        const nicknameUl = document.querySelector('#nickname');
+        const li = document.createElement('li');
+        li.innerText = nickname;
+        li.setAttribute('data-testid', 'online-user'); 
+        nicknameUl.appendChild(li);
+      }
+
+        socket.on('sendNickname', (nickname) => {
+            newNick(nickname);
+        });
+
+        const nickInput = document.querySelector('#nicknameinput');
+        const buttonNick = document.querySelector('#buttonNickname');
+
+        buttonNick.addEventListener('click', (e) => {
+          e.preventDefault();
+          const nick = nickInput.value
+          document.querySelector('#userNick').innerText = nick;
+          socket.emit('sendNickname', nick);
+        });
+
+        socket.on('newNickname', (online) => {
+          document.querySelector('#userNick').innerText = online[socket.id];
+          const nicknameUli = document.querySelector('#nickname');
+          while (nicknameUli.firstChild) {
+            nicknameUli.removeChild(nicknameUli.firstChild)
+          }
+          newNick(online[socket.id]);
+          for (let newU in online) {
+            if (newU != socket.id)
+            {
+              const li = document.createElement('li');
+              li.innerText = online[newU] 
+              li.setAttribute('data-testid', 'online-user'); 
+              nicknameUli.appendChild(li);
+            }
+          }
+        });
+
+        socket.on('allMessages', (messages) => {
+          console.log(messages);
+          messages.forEach(({ message: chatMessage, nickname, timeStamp }) => {
+            newMessage(`${timeStamp} - ${nickname}: ${chatMessage}`)
+          })
+        })  
+
+      socket.on('message', (message) => newMessage(message));
+    </script>
+  </body>
+</html>

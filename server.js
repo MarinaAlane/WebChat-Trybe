@@ -1,22 +1,27 @@
-require('dotenv').config();
-const socketio = require('socket.io');
-const http = require('http');
-const app = require('./app');
-const { chat } = require('./socket/socketChat');
+const express = require('express');
+const cors = require('cors'); 
 
-const server = http.createServer(app);
+const app = express();
+const http = require('http').createServer(app);
+const path = require('path');
 
-const io = socketio(server, {
+const PORT = 3000;
+
+const io = require('socket.io')(http, {
   cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    origin: 'http://localhost:3000', // url aceita pelo cors
+    methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
 
-chat(io);
+require('./socket/socketChat')(io); 
 
-const PORT = process.env.PORT || 3000;
+app.use(cors()); 
 
-server.listen(PORT, () => {
-  console.log(`Server is up on port ${PORT}`);
+app.get('/', (_req, res) => {
+ res.sendFile(path.join(__dirname, 'index.html'));
+ }); 
+
+http.listen(PORT, () => {
+  console.log(`Servidor ouvindo na porta ${PORT}`);
 });
