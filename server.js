@@ -6,6 +6,12 @@ const path = require('path');
 
 const app = express();
 const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
 
 let users = [];
 
@@ -13,13 +19,6 @@ app.use(express.json());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-const io = require('socket.io')(http, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-  },
-});
 
 io.on('connection', (socket) => {
   const randomNickname = randomString.generate(16);
@@ -31,10 +30,10 @@ io.on('connection', (socket) => {
     io.emit('users', users);
   });
 
-  socket.on('updateUser', (message) => {
+  socket.on('updateUser', (newNickname) => {
     users = users.map((user) => {
       if (user.socketId === socket.id) {
-        return { socketId: user.socketId, nickname: message };
+        return { socketId: user.socketId, nickname: newNickname };
       }
       return user;
     });
@@ -46,7 +45,7 @@ require('./sockets/chat')(io);
 
 app.use(express.static(`${__dirname}/public`));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   res.status(200).render('chat.ejs');
 });
 

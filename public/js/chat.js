@@ -1,5 +1,7 @@
 const socket = window.io();
 
+const ul = document.querySelector('#usersList');
+const ulMessages = document.querySelector('#messages');
 const form = document.querySelector('form');
 const inputMessage = document.querySelector('#messageInput');
 const inputNickname = document.querySelector('#nicknameInput');
@@ -17,15 +19,13 @@ form.addEventListener('submit', (e) => {
 });
 
 const createMessage = (message) => {
-  const ul = document.querySelector('#messages');
   const li = document.createElement('li');
   li.innerText = message;
-  li.setAttribute('data-testid', 'message');
-  ul.appendChild(li);
+  li.setAttribute(DATA_TEST_ID, 'message');
+  ulMessages.appendChild(li);
 };
 
 const createUsersList = (users) => {
-  const ul = document.querySelector('#usersList');
   const currentUser = users.find((user) => user.socketId === socket.id);
   const newUsers = users.filter(
     (user) => user.socketId !== currentUser.socketId,
@@ -42,6 +42,15 @@ const createUsersList = (users) => {
 
 socket.on('message', (message) => createMessage(message));
 socket.on('users', (users) => createUsersList(users));
+
+socket.on('getMessages', (messages) => {
+  messages.forEach((message) => {
+    const li = document.createElement('li');
+    li.setAttribute(DATA_TEST_ID, 'message');
+    li.innerText = `${message.timestamp} - ${message.nickname}: ${message.message}`;
+    ulMessages.appendChild(li);
+  });
+});
 
 const nickNameForm = document.querySelector('#nickNameForm');
 const inputUserName = document.querySelector('#nickNameInput');
