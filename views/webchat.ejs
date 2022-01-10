@@ -21,6 +21,7 @@
       </section>
     </section>
     <section id="chat" class="col chat">
+      <!-- <ul id="messages"></ul> -->
       <div class="chat-input">
         <input id="chat-input" data-testid="message-box" type="text" placeholder="Digite sua mensagem aqui c:">
         <button id="chat-btn" data-testid="send-button" class="chat-btn">
@@ -31,6 +32,7 @@
   </div>
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // ta tudo um caos, tempo é dinheiro...
     class OnlineUsers {
       // arquitetura observer
       // nao é necessario nesse caso, mas eu quis implementar na mesmo pra brincar um pouco
@@ -89,7 +91,7 @@
 
   const socket = io();
   const onlineUsers = new OnlineUsers();
-  let currentNickname = socket.id
+  let currentNickname
 
   onlineUsers.addObs((list) => {
     onlineUsers.render(list);
@@ -101,6 +103,8 @@
     if (!nicknameInput) return;
     currentNickname = nicknameInput;
     socket.emit('change-nickname', { nickname: nicknameInput, userId: socket.id });
+    const input = document.getElementById('nickname-input');
+    input.value = null;
   });
 
   const chatButton = document.getElementById('chat-btn');
@@ -110,13 +114,56 @@
     socket.emit('message', { chatMessage: chatInput, nickname: currentNickname });
   });
 
+  const createMessage = (message, id) => {
+    const chat = document.getElementById('chat');
+    const messageLi = document.createElement('li');
+    messageLi.setAttribute('data-testid', 'message');
+    messageLi.setAttribute('id', id);
+
+    messageLi.innerText = message;
+    chat.appendChild(messageLi);
+    window.scrollTo(0, document.body.scrollHeight);
+    const input = document.getElementById('chat-input');
+    input.value = null;
+  };
+
+  const showMeFirst = (list, id) => {
+    if (list.length === 1) return list;
+
+    let newList = list;
+    let meiIndex;
+    newList.forEach(({userId}, index) => {
+      if (userId === id) meiIndex = index;
+    });
+
+    if (meiIndex === 0) return list;
+    let temp = newList[0];
+
+    newList[0] = newList[meiIndex];
+    newList[meiIndex] = temp;
+    return newList;
+  };
+
   socket.on('connect', () => {
     console.log('new user', socket.id);
+    currentNickname = socket.id;
   });
 
   socket.on('render-online-users', (list) => {
-    onlineUsers.notifyAllObs(list);
+    const newList = showMeFirst(list, socket.id);
+    onlineUsers.notifyAllObs(newList);
   });
+
+  socket.on('render-chat-messages', (messages) => {
+    let idGen = 0;
+    messages.forEach(({ message: chatMessage, nickname, timestamp }) => {
+      const existingMsg = document.getElementById(`${timestamp}-${idGen}`);
+      if (!existingMsg) {
+        createMessage(`${timestamp} - ${nickname}: ${chatMessage}`, `${timestamp}-${idGen}`);
+        idGen++;
+      }
+    })
+  }) 
 
   socket.on('del-user', (id) => {
     console.log('del user', id);
@@ -124,15 +171,7 @@
   });
 
   socket.on('message', (message) => {
-    const chat = document.getElementById('chat');
-    const messageP = document.createElement('p');
-    messageP.setAttribute('data-testid', 'message');
-
-    messageP.innerText = message;
-    chat.appendChild(messageP);
-    window.scrollTo(0, document.body.scrollHeight);
-    const input = document.getElementById('input');
-    input.value = null;
+    createMessage(message)
   });
   </script>
 </body>

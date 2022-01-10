@@ -10,13 +10,14 @@ const io = new Server(server, {
   methods: ['GET', 'POST'],
 });
 
-const timestamp = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
+const date = format(new Date(), 'dd-MM-yyyy HH:mm:ss');
 
 // run all sockets listeners
 // require('./socketio')(io);
 
 const cors = require('cors');
 const path = require('path');
+const webchatModel = require('./models/webchatModel');
 const OnlineUsers = require('./public/js/onlineUsersServer');
 
 const nextErrors = require('./errors/nextErrors');
@@ -29,17 +30,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// app.get('/', (_req, res) => res.redirect('/webchat'));
+app.get('/', (_req, res) => res.redirect('/webchat'));
 
-// app.get('/webchat', (req, res, next) => {
-//   try {
-//     return res.render('webchat');
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-app.get('/', (req, res, next) => {
+app.get('/webchat', (req, res, next) => {
   try {
     return res.render('webchat');
   } catch (err) {
@@ -49,14 +42,24 @@ app.get('/', (req, res, next) => {
 
 const onlineUsers = OnlineUsers();
 
-io.on('connection', (socket) => {
-  console.log('user', socket.id, 'conectou');
-
+// eu juro q detesto esse lint
+const onConnectFncTmp = async (socket) => {
   onlineUsers.addUser(socket.id);
   const list = onlineUsers.getList();
   io.emit('render-online-users', list);
+
+  const messages = await webchatModel.getMessages();
+  socket.emit('render-chat-messages', messages);
+};
+
+io.on('connection', async (socket) => {
+  console.log('user', socket.id, 'conectou');
+
+  await onConnectFncTmp(socket);
   
   socket.on('message', ({ chatMessage, nickname }) => {
+    const timestamp = date;
+    webchatModel.addMessage({ message: chatMessage, nickname, timestamp });
     const newMessage = `${timestamp} ${nickname}: ${chatMessage}`;
     io.emit('message', newMessage);
   });
