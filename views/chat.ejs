@@ -30,8 +30,11 @@
       </div>
       <div class="online-users-container">
         <h3> Online Users: </h3>
-        <!-- <div class="online-users-div"></div> -->
-        <ul class="online-users-div"></ul>
+        <ul class="online-users-div">
+          <% messages.forEach((msg) => { %>
+            <li><%= msg.nickname %>: <%= msg.message %></li>
+          <% }) %>
+        </ul>
       </div>
     </div>
   </main>
