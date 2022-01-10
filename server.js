@@ -11,12 +11,12 @@ const io = new Server(server);
 const now = new Date();
 
 const messageRoutes = require('./routes/messageRoutes');
-const { saveMessage, getHistory } = require('./controllers/messageController');
+const { saveMessage } = require('./controllers/messageController');
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.use('/message', messageRoutes);
-// app.use(express.static(`${__dirname}/views`));
+app.use('/', messageRoutes);
+app.use(express.static(`${__dirname}/views`));
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -49,7 +49,6 @@ let users = [];
 io.on('connection', async (socket) => {
   const newUser = getRandomNickname(16);
   socket.emit('nickname', newUser);
-  await getHistory();
   users.push({ id: socket.id, nickname: newUser });
 
   io.emit('online', users);

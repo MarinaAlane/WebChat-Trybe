@@ -9,19 +9,25 @@
 <body>
   <h1 id="nickname"></h1>
   <ul id="messages">
-    <% allMessages.forEach({ nickname, message, date }) => { %>
-    <li data-testid="message"><%= `${date} = ${nickname} : {message}`%></li>
+    <% allMessages.forEach(({ nickname, message, date }) => { %>
+      <li data-testid="message"><%= `${date} = ${nickname} : ${message}`%></li>
     <% }) %>
   </ul>
-  <form action="" id="form-message">
-    <input id="input-chat" data-testid="message-box" />
-    <button data-testid="send-button">Enviar</button>
-  </form>
-  <form action="" id="form-nickname">
-    <input id="input-nickname" data-testid="nickname-box" />
-    <button data-testid="nickname-button">Alterar nickname</button>
-  </form>
+  <div id="forms">
+    <form action="" id="form-nickname">
+      <input type="text" data-testid="nickname-box" id="input-nickname" placeholder="nickname" />
+      <button type="submit" id="nickname-submit" data-testid="nickname-button">Alterar nickname</button>
+    </form>
+    <form id="form-message">
+      <input type="text" id="input-chat" data-testid="message-box" placeholder="message" ></textarea>
+      <button type="submit" id="message-submit" data-testid="send-button">Enviar</button>
+    </form>
+  </div>
+
+  <ul id="user-about">
+    <li id="user-nickname" data-testid="online-user"></li>
+  </ul>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="../index.html"></script>
+  <script src="./webchatScripts.js"></script>
 </body>
 </html>

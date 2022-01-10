@@ -10,7 +10,7 @@ const saveMessage = async (message, nickname, date) => {
 const getHistory = async () => {
   const data = await connection();
   const result = await data.collection('messages').find().toArray();
-   
+  console.log(result);
   return result;
 };
 
