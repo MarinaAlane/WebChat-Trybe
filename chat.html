@@ -9,7 +9,7 @@
 <body>
   <h1>Gab's Webchat</h1>
   <div>
-      <h3>Olá, <span id="randomNickname" ></span></h3>
+      <h3>Olá, <span id="randomNickname" data-testid="online-user"></span></h3>
   </div>
   <form id="formNickname" action="">
     <label for="nickname">Nickname:</label>
@@ -33,14 +33,31 @@
     const formMessages = document.querySelector('#formMessages');
     const messageInput = document.querySelector('#messageInput');
     const messagesUl = document.querySelector('#messages');
+    const randomNickname = document.querySelector('#randomNickname');
 
     const formButtonMessages = document.querySelector('#sendButton');
     const formButtonNickname = document.querySelector('#nicknameButton');
+
+    // https://www.codegrepper.com/code-examples/javascript/find+random+name+javascript - 
+    function getRandomChars() {
+    const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < 16; i += 1) {
+        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+      }
+      return result;
+    }
+
+    randomNickname.innerText = getRandomChars(); // adiciona random no HTML
+    // console.log('rand', randomNickname.innerText)
+    sessionStorage.setItem('username', randomNickname.innerText);
+    socket.emit('updateNickname', randomNickname.innerText);
 
     formButtonNickname.addEventListener('click', (e) => {
       e.preventDefault(); // cancela a atualizacado da pãgina
       console.log(`salvou o nome ${nicknameInput.value}`);
       nickname = nicknameInput.value
+      sessionStorage.setItem('username', nickname);
       socket.emit('updateNickname', nicknameInput.value);
       nicknameInput.value = '';  
     });
@@ -48,6 +65,7 @@
     formButtonMessages.addEventListener('click', (e) => {
       e.preventDefault(); // cancela a atualizacado da pãgina
       console.log('enviou a msg');
+      const nickname = sessionStorage.getItem('username');
       const message = messageInput.value;
       
       const data = {

@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
   socket.on('updateNickname', (nickname) => {
-    console.log(nickname);
+    console.log({ nickname });
     io.emit('updateNickname', nickname);
   });
 
