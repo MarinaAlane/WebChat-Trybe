@@ -46,7 +46,7 @@ const settleListUsers = (listUsers) => {
 
 const getAllMessages = (listMsgs) => {
   listMsgs.forEach((message) => {
-    createnewMessage(`${message.timestamp} - ${message.nickname}: ${message.chatMessage}`);
+    createnewMessage(`${message.timestamp} - ${message.nickname}: ${message.message}`);
   });
 };
 
