@@ -9,7 +9,11 @@
 <body>
   <h1>Gab's Webchat</h1>
   <div>
-      <h3>Olá, <span id="randomNickname" data-testid="online-user"></span></h3>
+      <h3>Olá, Usuário<span></span></h3>
+  </div>
+  <div>
+    <ul id="usersList">
+    </ul>
   </div>
   <form id="formNickname" action="">
     <label for="nickname">Nickname:</label>
@@ -33,7 +37,7 @@
     const formMessages = document.querySelector('#formMessages');
     const messageInput = document.querySelector('#messageInput');
     const messagesUl = document.querySelector('#messages');
-    const randomNickname = document.querySelector('#randomNickname');
+    const usersList = document.querySelector('#usersList');
 
     const formButtonMessages = document.querySelector('#sendButton');
     const formButtonNickname = document.querySelector('#nicknameButton');
@@ -48,19 +52,19 @@
       return result;
     }
 
-    randomNickname.innerText = getRandomChars(); // adiciona random no HTML
-    // console.log('rand', randomNickname.innerText)
-    sessionStorage.setItem('username', randomNickname.innerText);
-    socket.emit('updateNickname', randomNickname.innerText);
+    const randomNickname = getRandomChars()
+    sessionStorage.setItem('username', randomNickname);
 
-    formButtonNickname.addEventListener('click', (e) => {
-      e.preventDefault(); // cancela a atualizacado da pãgina
-      console.log(`salvou o nome ${nicknameInput.value}`);
-      nickname = nicknameInput.value
-      sessionStorage.setItem('username', nickname);
-      socket.emit('updateNickname', nicknameInput.value);
-      nicknameInput.value = '';  
-    });
+    socket.emit('updateNickname', randomNickname);
+
+    formNickname.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (nicknameInput.value) {
+        sessionStorage.setItem('username', nicknameInput.value);
+        socket.emit('updateNickname', nicknameInput.value)
+        nicknameInput.value = ''
+      }
+    })
 
     formButtonMessages.addEventListener('click', (e) => {
       e.preventDefault(); // cancela a atualizacado da pãgina
@@ -85,18 +89,27 @@
     };
 
     socket.on('message', (chatMessage) => createMessage(chatMessage));
-/*     socket.on('message', (messages) => {
-      messages.forEach((message) => {
+    
+    socket.on('online', (users) => {
+      console.log({users})
+      usersList.innerHTML = '';
+      currentUser = users.find((user) => user.id === socket.id)
+      users = users.filter((user) => user.id !== socket.id);
+      users.unshift(currentUser);
+      users.forEach((user) => {
         const li = document.createElement('li');
-        li.setAttribute('data-testid', 'message');
-        li.innerText = message;
-        messagesUl.appendChild(li);
-      });
-}); */
-socket.on('history', (messages) => {
+        li.innerText = user.nickname;
+        li.setAttribute('data-testid', 'online-user')
+        usersList.appendChild(li)
+      })
+    })
+
+    socket.on('history', (messages) => {
       messages.forEach(({ message: chatMessage, nickname, timestamp }) => {
         createMessage(`${timestamp} - ${nickname}: ${chatMessage}`)
       })
     })
   </script>
 </html>
+
+    <!-- criado com o auixilio de Filli, Wendel Lima e Matheus Monteiro  -->
