@@ -18,6 +18,14 @@ form.addEventListener('submit', (e) => {
   }
 });
 
+const createMessageElement = (msg) => { 
+  const newMessage = document
+  .createElement('li');
+  newMessage.setAttribute(dataTestId, 'message');
+newMessage.innerText = msg;
+messages.appendChild(newMessage);
+};
+
 nickname.innerText = ([...Array(2)]
 .map((_i) => ((Math.random() * 36)).toString(36)).join('').slice(2, 10) + [...Array(2)]
 .map((_i) => ((Math.random() * 36)).toString(36)).join('').slice(2, 10));
@@ -28,11 +36,7 @@ buttonChangeNickName.addEventListener('click', () => {
 });
 
 socket.on('message', (msg) => {
-const newMessage = document
-  .createElement('li');
-  newMessage.setAttribute(dataTestId, 'message');
-newMessage.innerText = msg;
-messages.appendChild(newMessage);
+  createMessageElement(msg);
 });
 
 socket.on('conectedUsers', (users) => {
@@ -60,4 +64,11 @@ socket.on('conectedUsers', (users) => {
 
 window.onload = () => {
   socket.emit('newUser', nickname.innerText);
+  socket.emit('getMessages');
+  socket.on('showMessages', (messageHistory) => {
+    messageHistory.forEach((msg) => {
+      const anyMessage = `${msg.timestamp} - ${msg.nickname}: ${msg.message}`;
+      createMessageElement(anyMessage);
+    });
+  });
 };

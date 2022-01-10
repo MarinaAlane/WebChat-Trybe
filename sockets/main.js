@@ -1,3 +1,5 @@
+const { addMessage, getMessages } = require('../models/messageModel');
+
 /* eslint-disable max-lines-per-function */
 const getDateAndTime = () => {
 const date = new Date();
@@ -23,7 +25,12 @@ const removeUserOnDisconnect = (socketId) => {
 module.exports = (io) => {
   io.on('connection', (socket) => {
     socket.on('newUser', (nick) => {
-      const newCon = socket; newCon.nickname = nick; connections.push(socket); updateUsers(io);
+      const newCon = socket; newCon.nickname = nick; connections.push(socket); updateUsers(io); 
+    });
+
+    socket.on('getMessages', async () => {
+      const messages = await getMessages();
+      socket.emit('showMessages', messages);
     });
 
     socket.on('changeNickname', (nickname) => {
@@ -34,7 +41,8 @@ module.exports = (io) => {
     });
 
     socket.on('message', (msg) => {
-      io.emit('message', `${getDateAndTime()} - ${msg.nickname}: ${msg.chatMessage}`); 
+      io.emit('message', `${getDateAndTime()} - ${msg.nickname}: ${msg.chatMessage}`);
+      addMessage({ message: msg.chatMessage, nickname: msg.nickname });
     });
 
     socket.on('disconnect', () => {
