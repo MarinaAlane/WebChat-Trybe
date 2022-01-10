@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- <link rel="stylesheet" href="style.css"> -->
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <style>
+      body {
+        background-color:cadetblue;
+      }
+
+      #page-title {
+        text-align: center;
+        background-color: rgb(43, 228, 89);
+        border: 1px solid black;
+        border-radius: 8px;
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+        font-style: italic;
+        padding: 15px;
+      }
+
+      #chat-form {
+      background: rgba(0, 0, 0, 0.15);
+      padding: 0.25rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      height: 3rem;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+      }
+
+      #chat-input {
+      border: none;
+      padding: 0 1rem;
+      flex-grow: 1;
+      border-radius: 2rem;
+      margin: 0.25rem;
+      }
+
+      #chat-input:focus {
+        outline: none;
+      }
+
+      #chat-form>button {
+      background: #333;
+      border: none;
+      padding: 0 1rem;
+      margin: 0.25rem;
+      margin-left: 10px;
+      border-radius: 3px;
+      outline: none;
+      color: #fff;
+      }
+
+      #chat {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      }
+
+      #chat>li {
+        padding: 0.5rem 1rem;
+      }
+
+      #chat>li:nth-child(odd) {
+      background:ghostwhite;
+      }
+
+    </style>
   </head>
   <body>
-    <h1>Projeto Webchat</h1>
-
+    <h1 id="page-title">Projeto Webchat</h1>
 
     <h2>Usuários Conectados</h2>
     <ul id='nicknames'></ul>
@@ -20,7 +86,7 @@
     <form id="chat-form">
       <input id='chat-input' type="text" placeholder="Digite uma nova mensagem aqui" data-testid="message-box">
       <button type="submit" data-testid="send-button">Enviar</button>
-    </form>
+    </form>    
       
     <script>
       const socket = io("http://localhost:3000");
@@ -61,7 +127,6 @@
       });
 
       socket.on('usersConected', (users) => {
-        // console.log('users', users);
         const lastUser = users[users.length - 1];
         sessionStorage.setItem('nickname', lastUser);
 
@@ -80,7 +145,7 @@
         }
       });
 
-      // Req 2 update nickname
+      // Req 2 update nickname - ajuda do colega Rodolfo Rezende
       const nicknameForm = document.querySelector('#nickname-form');
       const nicknameInput = document.querySelector('#nickname-input');
 
@@ -113,7 +178,6 @@
 
       socket.on('logout', (id) => {
         const onlineUSers = document.querySelectorAll('#current-nickname');
-        
 
         onlineUSers.forEach((username) => {
           if(username.innerText === id) {
