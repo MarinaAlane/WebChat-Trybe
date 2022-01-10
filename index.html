@@ -32,16 +32,29 @@
     const usersOnline = document.querySelector('#usersOnline');
     let nick = '';
 
-    socket.on('connected', (user) => {
+    function myUser(nickname) {
       const newUser = document.createElement('li');
       let dataTestId = document.createAttribute('data-testid');
       dataTestId.value = 'online-user';
       newUser.setAttributeNode(dataTestId);
-      newUser.textContent = user;
+      newUser.textContent = nickname;
       usersOnline.appendChild(newUser);
-    });
+    }
 
-    socket.on('historyMsg', (msgs) => {
+    function otherUsers(users) {
+      Object.keys(users).map((u) => {
+        if ( u !== socket.id.slice(-16)) {
+          const newUser = document.createElement('li');
+          let dataTestId = document.createAttribute('data-testid');
+          dataTestId.value = 'online-user';
+          newUser.setAttributeNode(dataTestId);
+          newUser.textContent = users[u];
+          usersOnline.appendChild(newUser);
+        }
+      });
+    }
+
+    function printHistoryMessages(msgs) {
       msgs.map((msg) => {
         const msgHistory = document.createElement('li');
         let dataTestId = document.createAttribute('data-testid');
@@ -50,12 +63,36 @@
         msgHistory.textContent = `${msg.timeStamp} - ${msg.nickname}: ${msg.chatMessage}`
         messages.appendChild(msgHistory);
       })
+    }
+
+    function sendMessage(msg) {
+      const newMessage = document.createElement('li');
+      let dataTestId = document.createAttribute('data-testid');
+      dataTestId.value = 'message';
+      newMessage.setAttributeNode(dataTestId);
+      newMessage.textContent = msg;
+      messages.appendChild(newMessage);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    socket.on('connected', (users) => {
+      console.log(users);
+      while (usersOnline.firstChild) { // https://qastack.com.br/programming/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+        usersOnline.removeChild(usersOnline.firstChild)
+      }
+      myUser(users[socket.id.slice(-16)]);
+      otherUsers(users);
+    });
+
+    socket.on('historyMsg', (msgs) => {
+      printHistoryMessages(msgs);
     });
 
     formUser.addEventListener('submit', (e) => {
       e.preventDefault();
       if (inputUser.value) {
-        nick = inputUser.value
+        nick = inputUser.value;
+        socket.emit('changeNick', nick);
       }
     });
 
@@ -68,13 +105,7 @@
     });
 
     socket.on('message', (msg) => {
-      const newMessage = document.createElement('li');
-      let dataTestId = document.createAttribute('data-testid');
-      dataTestId.value = 'message';
-      newMessage.setAttributeNode(dataTestId);
-      newMessage.textContent = msg;
-      messages.appendChild(newMessage);
-      window.scrollTo(0, document.body.scrollHeight);
+      sendMessage(msg);
     })
   </script>
 </body>

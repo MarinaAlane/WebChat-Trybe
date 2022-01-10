@@ -15,20 +15,8 @@ function getData() {
   return data.format('d-m-Y H:M:S');
 }
 
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-io.on('connection', async (socket) => {
-  const randomNick = socket.id.slice(-16);
-  console.log(`usuário ${randomNick} conectou`);
-  socket.emit('connected', randomNick);
-
-  const historyMessages = await modelMessages.getMessages();
-  io.emit('historyMsg', historyMessages);
-
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const timeStamp = getData();
+function setMessages(chatMessage, nickname, randomNick) {
+  const timeStamp = getData();
     if (nickname) {
       modelMessages.setMessage({ chatMessage, nickname, timeStamp });
       io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
@@ -36,11 +24,38 @@ io.on('connection', async (socket) => {
       modelMessages.setMessage({ chatMessage, nickname: randomNick, timeStamp });
       io.emit('message', `${timeStamp} - ${randomNick}: ${chatMessage}`);
     }
+}
+
+const onlineUsers = {};
+
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+io.on('connection', async (socket) => {
+  const randomNick = socket.id.slice(-16);
+  console.log(`usuário ${randomNick} conectou`);
+
+  onlineUsers[randomNick] = randomNick;
+  io.emit('connected', onlineUsers);
+
+  const historyMessages = await modelMessages.getMessages();
+  io.emit('historyMsg', historyMessages);
+
+  socket.on('changeNick', (nick) => {
+    onlineUsers[randomNick] = nick;
+    io.emit('connected', onlineUsers);
+  });
+
+  socket.on('message', ({ chatMessage, nickname }) => {
+    setMessages(chatMessage, nickname, randomNick);
   });
 
   socket.on('disconnect', () => {
     console.log(`usuário ${randomNick} desconectou`);
+    delete onlineUsers[randomNick];
+    io.emit('connected', onlineUsers);
   });
 });
 
-server.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
+server.listen(PORT, () => console.log(`Rodando na porta ${PORT}`)); 
