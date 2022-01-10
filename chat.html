@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webchat Project</title>
+</head>
+<body>
+  <h1>Gab's Webchat</h1>
+  <div>
+      <h3>Olá, <span id="randomNickname" ></span></h3>
+  </div>
+  <form id="formNickname" action="">
+    <label for="nickname">Nickname:</label>
+    <input type="text" id="nicknameInput" placeholder="Insira seu nickname aqui" data-testid="nickname-box"> 
+    <button type="button" id="nicknameButton" data-testid="nickname-button">Salvar </button><br><br>
+  </form>
+  <form id="formMessages" action="">
+    <label for="lname">Message:</label>
+    <input type="text" id="messageInput" placeholder="Insira sua mensagem aqui" data-testid="message-box">
+    <button type="button" id="sendButton" data-testid="send-button">Enviar</button> 
+  </form>
+  <ul id="messages"></ul>
+</body>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const formNickname = document.querySelector('#formNickname');
+    const nicknameInput = document.querySelector('#nicknameInput');
+    const formMessages = document.querySelector('#formMessages');
+    const messageInput = document.querySelector('#messageInput');
+    const messagesUl = document.querySelector('#messages');
+
+    const formButtonMessages = document.querySelector('#sendButton');
+    const formButtonNickname = document.querySelector('#nicknameButton');
+
+    formButtonNickname.addEventListener('click', (e) => {
+      e.preventDefault(); // cancela a atualizacado da pãgina
+      console.log(`salvou o nome ${nicknameInput.value}`);
+      nickname = nicknameInput.value
+      socket.emit('updateNickname', nicknameInput.value);
+      nicknameInput.value = '';  
+    });
+
+    formButtonMessages.addEventListener('click', (e) => {
+      e.preventDefault(); // cancela a atualizacado da pãgina
+      console.log('enviou a msg');
+      const message = messageInput.value;
+      
+      const data = {
+        chatMessage: message,
+        nickname,
+      };
+      
+      socket.emit('message', data);
+      messageInput.value = '';
+    });
+
+    const createMessage = (chatMessage) => {
+      const li = document.createElement('li');
+      li.setAttribute('data-testid', 'message');
+      li.innerText = chatMessage;
+      messagesUl.appendChild(li);
+    };
+
+    socket.on('message', (chatMessage) => createMessage(chatMessage));
+  </script>
+</html>
