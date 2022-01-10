@@ -1,6 +1,5 @@
 // Faça seu código aqui
 const express = require('express');
-const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -23,15 +22,13 @@ const randomNick = () => (
   Array.from(Array(16), () => Math.floor(Math.random() * 36).toString(36)).join('')
 );
 
-app.use(express.static(path.join(__dirname, '/view')));
-
-app.set('views', path.join(__dirname, 'view'));
 app.set('view engine', 'ejs');
+app.set('views', './view');
 
 app.get('/', async (_req, res) => {
   const Messages = await getAllMessages();
 
-  res.render('chat.ejs', {
+  res.status(200).render('chat.ejs', {
     userNick: randomNick(),
     storageMessages: Messages,
   });
