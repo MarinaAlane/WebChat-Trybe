@@ -69,6 +69,13 @@
         }
       });
 
+      socket.on('allMessages', (messages) => {
+        console.log(messages);
+        messages.forEach(({ message: chatMessage, nickname, date }) => {
+          createMessage(`${date} - ${nickname}: ${chatMessage}`)
+        })
+      })  
+
       socket.on('message', (message) => createMessage(message));
     </script>
   </body>
