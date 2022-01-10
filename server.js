@@ -14,21 +14,12 @@ const io = require('socket.io')(server, {
   },
 });
 
-const { formatDate } = require('./services');
-
 app.use(cors());
-app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-io.on('connection', (socket) => {
-  console.log(`User ${socket.id} connected`);
-  socket.on('message', (message) => {
-    console.log(message);
-    io.emit('message', `${formatDate()} ${message.nickname}: ${message.chatMessage}`);
-  });
-});
+require('./socket/chat')(io);
 
 server.listen(PORT, () => console.log(`Escutando a porta ${PORT}`));
