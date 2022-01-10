@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 let onlineUsers = [];
 
 const UsersIO = (io, socket) => {
