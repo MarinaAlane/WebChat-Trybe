@@ -1,6 +1,5 @@
 const { addMessage, getMessages } = require('../models/messageModel');
 
-/* eslint-disable max-lines-per-function */
 const getDateAndTime = () => {
 const date = new Date();
 const currentDate = date.toLocaleDateString('pt-BR').replace(/\//g, '-');
@@ -29,15 +28,13 @@ module.exports = (io) => {
     });
 
     socket.on('getMessages', async () => {
-      const messages = await getMessages();
-      socket.emit('showMessages', messages);
+      const messages = await getMessages(); socket.emit('showMessages', messages);
     });
 
     socket.on('changeNickname', (nickname) => {
-      connections.map((connection) => {
-        const newCon = connection;
-        if (newCon.nickname === socket.nickname) newCon.nickname = nickname; return newCon;
-      }); updateUsers(io);
+      connections.map((conn) => {
+        const nc = conn; if (nc.nickname === socket.nickname) nc.nickname = nickname; return nc;
+}); updateUsers(io);
     });
 
     socket.on('message', (msg) => {
@@ -45,10 +42,6 @@ module.exports = (io) => {
       addMessage({ message: msg.chatMessage, nickname: msg.nickname });
     });
 
-    socket.on('disconnect', () => {
-      console.log(`Usuário ${socket.id} desc.`);
-      
-      removeUserOnDisconnect(socket.id); updateUsers(io);
-    });
+    socket.on('disconnect', () => { removeUserOnDisconnect(socket.id); updateUsers(io); });
   });
 };
