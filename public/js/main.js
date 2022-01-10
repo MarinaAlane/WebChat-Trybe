@@ -5,6 +5,7 @@ const inputNickname = document.querySelector('#input-nickname');
 const inputChat = document.querySelector('#input-chat');
 const buttonChangeNickName = document.querySelector('#button-change-nickname');
 const nickname = document.querySelector('#nickname');
+const dataTestId = 'data-testid';
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -29,7 +30,7 @@ buttonChangeNickName.addEventListener('click', () => {
 socket.on('message', (msg) => {
 const newMessage = document
   .createElement('li');
-  newMessage.setAttribute('data-testid', 'message');
+  newMessage.setAttribute(dataTestId, 'message');
 newMessage.innerText = msg;
 messages.appendChild(newMessage);
 });
@@ -39,14 +40,14 @@ socket.on('conectedUsers', (users) => {
   conUsers.innerHTML = '';
   const conectedUsers = [];
   const liUser = document.createElement('li');
-  liUser.setAttribute('data-testid', 'online-user');
+  liUser.setAttribute(dataTestId, 'online-user');
   liUser.innerText = nickname.innerText;
   conectedUsers.push(liUser);
 
   users.forEach((user) => {
     if (user !== nickname.innerText) {
       const li = document.createElement('li');
-      li.setAttribute('data-testid', 'online-user');
+      li.setAttribute(dataTestId, 'online-user');
       li.innerText = user;
       conectedUsers.push(li);
     }
