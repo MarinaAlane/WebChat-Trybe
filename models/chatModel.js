@@ -1,19 +1,14 @@
 const connection = require('./connection');
 
-const createZoeiras = async (zoeira) => {
+const createMessage = async (message) => {
   const db = await connection();
-
-  await db.collection('messages').insertOne(zoeira);
+  await db.collection('messages').insertOne(message);
 };
 
-const getAllZoeiras = async () => {
+const getAllMessages = async () => {
   const db = await connection();
-  const zoeiras = await db.collection('messages').find().toArray();
-
-  return zoeiras;
+  const messages = await db.collection('messages').find().toArray();
+  return messages;
 };
 
-module.exports = { 
-  createZoeiras,
-  getAllZoeiras,
-};
+module.exports = { createMessage, getAllMessages };

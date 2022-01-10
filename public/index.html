@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat da Zueira</title>
+    <title>Web Chat</title>
   </head>
   <body>
-    <h1>Chat da Zueira</h1>
+    <h1>Projeto Web Chat</h1>
     <main>
-      <h2>Zoeiros conectados:</h2>
-      <ul id="zoeiros"></ul>
-      <h2>Zoeiras:</h2>
-      <ul id="zoeiras"></ul>
+      <h2>Users:</h2>
+      <ul id="users"></ul>
+      <h2>Messages:</h2>
+      <ul id="messages"></ul>
     </main>
     <div>
       <form id="form">
         <input
           type="text"
-          placeholder="Digite o nome do Zoeiro"
           name="nickname-box"
           id="nickname-box"
           data-testid="nickname-box"
@@ -28,16 +27,16 @@
           id="nickname-button"
           data-testid="nickname-button"
         >
-          SALVAR
+          Save
         </button>
         <input
           type="text"
-          placeholder="Digite sua Zoeira"
           name="message-box"
           id="message-box"
+          placeholder="message"
           data-testid="message-box"
         />
-        <button data-testid="send-button">ENVIAR</button>
+        <button data-testid="send-button">Enviar</button>
       </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>

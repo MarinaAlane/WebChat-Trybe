@@ -1,13 +1,11 @@
-// Faça seu código 
 const express = require('express');
-
-const path = require('path');
 const cors = require('cors');
-
-const PORT = 3000;
+const path = require('path');
 
 const app = express();
 const http = require('http').createServer(app);
+
+const PORT = 3000;
 
 const io = require('socket.io')(http, {
   cors: {
@@ -25,4 +23,8 @@ app.get('/', (_req, res) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
 
-http.listen(PORT, () => console.log(`Ouvindo a aplicação na porta: ${PORT}`));
+http.listen(PORT, () => {
+  console.log(`Ouvindo na porta ${PORT}`);
+});
+
+console.log(path.resolve(__dirname, 'public', 'index.html'));

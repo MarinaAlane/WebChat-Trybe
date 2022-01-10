@@ -1,59 +1,52 @@
 const moment = require('moment');
 const chatModel = require('../models/chatModel');
 
-const zoeirosOnline = [];
+const usersOnline = [];
 
-const createZoeiro = (socket) => {
+const createUser = (socket) => {
   const { id } = socket;
-  const idDaZoeira = id.substr(0, 16);
-
-  zoeirosOnline.push({ id, zoeiro: idDaZoeira });
-
-  socket.emit('newZoeiro', idDaZoeira);
+  const newId = id.substr(0, 16);
+  usersOnline.push({ id, nickname: newId });
+  socket.emit('newUser', newId);
 };
 
-const newZoeira = (socket, io) => {
+const newMsg = (socket, io) => {
   const timestamp = moment().format('DD-MM-YYYY h:mm:ss A');
-
-  socket.on('zoeira', async ({ zoeiro, zoeira }) => {
-    io.emit('zoeira', `${timestamp} - ${zoeiro}: ${zoeira}`);
-
-    await chatModel.createZoeiras({
-      message: zoeira,
-      nickname: zoeiro,
+  socket.on('message', async ({ nickname, chatMessage }) => {
+    io.emit('message', `${timestamp} - ${nickname}: ${chatMessage}`);
+    await chatModel.createMessage({
+      message: chatMessage,
+      nickname,
       timestamp,
     });
   });
 };
 
-const setNewZoeiro = (socket, io) => {
-  socket.on('saveZoeiro', (newNameZoeiro) => {
-    const userIndex = zoeirosOnline.findIndex((zoeiro) => zoeiro.id === socket.id);
-
-    zoeirosOnline[userIndex].zoeiro = newNameZoeiro;
-
-    io.emit('zoeirosOnline', zoeirosOnline);
+const setNewNickname = (socket, io) => {
+  socket.on('saveNickname', (newNick) => {
+    const userIndex = usersOnline.findIndex((user) => user.id === socket.id);
+    usersOnline[userIndex].nickname = newNick;
+    io.emit('usersOnline', usersOnline);
   });
 };
 
-const updateZoeiroOnline = (socket, io) => {
-  socket.on('zoeirosOnline', () => {
-    io.emit('zoeirosOnline', zoeirosOnline);
+const updateUsersOnline = (socket, io) => {
+  socket.on('usersOnline', () => {
+    io.emit('usersOnline', usersOnline);
   });
 };
 
-const getZoeiras = async (socket) => {
-  const zoeiras = await chatModel.getAllZoeiras();
-
-  socket.emit('getZoeiras', zoeiras);
+const getMessages = async (socket) => {
+  const messages = await chatModel.getAllMessages();
+  socket.emit('getMessages', messages);
 };
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    newZoeira(socket, io);
-    createZoeiro(socket);
-    setNewZoeiro(socket, io);
-    updateZoeiroOnline(socket, io);
-    getZoeiras(socket);
+    newMsg(socket, io);
+    createUser(socket);
+    setNewNickname(socket, io);
+    updateUsersOnline(socket, io);
+    getMessages(socket);
   });
 };
