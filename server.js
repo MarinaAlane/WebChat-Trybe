@@ -1,3 +1,9 @@
+// Referências: {
+// https://www.ti-enxame.com/pt/javascript/crie-um-token-aleatorio-em-javascript-com-base-nos-detalhes-do-usuario/941136694/
+// https://github.com/tryber/sd-011-project-webchat/pull/63/files
+// https://github.com/tryber/sd-010-a-project-webchat/pull/59/files
+// aulão do Jonathan ajudou demais }
+
 const express = require('express');
 const path = require('path');
 
@@ -74,10 +80,9 @@ io.on('connection', async (socket) => {
     infoClients();
   });
 
-  infoClients();
-
   disconnect(socket);
   const messages = await controller.getAllMessages();
+  infoClients();
 
   socket.emit('messagesDB', messages);
 
