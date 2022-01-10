@@ -24,9 +24,19 @@ app.get('/', (req, res) => {
   res.status(200).render('index');
 });
 
+const listUsers = {};
+
 io.on('connection', (socket) => {
   const date = generateDate();
+  listUsers[socket.id] = socket.id.substr(0, 16);
+
+  socket.emit('firstUser', listUsers[socket.id]);
+
   socket.on('message', async ({ chatMessage, nickname }) => {
     io.emit('message', `${date} ${nickname}: ${chatMessage}`);
+  });
+
+  socket.on('rename', (renamed) => {
+    listUsers[socket.id] = renamed;
   });
 });

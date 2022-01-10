@@ -9,6 +9,10 @@
 </head>
 <body>
   <form action="submit">
+    <p id="firstUser" data-testid="online-user"></p>
+    <ul id="listUsers"></ul>
+    <input id="inputAttName" data-testid="nickname-box"/>
+    <button type="button" id="attName" data-testid="nickname-button">Salvar nome</button>
     <input id="messageTyped" data-testid="message-box"/>
     <button type="submit" data-testid="send-button">Enviar</button>
   </form>
@@ -17,6 +21,9 @@
     const socket = io();
     const formMessages = document.querySelector('form');
     const messageTyped = document.querySelector('#messageTyped');
+    const firstUser = document.querySelector('#firstUser');
+    const inputAttName = document.querySelector('#inputAttName');
+    const attName = document.querySelector('#attName');
 
     const generateMessage = (message) => {
       const li = document.createElement('li');
@@ -29,15 +36,27 @@
 
     formMessages.addEventListener('submit', (e) => {
       e.preventDefault();
-      console.log(messageTyped.value);
+      console.log(socket.id);
       socket.emit('message', { 
         chatMessage: messageTyped.value,
-        nickname: socket.id.substr(0, 16)
+        nickname: firstUser.innerText ? firstUser.innerText : socket.id.substr(0, 16)
       });
       return false;
     });
 
+    attName.addEventListener('click', (e) => {
+      if(!inputAttName.value) return;
+      firstUser.innerText = inputAttName.value;
+      socket.emit('rename', inputAttName.value);
+    });
+
     socket.on('message', (message) => generateMessage(message));
+
+    socket.on('firstUser', (user) => {
+      const nickname = user;
+      firstUser.innerText = nickname;
+    });
+
 
   </script>
 </body>
