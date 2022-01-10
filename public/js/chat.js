@@ -1,14 +1,23 @@
 const socket = window.io();
 
-const onLineUser = (user) => {
+const onLineUser = (users) => {
   const userOnLineUl = document.querySelector('#client');
-  const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
-  li.innerText = user;
-  userOnLineUl.appendChild(li);
+  userOnLineUl.innerHTML = '';
+  const userNick = sessionStorage.getItem('nickname');
+  users.forEach((user) => {
+    const li = document.createElement('li');
+    li.setAttribute('data-testid', 'online-user');
+    li.innerText = user;
+    if (user === userNick) {
+      userOnLineUl.prepend(li);
+    } else {
+      userOnLineUl.appendChild(li);
+    }
+  });
 };
 
-socket.on('user', (user) => onLineUser(user));
+socket.on('user', (users) => onLineUser(users));
+socket.on('saveNick', (nick) => sessionStorage.setItem('nickname', nick));
 
 const formClient = document.querySelector('#client-form');
 const inputNickname = document.querySelector('#clientInput');
@@ -18,13 +27,7 @@ formClient.addEventListener('submit', (e) => {
   sessionStorage.setItem('nickname', inputNickname.value);
   const userNickName = sessionStorage.getItem('nickname');
   socket.emit('userNick', userNickName);
-  const userOnLineUl = document.querySelector('#client');
-  while (userOnLineUl.firstChild) {
-    userOnLineUl.removeChild(userOnLineUl.firstChild);
-  }
-  onLineUser(userNickName);
   inputNickname.value = '';
-  return false;
 });
 
 const formMessages = document.querySelector('#form-messages');
