@@ -10,7 +10,7 @@
 
       #page-title {
         text-align: center;
-        background-color: rgb(43, 228, 89);
+        background-color:limegreen;
         border: 1px solid black;
         border-radius: 8px;
         font-family:Verdana, Geneva, Tahoma, sans-serif;
@@ -18,25 +18,50 @@
         padding: 15px;
       }
 
+      #nickname-input {
+        border: none;
+        padding: 5px 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
+      }
+
+      #nickname-button {
+        background: #333;
+        border: none;
+        padding: 3px 1rem;
+        margin: 0.25rem;
+        margin-left: 2px;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
+
+      #nickname-button:hover {
+        background-color:lime;
+        color: black;
+        border: 1px solid black;
+      }
+
       #chat-form {
-      background: rgba(0, 0, 0, 0.15);
-      padding: 0.25rem;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      height: 3rem;
-      box-sizing: border-box;
-      backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
       }
 
       #chat-input {
-      border: none;
-      padding: 0 1rem;
-      flex-grow: 1;
-      border-radius: 2rem;
-      margin: 0.25rem;
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
       }
 
       #chat-input:focus {
@@ -44,20 +69,20 @@
       }
 
       #chat-form>button {
-      background: #333;
-      border: none;
-      padding: 0 1rem;
-      margin: 0.25rem;
-      margin-left: 10px;
-      border-radius: 3px;
-      outline: none;
-      color: #fff;
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        margin-left: 10px;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
       }
 
       #chat {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
       }
 
       #chat>li {
@@ -65,7 +90,13 @@
       }
 
       #chat>li:nth-child(odd) {
-      background:ghostwhite;
+        background-color: bisque;
+        border: 2px solid black;
+      }
+
+      #chat>li:nth-child(even) {
+        background-color:skyblue;
+        border: 2px solid black;
       }
 
     </style>
@@ -77,7 +108,7 @@
     <ul id='nicknames'></ul>
     <form id="nickname-form">
       <input id='nickname-input' placeholder="Insira seu nickname" data-testid="nickname-box">
-      <button type='submit' data-testid="nickname-button">Salvar</button>
+      <button type='submit' id='nickname-button' data-testid="nickname-button">Salvar</button>
     </form>
 
 
@@ -112,7 +143,8 @@
         const li = document.createElement("li");
         li.setAttribute('data-testid', 'message');
         li.textContent = msg;
-        document.querySelector('#chat').appendChild(li);   
+        document.querySelector('#chat').appendChild(li);  
+        window.scrollTo(0, document.body.scrollHeight); 
       });
       
       // Req 2
